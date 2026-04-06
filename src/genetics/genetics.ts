@@ -17,6 +17,8 @@ const GRADIENT_CHANCE_INHERITED = 0.25
 /** Probability of gradient in offspring when neither parent has one */
 const GRADIENT_CHANCE_BASE = 0.06
 
+const MIN_STEM_HEIGHT = 0.35
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 export function uid(): string {
@@ -81,7 +83,7 @@ export function randomPlant(): Plant {
 
   return {
     id: uid(),
-    stemHeight: 0.3 + Math.random() * 0.7,
+    stemHeight: MIN_STEM_HEIGHT + Math.random() * 0.7,
     petalCount: 3 + Math.floor(Math.random() * 6),
     petalShape: PETAL_SHAPES[Math.floor(Math.random() * PETAL_SHAPES.length)],
     petalColor: { h, s, l },
@@ -124,7 +126,7 @@ export function breedPlants(a: Plant, b: Plant): Plant {
     id: uid(),
     stemHeight: clamp(
       rareJump ? Math.random() : jitter((a.stemHeight + b.stemHeight) / 2, 0.12),
-      0.25,
+      MIN_STEM_HEIGHT,
       1.0,
     ),
     petalCount: clamp(
