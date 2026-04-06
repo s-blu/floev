@@ -31,6 +31,12 @@ export interface Plant {
    */
   gradientColor: HSLColor | null
   centerType: CenterType
+  /**
+   * Center colour — always a light warm or neutral tone
+   * (white, pale yellow, soft orange, or light green).
+   * Fully inheritable and breedable.
+   */
+  centerColor: HSLColor
   phase: PlantPhase
   /** Number of breeding generations from initial random plants */
   generation: number

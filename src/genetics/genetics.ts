@@ -51,6 +51,26 @@ function randomGradient(baseH: number, baseS: number, baseL: number): HSLColor {
   }
 }
 
+/**
+ * Generate a random center colour — always a light warm or neutral tone:
+ * white/cream, pale yellow, soft orange, or light green.
+ * Hue is either in the yellow-orange range (40–70°) or green (90–140°),
+ * with low saturation and high lightness to stay subtle.
+ */
+function randomCenterColor(): HSLColor {
+  const r = Math.random()
+  if (r < 0.15) {
+    // near-white / cream
+    return { h: 45, s: 20 + Math.random() * 20, l: 90 + Math.random() * 8 }
+  } else if (r < 0.55) {
+    // pale yellow to soft orange
+    return { h: 40 + Math.random() * 35, s: 55 + Math.random() * 30, l: 78 + Math.random() * 12 }
+  } else {
+    // light green
+    return { h: 90 + Math.random() * 50, s: 40 + Math.random() * 30, l: 72 + Math.random() * 14 }
+  }
+}
+
 // ─── Random plant ─────────────────────────────────────────────────────────────
 
 export function randomPlant(): Plant {
@@ -67,6 +87,7 @@ export function randomPlant(): Plant {
     petalColor: { h, s, l },
     gradientColor: hasGradient ? randomGradient(h, s, l) : null,
     centerType: CENTER_TYPES[Math.floor(Math.random() * CENTER_TYPES.length)],
+    centerColor: randomCenterColor(),
     phase: 1 as PlantPhase,
     generation: 0,
   }
@@ -89,6 +110,16 @@ export function breedPlants(a: Plant, b: Plant): Plant {
   // Rare wild-jump: a trait leaps to a completely different value (~4% chance)
   const rareJump = Math.random() < RARE_MUTATION_CHANCE
 
+  // Inherit center colour from one parent with small jitter, rare wild-jump possible
+  const parentCenter = Math.random() < 0.5 ? a.centerColor : b.centerColor
+  const centerColor: import('../types/plant').HSLColor = rareJump
+    ? randomCenterColor()
+    : {
+        h: clamp(lerpAngle(a.centerColor.h, b.centerColor.h, Math.random()) + jitter(0, 8), 0, 359),
+        s: clamp(jitter((a.centerColor.s + b.centerColor.s) / 2, 8), 15, 100),
+        l: clamp(jitter((a.centerColor.l + b.centerColor.l) / 2, 6), 65, 98),
+      }
+
   return {
     id: uid(),
     stemHeight: clamp(
@@ -109,6 +140,7 @@ export function breedPlants(a: Plant, b: Plant): Plant {
     },
     gradientColor: hasGrad ? randomGradient(h, s, l) : null,
     centerType: pickDiscrete(a.centerType, b.centerType, CENTER_TYPES),
+    centerColor,
     phase: 1 as PlantPhase,
     generation: Math.max(a.generation ?? 0, b.generation ?? 0) + 1,
   }
@@ -121,7 +153,6 @@ export function breedPlants(a: Plant, b: Plant): Plant {
  * estimate for the breeding panel UI.
  */
 export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
-  // Temporarily suppress rare jumps by running a "clean" breed simulation
   const samples: Plant[] = []
   for (let i = 0; i < 16; i++) {
     samples.push(breedPlants(a, b))
