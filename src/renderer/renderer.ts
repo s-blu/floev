@@ -142,8 +142,13 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number): strin
   body += `<rect x="${rimX}" y="${groundY}" width="${potW * 1.09}" height="${potRimH}" rx="3" fill="#c8855a"/>`
   body += `<rect x="${shineX}" y="${groundY + potRimH + 2}" width="${potW * 0.82}" height="3" rx="1" fill="#a86540" opacity="0.35"/>`
 
-  // ── Empty / seed ──────────────────────────────────────────────────────────
-  if (!plant || plant.phase === 1) {
+  // ── Empty pot ─────────────────────────────────────────────────────────────
+  if (!plant) {
+    return svg(defs, body, w, h)
+  }
+
+  // ── Seed (phase 1) ────────────────────────────────────────────────────────
+  if (plant.phase === 1) {
     body += `<ellipse cx="${cx}" cy="${stemBase - 4}" rx="5" ry="3.5" fill="#8B6914"/>`
     return svg(defs, body, w, h)
   }

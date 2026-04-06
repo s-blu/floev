@@ -139,16 +139,29 @@ function renderBreedPanel(): void {
     ? renderPlantSVG(potB.plant, 66, 86)
     : '<span>Elter 2</span>'
 
+  const hasEmptyPot = state.pots.some(p => !p.plant)
+
   if (potA?.plant && potB?.plant) {
     if (!breedEstimate) {
       breedEstimate = computeBreedEstimate(potA.plant, potB.plant)
     }
     preview.innerHTML = formatEstimate(breedEstimate)
-    btn.disabled = false
+    btn.disabled = !hasEmptyPot
   } else {
     preview.textContent = 'Wähle zwei blühende Pflanzen aus.'
     btn.disabled = true
     breedEstimate = null
+  }
+
+  const hint = document.querySelector('.breed-hint') as HTMLElement | null
+  if (hint) {
+    if (potA?.plant && potB?.plant && !hasEmptyPot) {
+      hint.textContent = 'Kein freier Topf — entferne zuerst eine Pflanze.'
+      hint.style.color = '#A32D2D'
+    } else {
+      hint.textContent = 'Ergebnis landet in einem leeren Topf'
+      hint.style.color = ''
+    }
   }
 }
 

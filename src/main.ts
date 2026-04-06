@@ -7,8 +7,8 @@ const app = document.getElementById('app')!
 app.innerHTML = `
 <div class="game">
   <header class="game-header">
-    <h1 class="game-title">Bloom</h1>
-    <p class="msg-bar" id="msg">Willkommen bei Bloom! Pflanze einen Samen in einen leeren Topf.</p>
+    <h1 class="game-title">Floev</h1>
+    <p class="msg-bar" id="msg">Willkommen bei Floev! Pflanze einen Samen in einen leeren Topf.</p>
   </header>
 
   <section>
@@ -47,4 +47,4 @@ const state = loadState()
 initUI(state)
 
 // Expose for debugging in the browser console
-;(window as unknown as Record<string, unknown>).__bloom__ = { state, showMsg }
+;(window as unknown as Record<string, unknown>).__floev__ = { state, showMsg }
