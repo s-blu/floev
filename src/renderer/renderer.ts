@@ -38,8 +38,8 @@ function buildPetalPath(
     // rx > ry so the long axis points outward (radially), rotated by angle
     return {
       type: 'ellipse',
-      cx: cx + ca * (pr + 5),
-      cy: bloomY + sa * (pr + 5),
+      cx: cx + ca * (pr - 1),
+      cy: bloomY + sa * (pr),
       rx: pr * 0.80,
       ry: pr * 0.54,
       rotDeg: (angle * 180) / Math.PI,
@@ -178,8 +178,9 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number): strin
 
   // Leaves at ~28% up from base — low on the stem, angled upward
   const leafY = stemBase - stemLen * 0.28
-  body += `<ellipse cx="${cx - 8}" cy="${leafY}" rx="11" ry="4.5" fill="#3a9a45" transform="rotate(-50,${cx - 8},${leafY})"/>`
-  body += `<ellipse cx="${cx + 8}" cy="${leafY}" rx="11" ry="4.5" fill="#3a9a45" transform="rotate(50,${cx + 8},${leafY})"/>`
+  const stemLeafShape = (xPos: number, rotate: number) => `<ellipse cx="${xPos}" cy="${leafY}" rx="11" ry="6" fill="#3a9a45" transform="rotate(${rotate},${xPos},${leafY})"/>`
+  body += stemLeafShape(cx - 8, 50)
+  body += stemLeafShape(cx + 8, -50)
 
   // ── Phase 3: bud with colour hint ─────────────────────────────────────────
   if (plant.phase === 3) {
