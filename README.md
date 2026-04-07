@@ -15,18 +15,13 @@ Dann im Browser öffnen: http://localhost:5173
 
 ```
 src/
-├── types/
-│   └── plant.ts          # Alle TypeScript-Interfaces (Plant, Pot, GameState …)
-├── genetics/
-│   └── genetics.ts       # Züchtungslogik, Selteneitsberechnung, randomPlant()
-├── renderer/
-│   └── renderer.ts       # Reine Funktion: renderPlantSVG(plant, w, h) → string
-├── game/
-│   └── game.ts           # State-Management, Phasen, localStorage-Persistenz
-├── ui/
-│   └── ui.ts             # DOM-Rendering, Event-Handling
-├── main.ts               # Entry point — initialisiert App-Shell + UI
-└── style.css             # Globales CSS
+│ └── plant.ts          # Alle TypeScript-Interfaces (Plant, Pot, GameState …)
+│ └── genetics.ts       # Züchtungslogik, Selteneitsberechnung, randomPlant()
+│ └── renderer.ts       # Reine Funktion: renderPlantSVG(plant, w, h) → string
+│ └── game.ts           # State-Management, Phasen, localStorage-Persistenz
+│ └── ui.ts             # DOM-Rendering, Event-Handling
+│ └── main.ts           # Entry point — initialisiert App-Shell + UI
+│ └── style.css         # Globales CSS
 ```
 
 ## Erweiterungspunkte
