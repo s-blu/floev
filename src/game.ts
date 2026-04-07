@@ -1,19 +1,15 @@
 import type { GameState, Pot, Plant, CatalogEntry, Rarity } from './plant'
-import { randomPlant, calcRarity, catalogKey } from './genetics'
+import { randomPlant, calcRarity, calcRarityScore, catalogKey } from './genetics'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const STORAGE_KEY = 'bloom_v1'
 const POT_COUNT = 9
 
-/**
- * Duration in ms for each growth phase.
- * Index = phase number (0 unused, 4 = bloom = no timer)
- */
 export const PHASE_DURATION_MS: Record<number, number> = {
-  1: 10_000,   // Seed
-  2: 18_000,   // Sprout
-  3: 28_000,   // Bud
+  1: 10_000,
+  2: 18_000,
+  3: 28_000,
 }
 
 export const PHASE_LABELS: Record<number, string> = {
@@ -66,7 +62,7 @@ export function saveState(state: GameState): void {
     state.lastSave = Date.now()
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {
-    // Storage full or unavailable — silently continue
+    // Storage full or unavailable
   }
 }
 
@@ -84,10 +80,6 @@ export function getPhaseProgress(pot: Pot): number {
   return Math.min(1, (Date.now() - pot.phaseStart) / dur)
 }
 
-/**
- * Advance plant phases based on elapsed time.
- * Returns true if any plant changed phase (triggers a re-render).
- */
 export function advancePhases(
   state: GameState,
   onBloom?: (plant: Plant) => void,
@@ -139,13 +131,16 @@ export function placeSeedInEmptyPot(state: GameState, plant: Plant): number | nu
 export function addToCatalog(state: GameState, plant: Plant): boolean {
   const key = catalogKey(plant)
   if (state.catalog.find(e => e.key === key)) return false
+  const rarityScore = calcRarityScore(plant)
   const entry: CatalogEntry = {
     key,
     plant: structuredClone(plant),
+    rarityScore,
     rarity: calcRarity(plant),
     discovered: Date.now(),
   }
   state.catalog.push(entry)
-  state.catalog.sort((a, b) => b.rarity - a.rarity)
+  // Sort by rarityScore descending so legendaries appear first
+  state.catalog.sort((a, b) => b.rarityScore - a.rarityScore)
   return true
 }

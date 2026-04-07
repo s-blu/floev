@@ -1,4 +1,8 @@
 import type { Plant, HSLColor } from './plant'
+import {
+  expressedColor, expressedShape, expressedCenter,
+  expressedNumber, expressedGradient,
+} from './plant'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -22,7 +26,7 @@ type PetalResult =
   | { type: 'path'; d: string }
 
 function buildPetalPath(
-  shape: Plant['petalShape'],
+  shape: Plant['petalShape']['a'],
   angle: number,
   cx: number,
   bloomY: number,
@@ -35,7 +39,6 @@ function buildPetalPath(
   const sp = Math.sin(perp)
 
   if (shape === 'round') {
-    // rx > ry so the long axis points outward (radially), rotated by angle
     return {
       type: 'ellipse',
       cx: cx + ca * (pr - 1),
@@ -47,7 +50,6 @@ function buildPetalPath(
   }
 
   if (shape === 'pointed') {
-    // Natural teardrop: wide at base, cubic bezier tapers to a soft point
     const tipR = pr * 2.2
     const baseW = pr * 0.38
     const b1x = cx + ca * pr * 0.18 + cp * baseW
@@ -66,7 +68,7 @@ function buildPetalPath(
     }
   }
 
-  // wavy — plump water-droplet shape with a subtle lateral bulge on one side
+  // wavy
   const tipR = pr * 2.2
   const baseW = pr * 0.40
   const b1x = cx + ca * pr * 0.18 + cp * baseW
@@ -75,7 +77,6 @@ function buildPetalPath(
   const b2y = bloomY + sa * pr * 0.18 - sp * baseW
   const tx = cx + ca * tipR
   const ty = bloomY + sa * tipR
-  // Left side bulges wider; right side is slightly flatter — gives a wave feel
   const m1x = cx + ca * pr * 0.95 + cp * baseW * 2.0
   const m1y = bloomY + sa * pr * 0.95 + sp * baseW * 2.0
   const m2x = cx + ca * pr * 0.95 - cp * baseW * 1.2
@@ -96,9 +97,9 @@ function petalToSVG(petal: PetalResult, fill: string, stroke: string): string {
   return `<path d="${petal.d}" fill="${fill}" stroke="${stroke}" ${sw}/>`
 }
 
-function renderGradientDef(plant: Plant, gradId: string): string {
-  const pc = plant.petalColor
-  const gc = plant.gradientColor!
+function renderGradientDef(petalColor: HSLColor, gradColor: HSLColor, gradId: string): string {
+  const pc = petalColor
+  const gc = gradColor
   return (
     `<radialGradient id="${gradId}" cx="40%" cy="55%" r="65%">` +
     `<stop offset="0%" stop-color="${hsl({ h: pc.h, s: pc.s, l: clamp(pc.l + 16, 40, 92) })}"/>` +
@@ -109,10 +110,6 @@ function renderGradientDef(plant: Plant, gradId: string): string {
 
 // ─── Curved stem ─────────────────────────────────────────────────────────────
 
-/**
- * A gentle quadratic-bezier stem. The lean direction is stable per plant
- * (derived from the id) so it doesn't flicker on re-renders.
- */
 function renderStem(plant: Plant, cx: number, stemBase: number, bloomY: number): string {
   const lean = (plant.id.charCodeAt(0) % 2 === 0 ? 1 : -1) * 5
   const qx = cx + lean
@@ -122,13 +119,6 @@ function renderStem(plant: Plant, cx: number, stemBase: number, bloomY: number):
 
 // ─── Main render function ─────────────────────────────────────────────────────
 
-/**
- * Render a plant as an SVG string.
- *
- * @param plant  The plant to render (null = empty pot)
- * @param w      Viewport width in pixels
- * @param h      Viewport height in pixels
- */
 export function renderPlantSVG(plant: Plant | null, w: number, h: number): string {
   const cx = w / 2
 
@@ -139,8 +129,8 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number): strin
   const groundY = h - potH - potRimH + 4
   const stemBase = groundY - 1
 
-  // Stem + bloom position
-  const stemLen = h * 0.50 * (plant ? plant.stemHeight : 0.6)
+  // Resolve expressed phenotype values up front
+  const stemLen = h * 0.50 * (plant ? expressedNumber(plant.stemHeight) : 0.6)
   const bloomY = stemBase - stemLen
 
   let defs = ''
@@ -176,15 +166,15 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number): strin
   // ── Stem + leaves (phases 3–4) ────────────────────────────────────────────
   body += renderStem(plant, cx, stemBase, bloomY)
 
-  // Leaves at ~28% up from base — low on the stem, angled upward
   const leafY = stemBase - stemLen * 0.28
-  const stemLeafShape = (xPos: number, rotate: number) => `<ellipse cx="${xPos}" cy="${leafY}" rx="11" ry="6" fill="#3a9a45" transform="rotate(${rotate},${xPos},${leafY})"/>`
+  const stemLeafShape = (xPos: number, rotate: number) =>
+    `<ellipse cx="${xPos}" cy="${leafY}" rx="11" ry="6" fill="#3a9a45" transform="rotate(${rotate},${xPos},${leafY})"/>`
   body += stemLeafShape(cx - 8, 50)
   body += stemLeafShape(cx + 8, -50)
 
   // ── Phase 3: bud with colour hint ─────────────────────────────────────────
   if (plant.phase === 3) {
-    const pc = plant.petalColor
+    const pc = expressedColor(plant.petalColor)
     body += `<ellipse cx="${cx}" cy="${bloomY + 2}" rx="7" ry="11" fill="#2d6e35"/>`
     body += `<ellipse cx="${cx}" cy="${bloomY + 1}" rx="5" ry="8.5" fill="#3a9a45"/>`
     body += `<ellipse cx="${cx - 1.5}" cy="${bloomY}" rx="2.5" ry="6" fill="${hsl(pc)}" opacity="0.5"/>`
@@ -193,37 +183,39 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number): strin
   }
 
   // ── Phase 4: full bloom ───────────────────────────────────────────────────
-  const pc = plant.petalColor
-  const n = plant.petalCount
-  const pr = 12 + (8 - n) * 1.4
-  const hasGrad = plant.gradientColor !== null
+  const pc    = expressedColor(plant.petalColor)
+  const grad  = expressedGradient(plant.gradientColor)
+  const shape = expressedShape(plant.petalShape)
+  const n     = Math.round(expressedNumber(plant.petalCount))
+  const pr    = 12 + (8 - n) * 1.4
+  const hasGrad = grad !== null
 
   const gradId = `g${plant.id.replace(/[^a-z0-9]/gi, '')}`
   if (hasGrad) {
-    defs += renderGradientDef(plant, gradId)
+    defs += renderGradientDef(pc, grad!, gradId)
   }
 
-  const fillStr = hasGrad ? `url(#${gradId})` : hsl(pc)
+  const fillStr   = hasGrad ? `url(#${gradId})` : hsl(pc)
   const strokeStr = hsl(darken(pc))
 
   for (let i = 0; i < n; i++) {
     const angle = (i / n) * Math.PI * 2 - Math.PI / 2
-    const petal = buildPetalPath(plant.petalShape, angle, cx, bloomY, pr)
+    const petal = buildPetalPath(shape, angle, cx, bloomY, pr)
     body += petalToSVG(petal, fillStr, strokeStr)
   }
 
-  // ── Center — always uses plant.centerColor ────────────────────────────────
-  const cc = plant.centerColor
-  const ccStr = hsl(cc)
+  // ── Center ────────────────────────────────────────────────────────────────
+  const cc     = expressedColor(plant.centerColor)
+  const ccStr  = hsl(cc)
   const ccDark = hsl({ h: cc.h, s: clamp(cc.s + 10, 20, 100), l: clamp(cc.l - 18, 45, 80) })
+  const centerType = expressedCenter(plant.centerType)
 
-  if (plant.centerType === 'dot') {
+  if (centerType === 'dot') {
     body += `<circle cx="${cx}" cy="${bloomY}" r="5.5" fill="${ccStr}"/>`
-  } else if (plant.centerType === 'disc') {
+  } else if (centerType === 'disc') {
     body += `<circle cx="${cx}" cy="${bloomY}" r="8.5" fill="${ccDark}"/>`
     body += `<circle cx="${cx}" cy="${bloomY}" r="5.5" fill="${ccStr}"/>`
   } else {
-    // stamen — central dot with subtle filament lines + small tip dots
     body += `<circle cx="${cx}" cy="${bloomY}" r="5" fill="${ccStr}"/>`
     const tipCol = hsl({ h: cc.h, s: clamp(cc.s + 5, 20, 80), l: clamp(cc.l - 22, 45, 75) })
     for (let i = 0; i < 6; i++) {

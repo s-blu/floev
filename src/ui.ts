@@ -1,4 +1,5 @@
 import type { GameState, BreedEstimate } from './plant'
+import { expressedColor, expressedShape, expressedGradient, expressedNumber } from './plant'
 import { renderPlantSVG } from './renderer'
 import {
   getPhaseProgress,
@@ -11,7 +12,7 @@ import {
   RARITY_LABELS,
   RARITY_COLORS,
 } from './game'
-import { breedPlants, computeBreedEstimate } from './genetics'
+import { breedPlants, computeBreedEstimate, calcRarityScore } from './genetics'
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
@@ -75,12 +76,15 @@ function renderPots(): void {
 
     let traitHtml = ''
     if (isBlooming && pot.plant) {
-      const pc = pot.plant.petalColor
+      const pc = expressedColor(pot.plant.petalColor)
+      const shape = expressedShape(pot.plant.petalShape)
+      const hasGrad = expressedGradient(pot.plant.gradientColor) !== null
+      const count = Math.round(expressedNumber(pot.plant.petalCount))
       traitHtml = `
         <div class="trait-row">
-          <span class="trait-pill" style="background:hsl(${Math.round(pc.h)},40%,88%);color:hsl(${Math.round(pc.h)},55%,30%)">${pot.plant.petalCount}×</span>
-          <span class="trait-pill">${pot.plant.petalShape}</span>
-          ${pot.plant.gradientColor ? '<span class="trait-pill">verlauf</span>' : ''}
+          <span class="trait-pill" style="background:hsl(${Math.round(pc.h)},40%,88%);color:hsl(${Math.round(pc.h)},55%,30%)">${count}×</span>
+          <span class="trait-pill">${shape}</span>
+          ${hasGrad ? '<span class="trait-pill">verlauf</span>' : ''}
         </div>`
     }
 
@@ -108,7 +112,6 @@ function renderPots(): void {
     row.appendChild(card)
   }
 
-  // Event delegation on the grid
   row.onclick = (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-action]')
     if (!btn) return
@@ -194,6 +197,7 @@ function renderCatalog(): void {
     const el = document.createElement('div')
     el.className = 'catalog-entry'
     el.style.borderColor = RARITY_COLORS[entry.rarity]
+    el.title = `Seltenheit: ${entry.rarityScore}/100`
     el.innerHTML = `
       <div>${renderPlantSVG(entry.plant, 60, 72)}</div>
       <div class="catalog-footer">
