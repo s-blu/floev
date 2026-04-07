@@ -1,5 +1,5 @@
-import type { GameState, Pot, Plant, CatalogEntry, Rarity } from '../types/plant'
-import { randomPlant, calcRarity, catalogKey } from '../genetics/genetics'
+import type { GameState, Pot, Plant, CatalogEntry, Rarity } from './plant'
+import { randomPlant, calcRarity, catalogKey } from './genetics'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 

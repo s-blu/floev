@@ -1,4 +1,4 @@
-import type { Plant, HSLColor, PetalShape, CenterType, PlantPhase, Rarity, BreedEstimate } from '../types/plant'
+import type { Plant, HSLColor, PetalShape, CenterType, PlantPhase, Rarity, BreedEstimate } from '.plant'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 

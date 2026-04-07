@@ -1,4 +1,4 @@
-import type { Plant, HSLColor } from '../types/plant'
+import type { Plant, HSLColor } from './plant'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

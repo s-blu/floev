@@ -1,5 +1,5 @@
-import type { GameState, BreedEstimate } from '../types/plant'
-import { renderPlantSVG } from '../renderer/renderer'
+import type { GameState, BreedEstimate } from './plant'
+import { renderPlantSVG } from './renderer'
 import {
   getPhaseProgress,
   advancePhases,
@@ -10,8 +10,8 @@ import {
   PHASE_LABELS,
   RARITY_LABELS,
   RARITY_COLORS,
-} from '../game/game'
-import { breedPlants, computeBreedEstimate } from '../genetics/genetics'
+} from './game'
+import { breedPlants, computeBreedEstimate } from './genetics'
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
