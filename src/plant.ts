@@ -162,7 +162,7 @@ export interface Pot {
 
 // ─── Catalog entry ───────────────────────────────────────────────────────────
 
-export type Rarity = 0 | 1 | 2 | 3   // 0=common … 3=legendary
+export type Rarity = 0 | 1 | 2 | 3 | 4  // 0=common … 3=legendary
 
 export interface CatalogEntry {
   /** Deduplication key derived from plant traits */

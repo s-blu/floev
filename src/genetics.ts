@@ -324,9 +324,10 @@ export function calcRarityScore(plant: Plant): number {
 /** Convert internal score to display rarity bucket */
 export function calcRarity(plant: Plant): Rarity {
   const score = calcRarityScore(plant)
-  if (score >= 70) return 3  // legendary
-  if (score >= 42) return 2  // rare
-  if (score >= 18) return 1  // uncommon
+  if (score >= 90) return 4  // legendary
+  if (score >= 75) return 3  // legendary
+  if (score >= 50) return 2  // rare
+  if (score >= 22) return 1  // uncommon
   return 0                   // common
 }
 

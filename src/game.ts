@@ -24,14 +24,16 @@ export const RARITY_LABELS: Record<Rarity, string> = {
   0: 'gewöhnlich',
   1: 'ungewöhnlich',
   2: 'selten',
-  3: 'legendär',
+  3: 'episch',
+  4: 'legendär',
 }
 
 export const RARITY_COLORS: Record<Rarity, string> = {
   0: '#888780',
   1: '#1D9E75',
-  2: '#D85A30',
-  3: '#D4537E',
+  2: '#4655e0',
+  3: '#b437ee',
+  4: '#f08000',
 }
 
 // ─── Initial state ────────────────────────────────────────────────────────────
