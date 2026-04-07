@@ -4,8 +4,7 @@ import type {
 } from './plant'
 import {
   expressedColor, expressedShape, expressedCenter, expressedNumber,
-  expressedGradient, dominantColor, dominantShape, dominantCenter,
-  colorBucket, COLOR_BUCKET_DOMINANCE, PETAL_SHAPE_DOMINANCE, CENTER_TYPE_DOMINANCE,
+  expressedGradient, colorBucket, COLOR_BUCKET_DOMINANCE
 } from './plant'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
