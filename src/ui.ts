@@ -253,9 +253,6 @@ function handleBreed(): void {
     return
   }
 
-  breedSelA = null
-  breedSelB = null
-  breedEstimate = null
   showMsg(`Samen gezüchtet! Generation ${child.generation}.`)
   saveState(state)
   render()
