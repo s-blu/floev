@@ -1,4 +1,4 @@
-import type { GameState, Pot, Plant, CatalogEntry, Rarity } from './plant'
+import type { GameState, Pot, Plant, CatalogEntry, Rarity } from '../model/plant'
 import { randomPlant, catalogKey } from './genetics'
 import { calcRarity, calcRarityScore } from './rarity'  
 

@@ -1,4 +1,4 @@
-import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket, Plant, CenterType, PetalShape, Rarity } from "./plant"
+import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket, Plant, CenterType, PetalShape, Rarity } from "../model/plant"
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 

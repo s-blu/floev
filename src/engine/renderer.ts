@@ -1,8 +1,8 @@
-import type { Plant, HSLColor } from './plant'
+import type { Plant, HSLColor } from '../model/plant'
 import {
   expressedColor, expressedShape, expressedCenter,
   expressedNumber, expressedGradient,
-} from './plant'
+} from '../model/plant'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

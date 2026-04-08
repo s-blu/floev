@@ -1,6 +1,6 @@
-import type { GameState, BreedEstimate, CatalogEntry, Rarity } from './plant'
-import { expressedColor, expressedShape, expressedGradient, expressedNumber, expressedCenter, colorBucket } from './plant'
-import { renderPlantSVG, renderBloomSVG } from './renderer'
+import type { GameState, BreedEstimate, CatalogEntry, Rarity } from '../model/plant'
+import { expressedColor, expressedShape, expressedGradient, expressedNumber, expressedCenter, colorBucket } from '../model/plant'
+import { renderPlantSVG, renderBloomSVG } from '../engine/renderer'
 import {
   getPhaseProgress,
   advancePhases,
@@ -11,8 +11,8 @@ import {
   PHASE_LABELS,
   RARITY_LABELS,
   RARITY_COLORS,
-} from './game'
-import { breedPlants, computeBreedEstimate } from './breed'
+} from '../engine/game'
+import { breedPlants, computeBreedEstimate } from '../engine/breed'
 
 // ─── State ────────────────────────────────────────────────────────────────────
 

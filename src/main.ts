@@ -1,5 +1,5 @@
-import { loadState } from './game'
-import { initUI, showMsg } from './ui'
+import { loadState } from './engine/game'
+import { initUI, showMsg } from './ui/ui'
 
 // ─── Inject app shell ────────────────────────────────────────────────────────
 

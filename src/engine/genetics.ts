@@ -1,9 +1,9 @@
 import type {
   Plant, HSLColor, PetalShape, CenterType, PlantPhase,
   ColorBucket,
-} from './plant'
+} from '../model/plant'
 import {
-  expressedColor, expressedShape, expressedCenter, expressedNumber} from './plant'
+  expressedColor, expressedShape, expressedCenter, expressedNumber} from '../model/plant'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 

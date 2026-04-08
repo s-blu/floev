@@ -1,5 +1,5 @@
 import { clamp, jitter, MUTATION_CHANCE, pick, randomColorForBucket, GRADIENT_ALLELE_KEEP_CHANCE, randomGradient } from './genetics';
-import { type AllelePair, type HSLColor, COLOR_BUCKET_DOMINANCE } from './plant';
+import { type AllelePair, type HSLColor, COLOR_BUCKET_DOMINANCE } from '../model/plant';
 
 // ─── Allele inheritance ───────────────────────────────────────────────────────
 function inheritAllele<T>(parentA: AllelePair<T>, parentB: AllelePair<T>): AllelePair<T> {
