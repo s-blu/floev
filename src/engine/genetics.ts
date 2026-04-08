@@ -1,9 +1,8 @@
 import type {
   Plant, HSLColor, PetalShape, CenterType, PlantPhase,
-  ColorBucket,
 } from '../model/plant'
-import {
-  expressedColor, expressedShape, expressedCenter, expressedNumber} from '../model/plant'
+import type { ColorBucket } from "./genetic.util"
+import { expressedColor, expressedShape, expressedCenter, expressedNumber } from "./genetic.util"
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 

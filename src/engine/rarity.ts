@@ -1,4 +1,5 @@
-import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket, Plant, CenterType, PetalShape, Rarity } from "../model/plant"
+import { Plant, CenterType, PetalShape, Rarity } from "../model/plant"
+import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket } from "./genetic.util"
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 

@@ -1,8 +1,8 @@
 import type { Plant, HSLColor } from '../model/plant'
 import {
   expressedColor, expressedShape, expressedCenter,
-  expressedNumber, expressedGradient,
-} from '../model/plant'
+  expressedNumber, expressedGradient
+} from "./genetic.util"
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

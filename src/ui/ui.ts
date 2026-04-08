@@ -1,5 +1,5 @@
 import type { GameState, BreedEstimate, CatalogEntry, Rarity } from '../model/plant'
-import { expressedColor, expressedShape, expressedGradient, expressedNumber, expressedCenter, colorBucket } from '../model/plant'
+import { expressedColor, expressedShape, expressedGradient, expressedNumber, expressedCenter, colorBucket } from "../engine/genetic.util"
 import { renderPlantSVG, renderBloomSVG } from '../engine/renderer'
 import {
   getPhaseProgress,
