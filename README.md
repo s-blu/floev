@@ -15,8 +15,11 @@ Dann im Browser öffnen: http://localhost:5173
 
 ```
 src/
+│ └── breed.ts          # Logik zur Züchtung und Zuchtvorhersage
 │ └── plant.ts          # Alle TypeScript-Interfaces (Plant, Pot, GameState …)
-│ └── genetics.ts       # Züchtungslogik, Selteneitsberechnung, randomPlant()
+│ └── genetics.ts       # Code für genetische Verteilung, randomPlant()
+│ └── inheritance.ts    # Allele und sonstige Vererbungs-Logik
+│ └── rarity.ts         # Seltenheitsberechnung
 │ └── renderer.ts       # Reine Funktion: renderPlantSVG(plant, w, h) → string
 │ └── game.ts           # State-Management, Phasen, localStorage-Persistenz
 │ └── ui.ts             # DOM-Rendering, Event-Handling

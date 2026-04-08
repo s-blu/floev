@@ -12,7 +12,7 @@ import {
   RARITY_LABELS,
   RARITY_COLORS,
 } from './game'
-import { breedPlants, computeBreedEstimate } from './genetics'
+import { breedPlants, computeBreedEstimate } from './breed'
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
