@@ -1,7 +1,7 @@
 import { uid, MIN_STEM_HEIGHT, clamp, PETAL_SHAPES, CENTER_TYPES } from './genetics';
 import { inheritColor, inheritGradient, inheritNumber, inheritDiscrete } from './inheritance';
 import { type Plant, type PlantPhase, type BreedEstimate, type PetalShape } from '../model/plant';
-import { expressedColor, expressedNumber, expressedShape, expressedGradient } from "./genetic.util";
+import { expressedColor, expressedNumber, expressedShape, expressedGradient } from "./genetic.utils";
 
 // ─── Breeding ────────────────────────────────────────────────────────────────
 

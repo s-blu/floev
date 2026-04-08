@@ -22,8 +22,12 @@ src/
 │ └── genetics.ts       # Code für genetische Verteilung, randomPlant()
 │ └── inheritance.ts    # Allele und sonstige Vererbungs-Logik
 │ └── rarity.ts         # Seltenheitsberechnung
-│ └── renderer.ts       # Reine Funktion: renderPlantSVG(plant, w, h) → string
 │ └── game.ts           # State-Management, Phasen, localStorage-Persistenz
+| -renderer/            # Folder; Logik zum rendern der SVGs
+│ └── renderer.ts       # Hauptrendering der Blumen
+│ └── encyclopedia.renderer.ts # Blumenrendering für die Enzyklopädie
+│ └── petal.renderer.ts        # Renderin der verschiedenen Blütenarten
+│ └── renderer.utils.ts        # Helper functions für SVG Renderings
 |-model/                # Folder; Interfaces and types
 │ └── plant.ts          # Alle TypeScript-Interfaces (Plant, Pot, GameState …)
 |-ui/                   # Folder; Logik zum Render der UI
