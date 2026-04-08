@@ -149,6 +149,12 @@ export interface Plant {
   phase: PlantPhase
   /** Number of breeding generations from initial random plants */
   generation: number
+
+  /**
+   * IDs of both parent plants, set when bred.
+   * Absent on generation-0 (random) plants.
+   */
+  parentIds?: [string, string]
 }
 
 // ─── Pot ─────────────────────────────────────────────────────────────────────
@@ -162,7 +168,7 @@ export interface Pot {
 
 // ─── Catalog entry ───────────────────────────────────────────────────────────
 
-export type Rarity = 0 | 1 | 2 | 3 | 4  // 0=common … 3=legendary
+export type Rarity = 0 | 1 | 2 | 3 | 4  // 0=common … 4=legendary
 
 export interface CatalogEntry {
   /** Deduplication key derived from plant traits */
@@ -172,7 +178,8 @@ export interface CatalogEntry {
   rarityScore: number
   /** Bucketed rarity for display */
   rarity: Rarity
-  discovered: number  // Date.now()
+  /** Unix timestamp (ms) when first discovered — use for both date and time display */
+  discovered: number
 }
 
 // ─── Breeding estimate ───────────────────────────────────────────────────────

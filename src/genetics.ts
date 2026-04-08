@@ -48,12 +48,6 @@ function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
-/** Interpolate angles correctly around the 0/360 wrap */
-function lerpAngle(a: number, b: number, t: number): number {
-  const diff = ((b - a + 540) % 360) - 180
-  return (a + diff * t + 360) % 360
-}
-
 function randomGradient(baseH: number, baseS: number, baseL: number): HSLColor {
   return {
     h: (baseH + 30 + Math.random() * 60) % 360,
@@ -95,11 +89,6 @@ function randomPetalColor(): HSLColor {
 
 // ─── Random plant ─────────────────────────────────────────────────────────────
 
-/**
- * Generate a random plant with two independent alleles per trait.
- * Alleles are chosen independently, so the expressed phenotype
- * depends on which allele is more dominant.
- */
 export function randomPlant(): Plant {
   const colorA = randomPetalColor()
   const colorB = randomPetalColor()
@@ -131,10 +120,6 @@ export function randomPlant(): Plant {
 
 // ─── Allele inheritance ───────────────────────────────────────────────────────
 
-/**
- * Inherit one allele from parent A and one from parent B.
- * Each parent randomly passes either their `a` or `b` allele.
- */
 function inheritAllele<T>(parentA: AllelePair<T>, parentB: AllelePair<T>): AllelePair<T> {
   return {
     a: Math.random() < 0.5 ? parentA.a : parentA.b,
@@ -142,7 +127,6 @@ function inheritAllele<T>(parentA: AllelePair<T>, parentB: AllelePair<T>): Allel
   }
 }
 
-/** Inherit a numeric allele pair with small jitter mutation on each allele */
 function inheritNumber(
   parentA: AllelePair<number>,
   parentB: AllelePair<number>,
@@ -157,7 +141,6 @@ function inheritNumber(
   }
 }
 
-/** Inherit a discrete allele pair with a small chance of point mutation */
 function inheritDiscrete<T>(
   parentA: AllelePair<T>,
   parentB: AllelePair<T>,
@@ -170,7 +153,6 @@ function inheritDiscrete<T>(
   }
 }
 
-/** Inherit color alleles. Mutation replaces an allele with a color from a random bucket. */
 function inheritColor(
   parentA: AllelePair<HSLColor>,
   parentB: AllelePair<HSLColor>,
@@ -192,7 +174,6 @@ function inheritColor(
   }
 }
 
-/** Inherit gradient alleles. Each allele is kept or dropped independently. */
 function inheritGradient(
   parentA: AllelePair<HSLColor | null>,
   parentB: AllelePair<HSLColor | null>,
@@ -202,12 +183,10 @@ function inheritGradient(
 
   const resolveAllele = (allele: HSLColor | null, baseColor: HSLColor): HSLColor | null => {
     if (allele !== null) {
-      // Inherited gradient allele — keep it with some probability
       return Math.random() < GRADIENT_ALLELE_KEEP_CHANCE
         ? { h: clamp(jitter(allele.h, 12), 0, 359), s: clamp(jitter(allele.s, 8), 25, 100), l: clamp(jitter(allele.l, 6), 20, 75) }
         : null
     } else {
-      // No gradient allele — small chance of spontaneous emergence
       return Math.random() < 0.06
         ? randomGradient(baseColor.h, baseColor.s, baseColor.l)
         : null
@@ -240,6 +219,7 @@ export function breedPlants(a: Plant, b: Plant): Plant {
     centerColor:  inheritColor(a.centerColor, b.centerColor),
     phase: 1 as PlantPhase,
     generation: Math.max(a.generation ?? 0, b.generation ?? 0) + 1,
+    parentIds: [a.id, b.id],
   }
 }
 
@@ -280,20 +260,6 @@ export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 
-/**
- * Rarity score 1–100 based on expressed phenotype recessiveness.
- *
- * The rarest possible combination (wavy + gray/black + stamen + gradient)
- * sums to 100. All weights are additive.
- *
- * Shape:      round=0, pointed=12, wavy=30
- * Color:      white=0, yellow=5, red=12, purple=20, blue=27, gray=30
- * CenterType: dot=0, disc=8, stamen=20
- * Gradient:   none=0, present=20
- * Bonus:      petalCount >= 7 → +5 (already rare, slight boost)
- *             stemHeight expressed > 0.85 → +5
- *             (bonus capped so total never exceeds 100)
- */
 const SHAPE_SCORE: Record<PetalShape, number> = { round: 0, pointed: 12, wavy: 30 }
 const COLOR_SCORE: Record<string, number> = {
   white: 0, yellow: 5, red: 12, purple: 20, blue: 27, gray: 30,
@@ -314,18 +280,16 @@ export function calcRarityScore(plant: Plant): number {
   score += CENTER_SCORE[center]
   score += grad !== null ? 20 : 0
 
-  // Small bonuses — capped so theoretical max stays at 100
   if (count >= 7) score += 5
   if (stem > 0.85) score += 5
 
   return Math.min(100, Math.max(1, score))
 }
 
-/** Convert internal score to display rarity bucket */
 export function calcRarity(plant: Plant): Rarity {
   const score = calcRarityScore(plant)
   if (score >= 90) return 4  // legendary
-  if (score >= 75) return 3  // legendary
+  if (score >= 75) return 3  // epic
   if (score >= 50) return 2  // rare
   if (score >= 22) return 1  // uncommon
   return 0                   // common
@@ -333,7 +297,6 @@ export function calcRarity(plant: Plant): Rarity {
 
 // ─── Catalog key ────────────────────────────────────────────────────────────
 
-/** Deduplication key — uses expressed phenotype, coarse hue bucket */
 export function catalogKey(plant: Plant): string {
   const color  = expressedColor(plant.petalColor)
   const shape  = expressedShape(plant.petalShape)
