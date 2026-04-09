@@ -1,5 +1,5 @@
 import type { GameState, BreedEstimate, CatalogEntry, Rarity } from '../model/plant'
-import { expressedColor, expressedShape, expressedGradient, expressedNumber, expressedCenter, colorBucket } from "../engine/genetic.utils"
+import { expressedColor, expressedShape, expressedGradient, expressedNumber, expressedCenter } from "../engine/genetic.utils"
 import { renderPlantSVG } from '../engine/renderer/renderer'
 import { renderBloomSVG } from '../engine/renderer/encyclopedia.renderer'
 import {
@@ -24,6 +24,9 @@ let breedEstimate: BreedEstimate | null = null
 
 /** Track which ancestry <details> are open so state survives rerenders */
 const openAncestryIds = new Set<string>()
+
+/** Maps plant.id → discovery number (1-based), rebuilt each renderCatalog call */
+let entryIndex = new Map<string, number>()
 
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
 
@@ -238,7 +241,7 @@ function renderCatalog(): void {
 
   // Build a global index map: sort all entries by discovered time to assign "Blüte N"
   const allSorted = [...state.catalog].sort((a, b) => a.discovered - b.discovered)
-  const entryIndex = new Map<string, number>()
+  entryIndex = new Map<string, number>()
   allSorted.forEach((e, i) => entryIndex.set(e.plant.id, i + 1))
 
   container.innerHTML = ''
@@ -311,19 +314,21 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   let ancestryHtml = ''
   if (plant.parentIds) {
     const isOpen = openAncestryIds.has(plant.id)
-    const renderParentThumb = (e: CatalogEntry | null, id: string) => {
-      if (e) {
-        return `<div class="enc-parent-thumb" title="Gen. ${e.plant.generation}">${renderBloomSVG(e.plant, 38, 38)}</div>`
-      }
-      return `<div class="enc-parent-thumb enc-parent-unknown" title="Elter unbekannt (${id})"><span>?</span></div>`
+    const renderParentSlot = (e: CatalogEntry | null, id: string) => {
+      const num = e ? (entryIndex.get(e.plant.id) ?? '?') : '?'
+      const name = e ? `Blüte ${num}` : 'Unbekannt'
+      const thumb = e
+        ? `<div class="enc-parent-thumb" title="Gen. ${e.plant.generation}">${renderBloomSVG(e.plant, 38, 38)}</div>`
+        : `<div class="enc-parent-thumb enc-parent-unknown" title="Elter unbekannt (${id})"><span>?</span></div>`
+      return `<div class="enc-parent-slot">${thumb}<span class="enc-parent-name">${name}</span></div>`
     }
     ancestryHtml = `
       <details class="enc-ancestry" data-id="${plant.id}"${isOpen ? ' open' : ''}>
-        <summary>Stammbaum (Gen. ${plant.generation - 1})</summary>
+        <summary>Stammbaum</summary>
         <div class="enc-parents-row">
-          ${renderParentThumb(parentA, plant.parentIds[0])}
+          ${renderParentSlot(parentA, plant.parentIds[0])}
           <span class="enc-parent-cross">×</span>
-          ${renderParentThumb(parentB, plant.parentIds[1])}
+          ${renderParentSlot(parentB, plant.parentIds[1])}
         </div>
       </details>`
   }
@@ -332,7 +337,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
     <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
     <div class="enc-body">
       <div class="enc-entry-num">Nr. ${num}</div>
-      <div class="enc-entry-name">Blüte ${num}</div>
+      <div class="enc-entry-name" style="font-family: var(--font-serif, Georgia, serif)">Blüte ${num}</div>
       <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${RARITY_LABELS[entry.rarity]}</span>
       <div class="enc-meta">
         <div class="enc-meta-row">
@@ -350,11 +355,11 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
           </span>
         </div>
         <div class="enc-meta-row">
-          <span class="enc-meta-label">Generation</span>
-          <span class="enc-meta-value">Gen. ${plant.generation}</span>
+          <span class="enc-meta-label">Gen.</span>
+          <span class="enc-meta-value">${plant.generation}</span>
         </div>
       </div>
-      <div class="enc-discovered">Entdeckt ${formatDate(entry.discovered)}</div>
+      <div class="enc-discovered">${formatDate(entry.discovered)}</div>
       ${ancestryHtml}
     </div>`
 

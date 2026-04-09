@@ -6,7 +6,7 @@ import { renderGradientDef, hsl, darken, clamp } from './renderer.utils';
 // ─── Bloom-only render (for encyclopedia) ────────────────────────────────────
 /**
  * Renders only the flower head, centered in the given canvas.
- * No pot, no stem, no leaves. Phase must be 4 (bloom).
+ * Uses the same fixed petal radius as the main renderer so proportions match.
  */
 
 export function renderBloomSVG(plant: Plant, w: number, h: number): string {
@@ -17,7 +17,9 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
   const grad = expressedGradient(plant.gradientColor);
   const shape = expressedShape(plant.petalShape);
   const n = Math.round(expressedNumber(plant.petalCount));
-  const pr = (Math.min(w, h) * 0.28) + (8 - n) * 1.4;
+
+  // Same formula as renderFullBloom in renderer.ts — keeps center/petal ratio identical
+  const pr = 12 + (8 - n) * 1.4;
   const hasGrad = grad !== null;
 
   let defs = '';
@@ -63,5 +65,6 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
   }
 
   const defsBlock = defs ? `<defs>${defs}</defs>` : '';
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${defsBlock}${body}</svg>`;
+  // overflow="visible" ensures petals are never clipped by the viewBox
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="visible" xmlns="http://www.w3.org/2000/svg">${defsBlock}${body}</svg>`;
 }
