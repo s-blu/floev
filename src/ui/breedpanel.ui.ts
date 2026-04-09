@@ -91,22 +91,13 @@ function probBars<T extends string>(items: { [k: string]: T | number; }[], label
     </div>`;
   }).join('');
 }
+
 function formatEstimate(e: BreedEstimate): string {
   const sw = (h: number) => `<span class="swatch" style="background:hsl(${Math.round(h)},${Math.round(e.avgS)}%,${Math.round(e.avgL)}%)"></span>`;
 
-  const shapeBars = e.shapeProbs.map(x => `<div class="prob-entry">
-      <span class="prob-label">${SHAPE_DE[x.shape] ?? x.shape}</span>
-      <span class="prob-bar-wrap"><span class="prob-bar" style="width:${x.pct}%"></span></span>
-      <span class="prob-pct">${x.pct}%</span>
-    </div>`
-  ).join('');
+  const shapeBars = e.shapeProbs.map(x => renderProbabilityEntry(SHAPE_DE[x.shape] ?? x.shape, x)).join('');
 
-  const centerBars = e.centerProbs.map(x => `<div class="prob-entry">
-      <span class="prob-label">${CENTER_DE[x.center] ?? x.center}</span>
-      <span class="prob-bar-wrap"><span class="prob-bar" style="width:${x.pct}%"></span></span>
-      <span class="prob-pct">${x.pct}%</span>
-    </div>`
-  ).join('');
+  const centerBars = e.centerProbs.map(x => renderProbabilityEntry(CENTER_DE[x.center] ?? x.center, x)).join('');
 
   return `
     <div class="est-row">${sw(e.minH)}${sw(e.midH)}${sw(e.maxH)}<span>Farbbereich (ca.)</span></div>
@@ -121,4 +112,12 @@ function formatEstimate(e: BreedEstimate): string {
     </div>
     ${e.gradPct > 0 ? `<div class="est-grad">✦ Farbverlauf: ~${e.gradPct}%</div>` : ''}
     <div class="est-note">Ohne seltene Mutationen.</div>`;
+}
+
+function renderProbabilityEntry(label: string, x: { pct: number}) {
+return `<div class="prob-entry">
+      <span class="prob-label">${label}</span>
+      <span class="prob-bar-wrap"><span class="prob-bar ${x.pct > 49 ? 'high' : x.pct > 29 ? 'middle' : 'low'}" style="width:${x.pct}%"></span></span>
+      <span class="prob-pct">${x.pct}%</span>
+    </div>`
 }

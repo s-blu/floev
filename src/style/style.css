@@ -16,6 +16,7 @@
   --radius-xl:   16px;
   --pot-brown:   #b8724a;
   --green:       #1D9E75;
+  --blue:        #2a56cf;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -347,11 +348,19 @@ html, body {
 }
 
 .prob-bar {
+  display: block;
   height: 100%;
-  background: var(--green);
+  background: var(--text2);
   border-radius: 3px;
   transition: width 0.3s ease;
   min-width: 2px;
+}
+
+.prob-bar.high {
+  background: var(--green);
+}
+.prob-bar.middle {
+  background: var(--blue)
 }
 
 .prob-pct {
