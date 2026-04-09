@@ -22,6 +22,9 @@ let breedSelA: number | null = null
 let breedSelB: number | null = null
 let breedEstimate: BreedEstimate | null = null
 
+/** Track which ancestry <details> are open so state survives rerenders */
+const openAncestryIds = new Set<string>()
+
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
 
 export function initUI(gameState: GameState): void {
@@ -181,11 +184,6 @@ function formatEstimate(e: BreedEstimate): string {
 
 // ─── Catalog helpers ──────────────────────────────────────────────────────────
 
-const COLOR_BUCKET_LABELS: Record<string, string> = {
-  white: 'Weiß', yellow: 'Gelb', red: 'Rot',
-  purple: 'Violett', blue: 'Blau', gray: 'Grau/Schwarz',
-}
-
 const SHAPE_LABELS: Record<string, string> = {
   round: 'Rund', pointed: 'Spitz', wavy: 'Wellig',
 }
@@ -194,11 +192,18 @@ const CENTER_LABELS: Record<string, string> = {
   dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
 }
 
-function formatDateTime(ts: number): string {
+// Rarity badge background/text pairs
+const RARITY_BADGE_STYLES: Record<Rarity, { bg: string; color: string }> = {
+  0: { bg: '#F1EFE8', color: '#5F5E5A' },
+  1: { bg: '#E1F5EE', color: '#0F6E56' },
+  2: { bg: '#E6F1FB', color: '#185FA5' },
+  3: { bg: '#EEEDFE', color: '#3C3489' },
+  4: { bg: '#FAEEDA', color: '#854F0B' },
+}
+
+function formatDate(ts: number): string {
   const d = new Date(ts)
-  const date = d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
-  const time = d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-  return `${date}, ${time} Uhr`
+  return d.toLocaleDateString('de-DE', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
 // ─── Catalog ──────────────────────────────────────────────────────────────────
@@ -208,6 +213,13 @@ function renderCatalog(): void {
   const count = document.getElementById('catalog-count')
   if (!container || !count) return
 
+  // Snapshot open ancestry details before clearing DOM
+  container.querySelectorAll<HTMLDetailsElement>('.enc-ancestry[data-id]').forEach(el => {
+    const id = el.dataset.id!
+    if (el.open) openAncestryIds.add(id)
+    else openAncestryIds.delete(id)
+  })
+
   count.textContent = String(state.catalog.length)
 
   if (state.catalog.length === 0) {
@@ -215,18 +227,19 @@ function renderCatalog(): void {
     return
   }
 
-  // Group by rarity (4→0), within each group sort by hue
+  // Group by rarity (4→0), within each group sort by discovery order (= index = name number)
   const groups: Record<Rarity, CatalogEntry[]> = { 4: [], 3: [], 2: [], 1: [], 0: [] }
   for (const entry of state.catalog) {
     groups[entry.rarity].push(entry)
   }
   for (const r of [4, 3, 2, 1, 0] as Rarity[]) {
-    groups[r].sort((a, b) => {
-      const ha = expressedColor(a.plant.petalColor).h
-      const hb = expressedColor(b.plant.petalColor).h
-      return ha - hb
-    })
+    groups[r].sort((a, b) => a.discovered - b.discovered)
   }
+
+  // Build a global index map: sort all entries by discovered time to assign "Blüte N"
+  const allSorted = [...state.catalog].sort((a, b) => a.discovered - b.discovered)
+  const entryIndex = new Map<string, number>()
+  allSorted.forEach((e, i) => entryIndex.set(e.plant.id, i + 1))
 
   container.innerHTML = ''
 
@@ -234,31 +247,51 @@ function renderCatalog(): void {
     const entries = groups[rarity]
     if (entries.length === 0) continue
 
-    // Rarity section heading
+    // Section heading: dot + rarity lines (Variante B style) + count (Variante A)
     const heading = document.createElement('div')
     heading.className = 'catalog-section-heading'
     heading.innerHTML = `
       <span class="rarity-dot" style="background:${RARITY_COLORS[rarity]}"></span>
-      <span style="color:${RARITY_COLORS[rarity]}">${RARITY_LABELS[rarity]}</span>
+      <span class="rarity-line"></span>
+      <span class="rarity-name" style="color:${RARITY_COLORS[rarity]}">${RARITY_LABELS[rarity]}</span>
+      <span class="rarity-line"></span>
       <span class="catalog-section-count">${entries.length}</span>`
     container.appendChild(heading)
 
+    // 2-column grid wrapper
+    const grid = document.createElement('div')
+    grid.className = 'catalog-rarity-group'
     for (const entry of entries) {
-      container.appendChild(buildEncyclopediaEntry(entry))
+      const num = entryIndex.get(entry.plant.id) ?? 0
+      grid.appendChild(buildEncyclopediaEntry(entry, num))
     }
+    container.appendChild(grid)
   }
+
+  // Re-attach toggle listeners to persist open state
+  container.querySelectorAll<HTMLDetailsElement>('.enc-ancestry[data-id]').forEach(el => {
+    el.addEventListener('toggle', () => {
+      const id = el.dataset.id!
+      if (el.open) openAncestryIds.add(id)
+      else openAncestryIds.delete(id)
+    })
+  })
 }
 
-function buildEncyclopediaEntry(entry: CatalogEntry): HTMLElement {
+function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const plant = entry.plant
   const pc = expressedColor(plant.petalColor)
+  const grad = expressedGradient(plant.gradientColor)
   const shape = expressedShape(plant.petalShape)
   const center = expressedCenter(plant.centerType)
   const count = Math.round(expressedNumber(plant.petalCount))
-  const stem = expressedNumber(plant.stemHeight)
-  const hasGrad = expressedGradient(plant.gradientColor) !== null
-  const bucket = colorBucket(pc)
-  const hslStr = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`
+  const hasGrad = grad !== null
+
+  // Color swatch: flat or gradient
+  const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`
+  const swatchStyle = hasGrad
+    ? `background: linear-gradient(135deg, ${hslMain}, hsl(${Math.round(grad!.h)},${Math.round(grad!.s)}%,${Math.round(grad!.l)}%))`
+    : `background: ${hslMain}`
 
   // Find parent entries in catalog if available
   const parentA = plant.parentIds
@@ -268,22 +301,25 @@ function buildEncyclopediaEntry(entry: CatalogEntry): HTMLElement {
     ? state.catalog.find(e => e.plant.id === plant.parentIds![1])
     : null
 
+  const badge = RARITY_BADGE_STYLES[entry.rarity]
+
   const el = document.createElement('div')
   el.className = 'enc-entry'
   el.style.borderLeftColor = RARITY_COLORS[entry.rarity]
 
-  // Build parent ancestry section HTML
+  // Build ancestry HTML
   let ancestryHtml = ''
   if (plant.parentIds) {
+    const isOpen = openAncestryIds.has(plant.id)
     const renderParentThumb = (e: CatalogEntry | null, id: string) => {
       if (e) {
-        return `<div class="enc-parent-thumb" title="Elter · Gen. ${e.plant.generation}">${renderBloomSVG(e.plant, 44, 44)}</div>`
+        return `<div class="enc-parent-thumb" title="Gen. ${e.plant.generation}">${renderBloomSVG(e.plant, 38, 38)}</div>`
       }
-      return `<div class="enc-parent-thumb enc-parent-unknown" title="Elter nicht im Katalog (ID: ${id})"><span>?</span></div>`
+      return `<div class="enc-parent-thumb enc-parent-unknown" title="Elter unbekannt (${id})"><span>?</span></div>`
     }
     ancestryHtml = `
-      <details class="enc-ancestry">
-        <summary>Eltern (Gen. ${plant.generation - 1})</summary>
+      <details class="enc-ancestry" data-id="${plant.id}"${isOpen ? ' open' : ''}>
+        <summary>Stammbaum (Gen. ${plant.generation - 1})</summary>
         <div class="enc-parents-row">
           ${renderParentThumb(parentA, plant.parentIds[0])}
           <span class="enc-parent-cross">×</span>
@@ -295,14 +331,13 @@ function buildEncyclopediaEntry(entry: CatalogEntry): HTMLElement {
   el.innerHTML = `
     <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
     <div class="enc-body">
-      <div class="enc-meta-grid">
+      <div class="enc-entry-num">Nr. ${num}</div>
+      <div class="enc-entry-name">Blüte ${num}</div>
+      <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${RARITY_LABELS[entry.rarity]}</span>
+      <div class="enc-meta">
         <div class="enc-meta-row">
-          <span class="enc-meta-label">Blütenblätter</span>
-          <span class="enc-meta-value">${count}</span>
-        </div>
-        <div class="enc-meta-row">
-          <span class="enc-meta-label">Form</span>
-          <span class="enc-meta-value">${SHAPE_LABELS[shape] ?? shape}</span>
+          <span class="enc-meta-label">Blätter</span>
+          <span class="enc-meta-value">${count} · ${SHAPE_LABELS[shape] ?? shape}</span>
         </div>
         <div class="enc-meta-row">
           <span class="enc-meta-label">Mitte</span>
@@ -311,29 +346,15 @@ function buildEncyclopediaEntry(entry: CatalogEntry): HTMLElement {
         <div class="enc-meta-row">
           <span class="enc-meta-label">Farbe</span>
           <span class="enc-meta-value">
-            <span class="enc-color-dot" style="background:${hslStr}"></span>
-            ${COLOR_BUCKET_LABELS[bucket] ?? bucket}
+            <span class="enc-color-swatch" style="${swatchStyle}"></span>
           </span>
-        </div>
-        ${hasGrad ? `
-        <div class="enc-meta-row">
-          <span class="enc-meta-label">Verlauf</span>
-          <span class="enc-meta-value enc-badge-grad">ja</span>
-        </div>` : ''}
-        <div class="enc-meta-row">
-          <span class="enc-meta-label">Stängelh.</span>
-          <span class="enc-meta-value">${Math.round(stem * 100)}%</span>
         </div>
         <div class="enc-meta-row">
           <span class="enc-meta-label">Generation</span>
           <span class="enc-meta-value">Gen. ${plant.generation}</span>
         </div>
-        <div class="enc-meta-row">
-          <span class="enc-meta-label">Seltenheit</span>
-          <span class="enc-meta-value" style="color:${RARITY_COLORS[entry.rarity]}">${RARITY_LABELS[entry.rarity]} (${entry.rarityScore})</span>
-        </div>
       </div>
-      <div class="enc-discovered">Entdeckt am ${formatDateTime(entry.discovered)}</div>
+      <div class="enc-discovered">Entdeckt ${formatDate(entry.discovered)}</div>
       ${ancestryHtml}
     </div>`
 
