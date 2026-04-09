@@ -14,6 +14,7 @@ import {
   RARITY_COLORS,
 } from '../engine/game'
 import { breedPlants, computeBreedEstimate } from '../engine/breed'
+import { calcRarity } from '../engine/rarity'
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
@@ -22,10 +23,7 @@ let breedSelA: number | null = null
 let breedSelB: number | null = null
 let breedEstimate: BreedEstimate | null = null
 
-/** Track which ancestry <details> are open so state survives rerenders */
 const openAncestryIds = new Set<string>()
-
-/** Maps plant.id → discovery number (1-based), rebuilt each renderCatalog call */
 let entryIndex = new Map<string, number>()
 
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
@@ -62,6 +60,8 @@ export function showMsg(text: string): void {
 
 // ─── Pots ─────────────────────────────────────────────────────────────────────
 
+const CENTER_ICONS: Record<string, string> = { dot: '·', disc: '◉', stamen: '✾' }
+
 function renderPots(): void {
   const row = document.getElementById('pots-row')
   if (!row) return
@@ -87,11 +87,19 @@ function renderPots(): void {
       const shape = expressedShape(pot.plant.petalShape)
       const hasGrad = expressedGradient(pot.plant.gradientColor) !== null
       const count = Math.round(expressedNumber(pot.plant.petalCount))
+      const center = expressedCenter(pot.plant.centerType)
+      const rarity = calcRarity(pot.plant)
+      const rarityColor = RARITY_COLORS[rarity]
+      const rarityLabel = RARITY_LABELS[rarity]
+
       traitHtml = `
         <div class="trait-row">
-          <span class="trait-pill" style="background:hsl(${Math.round(pc.h)},40%,88%);color:hsl(${Math.round(pc.h)},55%,30%)">${count}×</span>
-          <span class="trait-pill">${shape}</span>
-          ${hasGrad ? '<span class="trait-pill">verlauf</span>' : ''}
+          <span class="trait-pill" style="background:hsl(${Math.round(pc.h)},40%,88%);color:hsl(${Math.round(pc.h)},55%,30%)">${count}× ${shape}</span>
+          <span class="trait-pill">${CENTER_ICONS[center] ?? center}</span>
+          ${hasGrad ? '<span class="trait-pill">〜</span>' : ''}
+        </div>
+        <div class="trait-row">
+          <span class="trait-pill rarity-pill" style="background:${rarityColor}22;color:${rarityColor};border:0.5px solid ${rarityColor}66">${rarityLabel}</span>
         </div>`
     }
 
@@ -142,12 +150,27 @@ function renderBreedPanel(): void {
   const potA = breedSelA !== null ? state.pots.find(p => p.id === breedSelA) : null
   const potB = breedSelB !== null ? state.pots.find(p => p.id === breedSelB) : null
 
-  slotA.innerHTML = potA?.plant
-    ? renderPlantSVG(potA.plant, 66, 86)
-    : '<span>Elter 1</span>'
-  slotB.innerHTML = potB?.plant
-    ? renderPlantSVG(potB.plant, 66, 86)
-    : '<span>Elter 2</span>'
+  // Slot A — with X button if plant is selected
+  if (potA?.plant) {
+    slotA.innerHTML = `
+      <div class="breed-slot-inner">
+        ${renderPlantSVG(potA.plant, 66, 86)}
+        <button class="breed-slot-remove" data-remove="a" title="Entfernen">×</button>
+      </div>`
+  } else {
+    slotA.innerHTML = '<span>Elter 1</span>'
+  }
+
+  // Slot B — with X button if plant is selected
+  if (potB?.plant) {
+    slotB.innerHTML = `
+      <div class="breed-slot-inner">
+        ${renderPlantSVG(potB.plant, 66, 86)}
+        <button class="breed-slot-remove" data-remove="b" title="Entfernen">×</button>
+      </div>`
+  } else {
+    slotB.innerHTML = '<span>Elter 2</span>'
+  }
 
   const hasEmptyPot = state.pots.some(p => !p.plant)
 
@@ -173,16 +196,70 @@ function renderBreedPanel(): void {
       hint.style.color = ''
     }
   }
+
+  // X-button listeners on breed slots
+  slotA.onclick = (e) => {
+    if ((e.target as HTMLElement).closest('[data-remove="a"]')) {
+      breedSelA = null; breedEstimate = null; render()
+    }
+  }
+  slotB.onclick = (e) => {
+    if ((e.target as HTMLElement).closest('[data-remove="b"]')) {
+      breedSelB = null; breedEstimate = null; render()
+    }
+  }
+}
+
+// ─── Estimate formatting ──────────────────────────────────────────────────────
+
+const SHAPE_DE: Record<string, string> = { round: 'Rund', pointed: 'Spitz', wavy: 'Wellig' }
+const CENTER_DE: Record<string, string> = { dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubbl.' }
+
+function probBars<T extends string>(items: { [k: string]: T | number }[], labelKey: string, valueKey: string, labelMap: Record<string, string>): string {
+  return items.map((item) => {
+    const label = labelMap[(item as Record<string, string>)[labelKey]] ?? (item as Record<string, string>)[labelKey]
+    const pct = item[valueKey] as number
+    return `<div class="prob-entry">
+      <span class="prob-label">${label}</span>
+      <span class="prob-bar-wrap"><span class="prob-bar" style="width:${pct}%"></span></span>
+      <span class="prob-pct">${pct}%</span>
+    </div>`
+  }).join('')
 }
 
 function formatEstimate(e: BreedEstimate): string {
   const sw = (h: number) =>
     `<span class="swatch" style="background:hsl(${Math.round(h)},${Math.round(e.avgS)}%,${Math.round(e.avgL)}%)"></span>`
+
+  const shapeBars = e.shapeProbs.map(x =>
+    `<div class="prob-entry">
+      <span class="prob-label">${SHAPE_DE[x.shape] ?? x.shape}</span>
+      <span class="prob-bar-wrap"><span class="prob-bar" style="width:${x.pct}%"></span></span>
+      <span class="prob-pct">${x.pct}%</span>
+    </div>`
+  ).join('')
+
+  const centerBars = e.centerProbs.map(x =>
+    `<div class="prob-entry">
+      <span class="prob-label">${CENTER_DE[x.center] ?? x.center}</span>
+      <span class="prob-bar-wrap"><span class="prob-bar" style="width:${x.pct}%"></span></span>
+      <span class="prob-pct">${x.pct}%</span>
+    </div>`
+  ).join('')
+
   return `
     <div class="est-row">${sw(e.minH)}${sw(e.midH)}${sw(e.maxH)}<span>Farbbereich (ca.)</span></div>
-    <div>Blätter: ${e.minP}–${e.maxP} · <em>${e.likelyShape}</em></div>
-    ${e.gradPct > 0 ? `<div class="est-grad">Verlauf: ~${e.gradPct}% Chance</div>` : ''}
-    <div class="est-note">Seltene Mutationen nicht eingerechnet.</div>`
+    <div class="est-row" style="margin-bottom:4px">Blätter: ${e.minP}–${e.maxP}</div>
+    <div class="prob-group">
+      <div class="prob-group-label">Blütenform</div>
+      ${shapeBars}
+    </div>
+    <div class="prob-group">
+      <div class="prob-group-label">Blütenmitte</div>
+      ${centerBars}
+    </div>
+    ${e.gradPct > 0 ? `<div class="est-grad">✦ Farbverlauf: ~${e.gradPct}%</div>` : ''}
+    <div class="est-note">Ohne seltene Mutationen.</div>`
 }
 
 // ─── Catalog helpers ──────────────────────────────────────────────────────────
@@ -195,7 +272,6 @@ const CENTER_LABELS: Record<string, string> = {
   dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
 }
 
-// Rarity badge background/text pairs
 const RARITY_BADGE_STYLES: Record<Rarity, { bg: string; color: string }> = {
   0: { bg: '#F1EFE8', color: '#5F5E5A' },
   1: { bg: '#E1F5EE', color: '#0F6E56' },
@@ -216,7 +292,6 @@ function renderCatalog(): void {
   const count = document.getElementById('catalog-count')
   if (!container || !count) return
 
-  // Snapshot open ancestry details before clearing DOM
   container.querySelectorAll<HTMLDetailsElement>('.enc-ancestry[data-id]').forEach(el => {
     const id = el.dataset.id!
     if (el.open) openAncestryIds.add(id)
@@ -230,7 +305,6 @@ function renderCatalog(): void {
     return
   }
 
-  // Group by rarity (4→0), within each group sort by discovery order (= index = name number)
   const groups: Record<Rarity, CatalogEntry[]> = { 4: [], 3: [], 2: [], 1: [], 0: [] }
   for (const entry of state.catalog) {
     groups[entry.rarity].push(entry)
@@ -239,7 +313,6 @@ function renderCatalog(): void {
     groups[r].sort((a, b) => a.discovered - b.discovered)
   }
 
-  // Build a global index map: sort all entries by discovered time to assign "Blüte N"
   const allSorted = [...state.catalog].sort((a, b) => a.discovered - b.discovered)
   entryIndex = new Map<string, number>()
   allSorted.forEach((e, i) => entryIndex.set(e.plant.id, i + 1))
@@ -250,7 +323,6 @@ function renderCatalog(): void {
     const entries = groups[rarity]
     if (entries.length === 0) continue
 
-    // Section heading: dot + rarity lines (Variante B style) + count (Variante A)
     const heading = document.createElement('div')
     heading.className = 'catalog-section-heading'
     heading.innerHTML = `
@@ -261,7 +333,6 @@ function renderCatalog(): void {
       <span class="catalog-section-count">${entries.length}</span>`
     container.appendChild(heading)
 
-    // 2-column grid wrapper
     const grid = document.createElement('div')
     grid.className = 'catalog-rarity-group'
     for (const entry of entries) {
@@ -271,7 +342,6 @@ function renderCatalog(): void {
     container.appendChild(grid)
   }
 
-  // Re-attach toggle listeners to persist open state
   container.querySelectorAll<HTMLDetailsElement>('.enc-ancestry[data-id]').forEach(el => {
     el.addEventListener('toggle', () => {
       const id = el.dataset.id!
@@ -290,13 +360,11 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const count = Math.round(expressedNumber(plant.petalCount))
   const hasGrad = grad !== null
 
-  // Color swatch: flat or gradient
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`
   const swatchStyle = hasGrad
     ? `background: linear-gradient(135deg, ${hslMain}, hsl(${Math.round(grad!.h)},${Math.round(grad!.s)}%,${Math.round(grad!.l)}%))`
     : `background: ${hslMain}`
 
-  // Find parent entries in catalog if available
   const parentA = plant.parentIds
     ? state.catalog.find(e => e.plant.id === plant.parentIds![0])
     : null
@@ -310,7 +378,6 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   el.className = 'enc-entry'
   el.style.borderLeftColor = RARITY_COLORS[entry.rarity]
 
-  // Build ancestry HTML
   let ancestryHtml = ''
   if (plant.parentIds) {
     const isOpen = openAncestryIds.has(plant.id)

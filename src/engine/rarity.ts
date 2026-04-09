@@ -1,4 +1,4 @@
-import { Plant, CenterType, PetalShape, Rarity } from "../model/plant"
+import { Plant, CenterType, PetalShape, Rarity, HSLColor } from "../model/plant"
 import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket } from "./genetic.utils"
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
@@ -9,10 +9,33 @@ const COLOR_SCORE: Record<string, number> = {
 }
 const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 8, stamen: 20 }
 
+/**
+ * Center color score — ordered from häufig (niedrig) to selten (hoch):
+ *  Helles Gelb / Creme  → 0   (häufigste randomCenterColor-Ausgabe)
+ *  Kräftiges Gelb       → 5
+ *  Grün                 → 12
+ *  Kräftiges Orange     → 22  (seltenst — nur 12% Chance bei randomCenterColor)
+ *
+ * Hue-Bereiche:
+ *   Orange:       h 15–40,  s > 60
+ *   Gelb (satt):  h 41–65,  s > 55
+ *   Grün:         h 66–160
+ *   Sonst (hell): → 0
+ */
+function centerColorScore(c: HSLColor): number {
+  if (c.l > 78) return 0                             // hell / Creme
+  const h = c.h
+  if (h >= 15 && h <= 40 && c.s > 60) return 22     // kräftiges Orange — seltenst
+  if (h >= 66 && h <= 160) return 12                 // Grün
+  if (h >= 41 && h <= 65 && c.s > 55) return 5      // kräftiges Gelb
+  return 0
+}
+
 export function calcRarityScore(plant: Plant): number {
   const shape  = expressedShape(plant.petalShape)
   const color  = expressedColor(plant.petalColor)
   const center = expressedCenter(plant.centerType)
+  const cc     = expressedColor(plant.centerColor)
   const grad   = expressedGradient(plant.gradientColor)
   const count  = Math.round(expressedNumber(plant.petalCount))
   const stem   = expressedNumber(plant.stemHeight)
@@ -21,8 +44,8 @@ export function calcRarityScore(plant: Plant): number {
   score += SHAPE_SCORE[shape]
   score += COLOR_SCORE[colorBucket(color)] ?? 0
   score += CENTER_SCORE[center]
+  score += centerColorScore(cc)
   score += grad !== null ? 20 : 0
-
   if (count >= 7) score += 5
   if (stem > 0.85) score += 5
 
