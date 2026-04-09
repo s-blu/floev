@@ -16,13 +16,6 @@
   margin-bottom: 10px;
 }
 
-.catalog-section-heading .rarity-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
 .catalog-section-heading .rarity-line {
   flex: 1;
   height: 0.5px;

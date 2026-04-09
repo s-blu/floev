@@ -18,6 +18,13 @@ const RARITY_BADGE_STYLES: Record<Rarity, { bg: string; color: string; }> = {
   3: { bg: '#EEEDFE', color: '#3C3489' },
   4: { bg: '#FAEEDA', color: '#854F0B' },
 };
+const RARITY_ICON: Record<Rarity, string> = {
+  0: '▪',
+  1: '●',
+  2: '♦',
+  3: '★',
+  4: '👑',
+}
 
 
 let entryIndex = new Map<string, number>()
@@ -66,7 +73,7 @@ export function renderCatalog(): void {
     const heading = document.createElement('div');
     heading.className = 'catalog-section-heading';
     heading.innerHTML = `
-      <span class="rarity-dot" style="background:${RARITY_COLORS[rarity]}"></span>
+      <span class="rarity-dot" style="color:${RARITY_COLORS[rarity]}">${RARITY_ICON[rarity]}</span>
       <span class="rarity-line"></span>
       <span class="rarity-name" style="color:${RARITY_COLORS[rarity]}">${RARITY_LABELS[rarity]}</span>
       <span class="rarity-line"></span>
