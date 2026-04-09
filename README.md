@@ -31,7 +31,10 @@ src/
 |-model/                # Folder; Interfaces and types
 │ └── plant.ts          # Alle TypeScript-Interfaces (Plant, Pot, GameState …)
 |-ui/                   # Folder; Logik zum Render der UI
-│ └── ui.ts             # DOM-Rendering, Event-Handling
+│ └── ui.ts             # Hauptfunktion für DOM Rendering, Event handling
+│ └── breedpanel.ui.ts  # UI für Züchtungspanel
+│ └── catalog.ui.ts     # UI für Enzyklopädie /Catalog
+│ └── pots.ui.ts        # UI für Pflanztöpfe
 |-style/                # Folder; CSS Styles
 │ └── style.css         # Globales CSS
 ```
