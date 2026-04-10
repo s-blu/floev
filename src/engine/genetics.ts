@@ -3,48 +3,48 @@ import type {
 } from '../model/plant'
 import type { ColorBucket } from "./genetic.utils"
 import { expressedColor, expressedShape, expressedCenter, expressedNumber } from "./genetic.utils"
-
+ 
 // ─── Constants ───────────────────────────────────────────────────────────────
-
+ 
 export const PETAL_SHAPES: PetalShape[] = ['round', 'pointed', 'wavy']
 export const CENTER_TYPES: CenterType[] = ['dot', 'disc', 'stamen']
-
+ 
 /** Probability of a point mutation on a single allele during breeding */
 export const MUTATION_CHANCE = 0.04
-
+ 
 /**
  * Gradient allele frequencies:
  * Random plants: each allele has ~28% chance to be a gradient allele,
  * so ~8% of plants express it (both alleles must carry it).
  */
 const GRADIENT_ALLELE_CHANCE_RANDOM = 0.28
-
+ 
 /**
  * During breeding, an inherited gradient allele is kept with this probability,
  * otherwise it becomes null (no-gradient).
  */
 export const GRADIENT_ALLELE_KEEP_CHANCE = 0.55
-
+ 
 export const MIN_STEM_HEIGHT = 0.35
-
+ 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-
+ 
 export function uid(): string {
   return Math.random().toString(36).slice(2, 8)
 }
-
+ 
 export function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))
 }
-
+ 
 export function jitter(v: number, range: number): number {
   return v + (Math.random() - 0.5) * range
 }
-
+ 
 export function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]
 }
-
+ 
 // ─── Color quantization ───────────────────────────────────────────────────────
 /**
  * Snaps color channels to fixed steps so visually identical flowers share
@@ -59,13 +59,14 @@ export function quantizeColor(h: number, s: number, l: number): HSLColor {
   const HUE_STEP = 20
   const SAT_STEP = 15
   const LIT_STEP = 10
-  return {
-    h: (Math.round(h / HUE_STEP) * HUE_STEP) % 360,
-    s: Math.round(s / SAT_STEP) * SAT_STEP,
-    l: Math.round(l / LIT_STEP) * LIT_STEP,
-  }
+  const qh = (Math.round(h / HUE_STEP) * HUE_STEP) % 360
+  const ql = Math.round(l / LIT_STEP) * LIT_STEP
+  let qs = Math.round(s / SAT_STEP) * SAT_STEP
+  // Dark petals look muddy with low saturation — enforce a minimum of 90
+  if (ql < 50 && qs < 90) qs = 90
+  return { h: qh, s: qs, l: ql }
 }
-
+ 
 export function randomGradient(baseH: number, baseS: number, baseL: number): HSLColor {
   const raw = {
     h: (baseH + 30 + Math.random() * 60) % 360,
@@ -74,7 +75,7 @@ export function randomGradient(baseH: number, baseS: number, baseL: number): HSL
   }
   return quantizeColor(raw.h, raw.s, raw.l)
 }
-
+ 
 function randomCenterColor(): HSLColor {
   const r = Math.random()
   if (r < 0.12) {
@@ -91,7 +92,7 @@ function randomCenterColor(): HSLColor {
     return { h: 45 + Math.random() * 20, s: 20 + Math.random() * 25, l: 85 + Math.random() * 10 }
   }
 }
-
+ 
 /** Generate a random HSLColor for a given dominance bucket */
 export function randomColorForBucket(bucket: ColorBucket): HSLColor {
   let raw: HSLColor
@@ -105,32 +106,46 @@ export function randomColorForBucket(bucket: ColorBucket): HSLColor {
   }
   return quantizeColor(raw.h, raw.s, raw.l)
 }
-
+ 
+/**
+ * Allowed quantized hue steps (multiples of 20°), excluding the three
+ * green-heavy steps at 80°, 100° and 120° which produce unappealing
+ * yellow-green / pure-green shades for flower petals.
+ */
+const ALLOWED_PETAL_HUES = [
+  0, 20, 40, 60,           // red → orange → yellow
+  140, 160, 180,           // cyan-green → cyan → sky  (skips 80/100/120)
+  200, 220, 240, 260,      // blue range
+  280, 300, 320, 340,      // purple → magenta → pink
+]
+ 
 /** Generate a quantized random petal color */
 function randomPetalColor(): HSLColor {
-  const h = Math.random() * 360
-  const s = 55 + Math.random() * 30   // 55–85
+  const h = ALLOWED_PETAL_HUES[Math.floor(Math.random() * ALLOWED_PETAL_HUES.length)]
   const l = 48 + Math.random() * 22   // 48–70
+  // Dark petals (l < 50) need high saturation to avoid muddy/muted look
+  const sMin = l < 50 ? 90 : 55
+  const s = sMin + Math.random() * (100 - sMin)
   return quantizeColor(h, s, l)
 }
-
+ 
 // ─── Random plant ─────────────────────────────────────────────────────────────
-
+ 
 export function randomPlant(): Plant {
   const colorA = randomPetalColor()
   const colorB = randomPetalColor()
-
+ 
   const gradA: HSLColor | null = Math.random() < GRADIENT_ALLELE_CHANCE_RANDOM
     ? randomGradient(colorA.h, colorA.s, colorA.l) : null
   const gradB: HSLColor | null = Math.random() < GRADIENT_ALLELE_CHANCE_RANDOM
     ? randomGradient(colorB.h, colorB.s, colorB.l) : null
-
+ 
   const stemA = MIN_STEM_HEIGHT + Math.random() * 0.65
   const stemB = MIN_STEM_HEIGHT + Math.random() * 0.65
-
+ 
   const countA = 3 + Math.floor(Math.random() * 6)
   const countB = 3 + Math.floor(Math.random() * 6)
-
+ 
   return {
     id: uid(),
     stemHeight: { a: stemA, b: stemB },
@@ -144,7 +159,7 @@ export function randomPlant(): Plant {
     generation: 0,
   }
 }
-
+ 
 // ─── Catalog key ──────────────────────────────────────────────────────────────
 /**
  * Key includes quantized hue, saturation and lightness buckets so that
