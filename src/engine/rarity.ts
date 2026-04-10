@@ -3,28 +3,23 @@ import { expressedCenter, expressedColor, expressedGradient, expressedNumber, ex
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 
-// Seltenheit: round < lanzett < tropfen < wavy < zickzack
-// round=0 hält die Gesamtpunktzahl niedrig (häufig),
-// zickzack=40 schiebt die Pflanze sicher in episch/legendär.
 const SHAPE_SCORE: Record<PetalShape, number> = { round: 0, lanzett: 8, tropfen: 16, wavy: 25, zickzack: 40 }
-const COLOR_SCORE: Record<string, number> = {
-  white: 0, yellow: 5, red: 12, purple: 20, blue: 27, gray: 30,
-}
-const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 8, stamen: 20 }
 
 /**
- * Center color score — ordered from häufig (niedrig) to selten (hoch):
- *  Helles Gelb / Creme  → 0   (häufigste randomCenterColor-Ausgabe)
- *  Kräftiges Gelb       → 5
- *  Grün                 → 12
- *  Kräftiges Orange     → 22  (seltenst — nur 12% Chance bei randomCenterColor)
- *
- * Hue-Bereiche:
- *   Orange:       h 15–40,  s > 60
- *   Gelb (satt):  h 41–65,  s > 55
- *   Grün:         h 66–160
- *   Sonst (hell): → 0
+ * Color rarity scores by bucket.
+ * white = 0   — häufig (dominant, so players see it often)
+ * yellow = 5  — häufig-mittel
+ * red = 12    — mittel
+ * purple = 20 — selten
+ * blue = 27   — selten
+ * gray = 35   — sehr selten (only 3 palette entries, recessive-like)
  */
+const COLOR_SCORE: Record<string, number> = {
+  white: 0, yellow: 5, red: 12, purple: 20, blue: 27, gray: 35,
+}
+
+const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 8, stamen: 20 }
+
 function centerColorScore(c: HSLColor): number {
   if (c.l > 78) return 0                             // hell / Creme
   const h = c.h

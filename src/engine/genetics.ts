@@ -6,23 +6,8 @@ import { expressedColor, expressedShape, expressedCenter, expressedNumber } from
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-// All 5 shapes — used for mutation targets (uniform) and dominance lookups
 export const PETAL_SHAPES: PetalShape[] = ['round', 'lanzett', 'tropfen', 'wavy', 'zickzack']
 
-/**
- * Weighted allele pool for randomPlant().
- * Seltenheit: round > lanzett > tropfen > wavy > zickzack
- * Weights encode allele frequency, not direct phenotype frequency.
- * Because zickzack only expresses when BOTH alleles carry it, its
- * phenotype frequency is weight² relative to others — so we boost
- * its allele weight to get it appearing at a reasonable but rare rate.
- *
- *   round:    35% allele freq  → very common phenotype
- *   lanzett:  25%              → common
- *   tropfen:  18%              → uncommon
- *   wavy:     14%              → rare
- *   zickzack:  8%              → very rare (≈0.6% phenotype in wild)
- */
 const SHAPE_ALLELE_POOL: PetalShape[] = [
   ...Array(35).fill('round'),
   ...Array(25).fill('lanzett'),
@@ -36,22 +21,10 @@ export function randomPetalShapeAllele(): PetalShape {
 }
 export const CENTER_TYPES: CenterType[] = ['dot', 'disc', 'stamen']
 
-/** Probability of a point mutation on a single allele during breeding */
 export const MUTATION_CHANCE = 0.04
 
-/**
- * Gradient allele frequencies:
- * Random plants: each allele has ~28% chance to be a gradient allele,
- * so ~8% of plants express it (both alleles must carry it).
- */
 const GRADIENT_ALLELE_CHANCE_RANDOM = 0.28
-
-/**
- * During breeding, an inherited gradient allele is kept with this probability,
- * otherwise it becomes null (no-gradient).
- */
 export const GRADIENT_ALLELE_KEEP_CHANCE = 0.55
-
 export const MIN_STEM_HEIGHT = 0.35
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -72,88 +45,136 @@ export function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
-// ─── Color quantization ───────────────────────────────────────────────────────
+// ─── Color palette ────────────────────────────────────────────────────────────
 /**
- * Snaps color channels to fixed steps so visually identical flowers share
- * the same catalog entry. Limits total distinct phenotypes to ~400–600,
- * preventing overwhelming catalog growth from tiny color jitter.
+ * All petal colors are drawn from a fixed palette:
  *
- * Hue:  18 steps à 20°  → 18 distinct hues
- * S:    steps à 15      → ~4 bands between 45–90
- * L:    steps à 10      → ~3 bands between 45–75
+ *   Normal colors:  14 hues × 3 lightness steps = 42 distinct colors
+ *     Hues (×20°):  0, 20, 40, 60, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340
+ *     Saturation:   fixed at 90%
+ *     Lightness:    30, 50, 70
+ *
+ *   Special colors (not in normal pool, only via specific allele entries):
+ *     White:  { h:0, s:0, l:100 }  — häufig (eigener Allel-Slot)
+ *     Grays:  { h:0, s:0, l:0  }   — sehr selten
+ *             { h:0, s:0, l:40 }   — sehr selten
+ *             { h:0, s:0, l:70 }   — sehr selten
+ *
+ * quantizeColor() maps any incoming color to the nearest palette slot.
+ * Gray/white inputs (s < 10) are snapped to the special gray/white colors.
+ */
+
+const PALETTE_HUES = [0, 20, 40, 60, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340] as const
+const PALETTE_S = 90
+const PALETTE_L = [30, 50, 90] as const
+
+// Special achromatic colors (s=0)
+export const COLOR_WHITE:  HSLColor = { h: 0, s: 0, l: 100 }
+export const COLOR_GRAY_DARK:  HSLColor = { h: 0, s: 0, l: 0 }
+export const COLOR_GRAY_MID:   HSLColor = { h: 0, s: 0, l: 40 }
+export const COLOR_GRAY_LIGHT: HSLColor = { h: 0, s: 0, l: 70 }
+
+/**
+ * Snaps any color to the nearest fixed palette entry.
+ * - Achromatic inputs (s < 10): snapped to the nearest gray/white.
+ * - Chromatic inputs: hue → nearest palette hue, s → 90, l → nearest of {30,50,70}.
  */
 export function quantizeColor(h: number, s: number, l: number): HSLColor {
-  const HUE_STEP = 20
-  const SAT_STEP = 15
-  const LIT_STEP = 10
-  const qh = (Math.round(h / HUE_STEP) * HUE_STEP) % 360
-  const ql = Math.round(l / LIT_STEP) * LIT_STEP
-  let qs = Math.round(s / SAT_STEP) * SAT_STEP
-  // Dark petals look muddy with low saturation — enforce a minimum of 90
-  if (ql < 50 && qs < 90) qs = 90
-  return { h: qh, s: qs, l: ql }
+  // Achromatic: snap to white or one of the three grays
+  if (s < 10) {
+    if (l >= 85) return COLOR_WHITE
+    if (l >= 55) return COLOR_GRAY_LIGHT
+    if (l >= 20) return COLOR_GRAY_MID
+    return COLOR_GRAY_DARK
+  }
+
+  // Chromatic: snap hue to nearest palette entry (circular distance)
+  let bestHue = PALETTE_HUES[0]
+  let bestDist = Infinity
+  for (const ph of PALETTE_HUES) {
+    const d = Math.min(Math.abs(h - ph), 360 - Math.abs(h - ph))
+    if (d < bestDist) { bestDist = d; bestHue = ph }
+  }
+
+  // Snap lightness to nearest of {30, 50, 70}
+  let bestL = PALETTE_L[0]
+  let bestLDist = Infinity
+  for (const pl of PALETTE_L) {
+    const d = Math.abs(l - pl)
+    if (d < bestLDist) { bestLDist = d; bestL = pl }
+  }
+
+  return { h: bestHue, s: PALETTE_S, l: bestL }
 }
 
-export function randomGradient(baseH: number, baseS: number, baseL: number): HSLColor {
-  const raw = {
-    h: (baseH + 30 + Math.random() * 60) % 360,
-    s: clamp(jitter(baseS, 10), 30, 100),
-    l: clamp(baseL - 10 - Math.random() * 8, 25, 75),
-  }
-  return quantizeColor(raw.h, raw.s, raw.l)
+export function randomGradient(baseH: number, _baseS: number, baseL: number): HSLColor {
+  // Pick a hue ≥30° away from base, snap to palette
+  const offsetH = (baseH + 40 + Math.random() * 140) % 360
+  // Gradient is typically darker than the base petal
+  const targetL = baseL <= 30 ? 30 : baseL - 20
+  return quantizeColor(offsetH, PALETTE_S, targetL)
 }
 
 function randomCenterColor(): HSLColor {
   const r = Math.random()
   if (r < 0.12) {
-    // Kräftiges Orange — selten (hoher Rarity-Score)
-    return { h: 25 + Math.random() * 10, s: 75 + Math.random() * 20, l: 55 + Math.random() * 10 }
+    return { h: 20, s: 90, l: 50 }  // kräftiges Orange — selten
   } else if (r < 0.30) {
-    // Grün
-    return { h: 90 + Math.random() * 60, s: 45 + Math.random() * 30, l: 60 + Math.random() * 15 }
+    return { h: 120, s: 70, l: 40 }  // Grün
   } else if (r < 0.55) {
-    // Kräftiges Gelb (satt)
-    return { h: 48 + Math.random() * 15, s: 70 + Math.random() * 20, l: 62 + Math.random() * 10 }
+    return { h: 60, s: 90, l: 50 }  // kräftiges Gelb
   } else {
-    // Helles Gelb / Creme — häufig (niedriger Score)
-    return { h: 45 + Math.random() * 20, s: 20 + Math.random() * 25, l: 85 + Math.random() * 10 }
+    return { h: 60, s: 20, l: 90 }  // helles Gelb / Creme — häufig
   }
 }
 
 /** Generate a random HSLColor for a given dominance bucket */
 export function randomColorForBucket(bucket: ColorBucket): HSLColor {
-  let raw: HSLColor
   switch (bucket) {
-    case 'white':  raw = { h: 45,  s: 10 + Math.random() * 12, l: 88 + Math.random() * 10 }; break
-    case 'yellow': raw = { h: 48 + Math.random() * 20, s: 75 + Math.random() * 20, l: 58 + Math.random() * 14 }; break
-    case 'red':    raw = { h: (Math.random() < 0.5 ? 348 + Math.random() * 12 : Math.random() * 18), s: 72 + Math.random() * 22, l: 45 + Math.random() * 18 }; break
-    case 'purple': raw = { h: 275 + Math.random() * 50, s: 55 + Math.random() * 30, l: 40 + Math.random() * 22 }; break
-    case 'blue':   raw = { h: 200 + Math.random() * 65, s: 60 + Math.random() * 30, l: 42 + Math.random() * 22 }; break
-    case 'gray':   raw = { h: Math.random() * 360, s: 5 + Math.random() * 15, l: 10 + Math.random() * 60 }; break
+    case 'white':  return COLOR_WHITE
+    case 'yellow': return quantizeColor(pick([40, 60]), PALETTE_S, pick([50, 70]))
+    case 'red':    return quantizeColor(pick([0, 20, 340]), PALETTE_S, pick([30, 50]))
+    case 'purple': return quantizeColor(pick([280, 300, 320]), PALETTE_S, pick([30, 50]))
+    case 'blue':   return quantizeColor(pick([200, 220, 240, 260]), PALETTE_S, pick([30, 50]))
+    case 'gray':   return pick([COLOR_GRAY_DARK, COLOR_GRAY_MID, COLOR_GRAY_LIGHT])
   }
-  return quantizeColor(raw.h, raw.s, raw.l)
 }
- 
-/**
- * Allowed quantized hue steps (multiples of 20°), excluding the three
- * green-heavy steps at 80°, 100° and 120° which produce unappealing
- * yellow-green / pure-green shades for flower petals.
- */
-const ALLOWED_PETAL_HUES = [
-  0, 20, 40, 60,           // red → orange → yellow
-  160, 180,                // cyan → sky  (skips 80/100/120/140)
-  200, 220, 240, 260,      // blue range
-  280, 300, 320, 340,      // purple → magenta → pink
-]
 
-/** Generate a quantized random petal color */
+/**
+ * Allele pool for random petal colors.
+ * White gets ~12% of allele slots → ~1.4% of plants express white phenotype
+ * (needs both alleles; white is dominant so 1 allele already expresses it —
+ *  actually white IS dominant, so single allele shows white).
+ * Gray alleles are rare: ~3% combined, so expressed gray needs both → very rare.
+ *
+ * Normal chromatic colors: 42 palette entries, distributed across L levels.
+ * L=70 (light, pastel) is most common, L=50 mid, L=30 (dark, saturated) rarest among chromatic.
+ */
+function buildPetalAllelePool(): HSLColor[] {
+  const pool: HSLColor[] = []
+
+  // White: häufig — eigene Slots
+  for (let i = 0; i < 12; i++) pool.push(COLOR_WHITE)
+
+  // Chromatic: L=70 häufig, L=50 mittel, L=30 selten
+  for (const h of PALETTE_HUES) {
+    for (let i = 0; i < 5; i++) pool.push({ h, s: PALETTE_S, l: 70 })
+    for (let i = 0; i < 3; i++) pool.push({ h, s: PALETTE_S, l: 50 })
+    for (let i = 0; i < 1; i++) pool.push({ h, s: PALETTE_S, l: 30 })
+  }
+
+  // Grays: sehr selten — je 1 Slot
+  pool.push(COLOR_GRAY_DARK)
+  pool.push(COLOR_GRAY_MID)
+  pool.push(COLOR_GRAY_LIGHT)
+
+  return pool
+}
+
+const PETAL_ALLELE_POOL = buildPetalAllelePool()
+
 function randomPetalColor(): HSLColor {
-  const h = ALLOWED_PETAL_HUES[Math.floor(Math.random() * ALLOWED_PETAL_HUES.length)]
-  const l = 48 + Math.random() * 22   // 48–70
-  // Dark petals (l < 50) need high saturation to avoid muddy/muted look
-  const sMin = l < 50 ? 90 : 55
-  const s = sMin + Math.random() * (100 - sMin)
-  return quantizeColor(h, s, l)
+  return PETAL_ALLELE_POOL[Math.floor(Math.random() * PETAL_ALLELE_POOL.length)]
 }
 
 // ─── Random plant ─────────────────────────────────────────────────────────────
@@ -189,17 +210,13 @@ export function randomPlant(): Plant {
 
 // ─── Catalog key ──────────────────────────────────────────────────────────────
 /**
- * Key includes quantized hue, saturation and lightness buckets so that
- * visually indistinguishable flowers map to the same entry.
- * Hue bucket à 20°, S bucket à 20 (coarser than quantize), L bucket à 20.
+ * Since colors are now fully quantized to a fixed palette,
+ * h/s/l are already discrete — no bucketing needed beyond the exact values.
  */
 export function catalogKey(plant: Plant): string {
   const color  = expressedColor(plant.petalColor)
   const shape  = expressedShape(plant.petalShape)
   const center = expressedCenter(plant.centerType)
   const count  = Math.round(expressedNumber(plant.petalCount))
-  const hBucket = Math.round(color.h / 20) % 18
-  const sBucket = Math.round(color.s / 20)
-  const lBucket = Math.round(color.l / 20)
-  return `${count}-${shape}-${center}-${hBucket}-${sBucket}-${lBucket}`
+  return `${count}-${shape}-${center}-${color.h}-${color.s}-${color.l}`
 }

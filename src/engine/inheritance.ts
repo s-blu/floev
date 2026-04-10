@@ -1,4 +1,4 @@
-import { clamp, jitter, MUTATION_CHANCE, pick, randomColorForBucket, GRADIENT_ALLELE_KEEP_CHANCE, randomGradient } from './genetics';
+import { clamp, jitter, MUTATION_CHANCE, pick, randomColorForBucket, GRADIENT_ALLELE_KEEP_CHANCE, randomGradient, quantizeColor } from './genetics';
 import { type AllelePair, type HSLColor } from '../model/plant';
 import { COLOR_BUCKET_DOMINANCE } from "./genetic.utils";
 
@@ -9,6 +9,7 @@ function inheritAllele<T>(parentA: AllelePair<T>, parentB: AllelePair<T>): Allel
     b: Math.random() < 0.5 ? parentB.a : parentB.b,
   };
 }
+
 export function inheritNumber(
   parentA: AllelePair<number>,
   parentB: AllelePair<number>,
@@ -21,6 +22,7 @@ export function inheritNumber(
     b: clamp(jitter(raw.b, jitterRange), min, max),
   };
 }
+
 export function inheritDiscrete<T>(
   parentA: AllelePair<T>,
   parentB: AllelePair<T>,
@@ -31,6 +33,20 @@ export function inheritDiscrete<T>(
     b: Math.random() < MUTATION_CHANCE ? pick(options) : raw.b,
   };
 }
+
+/**
+ * Color inheritance.
+ *
+ * Since all palette colors are fixed (s=0 for achromatic, s=90 for chromatic),
+ * we can't simply jitter h/s/l — that would produce off-palette colors.
+ *
+ * Strategy:
+ *   - No mutation: inherit the allele exactly (palette color passes through unchanged).
+ *   - Mutation: jump to a random color from a random bucket (via randomColorForBucket).
+ *
+ * The "hue drift" / "adjacent hue" effect that jitter previously provided is
+ * intentionally removed: every plant color is now a crisp palette entry.
+ */
 export function inheritColor(
   parentA: AllelePair<HSLColor>,
   parentB: AllelePair<HSLColor>): AllelePair<HSLColor> {
@@ -38,18 +54,15 @@ export function inheritColor(
   const mutateA = Math.random() < MUTATION_CHANCE;
   const mutateB = Math.random() < MUTATION_CHANCE;
   return {
-    a: mutateA ? randomColorForBucket(pick([...COLOR_BUCKET_DOMINANCE])) : {
-      h: clamp(jitter(raw.a.h, 10), 0, 359),
-      s: clamp(jitter(raw.a.s, 6), 30, 100),
-      l: clamp(jitter(raw.a.l, 6), 30, 78),
-    },
-    b: mutateB ? randomColorForBucket(pick([...COLOR_BUCKET_DOMINANCE])) : {
-      h: clamp(jitter(raw.b.h, 10), 0, 359),
-      s: clamp(jitter(raw.b.s, 6), 30, 100),
-      l: clamp(jitter(raw.b.l, 6), 30, 78),
-    },
+    a: mutateA
+      ? randomColorForBucket(pick([...COLOR_BUCKET_DOMINANCE]))
+      : raw.a,   // exact palette color — no jitter
+    b: mutateB
+      ? randomColorForBucket(pick([...COLOR_BUCKET_DOMINANCE]))
+      : raw.b,
   };
 }
+
 export function inheritGradient(
   parentA: AllelePair<HSLColor | null>,
   parentB: AllelePair<HSLColor | null>,
@@ -58,9 +71,8 @@ export function inheritGradient(
 
   const resolveAllele = (allele: HSLColor | null, baseColor: HSLColor): HSLColor | null => {
     if (allele !== null) {
-      return Math.random() < GRADIENT_ALLELE_KEEP_CHANCE
-        ? { h: clamp(jitter(allele.h, 12), 0, 359), s: clamp(jitter(allele.s, 8), 25, 100), l: clamp(jitter(allele.l, 6), 20, 75) }
-        : null;
+      // Keep the gradient allele with its existing palette color (no jitter)
+      return Math.random() < GRADIENT_ALLELE_KEEP_CHANCE ? allele : null;
     } else {
       return Math.random() < 0.06
         ? randomGradient(baseColor.h, baseColor.s, baseColor.l)
