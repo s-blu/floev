@@ -1,5 +1,4 @@
 import type { Plant } from '../../model/plant';
-import { PetalResult } from './petal.renderer';
 
 // ─── Petal path builders ──────────────────────────────────────────────────────
 export type PetalResult = { type: 'ellipse'; cx: number; cy: number; rx: number; ry: number; rotDeg: number; } |
@@ -30,7 +29,7 @@ export function buildPetalPath(
 
   // ── lanzett — schlank, lang, elegant ─────────────────────────────────────────
   if (shape === 'lanzett') {
-    const tipR = pr * 2.6;
+    const tipR = pr * (pr < 14 ? 2.3 : 1.8);
     const baseW = pr * 0.22;
     const b1x = cx + ca * pr * 0.1 + cp * baseW;
     const b1y = bloomY + sa * pr * 0.1 + sp * baseW;

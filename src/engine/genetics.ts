@@ -141,7 +141,7 @@ export function randomColorForBucket(bucket: ColorBucket): HSLColor {
  */
 const ALLOWED_PETAL_HUES = [
   0, 20, 40, 60,           // red → orange → yellow
-  140, 160, 180,           // cyan-green → cyan → sky  (skips 80/100/120)
+  160, 180,                // cyan → sky  (skips 80/100/120/140)
   200, 220, 240, 260,      // blue range
   280, 300, 320, 340,      // purple → magenta → pink
 ]
