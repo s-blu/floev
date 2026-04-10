@@ -1,0 +1,69 @@
+
+/* ── Pots grid ──────────────────────────────────────────────────────────────── */
+.pots-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pot-card {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+
+.pot-card.selected { border: 1.5px solid var(--green); }
+.pot-card.blooming { border-color: #D4537E; }
+
+.plant-view { width: 100px; height: 130px; flex-shrink: 0; }
+.plant-view svg { display: block; }
+
+.phase-label {
+  font-size: 11px;
+  color: var(--text2);
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 3px;
+  background: var(--bg3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 1.8s linear;
+}
+
+.pot-card {
+  position: relative;   /* needed so the absolute dot stays inside */
+}
+
+/* Header row sits at the very top of the card and gives the dot its anchor */
+.pot-card-header {
+  width: 100%;
+  height: 0;           /* zero height — dot floats above, doesn't push content */
+  position: relative;
+}
+
+.pot-rarity-dot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 13px;
+  line-height: 1;
+  /* Slight shadow so the symbol stays legible on any background */
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
+  pointer-events: none;
+  user-select: none;
+}

@@ -30,6 +30,10 @@ src/
 │ └── renderer.utils.ts        # Helper functions für SVG Renderings
 |-model/                # Folder; Interfaces and types
 │ └── plant.ts          # Alle TypeScript-Interfaces (Plant, Pot, GameState …)
+│ └── i18n/             # ui labels for the app
+│     └── index.ts      # central translation key export file 
+│     └── de.ts         # DE translations
+│     └── ...           # translations for other languages, named after their 2 digit locale
 |-ui/                   # Folder; Logik zum Render der UI
 │ └── ui.ts             # Hauptfunktion für DOM Rendering, Event handling
 │ └── breedpanel.ui.ts  # UI für Züchtungspanel
@@ -37,6 +41,9 @@ src/
 │ └── pots.ui.ts        # UI für Pflanztöpfe
 |-style/                # Folder; CSS Styles
 │ └── style.css         # Globales CSS
+│ └── style_breed.css         # Styles für das Züchtungspanel
+│ └── style_encyclopedia.css  # Styles für den Katalog/die Enzyklopädie 
+│ └── style_pots.css          # Styles für die Anzuchtstöpfe 
 ```
 
 ## Erweiterungspunkte
