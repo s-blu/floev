@@ -3,15 +3,16 @@ import { expressedColor, expressedGradient, expressedShape, expressedCenter, exp
 import { renderBloomSVG } from '../engine/renderer/encyclopedia.renderer';
 import type { Rarity, CatalogEntry } from '../model/plant';
 import { openAncestryIds, state } from './ui';
+import { t } from '../model/i18n';
 
 // ─── Catalog helpers ──────────────────────────────────────────────────────────
 const SHAPE_LABELS: Record<string, string> = {
-  round: 'Rund', pointed: 'Spitz', wavy: 'Wellig',
+  round: t.shapeRound, pointed: t.shapePointed, wavy: t.shapeWavy,
 };
 const CENTER_LABELS: Record<string, string> = {
-  dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
+  dot: t.centerDot, disc: t.centerDisc, stamen: 'Staubblätter',
 };
-const RARITY_BADGE_STYLES: Record<Rarity, { bg: string; color: string; }> = {
+const RARITY_BADGE_STYLES: Record<Rarity, { bg: string; color: string }> = {
   0: { bg: '#F1EFE8', color: '#5F5E5A' },
   1: { bg: '#E1F5EE', color: '#0F6E56' },
   2: { bg: '#E6F1FB', color: '#185FA5' },
@@ -19,20 +20,16 @@ const RARITY_BADGE_STYLES: Record<Rarity, { bg: string; color: string; }> = {
   4: { bg: '#FAEEDA', color: '#854F0B' },
 };
 const RARITY_ICON: Record<Rarity, string> = {
-  0: '▪',
-  1: '●',
-  2: '♦',
-  3: '★',
-  4: '👑',
-}
+  0: '▪', 1: '●', 2: '♦', 3: '★', 4: '👑',
+};
 
-
-let entryIndex = new Map<string, number>()
+let entryIndex = new Map<string, number>();
 
 function formatDate(ts: number): string {
   const d = new Date(ts);
   return d.toLocaleDateString('de-DE', { day: 'numeric', month: 'short', year: 'numeric' });
 }
+
 // ─── Catalog ──────────────────────────────────────────────────────────────────
 export function renderCatalog(): void {
   const container = document.getElementById('catalog-grid');
@@ -48,7 +45,7 @@ export function renderCatalog(): void {
   count.textContent = String(state.catalog.length);
 
   if (state.catalog.length === 0) {
-    container.innerHTML = '<span class="empty-hint">Noch keine Entdeckungen.</span>';
+    container.innerHTML = `<span class="empty-hint">${t.catalogEmpty}</span>`;
     return;
   }
 
@@ -97,6 +94,7 @@ export function renderCatalog(): void {
     });
   });
 }
+
 function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const plant = entry.plant;
   const pc = expressedColor(plant.petalColor);
@@ -128,16 +126,16 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   if (plant.parentIds) {
     const isOpen = openAncestryIds.has(plant.id);
     const renderParentSlot = (e: CatalogEntry | null, id: string) => {
-      const num = e ? (entryIndex.get(e.plant.id) ?? '?') : '?';
-      const name = e ? `Blüte ${num}` : 'Unbekannt';
+      const n = e ? (entryIndex.get(e.plant.id) ?? '?') : '?';
+      const name = e ? t.catalogParentName(n) : t.catalogParentUnknown;
       const thumb = e
-        ? `<div class="enc-parent-thumb" title="Gen. ${e.plant.generation}">${renderBloomSVG(e.plant, 38, 38)}</div>`
-        : `<div class="enc-parent-thumb enc-parent-unknown" title="Elter unbekannt (${id})"><span>?</span></div>`;
+        ? `<div class="enc-parent-thumb" title="${t.catalogParentGenTitle(e.plant.generation)}">${renderBloomSVG(e.plant, 38, 38)}</div>`
+        : `<div class="enc-parent-thumb enc-parent-unknown" title="${t.catalogParentUnknownTitle(id)}"><span>?</span></div>`;
       return `<div class="enc-parent-slot">${thumb}<span class="enc-parent-name">${name}</span></div>`;
     };
     ancestryHtml = `
       <details class="enc-ancestry" data-id="${plant.id}"${isOpen ? ' open' : ''}>
-        <summary>Stammbaum</summary>
+        <summary>${t.catalogAncestry}</summary>
         <div class="enc-parents-row">
           ${renderParentSlot(parentA, plant.parentIds[0])}
           <span class="enc-parent-cross">×</span>
@@ -149,14 +147,14 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   el.innerHTML = `
     <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
     <div class="enc-body">
-      <div class="enc-entry-num">Nr. ${num}</div>
-      <div class="enc-entry-name" style="font-family: var(--font-serif, Georgia, serif)">Blüte ${num}</div>
+      <div class="enc-entry-num">${t.catalogEntryNum(num)}</div>
+      <div class="enc-entry-name" style="font-family: var(--font-serif, Georgia, serif)">${t.catalogEntryName(num)}</div>
       <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${RARITY_LABELS[entry.rarity]}</span>
       <div class="enc-meta">
-        ${renderMetaRow('Blätter', `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}
-        ${renderMetaRow('Mitte', `${CENTER_LABELS[center] ?? center}`)}
-        ${renderMetaRow('Farbe', `<span class="enc-color-swatch" style="${swatchStyle}"></span>`)}
-        ${renderMetaRow('Gen.', `${plant.generation}`)}
+        ${renderMetaRow(t.catalogMetaPetals, `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}
+        ${renderMetaRow(t.catalogMetaCenter, `${CENTER_LABELS[center] ?? center}`)}
+        ${renderMetaRow(t.catalogMetaColor, `<span class="enc-color-swatch" style="${swatchStyle}"></span>`)}
+        ${renderMetaRow(t.catalogMetaGen, `${plant.generation}`)}
       </div>
       <div class="enc-discovered">${formatDate(entry.discovered)}</div>
       ${ancestryHtml}
@@ -165,9 +163,9 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   return el;
 }
 
-function renderMetaRow(label: string, value: string) {
+function renderMetaRow(label: string, value: string): string {
   return `<div class="enc-meta-row">
-          <span class="enc-meta-label">${label}</span>
-          <span class="enc-meta-value">${value}</span>
-        </div>`
-} 
+    <span class="enc-meta-label">${label}</span>
+    <span class="enc-meta-value">${value}</span>
+  </div>`;
+}

@@ -10,6 +10,7 @@ import { breedPlants } from '../engine/breed'
 import { renderPots } from './pots.ui'
 import { renderBreedPanel } from './breedpanel.ui'
 import { renderCatalog } from './catalog.ui'
+import { t } from '../model/i18n'
 
 interface BreedState {
   breedSelA: number | null,
@@ -25,7 +26,6 @@ export const breedState: BreedState = {
   breedSelA: null, breedSelB: null, breedEstimate: null
 }
 
-
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
 
 export function initUI(gameState: GameState): void {
@@ -37,7 +37,7 @@ export function initUI(gameState: GameState): void {
 
 function tick(): void {
   const changed = advancePhases(state, plant => {
-    showMsg(`Eine neue Blüte ist aufgegangen! (Gen. ${plant.generation})`)
+    showMsg(t.msgNewBloom(plant.generation))
   })
   if (changed) saveState(state)
   render()
@@ -62,7 +62,7 @@ export function showMsg(text: string): void {
 
 export function handlePlantSeed(potId: number): void {
   if (plantSeed(state, potId)) {
-    showMsg('Samen gepflanzt!')
+    showMsg(t.msgSeedPlanted)
     saveState(state)
     render()
   }
@@ -72,7 +72,7 @@ export function handleRemove(potId: number): void {
   if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
   if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
   if (removePlant(state, potId)) {
-    showMsg('Topf geleert.')
+    showMsg(t.msgPotCleared)
     saveState(state)
     render()
   }
@@ -99,11 +99,11 @@ function handleBreed(): void {
   const child = breedPlants(potA.plant, potB.plant)
   const placed = placeSeedInEmptyPot(state, child)
   if (placed === null) {
-    showMsg('Kein leerer Topf! Entferne zuerst eine Pflanze.')
+    showMsg(t.breedNoSpace)
     return
   }
 
-  showMsg(`Samen gezüchtet! Generation ${child.generation}.`)
+  showMsg(t.breedSuccess(child.generation))
   saveState(state)
   render()
 }

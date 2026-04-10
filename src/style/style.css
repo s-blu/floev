@@ -127,6 +127,29 @@ html, body {
   transition: width 1.8s linear;
 }
 
+.pot-card {
+  position: relative;   /* needed so the absolute dot stays inside */
+}
+
+/* Header row sits at the very top of the card and gives the dot its anchor */
+.pot-card-header {
+  width: 100%;
+  height: 0;           /* zero height — dot floats above, doesn't push content */
+  position: relative;
+}
+
+.pot-rarity-dot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 13px;
+  line-height: 1;
+  /* Slight shadow so the symbol stays legible on any background */
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
+  pointer-events: none;
+  user-select: none;
+}
+
 /* ── Trait pills ──────────────────────────────────────────────────────────────── */
 .trait-row {
   display: flex;

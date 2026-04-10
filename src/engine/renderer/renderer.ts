@@ -16,6 +16,45 @@ function renderStem(plant: Plant, cx: number, stemBase: number, bloomY: number):
   return `<path d="M${cx},${stemBase} Q${qx},${qy} ${cx},${bloomY}" fill="none" stroke="#2d7a3a" stroke-width="2.5" stroke-linecap="round"/>`
 }
 
+// ─── Center renderer (shared logic) ──────────────────────────────────────────
+
+export function renderCenter(
+  centerType: ReturnType<typeof expressedCenter>,
+  cc: ReturnType<typeof expressedColor>,
+  cx: number,
+  cy: number,
+): string {
+  const ccStr = hsl(cc)
+  // A noticeably darker shade for the disc ring / stamen tips
+  const ringColor = hsl({ h: cc.h, s: clamp(cc.s + 15, 20, 100), l: clamp(cc.l - 28, 20, 65) })
+  let out = ''
+
+  if (centerType === 'dot') {
+    out += `<circle cx="${cx}" cy="${cy}" r="5.5" fill="${ccStr}"/>`
+  } else if (centerType === 'disc') {
+    // Outer ring: thin, dark stroke — no fill so petals show through at the edge
+    out += `<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${ringColor}" stroke-width="1.2" opacity="0.85"/>`
+    // Inner filled disc
+    out += `<circle cx="${cx}" cy="${cy}" r="6.5" fill="${ccStr}"/>`
+    // Subtle highlight dot
+    out += `<circle cx="${cx - 1.5}" cy="${cy - 1.5}" r="2" fill="white" opacity="0.18"/>`
+  } else {
+    // stamen
+    const tipCol = hsl({ h: cc.h, s: clamp(cc.s + 5, 20, 80), l: clamp(cc.l - 22, 40, 72) })
+    out += `<circle cx="${cx}" cy="${cy}" r="5" fill="${ccStr}"/>`
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2
+      const fx = cx + Math.cos(a) * 8.5
+      const fy = cy + Math.sin(a) * 8.5
+      const lx = cx + Math.cos(a) * 5.5
+      const ly = cy + Math.sin(a) * 5.5
+      out += `<line x1="${lx}" y1="${ly}" x2="${fx}" y2="${fy}" stroke="${tipCol}" stroke-width="1" stroke-linecap="round" opacity="0.75"/>`
+      out += `<circle cx="${fx}" cy="${fy}" r="1.6" fill="${tipCol}" opacity="0.85"/>`
+    }
+  }
+  return out
+}
+
 // ─── Main render function ─────────────────────────────────────────────────────
 
 export function renderPlantSVG(plant: Plant | null, w: number, h: number): string {
@@ -27,40 +66,32 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number): strin
   const potRimH = 7;
   const groundY = h - potH - potRimH + 4;
 
-  // Resolve expressed phenotype values up front
   const stemBase = groundY - 1;
   const stemLen = h * 0.50 * (plant ? expressedNumber(plant.stemHeight) : 0.6);
   const bloomY = stemBase - stemLen;
 
   body = renderPot(w, groundY, potRimH, potH, body);
 
-  // ── Empty pot ─────────────────────────────────────────────────────────────
-  if (!plant) {
-    return svg(defs, body, w, h)
-  }
+  if (!plant) return svg(defs, body, w, h)
 
-  // ── Seed (phase 1) ────────────────────────────────────────────────────────
   if (plant.phase === 1) {
     body += renderSeed(cx, stemBase)
     return svg(defs, body, w, h)
   }
 
-  // ── Phase 2: sprout ───────────────────────────────────────────────────────
   if (plant.phase === 2) {
     body = renderSprout(stemBase, stemLen, body, cx);
     return svg(defs, body, w, h)
   }
 
-  // ── Stem + leaves (phases 3–4) ────────────────────────────────────────────
   body = renderStemWithLeaves(body, plant, cx, stemBase, bloomY, stemLen);
 
-  // ── Phase 3: bud with colour hint ─────────────────────────────────────────
   if (plant.phase === 3) {
     body = renderBud(plant, body, cx, bloomY);
     return svg(defs, body, w, h)
   }
 
-  // ── Phase 4: full bloom ───────────────────────────────────────────────────
+  // Phase 4: full bloom
   ({ defs, body } = renderFullBloom(plant, defs, cx, bloomY, body));
 
   return svg(defs, body, w, h)
@@ -88,30 +119,10 @@ function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number,
     body += petalToSVG(petal, fillStr, strokeStr);
   }
 
-  // ── Center ────────────────────────────────────────────────────────────────
   const cc = expressedColor(plant.centerColor);
-  const ccStr = hsl(cc);
-  const ccDark = hsl({ h: cc.h, s: clamp(cc.s + 10, 20, 100), l: clamp(cc.l - 18, 45, 80) });
   const centerType = expressedCenter(plant.centerType);
+  body += renderCenter(centerType, cc, cx, bloomY);
 
-  if (centerType === 'dot') {
-    body += `<circle cx="${cx}" cy="${bloomY}" r="5.5" fill="${ccStr}"/>`;
-  } else if (centerType === 'disc') {
-    body += `<circle cx="${cx}" cy="${bloomY}" r="8.5" fill="${ccDark}"/>`;
-    body += `<circle cx="${cx}" cy="${bloomY}" r="5.5" fill="${ccStr}"/>`;
-  } else {
-    body += `<circle cx="${cx}" cy="${bloomY}" r="5" fill="${ccStr}"/>`;
-    const tipCol = hsl({ h: cc.h, s: clamp(cc.s + 5, 20, 80), l: clamp(cc.l - 22, 45, 75) });
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * Math.PI * 2;
-      const fx = cx + Math.cos(a) * 8.5;
-      const fy = bloomY + Math.sin(a) * 8.5;
-      const lx = cx + Math.cos(a) * 5.5;
-      const ly = bloomY + Math.sin(a) * 5.5;
-      body += `<line x1="${lx}" y1="${ly}" x2="${fx}" y2="${fy}" stroke="${tipCol}" stroke-width="1" stroke-linecap="round" opacity="0.75"/>`;
-      body += `<circle cx="${fx}" cy="${fy}" r="1.6" fill="${tipCol}" opacity="0.85"/>`;
-    }
-  }
   return { defs, body };
 }
 
@@ -126,9 +137,9 @@ function renderBud(plant: Plant, body: string, cx: number, bloomY: number) {
 
 function renderStemWithLeaves(body: string, plant: Plant, cx: number, stemBase: number, bloomY: number, stemLen: number) {
   body += renderStem(plant, cx, stemBase, bloomY);
-
   const leafY = stemBase - stemLen * 0.28;
-  const stemLeafShape = (xPos: number, rotate: number) => `<ellipse cx="${xPos}" cy="${leafY}" rx="11" ry="6" fill="#3a9a45" transform="rotate(${rotate},${xPos},${leafY})"/>`;
+  const stemLeafShape = (xPos: number, rotate: number) =>
+    `<ellipse cx="${xPos}" cy="${leafY}" rx="11" ry="6" fill="#3a9a45" transform="rotate(${rotate},${xPos},${leafY})"/>`;
   body += stemLeafShape(cx - 8, 50);
   body += stemLeafShape(cx + 8, -50);
   return body;
@@ -147,15 +158,13 @@ function renderSeed(cx: number, stemBase: number) {
 
 function renderPot(w: number, groundY: number, potRimH: number, potH: number, body: string) {
   const potW = w * 0.72;
-
-  // ── Pot ────────────────────────────────────────────────────────────────────
   const potX = (w - potW) / 2;
   const rimX = (w - potW * 1.09) / 2;
   const shineX = (w - potW * 0.82) / 2;
   body += `<rect x="${potX}" y="${groundY + potRimH}" width="${potW}" height="${potH}" rx="4" fill="#b8724a"/>`;
   body += `<rect x="${rimX}" y="${groundY}" width="${potW * 1.09}" height="${potRimH}" rx="3" fill="#c8855a"/>`;
   body += `<rect x="${shineX}" y="${groundY + potRimH + 2}" width="${potW * 0.82}" height="3" rx="1" fill="#a86540" opacity="0.35"/>`;
-  return body ;
+  return body;
 }
 
 function svg(defs: string, body: string, w: number, h: number): string {

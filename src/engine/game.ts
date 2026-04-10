@@ -1,6 +1,6 @@
 import type { GameState, Pot, Plant, CatalogEntry, Rarity } from '../model/plant'
 import { randomPlant, catalogKey } from './genetics'
-import { calcRarity, calcRarityScore } from './rarity'  
+import { calcRarity, calcRarityScore } from './rarity'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -11,14 +11,6 @@ export const PHASE_DURATION_MS: Record<number, number> = {
   1: 10_000,
   2: 18_000,
   3: 28_000,
-}
-
-export const PHASE_LABELS: Record<number, string> = {
-  0: 'Leer',
-  1: 'Samen',
-  2: 'Keimling',
-  3: 'Jungpflanze',
-  4: 'Blüte',
 }
 
 export const RARITY_LABELS: Record<Rarity, string> = {
@@ -143,7 +135,6 @@ export function addToCatalog(state: GameState, plant: Plant): boolean {
     discovered: Date.now(),
   }
   state.catalog.push(entry)
-  // Sort by rarityScore descending so legendaries appear first
   state.catalog.sort((a, b) => b.rarityScore - a.rarityScore)
   return true
 }
