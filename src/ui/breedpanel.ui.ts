@@ -74,7 +74,7 @@ export function renderBreedPanel(): void {
 
 // ─── Estimate formatting ──────────────────────────────────────────────────────
 const SHAPE_DE: Record<string, string> = {
-  round: t.shapeRound, pointed: t.shapePointed, wavy: t.shapeWavy,
+  round: t.shapeRound, lanzett: t.shapeLanzett, tropfen: t.shapeDrop, wavy: t.shapeWavy, zickzack: t.shapeZickzack,
 };
 const CENTER_DE: Record<string, string> = {
   dot: t.centerDot, disc: t.centerDisc, stamen: t.centerStamen,

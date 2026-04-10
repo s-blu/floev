@@ -3,7 +3,10 @@ import { expressedCenter, expressedColor, expressedGradient, expressedNumber, ex
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 
-const SHAPE_SCORE: Record<PetalShape, number> = { round: 0, pointed: 12, wavy: 30 }
+// Seltenheit: round < lanzett < tropfen < wavy < zickzack
+// round=0 hält die Gesamtpunktzahl niedrig (häufig),
+// zickzack=40 schiebt die Pflanze sicher in episch/legendär.
+const SHAPE_SCORE: Record<PetalShape, number> = { round: 0, lanzett: 8, tropfen: 16, wavy: 25, zickzack: 40 }
 const COLOR_SCORE: Record<string, number> = {
   white: 0, yellow: 5, red: 12, purple: 20, blue: 27, gray: 30,
 }

@@ -8,7 +8,7 @@ export interface HSLColor {
 
 // ─── Plant ────────────────────────────────────────────────────────────────────
 
-export type PetalShape = 'round' | 'pointed' | 'wavy'
+export type PetalShape = 'round' | 'lanzett' | 'tropfen' | 'wavy' | 'zickzack'
 export type CenterType = 'dot' | 'disc' | 'stamen'
 
 /** Growth phase of a plant: 1=Seed, 2=Sprout, 3=Bud, 4=Bloom */

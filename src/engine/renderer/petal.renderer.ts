@@ -16,6 +16,7 @@ export function buildPetalPath(
   const cp = Math.cos(perp);
   const sp = Math.sin(perp);
 
+  // ── round ────────────────────────────────────────────────────────────────────
   if (shape === 'round') {
     return {
       type: 'ellipse',
@@ -27,43 +28,105 @@ export function buildPetalPath(
     };
   }
 
-  if (shape === 'pointed') {
-    const tipR = pr * 2.2;
-    const baseW = pr * 0.38;
-    const b1x = cx + ca * pr * 0.18 + cp * baseW;
-    const b1y = bloomY + sa * pr * 0.18 + sp * baseW;
-    const b2x = cx + ca * pr * 0.18 - cp * baseW;
-    const b2y = bloomY + sa * pr * 0.18 - sp * baseW;
+  // ── lanzett — schlank, lang, elegant ─────────────────────────────────────────
+  if (shape === 'lanzett') {
+    const tipR = pr * 2.6;
+    const baseW = pr * 0.22;
+    const b1x = cx + ca * pr * 0.1 + cp * baseW;
+    const b1y = bloomY + sa * pr * 0.1 + sp * baseW;
+    const b2x = cx + ca * pr * 0.1 - cp * baseW;
+    const b2y = bloomY + sa * pr * 0.1 - sp * baseW;
     const tx = cx + ca * tipR;
     const ty = bloomY + sa * tipR;
-    const ctrl1x = cx + ca * (pr * 1.1) + cp * baseW * 0.55;
-    const ctrl1y = bloomY + sa * (pr * 1.1) + sp * baseW * 0.55;
-    const ctrl2x = cx + ca * (pr * 1.1) - cp * baseW * 0.55;
-    const ctrl2y = bloomY + sa * (pr * 1.1) - sp * baseW * 0.55;
+    const c1x = cx + ca * pr * 1.2 + cp * baseW * 0.3;
+    const c1y = bloomY + sa * pr * 1.2 + sp * baseW * 0.3;
+    const c2x = cx + ca * pr * 1.2 - cp * baseW * 0.3;
+    const c2y = bloomY + sa * pr * 1.2 - sp * baseW * 0.3;
     return {
       type: 'path',
-      d: `M${b1x},${b1y} C${ctrl1x},${ctrl1y} ${tx},${ty} ${tx},${ty} C${tx},${ty} ${ctrl2x},${ctrl2y} ${b2x},${b2y} Z`,
+      d: `M${b1x},${b1y} C${c1x},${c1y} ${tx},${ty} ${tx},${ty} C${tx},${ty} ${c2x},${c2y} ${b2x},${b2y} Z`,
     };
   }
 
-  // wavy
-  const tipR = pr * 2.2;
-  const baseW = pr * 0.40;
-  const b1x = cx + ca * pr * 0.18 + cp * baseW;
-  const b1y = bloomY + sa * pr * 0.18 + sp * baseW;
-  const b2x = cx + ca * pr * 0.18 - cp * baseW;
-  const b2y = bloomY + sa * pr * 0.18 - sp * baseW;
+  // ── tropfen — schmale Basis, breite Mitte, spitze Spitze ────────────────────
+  if (shape === 'tropfen') {
+    const tipR = pr * 2.3;
+    const baseW = pr * 0.18;
+    const b1x = cx + ca * pr * 0.05 + cp * baseW;
+    const b1y = bloomY + sa * pr * 0.05 + sp * baseW;
+    const b2x = cx + ca * pr * 0.05 - cp * baseW;
+    const b2y = bloomY + sa * pr * 0.05 - sp * baseW;
+    const tx = cx + ca * tipR;
+    const ty = bloomY + sa * tipR;
+    // Kontrollpunkte weit außen in der Mitte → Tropfenform
+    const c1x = cx + ca * pr * 1.0 + cp * baseW * 4.0;
+    const c1y = bloomY + sa * pr * 1.0 + sp * baseW * 4.0;
+    const c2x = cx + ca * pr * 1.0 - cp * baseW * 4.0;
+    const c2y = bloomY + sa * pr * 1.0 - sp * baseW * 4.0;
+    return {
+      type: 'path',
+      d: `M${b1x},${b1y} C${c1x},${c1y} ${tx},${ty} ${tx},${ty} C${tx},${ty} ${c2x},${c2y} ${b2x},${b2y} Z`,
+    };
+  }
+
+  // ── wavy — fließende S-Kurven auf beiden Seiten ──────────────────────────────
+  if (shape === 'wavy') {
+    const tipR = pr * 2.2;
+    const baseW = pr * 0.44;
+    const b1x = cx + ca * pr * 0.15 + cp * baseW;
+    const b1y = bloomY + sa * pr * 0.15 + sp * baseW;
+    const b2x = cx + ca * pr * 0.15 - cp * baseW;
+    const b2y = bloomY + sa * pr * 0.15 - sp * baseW;
+    const tx = cx + ca * tipR;
+    const ty = bloomY + sa * tipR;
+    // Seite 1: S-Kurve — erst weit außen, dann nach innen
+    const m1ax = cx + ca * pr * 0.6 + cp * baseW * 2.2;
+    const m1ay = bloomY + sa * pr * 0.6 + sp * baseW * 2.2;
+    const m1bx = cx + ca * pr * 1.3 + cp * baseW * 0.4;
+    const m1by = bloomY + sa * pr * 1.3 + sp * baseW * 0.4;
+    // Seite 2: S-Kurve gespiegelt
+    const m2ax = cx + ca * pr * 0.6 - cp * baseW * 0.4;
+    const m2ay = bloomY + sa * pr * 0.6 - sp * baseW * 0.4;
+    const m2bx = cx + ca * pr * 1.3 - cp * baseW * 2.2;
+    const m2by = bloomY + sa * pr * 1.3 - sp * baseW * 2.2;
+    return {
+      type: 'path',
+      d: `M${b1x},${b1y} C${m1ax},${m1ay} ${m1bx},${m1by} ${tx},${ty} C${m2bx},${m2by} ${m2ax},${m2ay} ${b2x},${b2y} Z`,
+    };
+  }
+
+  // ── zickzack — fransige Zacken, Federform (seltenste) ───────────────────────
+  const tipR = pr * 2.3;
+  const baseW = pr * 0.42;
+  const b1x = cx + ca * pr * 0.15 + cp * baseW;
+  const b1y = bloomY + sa * pr * 0.15 + sp * baseW;
+  const b2x = cx + ca * pr * 0.15 - cp * baseW;
+  const b2y = bloomY + sa * pr * 0.15 - sp * baseW;
   const tx = cx + ca * tipR;
   const ty = bloomY + sa * tipR;
-  const m1x = cx + ca * pr * 0.95 + cp * baseW * 2.0;
-  const m1y = bloomY + sa * pr * 0.95 + sp * baseW * 2.0;
-  const m2x = cx + ca * pr * 0.95 - cp * baseW * 1.2;
-  const m2y = bloomY + sa * pr * 0.95 - sp * baseW * 1.2;
-  return {
-    type: 'path',
-    d: `M${b1x},${b1y} C${m1x},${m1y} ${tx},${ty} ${tx},${ty} C${tx},${ty} ${m2x},${m2y} ${b2x},${b2y} Z`,
-  };
-}// ─── SVG string builders ──────────────────────────────────────────────────────
+  const zag = (r: number, side: number) => ({
+    x: cx + ca * r + cp * side,
+    y: bloomY + sa * r + sp * side,
+  });
+  const pts: string[] = [
+    `M${b1x},${b1y}`,
+    ...([
+      [pr * 0.5, baseW * 1.6], [pr * 0.7, baseW * 0.5],
+      [pr * 1.0, baseW * 1.8], [pr * 1.3, baseW * 0.3],
+      [pr * 1.7, baseW * 1.2],
+    ] as [number, number][]).map(([r, s]) => { const p = zag(r, s); return `L${p.x},${p.y}`; }),
+    `L${tx},${ty}`,
+    ...([
+      [pr * 1.7, -baseW * 0.4], [pr * 1.3, -baseW * 1.5],
+      [pr * 1.0, -baseW * 0.2], [pr * 0.7, -baseW * 1.6],
+      [pr * 0.5, -baseW * 0.8],
+    ] as [number, number][]).map(([r, s]) => { const p = zag(r, s); return `L${p.x},${p.y}`; }),
+    `L${b2x},${b2y} Z`,
+  ];
+  return { type: 'path', d: pts.join(' ') };
+}
+
+// ─── SVG string builders ──────────────────────────────────────────────────────
 export function petalToSVG(petal: PetalResult, fill: string, stroke: string): string {
   const sw = 'stroke-width="0.8"';
   if (petal.type === 'ellipse') {
@@ -71,4 +134,3 @@ export function petalToSVG(petal: PetalResult, fill: string, stroke: string): st
   }
   return `<path d="${petal.d}" fill="${fill}" stroke="${stroke}" ${sw}/>`;
 }
-

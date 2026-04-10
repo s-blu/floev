@@ -7,7 +7,7 @@ import { t } from '../model/i18n';
 
 // ─── Catalog helpers ──────────────────────────────────────────────────────────
 const SHAPE_LABELS: Record<string, string> = {
-  round: t.shapeRound, pointed: t.shapePointed, wavy: t.shapeWavy,
+  round: t.shapeRound, lanzett: t.shapeLanzett, tropfen: t.shapeDrop, wavy: t.shapeWavy, zickzack: t.shapeZickzack,
 };
 const CENTER_LABELS: Record<string, string> = {
   dot: t.centerDot, disc: t.centerDisc, stamen: 'Staubblätter',

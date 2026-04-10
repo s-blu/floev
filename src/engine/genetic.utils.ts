@@ -7,7 +7,10 @@ import { PetalShape, CenterType, HSLColor, AllelePair } from "../model/plant";
  * Lower index = more dominant.
  */
 
-export const PETAL_SHAPE_DOMINANCE: PetalShape[] = ['round', 'pointed', 'wavy']
+// Dominance order: most dominant (most common phenotype) first.
+// round > lanzett > tropfen > wavy > zickzack
+// A plant only expresses zickzack if BOTH alleles carry it (rarest).
+export const PETAL_SHAPE_DOMINANCE: PetalShape[] = ['round', 'lanzett', 'tropfen', 'wavy', 'zickzack']
 /**
  * Dominance order for center type.
  * Lower index = more dominant.

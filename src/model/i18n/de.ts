@@ -55,8 +55,10 @@ export const de = {
 
   // Shape labels
   shapeRound: 'Rund',
-  shapePointed: 'Spitz',
+  shapeLanzett: 'Lanzett',
   shapeWavy: 'Wellig',
+  shapeDrop: 'Tropfen',
+  shapeZickzack: 'Zickzack',
 
   // Center labels
   centerDot: 'Punkt',
