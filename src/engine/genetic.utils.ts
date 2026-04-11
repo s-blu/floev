@@ -8,16 +8,30 @@ export const CENTER_TYPE_DOMINANCE: CenterType[] = ['dot', 'disc', 'stamen']
 
 /**
  * Color dominance buckets.
- * white > yellow > red > purple > blue > gray
- *
  * "white" matches s=0, l=100 (the fixed white color).
  * "gray"  matches s=0, l<100 (the three fixed gray tones).
  * All chromatic palette colors (s=90) are classified by hue range.
  */
-export type ColorBucket = 'white' | 'yellow' | 'red' | 'purple' | 'blue' | 'gray'
-
+export type ColorBucket = 'white' | 'yellow' | 'red' | 'pink' | 'purple' | 'blue' | 'green' | 'gray'
 export const COLOR_BUCKET_DOMINANCE: ColorBucket[] = [
-  'white', 'yellow', 'red', 'purple', 'blue', 'gray',
+  'white', 'yellow', 'red', 'pink', 'purple', 'blue','green', 'gray',
+]
+export const PALETTE_HUE_RANGES = {
+  yellow: (hue: number): boolean => 35 < hue && hue <= 60,
+  red: (hue: number): boolean => hue <= 35 || hue > 345,
+  green: (hue: number): boolean => 60 < hue && hue <= 155,
+  blue: (hue: number): boolean => 155 < hue && hue <= 240,
+  purple: (hue: number): boolean => 240 < hue && hue <= 275,
+  pink: (hue: number): boolean => 275 < hue && hue <= 345
+}
+
+
+// Lower index = more dominant
+export const CENTER_COLORS = [
+  { h: 40, s: 100, l: 95 }, // creme
+  { h: 120, s: 50, l: 80 }, // grün
+  { h: 55, s: 100, l: 50 }, // kräftiges gelb
+  { h: 20, s: 100, l: 65 } // kräftiges orange
 ]
 
 /** Classify an HSLColor into a dominance bucket */
@@ -28,12 +42,13 @@ export function colorBucket(c: HSLColor): ColorBucket {
   }
   // Chromatic palette colors (s=90): classify by hue
   const h = c.h
-  if (h >= 40 && h <= 70)  return 'yellow'
-  if (h >= 340 || h <= 20) return 'red'
-  if (h >= 270 && h <= 330) return 'purple'
-  if (h >= 160 && h <= 269) return 'blue'
-  // orange (h 21–39): treat as red family
-  if (h > 20 && h < 40)    return 'red'
+  if (PALETTE_HUE_RANGES.yellow(h))  return 'yellow'
+  if (PALETTE_HUE_RANGES.red(h)) return 'red'
+  if (PALETTE_HUE_RANGES.green(h)) return 'green'
+  if (PALETTE_HUE_RANGES.blue(h)) return 'blue'
+  if (PALETTE_HUE_RANGES.purple(h)) return 'purple'
+  if (PALETTE_HUE_RANGES.pink(h)) return 'pink'
+
   return 'blue'
 }
 

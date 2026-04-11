@@ -1,5 +1,5 @@
 import { Plant, CenterType, PetalShape, Rarity, HSLColor } from "../model/plant"
-import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket } from "./genetic.utils"
+import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket, CENTER_COLORS } from "./genetic.utils"
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 
@@ -8,25 +8,27 @@ const SHAPE_SCORE: Record<PetalShape, number> = { round: 0, lanzett: 8, tropfen:
 /**
  * Color rarity scores by bucket.
  * white = 0   — häufig (dominant, so players see it often)
- * yellow = 5  — häufig-mittel
- * red = 12    — mittel
- * purple = 20 — selten
- * blue = 27   — selten
  * gray = 35   — sehr selten (only 3 palette entries, recessive-like)
  */
 const COLOR_SCORE: Record<string, number> = {
-  white: 0, yellow: 5, red: 12, purple: 20, blue: 27, gray: 35,
+  white: 0, yellow: 5, red: 12, pink: 16, purple: 20, blue: 27, green: 31, gray: 35,
 }
 
 const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 8, stamen: 20 }
 
 function centerColorScore(c: HSLColor): number {
-  if (c.l > 78) return 0                             // hell / Creme
-  const h = c.h
-  if (h >= 15 && h <= 40 && c.s > 60) return 22     // kräftiges Orange — seltenst
-  if (h >= 66 && h <= 160) return 12                 // Grün
-  if (h >= 41 && h <= 65 && c.s > 55) return 5      // kräftiges Gelb
-  return 0
+  const colorString = getColorString(c)
+
+  switch (colorString) {
+    case (getColorString(CENTER_COLORS[0])): return 0
+    case (getColorString(CENTER_COLORS[1])): return 5
+    case (getColorString(CENTER_COLORS[2])): return 10
+    case (getColorString(CENTER_COLORS[3])): return 15
+  }
+
+  function getColorString(col: HSLColor) {
+    return `${col.h}-${col.s}-${col.l}`
+  }
 }
 
 export function calcRarityScore(plant: Plant): number {

@@ -2,7 +2,7 @@ import type {
   Plant, HSLColor, PetalShape, CenterType, PlantPhase,
 } from '../model/plant'
 import type { ColorBucket } from "./genetic.utils"
-import { expressedColor, expressedShape, expressedCenter, expressedNumber } from "./genetic.utils"
+import { PALETTE_HUE_RANGES, expressedColor, expressedShape, expressedCenter, expressedNumber, CENTER_COLORS } from "./genetic.utils"
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -47,26 +47,24 @@ export function pick<T>(arr: T[]): T {
 
 // ─── Color palette ────────────────────────────────────────────────────────────
 /**
- * All petal colors are drawn from a fixed palette:
- *
- *   Normal colors:  14 hues × 3 lightness steps = 42 distinct colors
- *     Hues (×20°):  0, 20, 40, 60, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340
- *     Saturation:   fixed at 90%
- *     Lightness:    30, 50, 70
- *
- *   Special colors (not in normal pool, only via specific allele entries):
- *     White:  { h:0, s:0, l:100 }  — häufig (eigener Allel-Slot)
- *     Grays:  { h:0, s:0, l:0  }   — sehr selten
- *             { h:0, s:0, l:40 }   — sehr selten
- *             { h:0, s:0, l:70 }   — sehr selten
- *
+ * All petal colors are drawn from a fixed palette
  * quantizeColor() maps any incoming color to the nearest palette slot.
  * Gray/white inputs (s < 10) are snapped to the special gray/white colors.
  */
+//                    red   / y / turquoise / blue / purple   / pink        / red                      
+const PALETTE_HUES = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350] as const
 
-const PALETTE_HUES = [0, 20, 40, 60, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340] as const
+const PALETTE_HUES_BUCKETS = {
+  yellow: PALETTE_HUES.filter(PALETTE_HUE_RANGES.yellow),
+  red: PALETTE_HUES.filter(PALETTE_HUE_RANGES.red),
+  green: PALETTE_HUES.filter(PALETTE_HUE_RANGES.green),
+  blue: PALETTE_HUES.filter(PALETTE_HUE_RANGES.blue),
+  purple: PALETTE_HUES.filter(PALETTE_HUE_RANGES.purple),
+  pink: PALETTE_HUES.filter(PALETTE_HUE_RANGES.pink)
+}
+
 const PALETTE_S = 90
-const PALETTE_L = [30, 50, 90] as const
+const PALETTE_L = [30, 60, 90] as const
 
 // Special achromatic colors (s=0)
 export const COLOR_WHITE:  HSLColor = { h: 0, s: 0, l: 100 }
@@ -96,7 +94,7 @@ export function quantizeColor(h: number, s: number, l: number): HSLColor {
     if (d < bestDist) { bestDist = d; bestHue = ph }
   }
 
-  // Snap lightness to nearest of {30, 50, 70}
+  // Snap lightness to nearest
   let bestL = PALETTE_L[0]
   let bestLDist = Infinity
   for (const pl of PALETTE_L) {
@@ -118,13 +116,13 @@ export function randomGradient(baseH: number, _baseS: number, baseL: number): HS
 function randomCenterColor(): HSLColor {
   const r = Math.random()
   if (r < 0.12) {
-    return { h: 20, s: 90, l: 50 }  // kräftiges Orange — selten
+    return CENTER_COLORS[3]  
   } else if (r < 0.30) {
-    return { h: 120, s: 70, l: 40 }  // Grün
+    return CENTER_COLORS[2]  
   } else if (r < 0.55) {
-    return { h: 60, s: 90, l: 50 }  // kräftiges Gelb
+    return CENTER_COLORS[1]  
   } else {
-    return { h: 60, s: 20, l: 90 }  // helles Gelb / Creme — häufig
+    return CENTER_COLORS[0]    
   }
 }
 
@@ -132,11 +130,8 @@ function randomCenterColor(): HSLColor {
 export function randomColorForBucket(bucket: ColorBucket): HSLColor {
   switch (bucket) {
     case 'white':  return COLOR_WHITE
-    case 'yellow': return quantizeColor(pick([40, 60]), PALETTE_S, pick([50, 70]))
-    case 'red':    return quantizeColor(pick([0, 20, 340]), PALETTE_S, pick([30, 50]))
-    case 'purple': return quantizeColor(pick([280, 300, 320]), PALETTE_S, pick([30, 50]))
-    case 'blue':   return quantizeColor(pick([200, 220, 240, 260]), PALETTE_S, pick([30, 50]))
     case 'gray':   return pick([COLOR_GRAY_DARK, COLOR_GRAY_MID, COLOR_GRAY_LIGHT])
+    default:       return  quantizeColor(pick(PALETTE_HUES_BUCKETS[bucket]), PALETTE_S, pick([...PALETTE_L]))
   }
 }
 
@@ -148,7 +143,7 @@ export function randomColorForBucket(bucket: ColorBucket): HSLColor {
  * Gray alleles are rare: ~3% combined, so expressed gray needs both → very rare.
  *
  * Normal chromatic colors: 42 palette entries, distributed across L levels.
- * L=70 (light, pastel) is most common, L=50 mid, L=30 (dark, saturated) rarest among chromatic.
+ * L=70 (light, pastel) is most common, L=30 (dark, saturated) rarest among chromatic.
  */
 function buildPetalAllelePool(): HSLColor[] {
   const pool: HSLColor[] = []
@@ -158,9 +153,9 @@ function buildPetalAllelePool(): HSLColor[] {
 
   // Chromatic: L=70 häufig, L=50 mittel, L=30 selten
   for (const h of PALETTE_HUES) {
-    for (let i = 0; i < 5; i++) pool.push({ h, s: PALETTE_S, l: 70 })
-    for (let i = 0; i < 3; i++) pool.push({ h, s: PALETTE_S, l: 50 })
-    for (let i = 0; i < 1; i++) pool.push({ h, s: PALETTE_S, l: 30 })
+    for (let i = 0; i < 5; i++) pool.push({ h, s: PALETTE_S, l: PALETTE_L[2] })
+    for (let i = 0; i < 3; i++) pool.push({ h, s: PALETTE_S, l: PALETTE_L[1] })
+    for (let i = 0; i < 1; i++) pool.push({ h, s: PALETTE_S, l: PALETTE_L[0] })
   }
 
   // Grays: sehr selten — je 1 Slot
