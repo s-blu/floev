@@ -10,7 +10,7 @@ export function clamp(v: number, lo: number, hi: number): number {
 }
 /** Darken a colour for petal stroke */
 export function darken(c: HSLColor, amount = 22): HSLColor {
-  return { h: c.h, s: clamp(c.s + 8, 30, 100), l: clamp(c.l - amount, 15, 60) }
+  return { h: c.h, s: Math.max(c.s - 10, 0), l:  Math.max(c.l - 20, 0) }
 }
 
 
