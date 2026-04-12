@@ -147,9 +147,12 @@
 }
 
 /* Small colour swatch before the label (used for hue + lightness rows) */
+:root {
+  --swatch-width: 22px;
+}
 .prob-swatch {
   display: inline-block;
-  width: 12px;
+  width: var(--swatch-width);
   height: 12px;
   border-radius: 3px;
   border: 0.5px solid var(--border);
@@ -161,6 +164,10 @@
   flex-shrink: 0;
   color: var(--text);
   font-size: 11px;
+}
+
+.prob-entry:has(.prob-swatch) .prob-label {
+  width: calc(50px - var(--swatch-width) - 5px);
 }
 
 .prob-bar-wrap {

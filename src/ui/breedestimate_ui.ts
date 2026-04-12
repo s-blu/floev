@@ -66,13 +66,12 @@ function lightnessProbs(
     counts.set(expressed, (counts.get(expressed) ?? 0) + 1);
   }
 
-  const L_LABEL: Record<number, string> = { 30: 'dunkel', 60: 'mittel', 90: 'hell' };
   const result: { l: number; pct: number; label: string; }[] = [];
   for (const [l, count] of counts) {
     result.push({
       l,
       pct: Math.round((count / 4) * 100),
-      label: L_LABEL[l] ?? String(l),
+      label: "",
     });
   }
   return result.filter(x => x.pct > 0).sort((a, b) => b.pct - a.pct);
