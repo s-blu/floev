@@ -1,5 +1,5 @@
 import type { GameState, Pot, Plant, CatalogEntry, Rarity } from '../model/plant'
-import { randomPlant } from './genetic/genetic'
+import { plannedPlant, randomPlant } from './genetic/genetic'
 import { catalogKey } from './catalog'
 import { calcRarity, calcRarityScore } from './rarity'
 
@@ -7,6 +7,7 @@ import { calcRarity, calcRarityScore } from './rarity'
 
 const STORAGE_KEY = 'bloom_v1'
 const POT_COUNT = 9
+const STARTER_PLANTS = 3;
 
 export const PHASE_DURATION_MS: Record<number, number> = {
   1: 10_000,
@@ -30,14 +31,65 @@ export const RARITY_COLORS: Record<Rarity, string> = {
   4: '#f08000',
 }
 
+
+const useDebugPlants = false;
+const DEBUG_PLANTS = [
+  plannedPlant(
+    {
+      hue: 0,
+      petalShape: 'lanzett',
+      hasGradient: true
+    }
+  ),
+    plannedPlant(
+    {
+      hue: 100,
+      petalShape: 'tropfen',
+      hasGradient: true
+    }
+  ),
+    plannedPlant(
+    {
+      hue: 200,
+      petalShape: 'wavy',
+      hasGradient: true
+    }
+  ),
+    plannedPlant(
+    {
+      hue: 250,
+      petalShape: 'zickzack',
+      hasGradient: true
+    }
+  ),
+      plannedPlant(
+    {
+      hue: 310,
+      petalShape: 'round',
+      hasGradient: true
+    }
+  )
+]
+
 // ─── Initial state ────────────────────────────────────────────────────────────
 
 function createInitialState(): GameState {
-  const pots: Pot[] = Array.from({ length: POT_COUNT }, (_, i) => ({
-    id: i,
-    plant: i === 0 ? randomPlant() : null,
-    phaseStart: i === 0 ? Date.now() - 5000 : null,
-  }))
+  let pots: Pot[];
+  if (useDebugPlants) {
+    pots = Array.from({ length: POT_COUNT }, (_, i) => ({
+      id: i,
+      plant: i < DEBUG_PLANTS.length ? DEBUG_PLANTS[i]: null,
+      phaseStart: i < DEBUG_PLANTS.length ? Date.now() - 90000 : null,
+    }))
+    
+  } else {
+    pots = Array.from({ length: POT_COUNT }, (_, i) => ({
+      id: i,
+      plant: i < STARTER_PLANTS ? randomPlant() : null,
+      phaseStart: i < STARTER_PLANTS ? Date.now() - 50000 : null,
+    }))
+    
+  }
   return { pots, catalog: [], lastSave: Date.now() }
 }
 

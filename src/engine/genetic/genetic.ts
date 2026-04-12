@@ -1,5 +1,6 @@
 import type {
   Plant, HSLColor, PetalShape, PlantPhase, ChromaticL,
+  CenterType,
 } from '../../model/plant'
 import type { ColorBucket } from "../../model/genetic_model"
 import { pick, uid } from "./genetic_utils"
@@ -97,6 +98,48 @@ export function randomPlant(): Plant {
     },
     centerType:     { a: pick(CENTER_TYPES), b: pick(CENTER_TYPES) },
     centerColor:    { a: randomCenterColor(), b: randomCenterColor() },
+    phase: 1 as PlantPhase,
+    generation: 0,
+  }
+}
+
+export function plannedPlant(plantConfiguration: {
+  hue?: number, 
+  lightness?: ChromaticL, 
+  petalShape?: PetalShape, 
+  hasGradient?: boolean,
+  stemHeight?: number,
+  petalCount?: number,
+  centerType?: CenterType,
+  centerColor?: HSLColor
+  plantPhase?: PlantPhase
+}): Plant {
+  const config = {
+    hue: 0, 
+    lightness: 60 as ChromaticL, 
+    petalShape: 'round' as PetalShape, 
+    hasGradient: false,
+    stemHeight: MIN_STEM_HEIGHT + Math.random() * 0.65,
+    petalCount: 3 + Math.floor(Math.random() * 6),
+    centerType: 'dot' as CenterType,
+    centerColor: CENTER_COLORS[0],
+    plantPhase: 4,
+    ...plantConfiguration
+  }
+
+  return {
+    id: uid(),
+    stemHeight:     { a: config.stemHeight, b: config.stemHeight },
+    petalCount:     { a: config.petalCount, b: config.petalCount },
+    petalShape:     { a: config.petalShape, b: config.petalShape },
+    petalHue:       { a: config.hue, b: config.hue },
+    petalLightness: { a: config.lightness, b: config.lightness },
+    hasGradient:    {
+      a: config.hasGradient,
+      b: config.hasGradient
+    },
+    centerType:     { a: config.centerType, b: config.centerType },
+    centerColor:    { a: config.centerColor, b: config.centerColor },
     phase: 1 as PlantPhase,
     generation: 0,
   }
