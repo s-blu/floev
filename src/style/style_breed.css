@@ -31,13 +31,13 @@
   flex-shrink: 0;
 }
 
-/* ── Breed slot: X remove button ─────────────────────────────────────────────── */
 .breed-slot-inner {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
+/* ── Remove button ───────────────────────────────────────────────────────────── */
 .breed-slot-remove {
   position: absolute;
   top: 3px;
@@ -63,7 +63,7 @@
 .breed-slot:hover .breed-slot-remove { opacity: 1; }
 .breed-slot-remove:hover { background: #c0392b; opacity: 1; }
 
-/* ── Breed slot: homozygous badge ────────────────────────────────────────────── */
+/* ── Homozygous badge in breed slot ─────────────────────────────────────────── */
 .breed-slot-homo {
   position: absolute;
   top: 3px;
@@ -100,7 +100,7 @@
   color: var(--text3);
 }
 
-/* ── Estimate styles ──────────────────────────────────────────────────────────── */
+/* ── Estimate ────────────────────────────────────────────────────────────────── */
 .est-row {
   display: flex;
   align-items: center;
@@ -108,15 +108,6 @@
   margin-bottom: 3px;
   font-size: 12px;
   color: var(--text2);
-}
-
-.swatch {
-  display: inline-block;
-  width: 20px;
-  height: 14px;
-  border-radius: 3px;
-  border: 0.5px solid var(--border);
-  flex-shrink: 0;
 }
 
 .est-grad {
@@ -131,7 +122,7 @@
   margin-top: 4px;
 }
 
-/* ── Probability bars ─────────────────────────────────────────────────────────── */
+/* ── Probability groups ──────────────────────────────────────────────────────── */
 .prob-group {
   display: flex;
   flex-direction: column;
@@ -151,12 +142,22 @@
 .prob-entry {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   font-size: 11px;
 }
 
+/* Small colour swatch before the label (used for hue + lightness rows) */
+.prob-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+
 .prob-label {
-  width: 54px;
+  width: 50px;
   flex-shrink: 0;
   color: var(--text);
   font-size: 11px;
@@ -179,12 +180,8 @@
   min-width: 2px;
 }
 
-.prob-bar.high {
-  background: var(--green);
-}
-.prob-bar.middle {
-  background: var(--blue)
-}
+.prob-bar.high   { background: var(--green); }
+.prob-bar.middle { background: var(--blue); }
 
 .prob-pct {
   width: 30px;
@@ -192,68 +189,6 @@
   font-size: 10px;
   color: var(--text3);
   flex-shrink: 0;
-}
-
-/* ── Hidden allele chips ──────────────────────────────────────────────────────── */
-.allele-section {
-  margin-bottom: 6px;
-  padding-bottom: 7px;
-  border-bottom: 0.5px solid var(--border);
-}
-
-.allele-section-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text3);
-  margin-bottom: 6px;
-}
-
-.allele-parents-row {
-  display: flex;
-  gap: 12px;
-}
-
-.allele-parent {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.allele-parent-label {
-  font-size: 10px;
-  color: var(--text3);
-}
-
-.allele-chips-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-
-.allele-sep {
-  font-size: 10px;
-  color: var(--text3);
-}
-
-/* Colour chip: square swatch showing one allele's hue+lightness */
-.allele-chip {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  flex-shrink: 0;
-  cursor: default;
-}
-
-/* Lightness chip: narrower, shows only the L level */
-.allele-chip.lightness-chip {
-  width: 12px;
-  height: 18px;
-  border-radius: 3px;
 }
 
 /* ── Self-pollination dialog ──────────────────────────────────────────────────── */
@@ -301,7 +236,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .dialog-warning { background: rgba(163, 45, 45, 0.15); color: #F87171; }
+  .dialog-warning { background: rgba(163,45,45,0.15); color: #F87171; }
 }
 
 .dialog-actions {

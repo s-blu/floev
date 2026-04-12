@@ -1,5 +1,4 @@
 // ─── Floev — German UI strings ───────────────────────────────────────────────
-// To add a new language: copy this file, change the values, import it in i18n.ts.
 
 export const de = {
   // App shell
@@ -16,7 +15,7 @@ export const de = {
   phaseSeed: 'Samen',
   phaseSprout: 'Keimling',
   phaseBud: 'Jungpflanze',
-  phaseBloom: (name: string) => name,   // shows the plant's name at full bloom
+  phaseBloom: (name: string) => name,
 
   // Rarity labels
   rarityCommon: 'gewöhnlich',
@@ -30,6 +29,7 @@ export const de = {
   btnBreedSelect: 'Züchten',
   btnBreedDeselect: 'Abwählen',
   btnRemove: '✕',
+  btnRemoveTitle: 'Pflanze entfernen',
 
   // Trait labels (pot card)
   traitGradient: '〜',
@@ -37,6 +37,14 @@ export const de = {
   // Homozygous / pure-line badge
   homozygousBadge: '◈',
   homozygousTitle: 'Reinerbig — Nachkommen sind berechenbarer',
+
+  // Allele inspect (magnifier)
+  alleleInspectTitle: 'Allele anzeigen',
+  alleleOverlayTitle: 'Genetik',
+  alleleOverlayHue: 'Farbe',
+  alleleOverlayLight: 'Helligkeit',
+  alleleOverlayShape: 'Form',
+  alleleOverlayCenter: 'Mitte',
 
   // Breeding panel
   breedParent1: 'Elter 1',
@@ -49,18 +57,16 @@ export const de = {
   breedNoSpace: 'Kein leerer Topf! Entferne zuerst eine Pflanze.',
   breedSlotRemoveTitle: 'Entfernen',
 
-  // Breed estimate — hidden allele chips
-  estHiddenAlleles: 'Versteckte Allele',
-  estAlleleDominant: 'exprimiert',
-  estAlleleRecessive: 'rezessiv',
-
   // Breed estimate
-  estColorRange: 'Farbbereich (ca.)',
   estPetals: (min: number, max: number) => `Blätter: ${min}–${max}`,
+  estGroupColor: 'Farbe',
+  estGroupLightness: 'Helligkeit',
   estGroupShape: 'Blütenform',
   estGroupCenter: 'Blütenmitte',
   estGradient: (pct: number) => `✦ Farbverlauf: ~${pct}%`,
   estNoMutNote: 'Ohne seltene Mutationen.',
+  estAlleleDominant: 'exprimiert',
+  estAlleleRecessive: 'rezessiv',
 
   // Shape labels
   shapeRound: 'Rund',
@@ -75,8 +81,7 @@ export const de = {
   centerStamen: 'Staubbl.',
 
   // Self-pollination
-  selfPollinateBtn: '↺ Selbstbestäuben',
-  selfPollinateTitle: 'Pflanze bestäubt sich selbst — erzeugt reinerbigeren Samen, verbraucht die Pflanze',
+  selfPollinateTitle: 'Selbstbestäuben — verbraucht die Pflanze, erzeugt reinerbigeren Samen',
   selfPollinateConfirmTitle: 'Selbstbestäubung',
   selfPollinateConfirmText: 'Die Blüte bestäubt sich selbst. Der entstandene Samen ist reinerbiger als die Elternpflanze.',
   selfPollinateWarning: 'Die Pflanze wird danach entfernt.',
