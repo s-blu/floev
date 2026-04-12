@@ -21,17 +21,35 @@ export interface AllelePair<T> {
   b: T
 }
 
+// ─── Petal colour — H and L are inherited independently ──────────────────────
+//
+// S is always 90 for chromatic colours (fixed palette) and 0 for achromatic,
+// so it carries no independent genetic information and is not a separate locus.
+//
+// petalHue:        which colour family  (e.g. purple, red, green …)
+// petalLightness:  how dark/light       (30 = dark | 60 = mid | 90 = light)
+//
+// Achromatic exception: white (s=0, l=100) and grays (s=0, l∈{0,40,70}) are
+// encoded as special sentinel values in petalHue — see ACHROMATIC_HUE_* in
+// genetics.ts.  When an achromatic hue is expressed, petalLightness is ignored.
+
+export const CHROMATIC_L = [30, 60, 90] as const
+export type ChromaticL = typeof CHROMATIC_L[number]  // 30 | 60 | 90
+
 // ─── Plant ────────────────────────────────────────────────────────────────────
 
 export interface Plant {
   id: string
-  stemHeight: AllelePair<number>   // each allele: 0.35–1.0
-  petalCount: AllelePair<number>   // each allele: 3–8 (integer)
-  petalShape:  AllelePair<PetalShape>
-  petalColor:  AllelePair<HSLColor>
-  centerType:  AllelePair<CenterType>
-  centerColor: AllelePair<HSLColor>
-  gradientColor: AllelePair<HSLColor | null>
+  stemHeight:      AllelePair<number>       // each allele: 0.35–1.0
+  petalCount:      AllelePair<number>       // each allele: 3–8 (integer)
+  petalShape:      AllelePair<PetalShape>
+  /** Hue locus — which colour family (or achromatic sentinel). */
+  petalHue:        AllelePair<number>
+  /** Lightness locus — 30 | 60 | 90. Dominance: 30 > 60 > 90. */
+  petalLightness:  AllelePair<ChromaticL>
+  centerType:      AllelePair<CenterType>
+  centerColor:     AllelePair<HSLColor>
+  gradientColor:   AllelePair<HSLColor | null>
   phase: PlantPhase
   generation: number
   parentIds?: [string, string]

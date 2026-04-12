@@ -10,7 +10,7 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
   const cx = w / 2;
   const cy = h / 2;
 
-  const pc = expressedColor(plant.petalColor);
+  const pc = expressedColor(plant.petalHue, plant.petalLightness);
   const grad = expressedGradient(plant.gradientColor);
   const shape = expressedShape(plant.petalShape);
   const n = Math.round(expressedNumber(plant.petalCount));
@@ -35,7 +35,7 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
     body += petalToSVG(petal, fillStr, strokeStr);
   }
 
-  const cc = expressedColor(plant.centerColor);
+  const cc = plant.centerColor.a; //FIXME is that right?
   const centerType = expressedCenter(plant.centerType);
   body += renderCenter(centerType, cc, cx, cy);
 

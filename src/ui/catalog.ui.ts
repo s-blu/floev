@@ -97,7 +97,7 @@ export function renderCatalog(): void {
 
 function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const plant = entry.plant;
-  const pc = expressedColor(plant.petalColor);
+  const pc = expressedColor(plant.petalHue, plant.petalLightness);
   const grad = expressedGradient(plant.gradientColor);
   const shape = expressedShape(plant.petalShape);
   const center = expressedCenter(plant.centerType);

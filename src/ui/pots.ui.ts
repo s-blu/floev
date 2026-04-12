@@ -127,7 +127,7 @@ function renderPotButtons(pot: Pot, isBlooming: boolean, isSel: boolean): string
 
 function renderTraitInfo(pot: Pot): string {
   if (!pot?.plant) return '';
-  const pc = expressedColor(pot.plant.petalColor);
+  const pc = expressedColor(pot.plant.petalHue, pot.plant.petalLightness);
   const shape = expressedShape(pot.plant.petalShape);
   const hasGrad = expressedGradient(pot.plant.gradientColor) !== null;
   const count = Math.round(expressedNumber(pot.plant.petalCount));

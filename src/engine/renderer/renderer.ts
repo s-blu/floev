@@ -98,7 +98,7 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number): strin
 }
 
 function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number, body: string) {
-  const pc = expressedColor(plant.petalColor);
+  const pc = expressedColor(plant.petalHue, plant.petalLightness);
   const grad = expressedGradient(plant.gradientColor);
   const shape = expressedShape(plant.petalShape);
   const n = Math.round(expressedNumber(plant.petalCount));
@@ -119,7 +119,7 @@ function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number,
     body += petalToSVG(petal, fillStr, strokeStr);
   }
 
-  const cc = expressedColor(plant.centerColor);
+  const cc = plant.centerColor.a;  // centerColor is still a plain HSLColor AllelePair
   const centerType = expressedCenter(plant.centerType);
   body += renderCenter(centerType, cc, cx, bloomY);
 
@@ -127,7 +127,7 @@ function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number,
 }
 
 function renderBud(plant: Plant, body: string, cx: number, bloomY: number) {
-  const pc = expressedColor(plant.petalColor);
+  const pc = expressedColor(plant.petalHue, plant.petalLightness);
   body += `<ellipse cx="${cx}" cy="${bloomY + 2}" rx="7" ry="11" fill="#2d6e35"/>`;
   body += `<ellipse cx="${cx}" cy="${bloomY + 1}" rx="5" ry="8.5" fill="#3a9a45"/>`;
   body += `<ellipse cx="${cx - 1.5}" cy="${bloomY}" rx="2.5" ry="6" fill="${hsl(pc)}" opacity="0.5"/>`;

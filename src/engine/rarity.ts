@@ -5,11 +5,6 @@ import { expressedCenter, expressedColor, expressedGradient, expressedNumber, ex
 
 const SHAPE_SCORE: Record<PetalShape, number> = { round: 0, lanzett: 8, tropfen: 16, wavy: 25, zickzack: 40 }
 
-/**
- * Color rarity scores by bucket.
- * white = 0   — häufig (dominant, so players see it often)
- * gray = 35   — sehr selten (only 3 palette entries, recessive-like)
- */
 const COLOR_SCORE: Record<string, number> = {
   white: 0, yellow: 5, red: 12, pink: 16, purple: 20, blue: 27, green: 31, gray: 35,
 }
@@ -18,14 +13,13 @@ const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 8, stamen: 20 }
 
 function centerColorScore(c: HSLColor): number {
   const colorString = getColorString(c)
-
   switch (colorString) {
-    case (getColorString(CENTER_COLORS[0])): return 0
-    case (getColorString(CENTER_COLORS[1])): return 5
-    case (getColorString(CENTER_COLORS[2])): return 10
-    case (getColorString(CENTER_COLORS[3])): return 15
+    case getColorString(CENTER_COLORS[0]): return 0
+    case getColorString(CENTER_COLORS[1]): return 5
+    case getColorString(CENTER_COLORS[2]): return 10
+    case getColorString(CENTER_COLORS[3]): return 15
+    default: return 0
   }
-
   function getColorString(col: HSLColor) {
     return `${col.h}-${col.s}-${col.l}`
   }
@@ -33,9 +27,10 @@ function centerColorScore(c: HSLColor): number {
 
 export function calcRarityScore(plant: Plant): number {
   const shape  = expressedShape(plant.petalShape)
-  const color  = expressedColor(plant.petalColor)
+  const color  = expressedColor(plant.petalHue, plant.petalLightness)
   const center = expressedCenter(plant.centerType)
-  const cc     = expressedColor(plant.centerColor)
+  const cc     = plant.centerColor  // centerColor is still a full HSLColor AllelePair
+  const ccExpressed: HSLColor = cc.a  // dominant = first (same logic as before)
   const grad   = expressedGradient(plant.gradientColor)
   const count  = Math.round(expressedNumber(plant.petalCount))
   const stem   = expressedNumber(plant.stemHeight)
@@ -44,7 +39,7 @@ export function calcRarityScore(plant: Plant): number {
   score += SHAPE_SCORE[shape]
   score += COLOR_SCORE[colorBucket(color)] ?? 0
   score += CENTER_SCORE[center]
-  score += centerColorScore(cc)
+  score += centerColorScore(ccExpressed)
   score += grad !== null ? 20 : 0
   if (count >= 7) score += 5
   if (stem > 0.85) score += 5
