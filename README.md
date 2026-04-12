@@ -28,7 +28,8 @@ src/
 │ └── renderer/                    # Folder; Logik zum rendern der SVGs
 │     └── renderer.ts              # Hauptrendering der Blumen
 │     └── encyclopedia_renderer.ts # Blumenrendering für die Enzyklopädie
-│     └── petal_renderer.ts       # Renderin der verschiedenen Blütenarten
+│     └── petal_renderer.ts        # Rendering der verschiedenen Blütenarten
+│     └── center_renderer.ts       # Rendering der verschiedenen CenterTypes
 │     └── renderer_utils.ts        # Helper functions für SVG Renderings
 |-model/                # Folder; Interfaces and types
 │ └── plant.ts          # Alle TypeScript-Interfaces (Plant, Pot, GameState …)
@@ -38,11 +39,12 @@ src/
 │     └── ...           # translations for other languages, named after their 2 digit locale
 |-ui/                   # Folder; Logik zum Render der UI
 │ └── ui.ts             # Hauptfunktion für DOM Rendering, Event handling
-│ └── breedpanel_ui.ts  # UI für Züchtungspanel
-│ └── catalog_ui.ts     # UI für Enzyklopädie /Catalog
-│ └── pots_ui.ts        # UI für Pflanztöpfe
-|-style/                # Folder; CSS Styles
-│ └── style.css         # Globales CSS
+│ └── breedpanel_ui.ts     # UI für Züchtungspanel
+│ └── breedestimate_ui.ts  # UI für Kreuzungsvorhersage
+│ └── catalog_ui.ts           # UI für Enzyklopädie /Catalog
+│ └── pots_ui.ts              # UI für Pflanztöpfe
+|-style/                      # Folder; CSS Styles
+│ └── style.css               # Globales CSS
 │ └── style_breed.css         # Styles für das Züchtungspanel
 │ └── style_encyclopedia.css  # Styles für den Katalog/die Enzyklopädie 
 │ └── style_pots.css          # Styles für die Anzuchtstöpfe 

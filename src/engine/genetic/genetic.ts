@@ -2,8 +2,9 @@ import type {
   Plant, HSLColor, PetalShape, PlantPhase, ChromaticL,
 } from '../../model/plant'
 import type { ColorBucket } from "../../model/genetic_model"
-import { expressedColor, expressedShape, expressedCenter, expressedNumber, pick, uid } from "./genetic_utils"
+import { pick, uid } from "./genetic_utils"
 import { ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_LIGHT, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_WHITE, CENTER_COLORS, CENTER_TYPES, COLOR_GRAY_DARK, COLOR_GRAY_LIGHT, COLOR_GRAY_MID, COLOR_WHITE, GRADIENT_ALLELE_CHANCE_RANDOM, MIN_STEM_HEIGHT, PALETTE_HUES, PALETTE_HUES_BUCKETS, PALETTE_L, PALETTE_S, SHAPE_ALLELE_POOL } from "../../model/genetic_model"
+import { HUE_ALLELE_POOL, LIGHTNESS_ALLELE_POOL } from './dominance_utils'
 
 export function randomPetalShapeAllele(): PetalShape {
   return SHAPE_ALLELE_POOL[Math.floor(Math.random() * SHAPE_ALLELE_POOL.length)]
@@ -62,41 +63,6 @@ export function randomLightnessAllele(): ChromaticL {
   return pick([...PALETTE_L]) as ChromaticL
 }
 
-// ─── Allele pools for randomPlant ────────────────────────────────────────────
-//
-// HUE pool: same distribution as before — white common, grays rare.
-// LIGHTNESS pool: L=90 most common (light/pastel), L=30 rarest.
-
-function buildHueAllelePool(): number[] {
-  const pool: number[] = []
-
-  // White: häufig
-  for (let i = 0; i < 12; i++) pool.push(ACHROMATIC_HUE_WHITE)
-
-  // Chromatic hues — frequency independent of lightness now
-  for (const h of PALETTE_HUES) {
-    for (let i = 0; i < 9; i++) pool.push(h)   // equal weight per hue
-  }
-
-  // Grays: sehr selten
-  pool.push(ACHROMATIC_HUE_GRAY_DARK)
-  pool.push(ACHROMATIC_HUE_GRAY_MID)
-  pool.push(ACHROMATIC_HUE_GRAY_LIGHT)
-
-  return pool
-}
-
-function buildLightnessAllelePool(): ChromaticL[] {
-  const pool: ChromaticL[] = []
-  for (let i = 0; i < 5; i++) pool.push(90)  // light — häufig
-  for (let i = 0; i < 3; i++) pool.push(60)  // mid
-  for (let i = 0; i < 1; i++) pool.push(30)  // dark — selten
-  return pool
-}
-
-const HUE_ALLELE_POOL       = buildHueAllelePool()
-const LIGHTNESS_ALLELE_POOL = buildLightnessAllelePool()
-
 function randomHueAllele(): number {
   return HUE_ALLELE_POOL[Math.floor(Math.random() * HUE_ALLELE_POOL.length)]
 }
@@ -142,22 +108,4 @@ export function randomPlant(): Plant {
   }
 }
 
-// ─── Catalog key ──────────────────────────────────────────────────────────────
 
-export function catalogKey(plant: Plant): string {
-  const color  = expressedColor(plant.petalHue, plant.petalLightness)
-  const shape  = expressedShape(plant.petalShape)
-  const center = expressedCenter(plant.centerType)
-  const count  = Math.round(expressedNumber(plant.petalCount))
-  return `${count}-${shape}-${center}-${color.h}-${color.s}-${color.l}`
-}
-
-// ─── randomColorForBucket — kept for inheritance.ts mutation ─────────────────
-/** @deprecated Use randomHueForBucket + randomLightnessAllele instead. */
-export function randomColorForBucket(bucket: ColorBucket): HSLColor {
-  switch (bucket) {
-    case 'white': return COLOR_WHITE
-    case 'gray':  return pick([COLOR_GRAY_DARK, COLOR_GRAY_MID, COLOR_GRAY_LIGHT])
-    default:      return quantizeColor(pick(PALETTE_HUES_BUCKETS[bucket]), PALETTE_S, pick([...PALETTE_L]))
-  }
-}
