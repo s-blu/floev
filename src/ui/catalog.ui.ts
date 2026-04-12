@@ -1,5 +1,5 @@
 import { RARITY_COLORS, RARITY_LABELS } from '../engine/game';
-import { expressedColor, expressedGradient, expressedShape, expressedCenter, expressedNumber } from '../engine/genetic.utils';
+import { expressedColor, expressedGradient, expressedShape, expressedCenter, expressedNumber, isHomozygous } from '../engine/genetic.utils';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia.renderer';
 import type { Rarity, CatalogEntry } from '../model/plant';
 import { openAncestryIds, state } from './ui';
@@ -103,6 +103,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const center = expressedCenter(plant.centerType);
   const count = Math.round(expressedNumber(plant.petalCount));
   const hasGrad = grad !== null;
+  const homozyg = isHomozygous(plant);
 
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`;
   const swatchStyle = hasGrad
@@ -125,6 +126,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   let ancestryHtml = '';
   if (plant.parentIds) {
     const isOpen = openAncestryIds.has(plant.id);
+    const isSelfed = plant.selfed === true;
     const renderParentSlot = (e: CatalogEntry | null, id: string) => {
       const n = e ? (entryIndex.get(e.plant.id) ?? '?') : '?';
       const name = e ? t.catalogParentName(n) : t.catalogParentUnknown;
@@ -133,23 +135,44 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
         : `<div class="enc-parent-thumb enc-parent-unknown" title="${t.catalogParentUnknownTitle(id)}"><span>?</span></div>`;
       return `<div class="enc-parent-slot">${thumb}<span class="enc-parent-name">${name}</span></div>`;
     };
-    ancestryHtml = `
-      <details class="enc-ancestry" data-id="${plant.id}"${isOpen ? ' open' : ''}>
-        <summary>${t.catalogAncestry}</summary>
-        <div class="enc-parents-row">
-          ${renderParentSlot(parentA, plant.parentIds[0])}
-          <span class="enc-parent-cross">×</span>
-          ${renderParentSlot(parentB, plant.parentIds[1])}
-        </div>
-      </details>`;
+
+    if (isSelfed) {
+      // Self-pollinated: show only one parent with a self-cross symbol
+      ancestryHtml = `
+        <details class="enc-ancestry" data-id="${plant.id}"${isOpen ? ' open' : ''}>
+          <summary>${t.catalogAncestry}</summary>
+          <div class="enc-parents-row">
+            ${renderParentSlot(parentA, plant.parentIds[0])}
+            <span class="enc-parent-cross" title="Selbstbestäubt">↺</span>
+          </div>
+        </details>`;
+    } else {
+      ancestryHtml = `
+        <details class="enc-ancestry" data-id="${plant.id}"${isOpen ? ' open' : ''}>
+          <summary>${t.catalogAncestry}</summary>
+          <div class="enc-parents-row">
+            ${renderParentSlot(parentA, plant.parentIds[0])}
+            <span class="enc-parent-cross">×</span>
+            ${renderParentSlot(parentB, plant.parentIds[1])}
+          </div>
+        </details>`;
+    }
   }
+
+  // Homozygous badge shown next to rarity badge
+  const homozygBadge = homozyg
+    ? `<span class="enc-homozygous-badge" title="${t.homozygousTitle}">${t.catalogHomozygousBadge}</span>`
+    : '';
 
   el.innerHTML = `
     <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
     <div class="enc-body">
       <div class="enc-entry-num">${t.catalogEntryNum(num)}</div>
       <div class="enc-entry-name" style="font-family: var(--font-serif, Georgia, serif)">${t.catalogEntryName(num)}</div>
-      <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${RARITY_LABELS[entry.rarity]}</span>
+      <div class="enc-badges-row">
+        <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${RARITY_LABELS[entry.rarity]}</span>
+        ${homozygBadge}
+      </div>
       <div class="enc-meta">
         ${renderMetaRow(t.catalogMetaPetals, `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}
         ${renderMetaRow(t.catalogMetaCenter, `${CENTER_LABELS[center] ?? center}`)}

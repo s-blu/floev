@@ -155,3 +155,33 @@ export function dominantCenter(a: CenterType, b: CenterType): CenterType {
   const ib = CENTER_TYPE_DOMINANCE.indexOf(b)
   return ia <= ib ? a : b
 }
+
+// ─── Homozygosity ─────────────────────────────────────────────────────────────
+
+/**
+ * Returns true if ALL genetically meaningful loci of a plant are homozygous
+ * (both alleles identical). Used to show the "pure line" indicator.
+ *
+ * Numeric loci (stemHeight, petalCount) are considered homozygous when their
+ * alleles are within a small tolerance, since they carry continuous jitter.
+ */
+export function isHomozygous(plant: import('../model/plant').Plant): boolean {
+  // Discrete loci — must be strictly equal
+  if (plant.petalShape.a    !== plant.petalShape.b)    return false
+  if (plant.centerType.a    !== plant.centerType.b)    return false
+  if (plant.petalHue.a      !== plant.petalHue.b)      return false
+  if (plant.petalLightness.a !== plant.petalLightness.b) return false
+
+  // Gradient locus — both null or both non-null with same hue
+  const gA = plant.gradientColor.a
+  const gB = plant.gradientColor.b
+  if ((gA === null) !== (gB === null)) return false
+  if (gA !== null && gB !== null && gA.h !== gB.h)     return false
+
+  // Numeric loci — allow small tolerance (jitter artefacts)
+  const NUM_TOL = 0.12
+  if (Math.abs(plant.stemHeight.a  - plant.stemHeight.b)  > NUM_TOL) return false
+  if (Math.abs(plant.petalCount.a  - plant.petalCount.b)  > 1.0)     return false
+
+  return true
+}

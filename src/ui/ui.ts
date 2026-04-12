@@ -6,7 +6,7 @@ import {
   placeSeedInEmptyPot,
   saveState,
 } from '../engine/game'
-import { breedPlants } from '../engine/breed'
+import { breedPlants, selfPollinateePlant } from '../engine/breed'
 import { renderPots } from './pots.ui'
 import { renderBreedPanel } from './breedpanel.ui'
 import { renderCatalog } from './catalog.ui'
@@ -87,6 +87,76 @@ export function handleBreedSelect(potId: number): void {
   else if (breedState.breedSelA === null) { breedState.breedSelA = potId }
   else if (breedState.breedSelB === null) { breedState.breedSelB = potId }
 
+  render()
+}
+
+export function handleSelfPollinate(potId: number): void {
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot?.plant || pot.plant.phase < 4) return
+
+  // Show confirmation dialog
+  showSelfPollinateDialog(potId)
+}
+
+function showSelfPollinateDialog(potId: number): void {
+  // Remove any existing dialog
+  document.getElementById('selfpollinate-dialog')?.remove()
+
+  const overlay = document.createElement('div')
+  overlay.id = 'selfpollinate-dialog'
+  overlay.className = 'dialog-overlay'
+  overlay.innerHTML = `
+    <div class="dialog-box">
+      <p class="dialog-title">${t.selfPollinateConfirmTitle}</p>
+      <p class="dialog-text">${t.selfPollinateConfirmText}</p>
+      <p class="dialog-warning">⚠ ${t.selfPollinateWarning}</p>
+      <div class="dialog-actions">
+        <button class="btn" id="selfpollinate-cancel">${t.selfPollinateCancel}</button>
+        <button class="btn btn-confirm" id="selfpollinate-confirm">${t.selfPollinateConfirm}</button>
+      </div>
+    </div>`
+
+  document.body.appendChild(overlay)
+
+  document.getElementById('selfpollinate-cancel')?.addEventListener('click', () => {
+    overlay.remove()
+  })
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove()
+  })
+
+  document.getElementById('selfpollinate-confirm')?.addEventListener('click', () => {
+    overlay.remove()
+    executeSelfPollinate(potId)
+  })
+}
+
+function executeSelfPollinate(potId: number): void {
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot?.plant) return
+
+  const child = selfPollinateePlant(pot.plant)
+  child.selfed = true
+
+  // Clear the parent from breeding selection if needed
+  if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
+  if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
+
+  // Remove parent plant (it is consumed)
+  removePlant(state, potId)
+
+  // Place child seed
+  const placed = placeSeedInEmptyPot(state, child)
+  if (placed === null) {
+    showMsg(t.breedNoSpace)
+    saveState(state)
+    render()
+    return
+  }
+
+  showMsg(t.selfPollinateSuccess(child.generation))
+  saveState(state)
   render()
 }
 

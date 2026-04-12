@@ -34,6 +34,10 @@ export const de = {
   // Trait labels (pot card)
   traitGradient: '〜',
 
+  // Homozygous / pure-line badge
+  homozygousBadge: '◈',
+  homozygousTitle: 'Reinerbig — Nachkommen sind berechenbarer',
+
   // Breeding panel
   breedParent1: 'Elter 1',
   breedParent2: 'Elter 2',
@@ -44,6 +48,11 @@ export const de = {
   breedSuccess: (gen: number) => `Samen gezüchtet! Generation ${gen}.`,
   breedNoSpace: 'Kein leerer Topf! Entferne zuerst eine Pflanze.',
   breedSlotRemoveTitle: 'Entfernen',
+
+  // Breed estimate — hidden allele chips
+  estHiddenAlleles: 'Versteckte Allele',
+  estAlleleDominant: 'exprimiert',
+  estAlleleRecessive: 'rezessiv',
 
   // Breed estimate
   estColorRange: 'Farbbereich (ca.)',
@@ -65,6 +74,16 @@ export const de = {
   centerDisc: 'Scheibe',
   centerStamen: 'Staubbl.',
 
+  // Self-pollination
+  selfPollinateBtn: '↺ Selbstbestäuben',
+  selfPollinateTitle: 'Pflanze bestäubt sich selbst — erzeugt reinerbigeren Samen, verbraucht die Pflanze',
+  selfPollinateConfirmTitle: 'Selbstbestäubung',
+  selfPollinateConfirmText: 'Die Blüte bestäubt sich selbst. Der entstandene Samen ist reinerbiger als die Elternpflanze.',
+  selfPollinateWarning: 'Die Pflanze wird danach entfernt.',
+  selfPollinateConfirm: 'Bestäuben',
+  selfPollinateCancel: 'Abbrechen',
+  selfPollinateSuccess: (gen: number) => `Selbstbestäubt! Samen der Generation ${gen} gepflanzt.`,
+
   // Catalog / encyclopedia
   catalogEmpty: 'Noch keine Entdeckungen.',
   catalogMetaPetals: 'Blätter',
@@ -78,6 +97,7 @@ export const de = {
   catalogParentName: (n: number | string) => `Blüte ${n}`,
   catalogParentUnknownTitle: (id: string) => `Elter unbekannt (${id})`,
   catalogParentGenTitle: (gen: number) => `Gen. ${gen}`,
+  catalogHomozygousBadge: '◈ reinerbig',
 
   // Messages
   msgSeedPlanted: 'Samen gepflanzt!',

@@ -46,13 +46,13 @@
 }
 
 .pot-card {
-  position: relative;   /* needed so the absolute dot stays inside */
+  position: relative;
 }
 
-/* Header row sits at the very top of the card and gives the dot its anchor */
+/* ── Header row: anchors both the rarity dot and homozygous badge ────────────── */
 .pot-card-header {
   width: 100%;
-  height: 0;           /* zero height — dot floats above, doesn't push content */
+  height: 0;
   position: relative;
 }
 
@@ -62,8 +62,32 @@
   right: -4px;
   font-size: 13px;
   line-height: 1;
-  /* Slight shadow so the symbol stays legible on any background */
   filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
   pointer-events: none;
   user-select: none;
+}
+
+/* ── Homozygous badge: top-left corner of the pot card ───────────────────────── */
+.pot-homozygous-badge {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--green);
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Self-pollinate button ────────────────────────────────────────────────────── */
+.btn-sm.selfpollinate {
+  font-size: 10px;
+  color: var(--text2);
+  border-style: dashed;
+}
+
+.btn-sm.selfpollinate:hover {
+  background: var(--bg3);
+  color: var(--text);
 }
