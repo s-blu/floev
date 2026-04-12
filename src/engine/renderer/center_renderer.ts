@@ -1,5 +1,5 @@
 import { expressedCenter, expressedColor } from '../genetic/genetic_utils';
-import { hsl, clamp } from './renderer.utils';
+import { hsl, clamp } from './renderer_utils';
 
 // ─── Center renderer (shared logic) ──────────────────────────────────────────
 

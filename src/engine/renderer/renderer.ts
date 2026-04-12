@@ -5,8 +5,8 @@ import {
 } from "../genetic/genetic_utils"
 import { buildPetalPath, petalToSVG } from './petal_renderer';
 import { renderCenter } from './center_renderer';
-import { hsl, clamp, darken } from './renderer.utils'
-import { renderGradientDef } from './renderer.utils';
+import { hsl, clamp, darken } from './renderer_utils'
+import { renderGradientDef } from './renderer_utils';
 
 // ─── Curved stem ─────────────────────────────────────────────────────────────
 
