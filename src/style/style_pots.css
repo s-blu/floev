@@ -18,8 +18,23 @@
   position: relative;
 }
 
-.pot-card.selected  { border: 1.5px solid var(--green); }
-.pot-card.blooming  { border-color: #D4537E; }
+.pot-card.selected  { 
+  border: 1px dashed #6c6c6c; 
+}
+.pot-card.blooming  { border-color: var(--rarity-0); }
+
+.pot-card.blooming.rarity-1 {
+  border-color: var(--rarity-1);
+}
+.pot-card.blooming.rarity-2 {
+  border-color: var(--rarity-2);
+}
+.pot-card.blooming.rarity-3 {
+  border-color: var(--rarity-3);
+}
+.pot-card.blooming.rarity-4 {
+  border-color: var(--rarity-4);
+}
 
 .plant-view { width: 100px; height: 130px; flex-shrink: 0; }
 .plant-view svg { display: block; }

@@ -120,8 +120,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const badge = RARITY_BADGE_STYLES[entry.rarity];
 
   const el = document.createElement('div');
-  el.className = 'enc-entry';
-  el.style.borderLeftColor = RARITY_COLORS[entry.rarity];
+  el.className = `enc-entry rarity-${entry.rarity}`;
 
   let ancestryHtml = '';
   if (plant.parentIds) {
@@ -165,22 +164,26 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
     : '';
 
   el.innerHTML = `
-    <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
-    <div class="enc-body">
+    <div class="enc-title">
+      <div class="enc-entry-name">${t.catalogEntryName(num)}</div>
       <div class="enc-entry-num">${t.catalogEntryNum(num)}</div>
-      <div class="enc-entry-name" style="font-family: var(--font-serif, Georgia, serif)">${t.catalogEntryName(num)}</div>
-      <div class="enc-badges-row">
-        <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${RARITY_LABELS[entry.rarity]}</span>
-        ${homozygBadge}
+    </div>
+    <div class="enc-body">
+      <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
+      <div class="enc-info">
+          <div class="enc-badges-row">
+          <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${RARITY_LABELS[entry.rarity]}</span>
+          ${homozygBadge}
+        </div>
+        <div class="enc-meta">
+          ${renderMetaRow(t.catalogMetaPetals, `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}
+          ${renderMetaRow(t.catalogMetaCenter, `${CENTER_LABELS[center] ?? center}`)}
+          ${renderMetaRow(t.catalogMetaColor, `<span class="enc-color-swatch" style="${swatchStyle}"></span>`)}
+          ${renderMetaRow(t.catalogMetaGen, `${plant.generation}`)}
+        </div>
+        <div class="enc-discovered">${formatDate(entry.discovered)}</div>
+        ${ancestryHtml}
       </div>
-      <div class="enc-meta">
-        ${renderMetaRow(t.catalogMetaPetals, `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}
-        ${renderMetaRow(t.catalogMetaCenter, `${CENTER_LABELS[center] ?? center}`)}
-        ${renderMetaRow(t.catalogMetaColor, `<span class="enc-color-swatch" style="${swatchStyle}"></span>`)}
-        ${renderMetaRow(t.catalogMetaGen, `${plant.generation}`)}
-      </div>
-      <div class="enc-discovered">${formatDate(entry.discovered)}</div>
-      ${ancestryHtml}
     </div>`;
 
   return el;

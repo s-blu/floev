@@ -17,6 +17,12 @@
   --pot-brown:   #b8724a;
   --green:       #1D9E75;
   --blue:        #2a56cf;
+
+  --rarity-0: #888780;
+  --rarity-1: #1D9E75;
+  --rarity-2: #4655e0;
+  --rarity-3: #b437ee;
+  --rarity-4: #f08000;
 }
 
 @media (prefers-color-scheme: dark) {

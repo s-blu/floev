@@ -50,17 +50,19 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   const card = document.createElement('div');
   const isSelected = pot.id === selA || pot.id === selB;
   const isBlooming = pot.plant?.phase === 4;
+  const r = rarity(pot);
 
   card.className = [
     'pot-card',
     isSelected ? 'selected' : '',
     isBlooming && !isSelected ? 'blooming' : '',
+    isBlooming ? `rarity-${r}` : ''
   ].filter(Boolean).join(' ');
 
   // ── Header: badges anchored top-left / top-right ──
   let headerHtml = '<div class="pot-card-header">';
   if (isBlooming && pot.plant) {
-    const r = rarity(pot);
+
     const homozyg = isHomozygous(pot.plant);
     if (homozyg) {
       headerHtml += `<span class="pot-homozygous-badge" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;

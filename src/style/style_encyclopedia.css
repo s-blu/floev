@@ -52,11 +52,9 @@
 .enc-entry {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  background: var(--bg);
-  border: 0.5px solid rgba(0,0,0,0.09);
-  border-left: 3px solid #ccc;
-  border-radius: 10px;
+  flex-direction: column;
+  background:hsl(45, 33%, 96%);
+  border-radius: 3px;
   padding: 10px 12px;
 }
 
@@ -70,9 +68,9 @@
 /* ── Blüte (links) ──────────────────────────────────────────────────────── */
 
 .enc-bloom {
+  height: 100%;
   flex-shrink: 0;
   width: 80px;
-  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,12 +84,47 @@
 /* ── Body (rechts) ──────────────────────────────────────────────────────── */
 
 .enc-body {
+  display: flex;
   flex: 1;
   min-width: 0;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
 /* ── Nummer + Name ──────────────────────────────────────────────────────── */
+
+
+.enc-bloom {
+  height: 100%;
+  flex-shrink: 0;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.enc-title {
+  display: flex;
+  align-items: self-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.enc-body {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+
+  flex-direction: row; 
+  width: 100%;
+}
+
+.enc-info {
+  flex: 1;
+  min-width: 0;
+  margin-left: 10px; /* Optional: Abstand zum SVG */
+}
 
 .enc-entry-num {
   font-size: 9px;
@@ -103,6 +136,7 @@
 }
 
 .enc-entry-name {
+  font-family: var(--font-serif, Georgia, serif);
   font-size: 14px;
   font-weight: 500;
   color: var(--text);
