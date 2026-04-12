@@ -129,7 +129,7 @@ function hueProbs(
   // Count expressed hue per combination (dominant wins)
   const counts = new Map<number, number>()
   for (const [a, b] of alleles) {
-    const expressed = _dominantHue(a, b)
+    const expressed = dominantHue(a, b)
     counts.set(expressed, (counts.get(expressed) ?? 0) + 1)
   }
 
@@ -243,31 +243,4 @@ function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): string 
     </div>
     ${e.gradPct > 0 ? `<div class="est-grad">${t.estGradient(e.gradPct)}</div>` : ''}
     <div class="est-note">${t.estNoMutNote}</div>`
-}
-
-// ─── Internal dominantHue helper ─────────────────────────────────────────────
-// Mirrors genetic.utils logic inline to avoid a circular import in this module.
-import { PALETTE_HUE_RANGES } from "../model/genetic_model";
-import { COLOR_BUCKET_DOMINANCE } from "../model/dominance";
-const _W  = ACHROMATIC_HUE_WHITE;
-const _GD = ACHROMATIC_HUE_GRAY_DARK;
-const _GM = ACHROMATIC_HUE_GRAY_MID;
-const _GL = ACHROMATIC_HUE_GRAY_LIGHT;
-
-function _hueBucket(h: number): string {
-  if (h === _W)  return 'white'
-  if (h === _GD || h === _GM || h === _GL) return 'gray'
-  if (PALETTE_HUE_RANGES.yellow(h)) return 'yellow'
-  if (PALETTE_HUE_RANGES.red(h))    return 'red'
-  if (PALETTE_HUE_RANGES.green(h))  return 'green'
-  if (PALETTE_HUE_RANGES.blue(h))   return 'blue'
-  if (PALETTE_HUE_RANGES.purple(h)) return 'purple'
-  if (PALETTE_HUE_RANGES.pink(h))   return 'pink'
-  return 'blue'
-}
-
-function _dominantHue(a: number, b: number): number {
-  const ia = COLOR_BUCKET_DOMINANCE.indexOf(_hueBucket(a) as any)
-  const ib = COLOR_BUCKET_DOMINANCE.indexOf(_hueBucket(b) as any)
-  return ia <= ib ? a : b
 }
