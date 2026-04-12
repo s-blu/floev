@@ -37,7 +37,7 @@
 }
 
 .plant-view { width: 100px; height: 130px; flex-shrink: 0; }
-.plant-view svg { display: block; }
+.plant-view svg { display: block; overflow: visible; }
 
 /* Interactive wrapper needed for the magnifier button positioning */
 .plant-view--interactive {
