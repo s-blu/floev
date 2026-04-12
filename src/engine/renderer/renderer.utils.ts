@@ -1,4 +1,4 @@
-import type { HSLColor } from '../../model/plant';
+import type { HSLColor, PetalShape } from '../../model/plant';
 
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -22,12 +22,14 @@ export function darken(c: HSLColor): HSLColor {
 //
 // For achromatic hues (s=0) we map to equivalent lightness stops.
 //
-export function renderGradientDef(petalColor: HSLColor, gradId: string): string {
-  const { h, s } = petalColor
+export function renderGradientDef(petalColor: HSLColor, petalShape: PetalShape, gradId: string): string {
+  let { h, s } = petalColor
 
   let c90: string, c60: string, c30: string
 
   if (s === 0) {
+    h = 0;
+    s = 0;
     // Achromatic: use plain lightness steps
     c90 = `hsl(0,0%,90%)`
     c60 = `hsl(0,0%,55%)`
@@ -38,12 +40,45 @@ export function renderGradientDef(petalColor: HSLColor, gradId: string): string 
     c30 = `hsl(${h},${s}%,30%)`
   }
 
+  const gradientMap = {
+    0: hslString(90),
+    15: hslString(85),
+    30: hslString(70),
+    40: hslString(60),
+    60: hslString(50),
+    70: hslString(40),
+    85: hslString(35),
+    100: hslString(30)
+  }
+
+  function hslString(l: number) {
+    return `hsl(${h},${s}%,${l}%)`
+  }
+
+  const gradientStops = Object.keys(gradientMap).map(key => `<stop offset="${key}%"   stop-color="${gradientMap[key]}"/>`)
+  const coords = {
+    cx: 20,
+    cy: 50,
+    r: 75
+  }
+
+  if (petalShape === 'wavy') {
+    coords.cx = 50;
+    coords.cy = 10;
+  }
+  if (petalShape === 'tropfen') {
+    coords.cx = 50;
+    coords.r = 50;
+  }
+  if (petalShape === 'zickzack') {
+    coords.cx = 50;
+    coords.r = 65;
+  }
+
+
   return (
-    `<radialGradient id="${gradId}" cx="50%" cy="50%" r="100%">` +
-    `<stop offset="0%"   stop-color="${c90}"/>` +
-    `<stop offset="25%"  stop-color="${c90}"/>` +
-    `<stop offset="75%"  stop-color="${c60}"/>` +
-    `<stop offset="100%" stop-color="${c30}"/>` +
+    `<radialGradient id="${gradId}" cx="${coords.cx}%" cy="${coords.cy}%" r="${coords.r}%">` +
+    gradientStops +
     `</radialGradient>`
   )
 }

@@ -68,7 +68,7 @@ function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number,
 
   const gradId = `g${plant.id.replace(/[^a-z0-9]/gi, '')}`;
   if (hasGrad) {
-    defs += renderGradientDef(pc, gradId);
+    defs += renderGradientDef(pc, shape, gradId);
   }
 
   const fillStr = hasGrad ? `url(#${gradId})` : hsl(pc);

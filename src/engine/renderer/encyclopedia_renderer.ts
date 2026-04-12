@@ -22,7 +22,7 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
 
   const gradId = `gb${plant.id.replace(/[^a-z0-9]/gi, '')}`;
   if (hasGrad) {
-    defs += renderGradientDef(pc, gradId);
+    defs += renderGradientDef(pc, shape, gradId);
   }
 
   const fillStr = hasGrad ? `url(#${gradId})` : hsl(pc);
