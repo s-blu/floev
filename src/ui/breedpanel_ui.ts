@@ -3,11 +3,12 @@ import { renderPlantSVG } from '../engine/renderer/renderer';
 import type { BreedEstimate } from '../model/plant';
 import { state, render, breedState } from './ui';
 import { t } from '../model/i18n';
-import { isHomozygous } from '../engine/genetic_utils';
+import { isHomozygous } from '../engine/genetic/genetic_utils';
+import { PALETTE_S } from '../model/genetic_model';
 import {
   ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK,
-  ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S,
-} from '../engine/genetic';
+  ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT
+} from '../model/genetic_model';
 import type { Plant } from '../model/plant';
 
 // ─── Breeding panel ───────────────────────────────────────────────────────────
@@ -246,7 +247,8 @@ function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): string 
 
 // ─── Internal dominantHue helper ─────────────────────────────────────────────
 // Mirrors genetic.utils logic inline to avoid a circular import in this module.
-import { COLOR_BUCKET_DOMINANCE, PALETTE_HUE_RANGES } from '../engine/genetic_utils';
+import { PALETTE_HUE_RANGES } from "../model/genetic_model";
+import { COLOR_BUCKET_DOMINANCE } from "../model/dominance";
 const _W  = ACHROMATIC_HUE_WHITE;
 const _GD = ACHROMATIC_HUE_GRAY_DARK;
 const _GM = ACHROMATIC_HUE_GRAY_MID;

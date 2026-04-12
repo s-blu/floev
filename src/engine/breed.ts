@@ -1,10 +1,12 @@
-import { uid, MIN_STEM_HEIGHT, clamp, PETAL_SHAPES, CENTER_TYPES, MUTATION_CHANCE } from './genetic';
-import { inheritHue, inheritLightness, inheritGradient, inheritNumber, inheritDiscrete } from './inheritance';
+import { uid, clamp } from './genetic/genetic_utils';
+import { MIN_STEM_HEIGHT, CENTER_TYPES, MUTATION_CHANCE } from '../model/genetic_model';
+import { PETAL_SHAPES } from '../model/genetic_model';
+import { inheritHue, inheritLightness, inheritGradient, inheritNumber, inheritDiscrete } from './genetic/inheritance';
 import { type Plant, type PlantPhase, type BreedEstimate, type PetalShape, type CenterType } from '../model/plant';
 import {
-  expressedColor, expressedNumber, expressedShape, expressedGradient,
-  dominantShape, dominantCenter, CENTER_COLORS
-} from "./genetic_utils";
+  expressedColor, expressedNumber, expressedShape, expressedGradient} from "./genetic/genetic_utils";
+import { CENTER_COLORS } from "../model/genetic_model";
+import { dominantShape, dominantCenter } from "./genetic/dominance_utils";
 
 // ─── Cross-breeding ───────────────────────────────────────────────────────────
 

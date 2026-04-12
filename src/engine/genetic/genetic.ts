@@ -1,86 +1,13 @@
 import type {
-  Plant, HSLColor, PetalShape, CenterType, PlantPhase, ChromaticL,
-} from '../model/plant'
-import type { ColorBucket } from "./genetic_utils"
-import { PALETTE_HUE_RANGES, expressedColor, expressedShape, expressedCenter, expressedNumber, CENTER_COLORS } from "./genetic_utils"
-
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-export const PETAL_SHAPES: PetalShape[] = ['round', 'lanzett', 'tropfen', 'wavy', 'zickzack']
-
-const SHAPE_ALLELE_POOL: PetalShape[] = [
-  ...Array(35).fill('round'),
-  ...Array(25).fill('lanzett'),
-  ...Array(18).fill('tropfen'),
-  ...Array(14).fill('wavy'),
-  ...Array(8).fill('zickzack'),
-]
+  Plant, HSLColor, PetalShape, PlantPhase, ChromaticL,
+} from '../../model/plant'
+import type { ColorBucket } from "../../model/genetic_model"
+import { expressedColor, expressedShape, expressedCenter, expressedNumber, pick, uid } from "./genetic_utils"
+import { ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_LIGHT, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_WHITE, CENTER_COLORS, CENTER_TYPES, COLOR_GRAY_DARK, COLOR_GRAY_LIGHT, COLOR_GRAY_MID, COLOR_WHITE, GRADIENT_ALLELE_CHANCE_RANDOM, MIN_STEM_HEIGHT, PALETTE_HUES, PALETTE_HUES_BUCKETS, PALETTE_L, PALETTE_S, SHAPE_ALLELE_POOL } from "../../model/genetic_model"
 
 export function randomPetalShapeAllele(): PetalShape {
   return SHAPE_ALLELE_POOL[Math.floor(Math.random() * SHAPE_ALLELE_POOL.length)]
 }
-export const CENTER_TYPES: CenterType[] = ['dot', 'disc', 'stamen']
-
-export const MUTATION_CHANCE = 0.04
-
-const GRADIENT_ALLELE_CHANCE_RANDOM = 0.28
-export const GRADIENT_ALLELE_KEEP_CHANCE = 0.55
-export const MIN_STEM_HEIGHT = 0.35
-
-export const PALETTE_S = 90
-
-// ─── Achromatic sentinel hues ─────────────────────────────────────────────────
-//
-// These are special out-of-range values stored in the petalHue locus to encode
-// achromatic colours.  They are never real hue degrees.
-// When one of these is the expressed hue, petalLightness is ignored.
-//
-export const ACHROMATIC_HUE_WHITE      = -1
-export const ACHROMATIC_HUE_GRAY_DARK  = -2
-export const ACHROMATIC_HUE_GRAY_MID   = -3
-export const ACHROMATIC_HUE_GRAY_LIGHT = -4
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-export function uid(): string {
-  return Math.random().toString(36).slice(2, 8)
-}
-
-export function clamp(v: number, lo: number, hi: number): number {
-  return Math.max(lo, Math.min(hi, v))
-}
-
-export function jitter(v: number, range: number): number {
-  return v + (Math.random() - 0.5) * range
-}
-
-export function pick<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)]
-}
-
-// ─── Palette hues ─────────────────────────────────────────────────────────────
-
-//                    red   / y / turquoise / blue / purple   / pink        / red
-export const PALETTE_HUES = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350] as const
-
-const PALETTE_HUES_BUCKETS = {
-  yellow: PALETTE_HUES.filter(PALETTE_HUE_RANGES.yellow),
-  red:    PALETTE_HUES.filter(PALETTE_HUE_RANGES.red),
-  green:  PALETTE_HUES.filter(PALETTE_HUE_RANGES.green),
-  blue:   PALETTE_HUES.filter(PALETTE_HUE_RANGES.blue),
-  purple: PALETTE_HUES.filter(PALETTE_HUE_RANGES.purple),
-  pink:   PALETTE_HUES.filter(PALETTE_HUE_RANGES.pink),
-}
-
-export const PALETTE_L = [30, 60, 90] as const
-
-// ─── Achromatic legacy color objects (used by centerColor / gradients) ────────
-
-export const COLOR_WHITE:      HSLColor = { h: 0, s: 0, l: 100 }
-export const COLOR_GRAY_DARK:  HSLColor = { h: 0, s: 0, l: 0   }
-export const COLOR_GRAY_MID:   HSLColor = { h: 0, s: 0, l: 40  }
-export const COLOR_GRAY_LIGHT: HSLColor = { h: 0, s: 0, l: 70  }
-
 // ─── quantizeColor (still used by gradient logic) ────────────────────────────
 
 export function quantizeColor(h: number, s: number, l: number): HSLColor {

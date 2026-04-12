@@ -1,54 +1,10 @@
-import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL } from "../model/plant";
-import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from "./genetic";
+import { ColorBucket, PALETTE_HUE_RANGES } from "../../model/genetic_model";
+import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL } from "../../model/plant";
+import { dominantShape, dominantCenter, dominantHue, dominantLightness } from "./dominance_utils";
+import { PALETTE_S } from '../../model/genetic_model';
+import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../../model/genetic_model';
 
-// ─── Dominance helpers ────────────────────────────────────────────────────────
 
-export const PETAL_SHAPE_DOMINANCE: PetalShape[] = ['round', 'lanzett', 'tropfen', 'wavy', 'zickzack']
-export const CENTER_TYPE_DOMINANCE: CenterType[] = ['dot', 'disc', 'stamen']
-
-/**
- * Color dominance buckets — used for the HUE locus only.
- * "white" and "gray" are achromatic sentinels encoded in petalHue.
- */
-export type ColorBucket = 'white' | 'yellow' | 'red' | 'pink' | 'purple' | 'blue' | 'green' | 'gray'
-export const COLOR_BUCKET_DOMINANCE: ColorBucket[] = [
-  'white', 'yellow', 'red', 'pink', 'purple', 'blue', 'green', 'gray',
-]
-
-export const PALETTE_HUE_RANGES = {
-  yellow: (hue: number): boolean => 35 < hue && hue <= 60,
-  red:    (hue: number): boolean => hue <= 35 || hue > 345,
-  green:  (hue: number): boolean => 60 < hue && hue <= 155,
-  blue:   (hue: number): boolean => 155 < hue && hue <= 240,
-  purple: (hue: number): boolean => 240 < hue && hue <= 275,
-  pink:   (hue: number): boolean => 275 < hue && hue <= 345,
-}
-
-// Lower index = more dominant
-export const CENTER_COLORS = [
-  { h: 40,  s: 100, l: 95 }, // creme
-  { h: 120, s: 50,  l: 80 }, // grün
-  { h: 55,  s: 100, l: 50 }, // kräftiges gelb
-  { h: 20,  s: 100, l: 65 }, // kräftiges orange
-]
-
-// ─── Lightness dominance: 30 > 60 > 90 ───────────────────────────────────────
-
-/** The three discrete lightness levels, ordered most-dominant first. */
-export const LIGHTNESS_DOMINANCE: ChromaticL[] = [30, 60, 90]
-
-/** Return the more dominant of two lightness alleles (30 > 60 > 90). */
-export function dominantLightness(a: ChromaticL, b: ChromaticL): ChromaticL {
-  const ia = LIGHTNESS_DOMINANCE.indexOf(a)
-  const ib = LIGHTNESS_DOMINANCE.indexOf(b)
-  return ia <= ib ? a : b
-}
-
-/** Expressed lightness phenotype from an AllelePair. */
-export function expressedLightness(pair: AllelePair<ChromaticL>): ChromaticL {
-  if (!pair) return 30; // TODO quickfix; this gets called with undefined, find out why
-  return dominantLightness(pair.a, pair.b)
-}
 
 // ─── Hue / achromatic helpers ─────────────────────────────────────────────────
 
@@ -75,13 +31,6 @@ export function hueBucket(h: number): ColorBucket {
   if (PALETTE_HUE_RANGES.purple(h)) return 'purple'
   if (PALETTE_HUE_RANGES.pink(h))   return 'pink'
   return 'blue'
-}
-
-/** Return the more dominant of two hue alleles. */
-export function dominantHue(a: number, b: number): number {
-  const ia = COLOR_BUCKET_DOMINANCE.indexOf(hueBucket(a))
-  const ib = COLOR_BUCKET_DOMINANCE.indexOf(hueBucket(b))
-  return ia <= ib ? a : b
 }
 
 /** Expressed hue phenotype from an AllelePair. */
@@ -142,18 +91,10 @@ export function expressedGradient(pair: AllelePair<HSLColor | null>): HSLColor |
   return null
 }
 
-/** Return the more dominant of two petal shapes. */
-export function dominantShape(a: PetalShape, b: PetalShape): PetalShape {
-  const ia = PETAL_SHAPE_DOMINANCE.indexOf(a)
-  const ib = PETAL_SHAPE_DOMINANCE.indexOf(b)
-  return ia <= ib ? a : b
-}
-
-/** Return the more dominant of two center types. */
-export function dominantCenter(a: CenterType, b: CenterType): CenterType {
-  const ia = CENTER_TYPE_DOMINANCE.indexOf(a)
-  const ib = CENTER_TYPE_DOMINANCE.indexOf(b)
-  return ia <= ib ? a : b
+/** Expressed lightness phenotype from an AllelePair. */
+export function expressedLightness(pair: AllelePair<ChromaticL>): ChromaticL {
+  if (!pair) return 30; // TODO quickfix; this gets called with undefined, find out why
+  return dominantLightness(pair.a, pair.b)
 }
 
 // ─── Homozygosity ─────────────────────────────────────────────────────────────
@@ -165,7 +106,7 @@ export function dominantCenter(a: CenterType, b: CenterType): CenterType {
  * Numeric loci (stemHeight, petalCount) are considered homozygous when their
  * alleles are within a small tolerance, since they carry continuous jitter.
  */
-export function isHomozygous(plant: import('../model/plant').Plant): boolean {
+export function isHomozygous(plant: import('../../model/plant').Plant): boolean {
   // Discrete loci — must be strictly equal
   if (plant.petalShape.a    !== plant.petalShape.b)    return false
   if (plant.centerType.a    !== plant.centerType.b)    return false
@@ -185,3 +126,21 @@ export function isHomozygous(plant: import('../model/plant').Plant): boolean {
 
   return true
 }
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+export function uid(): string {
+  return Math.random().toString(36).slice(2, 8)
+}
+
+export function clamp(v: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, v))
+}
+
+export function jitter(v: number, range: number): number {
+  return v + (Math.random() - 0.5) * range
+}
+
+export function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+

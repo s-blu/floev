@@ -1,7 +1,11 @@
 import { renderPlantSVG } from '../engine/renderer/renderer';
 import { getPhaseProgress, RARITY_COLORS, RARITY_LABELS } from '../engine/game';
-import { isHomozygous, dominantHue, dominantLightness, dominantShape, dominantCenter } from '../engine/genetic_utils';
-import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../engine/genetic';
+import { isHomozygous } from '../engine/genetic/genetic_utils';
+import { dominantLightness } from "../engine/genetic/dominance_utils";
+import { dominantHue } from "../engine/genetic/dominance_utils";
+import { dominantShape, dominantCenter } from "../engine/genetic/dominance_utils";
+import { PALETTE_S } from '../model/genetic_model';
+import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../model/genetic_model';
 import { state, handlePlantSeed, handleRemove, handleBreedSelect, handleSelfPollinate, openAlleleIds } from './ui';
 import { t } from '../model/i18n';
 import type { Pot, ChromaticL } from '../model/plant';

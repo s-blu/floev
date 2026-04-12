@@ -18,11 +18,13 @@ src/
 │ └── main.ts           # Entry point — initialisiert App-Shell + UI
 |-engine/               # Folder; Logic of the game
 │ └── breed.ts          # Logik zur Züchtung und Zuchtvorhersage
-│ └── genetic_util.ts   # Helper utils zur Bestimmung von Dominanzen
-│ └── genetic.ts       # Code für genetische Verteilung, randomPlant()
-│ └── inheritance.ts    # Allele und sonstige Vererbungs-Logik
 │ └── rarity.ts         # Seltenheitsberechnung
 │ └── game.ts           # State-Management, Phasen, localStorage-Persistenz
+│ └── genetic/                     # Folder; Logik zur Vererbung
+│     └── genetic.ts               # Code für genetische Verteilung, randomPlant()
+│     └── dominance_utils.ts       # Helpers, um dominante Eigenschaften zu bestimmen 
+│     └── dominance_utils.ts       # Helpers, um expressed & andere Eigenschaften zu bestimmen
+|     └── inheritance.ts           # Inheritance-Logik
 │ └── renderer/                    # Folder; Logik zum rendern der SVGs
 │     └── renderer.ts              # Hauptrendering der Blumen
 │     └── encyclopedia_renderer.ts # Blumenrendering für die Enzyklopädie
