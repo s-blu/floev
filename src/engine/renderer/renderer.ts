@@ -61,15 +61,14 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number): strin
 
 function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number, body: string) {
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
-  const grad = expressedGradient(plant.gradientColor);
+  const hasGrad = expressedGradient(plant.hasGradient);
   const shape = expressedShape(plant.petalShape);
   const n = Math.round(expressedNumber(plant.petalCount));
   const pr = 12 + (8 - n) * 1.4;
-  const hasGrad = grad !== null;
 
   const gradId = `g${plant.id.replace(/[^a-z0-9]/gi, '')}`;
   if (hasGrad) {
-    defs += renderGradientDef(pc, grad!, gradId);
+    defs += renderGradientDef(pc, gradId);
   }
 
   const fillStr = hasGrad ? `url(#${gradId})` : hsl(pc);
@@ -81,7 +80,7 @@ function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number,
     body += petalToSVG(petal, fillStr, strokeStr);
   }
 
-  const cc = plant.centerColor.a;  // centerColor is still a plain HSLColor AllelePair
+  const cc = plant.centerColor.a;
   const centerType = expressedCenter(plant.centerType);
   body += renderCenter(centerType, cc, cx, bloomY);
 

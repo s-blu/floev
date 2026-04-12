@@ -3,20 +3,26 @@ import type {
 } from '../../model/plant'
 import type { ColorBucket } from "../../model/genetic_model"
 import { pick, uid } from "./genetic_utils"
-import { ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_LIGHT, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_WHITE, CENTER_COLORS, CENTER_TYPES, COLOR_GRAY_DARK, COLOR_GRAY_LIGHT, COLOR_GRAY_MID, COLOR_WHITE, GRADIENT_ALLELE_CHANCE_RANDOM, MIN_STEM_HEIGHT, PALETTE_HUES, PALETTE_HUES_BUCKETS, PALETTE_L, PALETTE_S, SHAPE_ALLELE_POOL } from "../../model/genetic_model"
+import {
+  ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_LIGHT, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_WHITE,
+  CENTER_COLORS, CENTER_TYPES,
+  GRADIENT_ALLELE_CHANCE_RANDOM,
+  MIN_STEM_HEIGHT, PALETTE_HUES, PALETTE_HUES_BUCKETS, PALETTE_L, PALETTE_S, SHAPE_ALLELE_POOL,
+} from "../../model/genetic_model"
 import { HUE_ALLELE_POOL, LIGHTNESS_ALLELE_POOL } from './dominance_utils'
 
 export function randomPetalShapeAllele(): PetalShape {
   return SHAPE_ALLELE_POOL[Math.floor(Math.random() * SHAPE_ALLELE_POOL.length)]
 }
-// ─── quantizeColor (still used by gradient logic) ────────────────────────────
+
+// ─── quantizeColor (still used by legacy centerColor logic) ──────────────────
 
 export function quantizeColor(h: number, s: number, l: number): HSLColor {
   if (s < 10) {
-    if (l >= 85) return COLOR_WHITE
-    if (l >= 55) return COLOR_GRAY_LIGHT
-    if (l >= 20) return COLOR_GRAY_MID
-    return COLOR_GRAY_DARK
+    if (l >= 85) return { h: 0, s: 0, l: 100 }
+    if (l >= 55) return { h: 0, s: 0, l: 70 }
+    if (l >= 20) return { h: 0, s: 0, l: 40 }
+    return { h: 0, s: 0, l: 0 }
   }
   let bestHue = PALETTE_HUES[0]
   let bestDist = Infinity
@@ -31,12 +37,6 @@ export function quantizeColor(h: number, s: number, l: number): HSLColor {
     if (d < bestLDist) { bestLDist = d; bestL = pl }
   }
   return { h: bestHue, s: PALETTE_S, l: bestL }
-}
-
-export function randomGradient(baseH: number, _baseS: number, baseL: number): HSLColor {
-  const offsetH = (baseH + 40 + Math.random() * 140) % 360
-  const targetL = baseL <= 30 ? 30 : baseL - 20
-  return quantizeColor(offsetH, PALETTE_S, targetL)
 }
 
 function randomCenterColor(): HSLColor {
@@ -78,15 +78,6 @@ export function randomPlant(): Plant {
   const lA   = randomLAllele()
   const lB   = randomLAllele()
 
-  // Gradient base color derived from expressed color for coherence
-  const expressedH = hueA  // rough approximation for gradient seed
-  const expressedL = lA
-
-  const gradA: HSLColor | null = Math.random() < GRADIENT_ALLELE_CHANCE_RANDOM
-    ? randomGradient(expressedH < 0 ? 0 : expressedH, PALETTE_S, expressedL) : null
-  const gradB: HSLColor | null = Math.random() < GRADIENT_ALLELE_CHANCE_RANDOM
-    ? randomGradient(hueB < 0 ? 0 : hueB, PALETTE_S, lB) : null
-
   const stemA = MIN_STEM_HEIGHT + Math.random() * 0.65
   const stemB = MIN_STEM_HEIGHT + Math.random() * 0.65
 
@@ -99,13 +90,14 @@ export function randomPlant(): Plant {
     petalCount:     { a: countA, b: countB },
     petalShape:     { a: randomPetalShapeAllele(), b: randomPetalShapeAllele() },
     petalHue:       { a: hueA, b: hueB },
-    petalLightness: { a: lA,   b: lB   },
-    gradientColor:  { a: gradA, b: gradB },
+    petalLightness: { a: lA, b: lB },
+    hasGradient:    {
+      a: Math.random() < GRADIENT_ALLELE_CHANCE_RANDOM,
+      b: Math.random() < GRADIENT_ALLELE_CHANCE_RANDOM,
+    },
     centerType:     { a: pick(CENTER_TYPES), b: pick(CENTER_TYPES) },
     centerColor:    { a: randomCenterColor(), b: randomCenterColor() },
     phase: 1 as PlantPhase,
     generation: 0,
   }
 }
-
-

@@ -5,7 +5,6 @@ import { PALETTE_S } from '../../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../../model/genetic_model';
 
 
-
 // ─── Hue / achromatic helpers ─────────────────────────────────────────────────
 
 /** Returns true when hue is one of the special achromatic sentinel values. */
@@ -85,10 +84,13 @@ export function expressedCenter(pair: AllelePair<CenterType>): CenterType {
 export function expressedNumber(pair: AllelePair<number>): number {
   return (pair.a + pair.b) / 2
 }
-/** Gradient: only expressed when BOTH alleles carry a gradient. */
-export function expressedGradient(pair: AllelePair<HSLColor | null>): HSLColor | null {
-  if (pair.a !== null && pair.b !== null) return pair.a
-  return null
+
+/**
+ * Gradient is expressed only when BOTH alleles are true (recessive-recessive).
+ * Returns true when the plant shows the gradient phenotype.
+ */
+export function expressedGradient(pair: AllelePair<boolean>): boolean {
+  return pair.a === true && pair.b === true
 }
 
 /** Expressed lightness phenotype from an AllelePair. */
@@ -113,11 +115,8 @@ export function isHomozygous(plant: import('../../model/plant').Plant): boolean 
   if (plant.petalHue.a      !== plant.petalHue.b)      return false
   if (plant.petalLightness.a !== plant.petalLightness.b) return false
 
-  // Gradient locus — both null or both non-null with same hue
-  const gA = plant.gradientColor.a
-  const gB = plant.gradientColor.b
-  if ((gA === null) !== (gB === null)) return false
-  if (gA !== null && gB !== null && gA.h !== gB.h)     return false
+  // Gradient locus
+  if (plant.hasGradient.a !== plant.hasGradient.b) return false
 
   // Numeric loci — allow small tolerance (jitter artefacts)
   const NUM_TOL = 0.12
@@ -143,4 +142,3 @@ export function jitter(v: number, range: number): number {
 export function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]
 }
-

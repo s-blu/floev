@@ -29,7 +29,6 @@ function hueProbs(
     [plantA.petalHue.b, plantB.petalHue.b],
   ] as [number, number][];
 
-  // Count expressed hue per combination (dominant wins)
   const counts = new Map<number, number>();
   for (const [a, b] of alleles) {
     const expressed = dominantHue(a, b);
@@ -47,6 +46,7 @@ function hueProbs(
   }
   return result.filter(x => x.pct > 0).sort((a, b) => b.pct - a.pct);
 }
+
 // ─── Lightness probability bars ───────────────────────────────────────────────
 function lightnessProbs(
   plantA: Plant, plantB: Plant
@@ -58,7 +58,6 @@ function lightnessProbs(
     [plantA.petalLightness.b, plantB.petalLightness.b],
   ] as [number, number][];
 
-  // Dominance: 30 > 60 > 90 (lower L wins)
   const DOMINANCE = [30, 60, 90];
   const counts = new Map<number, number>();
   for (const [a, b] of alleles) {
@@ -76,6 +75,7 @@ function lightnessProbs(
   }
   return result.filter(x => x.pct > 0).sort((a, b) => b.pct - a.pct);
 }
+
 // ─── Probability bar renderer ─────────────────────────────────────────────────
 const SHAPE_DE: Record<string, string> = {
   round: t.shapeRound, lanzett: t.shapeLanzett, tropfen: t.shapeDrop, wavy: t.shapeWavy, zickzack: t.shapeZickzack,
@@ -95,14 +95,21 @@ function renderBar(label: string, pct: number, swatchCss?: string): string {
     <span class="prob-pct">${pct}%</span>
   </div>`;
 }
+
+// ─── Gradient swatch: L90 → L30 of the expected hue ─────────────────────────
+function gradientSwatchCSS(avgH: number, avgS: number): string {
+  if (avgS === 0) {
+    return `linear-gradient(to right, hsl(0,0%,90%), hsl(0,0%,18%))`;
+  }
+  return `linear-gradient(to right, hsl(${Math.round(avgH)},${Math.round(avgS)}%,90%), hsl(${Math.round(avgH)},${Math.round(avgS)}%,30%))`;
+}
+
 // ─── Estimate formatter ───────────────────────────────────────────────────────
 export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): string {
-  // Colour probability bars
   const colorBars = hueProbs(plantA, plantB, e.avgS, e.avgL)
     .map(x => renderBar(x.label, x.pct, x.css))
     .join('');
 
-  // Lightness probability bars
   const lightBars = lightnessProbs(plantA, plantB)
     .map(x => {
       const lCss = `hsl(0,0%,${x.l === 30 ? 25 : x.l === 60 ? 52 : 88}%)`;
@@ -117,6 +124,8 @@ export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): 
   const centerBars = e.centerProbs
     .map(x => renderBar(CENTER_DE[x.center] ?? x.center, x.pct))
     .join('');
+
+  const gradSwatch = gradientSwatchCSS(e.midH, e.avgS);
 
   return `
     <div class="est-row" style="margin-bottom:4px">${t.estPetals(e.minP, e.maxP)}</div>
@@ -136,6 +145,11 @@ export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): 
       <div class="prob-group-label">${t.estGroupCenter}</div>
       ${centerBars}
     </div>
-    ${e.gradPct > 0 ? `<div class="est-grad">${t.estGradient(e.gradPct)}</div>` : ''}
+    ${e.gradPct > 0
+      ? `<div class="est-grad">
+           <span class="prob-swatch" style="background:${gradSwatch};width:36px"></span>
+           ${t.estGradient(e.gradPct)}
+         </div>`
+      : ''}
     <div class="est-note">${t.estNoMutNote}</div>`;
 }

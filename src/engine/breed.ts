@@ -1,20 +1,15 @@
 import { uid, clamp } from './genetic/genetic_utils';
-import { MIN_STEM_HEIGHT, CENTER_TYPES, MUTATION_CHANCE } from '../model/genetic_model';
+import { MIN_STEM_HEIGHT, CENTER_TYPES, MUTATION_CHANCE, GRADIENT_ALLELE_KEEP_CHANCE, GRADIENT_ALLELE_GAIN_CHANCE } from '../model/genetic_model';
 import { PETAL_SHAPES } from '../model/genetic_model';
 import { inheritHue, inheritLightness, inheritGradient, inheritNumber, inheritDiscrete } from './genetic/inheritance';
 import { type Plant, type PlantPhase, type BreedEstimate, type PetalShape, type CenterType } from '../model/plant';
-import {
-  expressedColor, expressedNumber, expressedShape, expressedGradient} from "./genetic/genetic_utils";
+import { expressedColor, expressedNumber, expressedShape, expressedGradient } from "./genetic/genetic_utils";
 import { CENTER_COLORS } from "../model/genetic_model";
 import { dominantShape, dominantCenter } from "./genetic/dominance_utils";
 
 // ─── Cross-breeding ───────────────────────────────────────────────────────────
 
 export function breedPlants(a: Plant, b: Plant): Plant {
-  const petalHue       = inheritHue(a.petalHue, b.petalHue);
-  const petalLightness = inheritLightness(a.petalLightness, b.petalLightness);
-  const gradientColor  = inheritGradient(a.gradientColor, b.gradientColor, petalHue, petalLightness);
-
   return {
     id: uid(),
     stemHeight: inheritNumber(a.stemHeight, b.stemHeight, MIN_STEM_HEIGHT, 1.0, 0.08),
@@ -23,11 +18,11 @@ export function breedPlants(a: Plant, b: Plant): Plant {
       b: clamp(Math.round(inheritNumber(a.petalCount, b.petalCount, 3, 8, 0.8).b), 3, 8),
     },
     petalShape:      inheritDiscrete(a.petalShape, b.petalShape, PETAL_SHAPES),
-    petalHue,
-    petalLightness,
-    gradientColor,
-    centerType: inheritDiscrete(a.centerType, b.centerType, CENTER_TYPES),
-    centerColor: inheritColor_centerColor(a, b),
+    petalHue:        inheritHue(a.petalHue, b.petalHue),
+    petalLightness:  inheritLightness(a.petalLightness, b.petalLightness),
+    hasGradient:     inheritGradient(a.hasGradient, b.hasGradient),
+    centerType:      inheritDiscrete(a.centerType, b.centerType, CENTER_TYPES),
+    centerColor:     inheritColor_centerColor(a, b),
     phase: 1 as PlantPhase,
     generation: Math.max(a.generation ?? 0, b.generation ?? 0) + 1,
     parentIds: [a.id, b.id],
@@ -47,13 +42,6 @@ export function breedPlants(a: Plant, b: Plant): Plant {
  * The parent plant is consumed by this action (enforced in the UI).
  */
 export function selfPollinateePlant(plant: Plant): Plant {
-  // Self-cross: treat the plant as both parent A and parent B
-  const petalHue       = inheritHue(plant.petalHue, plant.petalHue);
-  const petalLightness = inheritLightness(plant.petalLightness, plant.petalLightness);
-  const gradientColor  = inheritGradient(
-    plant.gradientColor, plant.gradientColor, petalHue, petalLightness,
-  );
-
   return {
     id: uid(),
     stemHeight: inheritNumber(plant.stemHeight, plant.stemHeight, MIN_STEM_HEIGHT, 1.0, 0.08),
@@ -62,9 +50,9 @@ export function selfPollinateePlant(plant: Plant): Plant {
       b: clamp(Math.round(inheritNumber(plant.petalCount, plant.petalCount, 3, 8, 0.8).b), 3, 8),
     },
     petalShape:  inheritDiscrete(plant.petalShape,  plant.petalShape,  PETAL_SHAPES),
-    petalHue,
-    petalLightness,
-    gradientColor,
+    petalHue:    inheritHue(plant.petalHue, plant.petalHue),
+    petalLightness: inheritLightness(plant.petalLightness, plant.petalLightness),
+    hasGradient: inheritGradient(plant.hasGradient, plant.hasGradient),
     centerType:  inheritDiscrete(plant.centerType,  plant.centerType,  CENTER_TYPES),
     centerColor: inheritColor_centerColor(plant, plant),
     phase: 1 as PlantPhase,
@@ -142,6 +130,28 @@ function discreteProbabilities<T>(
   return result
 }
 
+// ─── Gradient probability (analytical) ───────────────────────────────────────
+
+/**
+ * Computes the probability that a child expresses the gradient phenotype
+ * (both alleles = true) given both parents' hasGradient allele pairs.
+ */
+function gradientProbability(a: Plant, b: Plant): number {
+  const keep = GRADIENT_ALLELE_KEEP_CHANCE
+  const gain = GRADIENT_ALLELE_GAIN_CHANCE
+
+  // P(child allele = true) for a single allele drawn from parent X slot x
+  const pTrue = (allele: boolean) => allele ? keep : gain
+
+  // Child allele A comes from parent A, child allele B from parent B
+  // Each parent contributes one allele chosen randomly from their pair
+  const pA_true = 0.5 * pTrue(a.hasGradient.a) + 0.5 * pTrue(a.hasGradient.b)
+  const pB_true = 0.5 * pTrue(b.hasGradient.a) + 0.5 * pTrue(b.hasGradient.b)
+
+  // Expressed only when both child alleles are true
+  return pA_true * pB_true
+}
+
 // ─── Breeding estimate ────────────────────────────────────────────────────────
 
 export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
@@ -168,9 +178,8 @@ export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
   const avgS = expressed.reduce((s, c) => s + c.s, 0) / expressed.length
   const avgL = expressed.reduce((s, c) => s + c.l, 0) / expressed.length
 
-  const gradCount = samples.filter(p => expressedGradient(p.gradientColor) !== null).length
+  const gradPct = Math.round(gradientProbability(a, b) * 100)
 
-  // Hue allele chips for both parents — shown in the estimate panel
   const parentAHues: [number, number] = [a.petalHue.a, a.petalHue.b]
   const parentBHues: [number, number] = [b.petalHue.a, b.petalHue.b]
   const parentALightness: [number, number] = [a.petalLightness.a, a.petalLightness.b]
@@ -185,7 +194,7 @@ export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
     likelyShape: shapeProbs[0]?.shape ?? expressedShape(a.petalShape),
     shapeProbs,
     centerProbs,
-    gradPct: Math.round((gradCount / samples.length) * 100),
+    gradPct,
     avgS,
     avgL,
     parentAHues,

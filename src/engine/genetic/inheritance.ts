@@ -1,11 +1,9 @@
 import {
-  
-  randomGradient, quantizeColor,
   randomHueForBucket, randomLightnessAllele,
 } from './genetic';
 import { clamp, jitter, pick } from './genetic_utils';
-import { MUTATION_CHANCE, GRADIENT_ALLELE_KEEP_CHANCE, PALETTE_S } from '../../model/genetic_model';
-import { type AllelePair, type HSLColor, type ChromaticL } from '../../model/plant';
+import { MUTATION_CHANCE, GRADIENT_ALLELE_KEEP_CHANCE, GRADIENT_ALLELE_GAIN_CHANCE } from '../../model/genetic_model';
+import { type AllelePair, type ChromaticL } from '../../model/plant';
 import { COLOR_BUCKET_DOMINANCE, LIGHTNESS_DOMINANCE } from "../../model/dominance";
 
 // ─── Generic allele inheritance ───────────────────────────────────────────────
@@ -49,7 +47,7 @@ export function inheritDiscrete<T>(
 
 // ─── Hue locus ────────────────────────────────────────────────────────────────
 //
-// Hue is a discrete trait with bucket-based dominance (same as before).
+// Hue is a discrete trait with bucket-based dominance.
 // Mutation → jump to a random hue from a random colour bucket.
 
 export function inheritHue(
@@ -88,28 +86,29 @@ export function inheritLightness(
   };
 }
 
-// ─── Gradient ─────────────────────────────────────────────────────────────────
+// ─── Gradient locus ───────────────────────────────────────────────────────────
+//
+// hasGradient is a boolean allele pair.
+// Expressed only when BOTH alleles are true (recessive phenotype — rare).
+// - A true allele has GRADIENT_ALLELE_KEEP_CHANCE of staying true.
+// - A false allele has GRADIENT_ALLELE_GAIN_CHANCE of flipping to true.
 
 export function inheritGradient(
-  parentA: AllelePair<HSLColor | null>,
-  parentB: AllelePair<HSLColor | null>,
-  childHuePair: AllelePair<number>,
-  childLightnessPair: AllelePair<ChromaticL>,
-): AllelePair<HSLColor | null> {
+  parentA: AllelePair<boolean>,
+  parentB: AllelePair<boolean>,
+): AllelePair<boolean> {
   const raw = inheritAllele(parentA, parentB);
 
-  const resolveAllele = (allele: HSLColor | null, baseH: number, baseL: number): HSLColor | null => {
-    if (allele !== null) {
-      return Math.random() < GRADIENT_ALLELE_KEEP_CHANCE ? allele : null;
+  const resolveAllele = (allele: boolean): boolean => {
+    if (allele) {
+      return Math.random() < GRADIENT_ALLELE_KEEP_CHANCE;
     } else {
-      return Math.random() < 0.06
-        ? randomGradient(baseH < 0 ? 0 : baseH, PALETTE_S, baseL)
-        : null;
+      return Math.random() < GRADIENT_ALLELE_GAIN_CHANCE;
     }
   };
 
   return {
-    a: resolveAllele(raw.a, childHuePair.a, childLightnessPair.a),
-    b: resolveAllele(raw.b, childHuePair.b, childLightnessPair.b),
+    a: resolveAllele(raw.a),
+    b: resolveAllele(raw.b),
   };
 }

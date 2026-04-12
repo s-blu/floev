@@ -30,9 +30,9 @@ export function calcRarityScore(plant: Plant): number {
   const shape  = expressedShape(plant.petalShape)
   const color  = expressedColor(plant.petalHue, plant.petalLightness)
   const center = expressedCenter(plant.centerType)
-  const cc     = plant.centerColor  // centerColor is still a full HSLColor AllelePair
-  const ccExpressed: HSLColor = cc.a  // dominant = first (same logic as before)
-  const grad   = expressedGradient(plant.gradientColor)
+  const cc     = plant.centerColor
+  const ccExpressed: HSLColor = cc.a
+  const hasGrad = expressedGradient(plant.hasGradient)
   const count  = Math.round(expressedNumber(plant.petalCount))
   const stem   = expressedNumber(plant.stemHeight)
 
@@ -41,7 +41,7 @@ export function calcRarityScore(plant: Plant): number {
   score += COLOR_SCORE[colorBucket(color)] ?? 0
   score += CENTER_SCORE[center]
   score += centerColorScore(ccExpressed)
-  score += grad !== null ? 20 : 0
+  score += hasGrad ? 20 : 0
   if (count >= 7) score += 5
   if (stem > 0.85) score += 5
 

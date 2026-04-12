@@ -11,19 +11,18 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
   const cy = h / 2;
 
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
-  const grad = expressedGradient(plant.gradientColor);
+  const hasGrad = expressedGradient(plant.hasGradient);
   const shape = expressedShape(plant.petalShape);
   const n = Math.round(expressedNumber(plant.petalCount));
 
   const pr = 12 + (8 - n) * 1.4;
-  const hasGrad = grad !== null;
 
   let defs = '';
   let body = '';
 
   const gradId = `gb${plant.id.replace(/[^a-z0-9]/gi, '')}`;
   if (hasGrad) {
-    defs += renderGradientDef(pc, grad!, gradId);
+    defs += renderGradientDef(pc, gradId);
   }
 
   const fillStr = hasGrad ? `url(#${gradId})` : hsl(pc);
@@ -35,7 +34,7 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
     body += petalToSVG(petal, fillStr, strokeStr);
   }
 
-  const cc = plant.centerColor.a; //FIXME is that right?
+  const cc = plant.centerColor.a;
   const centerType = expressedCenter(plant.centerType);
   body += renderCenter(centerType, cc, cx, cy);
 

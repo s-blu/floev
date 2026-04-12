@@ -22,7 +22,9 @@ export const CENTER_COLORS = [
   { h: 120, s: 50, l: 80 }, // grün
   { h: 55, s: 100, l: 50 }, // kräftiges gelb
   { h: 20, s: 100, l: 65 }, // kräftiges orange
-];// ─── Constants ───────────────────────────────────────────────────────────────
+];
+
+// ─── Constants ───────────────────────────────────────────────────────────────
 
 export const PETAL_SHAPES: PetalShape[] = ['round', 'lanzett', 'tropfen', 'wavy', 'zickzack']
 export const SHAPE_ALLELE_POOL: PetalShape[] = [
@@ -32,6 +34,7 @@ export const SHAPE_ALLELE_POOL: PetalShape[] = [
   ...Array(14).fill('wavy'),
   ...Array(8).fill('zickzack'),
 ];
+
 // ─── Achromatic sentinel hues ─────────────────────────────────────────────────
 //
 // These are special out-of-range values stored in the petalHue locus to encode
@@ -46,8 +49,15 @@ export const ACHROMATIC_HUE_GRAY_LIGHT = -4;
 export const CENTER_TYPES: CenterType[] = ['dot', 'disc', 'stamen']
 
 export const MUTATION_CHANCE = 0.04
+
+// Gradient allele chances:
+// RANDOM: probability that a wild plant carries a gradient allele (true)
+// KEEP: probability that an inherited gradient allele stays true (vs. flipping to false)
+// GAIN: probability that a false allele mutates to true during breeding
 export const GRADIENT_ALLELE_CHANCE_RANDOM = 0.28
 export const GRADIENT_ALLELE_KEEP_CHANCE = 0.55
+export const GRADIENT_ALLELE_GAIN_CHANCE = 0.06
+
 export const MIN_STEM_HEIGHT = 0.35
 
 export const PALETTE_S = 90;
@@ -65,10 +75,10 @@ export const PALETTE_HUES_BUCKETS = {
 }
 
 export const PALETTE_L = [30, 60, 90] as const
-// ─── Achromatic legacy color objects (used by centerColor / gradients) ────────
+
+// ─── Achromatic legacy color objects (used by centerColor) ────────────────────
 
 export const COLOR_WHITE: HSLColor = { h: 0, s: 0, l: 100 }
 export const COLOR_GRAY_DARK: HSLColor = { h: 0, s: 0, l: 0 }
 export const COLOR_GRAY_MID: HSLColor = { h: 0, s: 0, l: 40 }
 export const COLOR_GRAY_LIGHT: HSLColor = { h: 0, s: 0, l: 70 }
-

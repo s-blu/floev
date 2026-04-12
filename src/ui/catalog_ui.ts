@@ -98,16 +98,16 @@ export function renderCatalog(): void {
 function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const plant = entry.plant;
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
-  const grad = expressedGradient(plant.gradientColor);
+  const hasGrad = expressedGradient(plant.hasGradient);
   const shape = expressedShape(plant.petalShape);
   const center = expressedCenter(plant.centerType);
   const count = Math.round(expressedNumber(plant.petalCount));
-  const hasGrad = grad !== null;
   const homozyg = isHomozygous(plant);
 
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`;
+  // For gradient plants: show a linear swatch from L90 to L30 of the same hue
   const swatchStyle = hasGrad
-    ? `background: linear-gradient(135deg, ${hslMain}, hsl(${Math.round(grad!.h)},${Math.round(grad!.s)}%,${Math.round(grad!.l)}%))`
+    ? `background: linear-gradient(to right, hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,90%), hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,30%))`
     : `background: ${hslMain}`;
 
   const parentA = plant.parentIds
@@ -136,7 +136,6 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
     };
 
     if (isSelfed) {
-      // Self-pollinated: show only one parent with a self-cross symbol
       ancestryHtml = `
         <details class="enc-ancestry" data-id="${plant.id}"${isOpen ? ' open' : ''}>
           <summary>${t.catalogAncestry}</summary>
@@ -158,7 +157,6 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
     }
   }
 
-  // Homozygous badge shown next to rarity badge
   const homozygBadge = homozyg
     ? `<span class="enc-homozygous-badge" title="${t.homozygousTitle}">${t.catalogHomozygousBadge}</span>`
     : '';
@@ -171,7 +169,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
     <div class="enc-body">
       <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
       <div class="enc-info">
-          <div class="enc-badges-row">
+        <div class="enc-badges-row">
           <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${RARITY_LABELS[entry.rarity]}</span>
           ${homozygBadge}
         </div>
