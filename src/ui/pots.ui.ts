@@ -2,7 +2,7 @@ import { renderPlantSVG } from '../engine/renderer/renderer';
 import { getPhaseProgress, RARITY_COLORS, RARITY_LABELS } from '../engine/game';
 import { isHomozygous, dominantHue, dominantLightness } from '../engine/genetic.utils';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../engine/genetics';
-import { state, handlePlantSeed, handleRemove, handleBreedSelect, handleSelfPollinate } from './ui';
+import { state, handlePlantSeed, handleRemove, handleBreedSelect, handleSelfPollinate, openAlleleIds } from './ui';
 import { t } from '../model/i18n';
 import type { Pot, ChromaticL } from '../model/plant';
 
@@ -30,9 +30,15 @@ function rarity(pot: Pot): number {
 export function renderPots(selA: number | null, selB: number | null): void {
   const container = document.getElementById('pots-row');
   if (!container) return;
+
   container.innerHTML = '';
   for (const pot of state.pots) {
-    container.appendChild(buildPotCard(pot, selA, selB));
+    const card = buildPotCard(pot, selA, selB);
+    container.appendChild(card);
+    // Restore overlay if it was open before this re-render
+    if (openAlleleIds.has(pot.id) && pot.plant?.phase === 4) {
+      showAlleleOverlay(pot.id, card, /* silent */ true);
+    }
   }
 }
 
@@ -182,10 +188,16 @@ function renderChipPair(
   }).join('')
 }
 
-function showAlleleOverlay(potId: number, card: HTMLElement): void {
-  // Toggle: if overlay already open on this card, close it
-  const existing = card.querySelector('.allele-overlay')
-  if (existing) { existing.remove(); return }
+function showAlleleOverlay(potId: number, card: HTMLElement, silent = false): void {
+  // Toggle when triggered by user click; skip toggle on silent restore
+  if (!silent) {
+    const existing = card.querySelector('.allele-overlay')
+    if (existing) {
+      existing.remove()
+      openAlleleIds.delete(potId)
+      return
+    }
+  }
 
   const pot = state.pots.find(p => p.id === potId)
   if (!pot?.plant) return
@@ -196,6 +208,7 @@ function showAlleleOverlay(potId: number, card: HTMLElement): void {
 
   const overlay = document.createElement('div')
   overlay.className = 'allele-overlay'
+  overlay.dataset.pot = String(potId)   // used for snapshot in renderPots
   overlay.innerHTML = `
     <button class="allele-overlay-close" data-action="close-overlay">×</button>
     <div class="allele-overlay-title">${t.alleleOverlayTitle}</div>
@@ -217,18 +230,22 @@ function showAlleleOverlay(potId: number, card: HTMLElement): void {
     </div>`
 
   overlay.addEventListener('click', (e) => {
-    if ((e.target as HTMLElement).dataset.action === 'close-overlay') overlay.remove()
+    if ((e.target as HTMLElement).dataset.action === 'close-overlay') {
+      overlay.remove()
+      openAlleleIds.delete(potId)
+    }
     e.stopPropagation()
   })
 
-  // Close when clicking anywhere outside this card
   const closeOnOutside = (e: MouseEvent) => {
     if (!card.contains(e.target as Node)) {
       overlay.remove()
+      openAlleleIds.delete(potId)
       document.removeEventListener('click', closeOnOutside)
     }
   }
   setTimeout(() => document.addEventListener('click', closeOnOutside), 0)
 
+  openAlleleIds.add(potId)
   card.appendChild(overlay)
 }

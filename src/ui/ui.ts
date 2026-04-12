@@ -22,6 +22,7 @@ interface BreedState {
 
 export let state: GameState
 export const openAncestryIds = new Set<string>()
+export const openAlleleIds = new Set<number>()   // pot IDs with allele overlay open
 export const breedState: BreedState = {
   breedSelA: null, breedSelB: null, breedEstimate: null
 }
