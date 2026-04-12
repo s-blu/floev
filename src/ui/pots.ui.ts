@@ -1,6 +1,6 @@
 import { renderPlantSVG } from '../engine/renderer/renderer';
 import { getPhaseProgress, RARITY_COLORS, RARITY_LABELS } from '../engine/game';
-import { isHomozygous, dominantHue, dominantLightness } from '../engine/genetic.utils';
+import { isHomozygous, dominantHue, dominantLightness, dominantShape, dominantCenter } from '../engine/genetic.utils';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../engine/genetics';
 import { state, handlePlantSeed, handleRemove, handleBreedSelect, handleSelfPollinate, openAlleleIds } from './ui';
 import { t } from '../model/i18n';
@@ -165,14 +165,22 @@ function renderChipPair(
   lA: ChromaticL,
   lB: ChromaticL,
 ): string {
+  // Identical alleles → single chip, no dominance distinction needed
+  if (aVal === bVal) {
+    const bg = isHue
+      ? hueToCSS(aVal as number, lA)
+      : `hsl(0,0%,${(aVal as ChromaticL) === 30 ? 25 : (aVal as ChromaticL) === 60 ? 52 : 88}%)`
+    return `<span class="allele-chip allele-chip--dom" style="background:${bg}"></span>`
+  }
+
   const isDomA = isHue
     ? dominantHue(aVal as number, bVal as number) === aVal
     : dominantLightness(aVal as ChromaticL, bVal as ChromaticL) === aVal
 
-  const chips = [
-    { val: aVal, l: lA, isDom: isDomA },
-    { val: bVal, l: lB, isDom: !isDomA },
-  ]
+  // Always render dominant chip first
+  const chips = isDomA
+    ? [{ val: aVal, l: lA, isDom: true }, { val: bVal, l: lB, isDom: false }]
+    : [{ val: bVal, l: lB, isDom: true }, { val: aVal, l: lA, isDom: false }]
 
   return chips.map(chip => {
     const bg = isHue
@@ -206,12 +214,31 @@ function showAlleleOverlay(potId: number, card: HTMLElement, silent = false): vo
   const [hA, hB] = [plant.petalHue.a, plant.petalHue.b]
   const [lA, lB] = [plant.petalLightness.a, plant.petalLightness.b]
 
+  // Shape: dominant first, collapse if identical
+  const shapeA = plant.petalShape.a
+  const shapeB = plant.petalShape.b
+  const shapeValue = shapeA === shapeB
+    ? shapeA
+    : `${dominantShape(shapeA, shapeB)} · ${shapeA === dominantShape(shapeA, shapeB) ? shapeB : shapeA}`
+
+  // Center: dominant first, collapse if identical
+  const centerA = plant.centerType.a
+  const centerB = plant.centerType.b
+  const centerValue = centerA === centerB
+    ? centerA
+    : `${dominantCenter(centerA, centerB)} · ${centerA === dominantCenter(centerA, centerB) ? centerB : centerA}`
+
+  const homozyg = isHomozygous(plant)
+
   const overlay = document.createElement('div')
   overlay.className = 'allele-overlay'
-  overlay.dataset.pot = String(potId)   // used for snapshot in renderPots
+  overlay.dataset.pot = String(potId)
   overlay.innerHTML = `
     <button class="allele-overlay-close" data-action="close-overlay">×</button>
-    <div class="allele-overlay-title">${t.alleleOverlayTitle}</div>
+    <div class="allele-overlay-title">
+      ${t.alleleOverlayTitle}
+      ${homozyg ? `<span class="allele-overlay-homo">${t.catalogHomozygousBadge}</span>` : ''}
+    </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayHue}</span>
       <span class="allele-chips-row">${renderChipPair(hA, hB, true, lA, lB)}</span>
@@ -222,11 +249,11 @@ function showAlleleOverlay(potId: number, card: HTMLElement, silent = false): vo
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayShape}</span>
-      <span class="allele-overlay-value">${plant.petalShape.a} · ${plant.petalShape.b}</span>
+      <span class="allele-overlay-value">${shapeValue}</span>
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayCenter}</span>
-      <span class="allele-overlay-value">${plant.centerType.a} · ${plant.centerType.b}</span>
+      <span class="allele-overlay-value">${centerValue}</span>
     </div>`
 
   overlay.addEventListener('click', (e) => {
