@@ -225,7 +225,28 @@ html, body {
 .btn:hover { background: var(--bg3); }
 .btn:disabled { opacity: 0.35; cursor: default; }
 
+/* ── Coin fly animation ──────────────────────────────────────────────────── */
+.coin-fly {
+  position: fixed;
+  z-index: 9999;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  color: #8a5e00;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: coin-fly-up 0.9s ease-out forwards;
+}
 
+@keyframes coin-fly-up {
+  0%   { opacity: 1;   transform: translateX(-50%) translateY(0);    }
+  70%  { opacity: 1;   transform: translateX(-50%) translateY(-48px); }
+  100% { opacity: 0;   transform: translateX(-50%) translateY(-72px); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .coin-fly { color: #f0c040; }
+}
 
 /* ── Responsive ──────────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {

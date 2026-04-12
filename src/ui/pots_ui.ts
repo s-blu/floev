@@ -9,6 +9,7 @@ import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID
 import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds } from './ui';
 import { t } from '../model/i18n';
 import type { Pot, ChromaticL } from '../model/plant';
+import { coinValueForScore } from '../engine/game';
 
 const RARITY_ICON: Record<number, string> = {
   0: '▪', 1: '●', 2: '♦', 3: '★', 4: '👑',
@@ -102,14 +103,15 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
       </div>`;
   } else if (isBlooming) {
     const isBreedSelected = pot.id === selA || pot.id === selB;
+    const entry = state.catalog.find(e => e.plant.id === pot.plant!.id);
+    const coinVal = coinValueForScore(entry?.rarityScore ?? 1);
     buttonsHtml = `
       <div class="btn-row">
         <button class="btn-sm btn-breed${isBreedSelected ? ' selected' : ''}" data-action="breed-select" data-pot="${pot.id}">
           ${isBreedSelected ? t.btnBreedDeselect : t.btnBreedSelect}
         </button>
         <button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>
-        <button class="btn-sm btn-icon btn-sell" data-action="sell" data-pot="${pot.id}" title="${t.btnSellTitle}">🪙</button>
-        <button class="btn-sm btn-icon danger" data-action="remove" data-pot="${pot.id}" title="${t.btnRemoveTitle}">✕</button>
+        <button class="btn-sm btn-icon btn-sell" data-action="sell" data-pot="${pot.id}" title="${t.btnSellTitle}">🪙${coinVal}</button>
       </div>`;
   } else {
     buttonsHtml = `

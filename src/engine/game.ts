@@ -32,12 +32,9 @@ export const RARITY_COLORS: Record<Rarity, string> = {
 }
 
 
-export const COIN_REWARD: Record<Rarity, number> = {
-  0: 2,
-  1: 6,
-  2: 15,
-  3: 40,
-  4: 120,
+/** Maps a 1–100 rarity score to coins. Roughly exponential. */
+export function coinValueForScore(score: number): number {
+  return Math.max(1, Math.round(Math.pow(score / 10, 1.8)))
 }
 
 const useDebugPlants = false;
@@ -185,7 +182,7 @@ export function sellPlant(state: GameState, potId: number): number {
   if (!pot?.plant || pot.plant.phase < 4) return -1
   const entry = state.catalog.find(e => e.plant.id === pot.plant!.id)
   const rarity: Rarity = entry?.rarity ?? 0
-  const reward = COIN_REWARD[rarity]
+  const reward = coinValueForScore(entry?.rarityScore ?? 1)
   state.coins += reward
   pot.plant = null
   pot.phaseStart = null

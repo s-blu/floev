@@ -98,12 +98,28 @@ export function handleRemove(potId: number): void {
 export function handleSell(potId: number): void {
   if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
   if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
+
+  // Find the sell button position before the plant is removed
+  const sellBtn = document.querySelector(`[data-action="sell"][data-pot="${potId}"]`) as HTMLElement | null;
+
   const reward = sellPlant(state, potId)
   if (reward >= 0) {
     showMsg(t.msgSold(reward))
+    if (sellBtn) spawnCoinFly(sellBtn, reward)
     saveState(state)
     render()
   }
+}
+
+function spawnCoinFly(fromEl: HTMLElement, amount: number): void {
+  const rect = fromEl.getBoundingClientRect()
+  const coin = document.createElement('div')
+  coin.className = 'coin-fly'
+  coin.textContent = `+${amount} 🪙`
+  coin.style.left = `${rect.left + rect.width / 2}px`
+  coin.style.top  = `${rect.top}px`
+  document.body.appendChild(coin)
+  coin.addEventListener('animationend', () => coin.remove())
 }
 
 export function handleBreedSelect(potId: number): void {
