@@ -3,6 +3,7 @@ import {
   advancePhases,
   plantSeed,
   removePlant,
+  sellPlant,
   placeSeedInEmptyPot,
   saveState,
 } from '../engine/game'
@@ -50,6 +51,21 @@ export function render(): void {
   renderPots(breedState.breedSelA, breedState.breedSelB)
   renderBreedPanel()
   renderCatalog()
+  renderCoins()
+}
+
+// ─── Coins display ────────────────────────────────────────────────────────────
+
+export function renderCoins(): void {
+  const el = document.getElementById('coin-badge')
+  if (!el) return
+  const next = `🪙 ${state.coins}`
+  if (el.textContent !== next) {
+    el.textContent = next
+    el.classList.remove('pop')
+    void (el as HTMLElement).offsetWidth // reflow to restart animation
+    el.classList.add('pop')
+  }
 }
 
 // ─── Message bar ──────────────────────────────────────────────────────────────
@@ -74,6 +90,17 @@ export function handleRemove(potId: number): void {
   if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
   if (removePlant(state, potId)) {
     showMsg(t.msgPotCleared)
+    saveState(state)
+    render()
+  }
+}
+
+export function handleSell(potId: number): void {
+  if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
+  if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
+  const reward = sellPlant(state, potId)
+  if (reward >= 0) {
+    showMsg(t.msgSold(reward))
     saveState(state)
     render()
   }

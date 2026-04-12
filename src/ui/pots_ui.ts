@@ -6,7 +6,7 @@ import { dominantHue } from "../engine/genetic/dominance_utils";
 import { dominantShape, dominantCenter } from "../engine/genetic/dominance_utils";
 import { PALETTE_S } from '../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../model/genetic_model';
-import { state, handlePlantSeed, handleRemove, handleBreedSelect, handleSelfPollinate, openAlleleIds } from './ui';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds } from './ui';
 import { t } from '../model/i18n';
 import type { Pot, ChromaticL } from '../model/plant';
 
@@ -102,13 +102,13 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
       </div>`;
   } else if (isBlooming) {
     const isBreedSelected = pot.id === selA || pot.id === selB;
-    // Breed gets flex:2 (≈50%), icon buttons get flex:1 each (≈25% each)
     buttonsHtml = `
       <div class="btn-row">
         <button class="btn-sm btn-breed${isBreedSelected ? ' selected' : ''}" data-action="breed-select" data-pot="${pot.id}">
           ${isBreedSelected ? t.btnBreedDeselect : t.btnBreedSelect}
         </button>
         <button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>
+        <button class="btn-sm btn-icon btn-sell" data-action="sell" data-pot="${pot.id}" title="${t.btnSellTitle}">🪙</button>
         <button class="btn-sm btn-icon danger" data-action="remove" data-pot="${pot.id}" title="${t.btnRemoveTitle}">✕</button>
       </div>`;
   } else {
@@ -128,6 +128,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const potId = Number(btn.dataset.pot);
     if      (action === 'plant')          handlePlantSeed(potId);
     else if (action === 'remove')         handleRemove(potId);
+    else if (action === 'sell')           handleSell(potId);
     else if (action === 'breed-select')   handleBreedSelect(potId);
     else if (action === 'selfpollinate')  handleSelfPollinate(potId);
     else if (action === 'allele-inspect') showAlleleOverlay(potId, card);

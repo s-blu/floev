@@ -8,7 +8,13 @@ const app = document.getElementById('app')!
 app.innerHTML = `
 <div class="game">
   <header class="game-header">
-    <h1 class="game-title">${t.appTitle}</h1>
+    <div class="header-top">
+      <h1 class="game-title">${t.appTitle}</h1>
+      <div class="header-actions">
+        <span class="coin-badge" id="coin-badge">🪙 0</span>
+        <button class="shop-tab" disabled title="${t.shopComingSoon}">${t.shopTab} <span class="shop-soon">${t.shopComingSoon}</span></button>
+      </div>
+    </div>
     <p class="msg-bar" id="msg">${t.welcomeMsg}</p>
   </header>
 

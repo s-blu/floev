@@ -104,6 +104,15 @@ export const de = {
   catalogParentGenTitle: (gen: number) => `Gen. ${gen}`,
   catalogHomozygousBadge: '◈ reinerbig',
 
+  // Sell
+  btnSell: 'Verkaufen',
+  btnSellTitle: 'Pflanze verkaufen — erhält Münzen',
+  msgSold: (coins: number) => `Blüte verkauft! +${coins} 🪙`,
+
+  // Shop (placeholder)
+  shopTab: 'Shop',
+  shopComingSoon: 'Bald verfügbar',
+
   // Messages
   msgSeedPlanted: 'Samen gepflanzt!',
   msgPotCleared: 'Topf geleert.',

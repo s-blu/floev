@@ -64,6 +64,82 @@ html, body {
   gap: 4px;
 }
 
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ── Coin badge ────────────────────────────────────────────────────────────── */
+.coin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #8a5e00;
+  background: #FFF3D0;
+  border: 0.5px solid #f0c040;
+  border-radius: 99px;
+  padding: 3px 12px 3px 8px;
+  letter-spacing: 0.01em;
+  min-width: 64px;
+  text-align: right;
+  transition: background 0.25s, transform 0.15s;
+}
+
+@keyframes coin-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+.coin-badge.pop {
+  animation: coin-pop 0.28s ease-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  .coin-badge {
+    background: rgba(240,192,64,0.12);
+    border-color: rgba(240,192,64,0.30);
+    color: #f0c040;
+  }
+}
+
+/* ── Shop tab ──────────────────────────────────────────────────────────────── */
+.shop-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 4px 14px;
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--border2);
+  background: transparent;
+  color: var(--text3);
+  cursor: not-allowed;
+  opacity: 0.55;
+  transition: opacity 0.15s;
+}
+
+.shop-soon {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: var(--bg3);
+  color: var(--text3);
+  letter-spacing: 0.04em;
+}
+
 .game-title {
   font-size: 26px;
   font-weight: 600;

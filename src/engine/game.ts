@@ -32,6 +32,14 @@ export const RARITY_COLORS: Record<Rarity, string> = {
 }
 
 
+export const COIN_REWARD: Record<Rarity, number> = {
+  0: 2,
+  1: 6,
+  2: 15,
+  3: 40,
+  4: 120,
+}
+
 const useDebugPlants = false;
 const DEBUG_PLANTS = [
   plannedPlant(
@@ -90,7 +98,7 @@ function createInitialState(): GameState {
     }))
     
   }
-  return { pots, catalog: [], lastSave: Date.now() }
+  return { pots, catalog: [], coins: 0, lastSave: Date.now() }
 }
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
@@ -98,7 +106,12 @@ function createInitialState(): GameState {
 export function loadState(): GameState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw) as GameState
+    if (raw) {
+      const parsed = JSON.parse(raw) as GameState
+      // backwards compatibility: old saves without coins
+      if (parsed.coins === undefined) parsed.coins = 0
+      return parsed
+    }
   } catch {
     // Corrupt save — start fresh
   }
@@ -164,6 +177,19 @@ export function removePlant(state: GameState, potId: number): boolean {
   pot.plant = null
   pot.phaseStart = null
   return true
+}
+
+/** Sell a blooming plant: removes it and awards coins based on rarity. Returns coins earned or -1 on failure. */
+export function sellPlant(state: GameState, potId: number): number {
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot?.plant || pot.plant.phase < 4) return -1
+  const entry = state.catalog.find(e => e.plant.id === pot.plant!.id)
+  const rarity: Rarity = entry?.rarity ?? 0
+  const reward = COIN_REWARD[rarity]
+  state.coins += reward
+  pot.plant = null
+  pot.phaseStart = null
+  return reward
 }
 
 export function placeSeedInEmptyPot(state: GameState, plant: Plant): number | null {

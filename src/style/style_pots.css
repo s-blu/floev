@@ -228,11 +228,30 @@
   flex: 2;
 }
 
-/* Icon buttons (selfpollinate, remove) each take ~25% */
+/* ── Icon buttons (selfpollinate, sell, remove) each take ~25% */
 .btn-sm.btn-icon {
   flex: 1;
   padding: 5px 2px;
   font-size: 13px;
+}
+
+.btn-sm.btn-sell {
+  border-color: #f0c040;
+  color: #8a5e00;
+}
+
+.btn-sm.btn-sell:hover {
+  background: #FFF3D0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-sm.btn-sell {
+    border-color: rgba(240,192,64,0.35);
+    color: #f0c040;
+  }
+  .btn-sm.btn-sell:hover {
+    background: rgba(240,192,64,0.10);
+  }
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
