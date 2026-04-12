@@ -1,6 +1,6 @@
 import { RARITY_COLORS, RARITY_LABELS } from '../engine/game';
-import { expressedColor, expressedGradient, expressedShape, expressedCenter, expressedNumber, isHomozygous } from '../engine/genetic.utils';
-import { renderBloomSVG } from '../engine/renderer/encyclopedia.renderer';
+import { expressedColor, expressedGradient, expressedShape, expressedCenter, expressedNumber, isHomozygous } from '../engine/genetic_utils';
+import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import type { Rarity, CatalogEntry } from '../model/plant';
 import { openAncestryIds, state } from './ui';
 import { t } from '../model/i18n';

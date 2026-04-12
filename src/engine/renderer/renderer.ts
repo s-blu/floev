@@ -2,8 +2,8 @@ import type { Plant } from '../../model/plant'
 import {
   expressedColor, expressedShape, expressedCenter,
   expressedNumber, expressedGradient
-} from "../genetic.utils"
-import { buildPetalPath, petalToSVG } from './petal.renderer';
+} from "../genetic_utils"
+import { buildPetalPath, petalToSVG } from './petal_renderer';
 import { hsl, clamp, darken } from './renderer.utils'
 import { renderGradientDef } from './renderer.utils';
 

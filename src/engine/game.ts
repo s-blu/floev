@@ -1,5 +1,5 @@
 import type { GameState, Pot, Plant, CatalogEntry, Rarity } from '../model/plant'
-import { randomPlant, catalogKey } from './genetics'
+import { randomPlant, catalogKey } from './genetic'
 import { calcRarity, calcRarityScore } from './rarity'
 
 // ─── Constants ───────────────────────────────────────────────────────────────

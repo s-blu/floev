@@ -1,7 +1,7 @@
 import { renderPlantSVG } from '../engine/renderer/renderer';
 import { getPhaseProgress, RARITY_COLORS, RARITY_LABELS } from '../engine/game';
-import { isHomozygous, dominantHue, dominantLightness, dominantShape, dominantCenter } from '../engine/genetic.utils';
-import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../engine/genetics';
+import { isHomozygous, dominantHue, dominantLightness, dominantShape, dominantCenter } from '../engine/genetic_utils';
+import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../engine/genetic';
 import { state, handlePlantSeed, handleRemove, handleBreedSelect, handleSelfPollinate, openAlleleIds } from './ui';
 import { t } from '../model/i18n';
 import type { Pot, ChromaticL } from '../model/plant';

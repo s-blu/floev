@@ -1,5 +1,5 @@
 import { Plant, CenterType, PetalShape, Rarity, HSLColor } from "../model/plant"
-import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket, CENTER_COLORS } from "./genetic.utils"
+import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket, CENTER_COLORS } from "./genetic_utils"
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 

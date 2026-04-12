@@ -18,16 +18,16 @@ src/
 │ └── main.ts           # Entry point — initialisiert App-Shell + UI
 |-engine/               # Folder; Logic of the game
 │ └── breed.ts          # Logik zur Züchtung und Zuchtvorhersage
-│ └── genetic.util.ts   # Helper utils zur Bestimmung von Dominanzen
-│ └── genetics.ts       # Code für genetische Verteilung, randomPlant()
+│ └── genetic_util.ts   # Helper utils zur Bestimmung von Dominanzen
+│ └── genetic.ts       # Code für genetische Verteilung, randomPlant()
 │ └── inheritance.ts    # Allele und sonstige Vererbungs-Logik
 │ └── rarity.ts         # Seltenheitsberechnung
 │ └── game.ts           # State-Management, Phasen, localStorage-Persistenz
 │ └── renderer/                    # Folder; Logik zum rendern der SVGs
 │     └── renderer.ts              # Hauptrendering der Blumen
-│     └── encyclopedia.renderer.ts # Blumenrendering für die Enzyklopädie
-│      └── petal.renderer.ts       # Renderin der verschiedenen Blütenarten
-│     └── renderer.utils.ts        # Helper functions für SVG Renderings
+│     └── encyclopedia_renderer.ts # Blumenrendering für die Enzyklopädie
+│     └── petal_renderer.ts       # Renderin der verschiedenen Blütenarten
+│     └── renderer_utils.ts        # Helper functions für SVG Renderings
 |-model/                # Folder; Interfaces and types
 │ └── plant.ts          # Alle TypeScript-Interfaces (Plant, Pot, GameState …)
 │ └── i18n/             # ui labels for the app
@@ -36,9 +36,9 @@ src/
 │     └── ...           # translations for other languages, named after their 2 digit locale
 |-ui/                   # Folder; Logik zum Render der UI
 │ └── ui.ts             # Hauptfunktion für DOM Rendering, Event handling
-│ └── breedpanel.ui.ts  # UI für Züchtungspanel
-│ └── catalog.ui.ts     # UI für Enzyklopädie /Catalog
-│ └── pots.ui.ts        # UI für Pflanztöpfe
+│ └── breedpanel_ui.ts  # UI für Züchtungspanel
+│ └── catalog_ui.ts     # UI für Enzyklopädie /Catalog
+│ └── pots_ui.ts        # UI für Pflanztöpfe
 |-style/                # Folder; CSS Styles
 │ └── style.css         # Globales CSS
 │ └── style_breed.css         # Styles für das Züchtungspanel

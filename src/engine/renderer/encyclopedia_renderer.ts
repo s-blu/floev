@@ -1,6 +1,6 @@
 import type { Plant } from '../../model/plant';
-import { expressedColor, expressedGradient, expressedShape, expressedNumber, expressedCenter } from '../genetic.utils';
-import { buildPetalPath, petalToSVG } from './petal.renderer';
+import { expressedColor, expressedGradient, expressedShape, expressedNumber, expressedCenter } from '../genetic_utils';
+import { buildPetalPath, petalToSVG } from './petal_renderer';
 import { renderGradientDef, hsl, darken } from './renderer.utils';
 import { renderCenter } from './renderer';
 

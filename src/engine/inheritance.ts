@@ -2,9 +2,9 @@ import {
   clamp, jitter, MUTATION_CHANCE, pick,
   GRADIENT_ALLELE_KEEP_CHANCE, randomGradient, quantizeColor,
   randomHueForBucket, randomLightnessAllele, PALETTE_S,
-} from './genetics';
+} from './genetic';
 import { type AllelePair, type HSLColor, type ChromaticL } from '../model/plant';
-import { COLOR_BUCKET_DOMINANCE, LIGHTNESS_DOMINANCE } from "./genetic.utils";
+import { COLOR_BUCKET_DOMINANCE, LIGHTNESS_DOMINANCE } from "./genetic_utils";
 
 // ─── Generic allele inheritance ───────────────────────────────────────────────
 

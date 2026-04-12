@@ -7,9 +7,9 @@ import {
   saveState,
 } from '../engine/game'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
-import { renderPots } from './pots.ui'
-import { renderBreedPanel } from './breedpanel.ui'
-import { renderCatalog } from './catalog.ui'
+import { renderPots } from './pots_ui'
+import { renderBreedPanel } from './breedpanel_ui'
+import { renderCatalog } from './catalog_ui'
 import { t } from '../model/i18n'
 
 interface BreedState {

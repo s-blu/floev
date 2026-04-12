@@ -1,5 +1,5 @@
 import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL } from "../model/plant";
-import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from "./genetics";
+import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from "./genetic";
 
 // ─── Dominance helpers ────────────────────────────────────────────────────────
 
