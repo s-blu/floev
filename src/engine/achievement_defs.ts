@@ -78,7 +78,8 @@ function countShadesInBucket(catalog: CatalogEntry[], bucket: ColorBucket): { cu
 }
 
 // ─── CHROMATIC buckets only (no white/gray for combo achievements) ────────────
-const CHROMATIC_BUCKETS: ColorBucket[] = ['red', 'yellow', 'pink', 'purple', 'blue', 'green']
+const CHROMATIC_BUCKETS: ColorBucket[] = ['red', 'yellow', 'pink', 'purple', 'blue', 'green', 'gray']
+const CHROMATIC_RARE_BUCKETS: ColorBucket[] = ['purple', 'blue', 'green', 'gray']
 
 // ─── Achievement list ─────────────────────────────────────────────────────────
 
@@ -87,10 +88,9 @@ export function buildAchievements(): Achievement[] {
 
   // ── 1. Rarity milestones (stacked) ──────────────────────────────────────────
   const rarityStack: { rarity: Rarity; reward: number }[] = [
-    { rarity: 1, reward: 10 },
-    { rarity: 2, reward: 25 },
-    { rarity: 3, reward: 60 },
-    { rarity: 4, reward: 150 },
+    { rarity: 2, reward: 15 },
+    { rarity: 3, reward: 40 },
+    { rarity: 4, reward: 100 },
   ]
   for (const { rarity, reward } of rarityStack) {
     const label = t.achRarityLabel(rarity)
@@ -106,8 +106,10 @@ export function buildAchievements(): Achievement[] {
     })
   }
 
+  // TODO Züchte alle Blüttenblätteranzahlen (also 3-8) mit runden Blüttenblättern
+
   // ── 2. Catalog size milestones (stacked) ─────────────────────────────────────
-  const sizeStack = [5, 15, 30, 60, 100]
+  const sizeStack = [15, 30, 60, 100]
   for (let i = 0; i < sizeStack.length; i++) {
     const n = sizeStack[i]
     list.push({
@@ -117,13 +119,13 @@ export function buildAchievements(): Achievement[] {
       hidden: false,
       title: t.achCatalogTitle(n),
       desc: t.achCatalogDesc(n),
-      reward: [5, 15, 35, 70, 150][i],
+      reward: [10, 25, 50, 150][i],
       progress: cat => ({ current: Math.min(cat.length, n), total: n }),
     })
   }
 
   // ── 3. Colour diversity (visible) ────────────────────────────────────────────
-  const colorDivStack = [3, 5, 6, 8]
+  const colorDivStack = [5, 6, 8]
   for (let i = 0; i < colorDivStack.length; i++) {
     const n = colorDivStack[i]
     list.push({
@@ -133,7 +135,7 @@ export function buildAchievements(): Achievement[] {
       hidden: false,
       title: t.achColorDivTitle(n),
       desc: t.achColorDivDesc(n),
-      reward: [8, 20, 30, 80][i],
+      reward: [20, 30, 80][i],
       progress: cat => ({ current: Math.min(countUniqueBuckets(cat), n), total: n }),
     })
   }
@@ -204,11 +206,11 @@ export function buildAchievements(): Achievement[] {
     progress: cat => ({ current: cat.some(e => isHomozygous(e.plant)) ? 1 : 0, total: 1 }),
   })
 
-  // ── 8. All petal counts for a specific shape (hidden, stacked per shape) ──────
+  // ── 8. High petal counts (6, 7, 8) for a specific shape (hidden, stacked per shape) ──────
   for (const shape of PETAL_SHAPES) {
     const shapeLabel = t.achShapeLabels[shape] ?? shape
     for (let stackI = 0; stackI < 6; stackI++) {
-      const count = stackI + 3   // 3..8
+      const count = stackI + 6   // 6..8
       list.push({
         id: `petals_${shape}_${count}`,
         groupKey: `petals_shape_${shape}`,
@@ -223,19 +225,24 @@ export function buildAchievements(): Achievement[] {
   }
 
   // ── 9. All hues in each chromatic bucket (hidden, stacked: tones then shades) ─
+  // For the first achievement, only take into account rare colors
+    for (const bucket of CHROMATIC_RARE_BUCKETS) {
+      const colorLabel = t.achBucketLabels[bucket] ?? bucket
+      list.push({
+        id: `bucket_first_${bucket}`,
+        groupKey: `bucket_collection_${bucket}`,
+        stackIndex: 0,
+        hidden: true,
+        title: t.achBucketFirstTitle(colorLabel),
+        desc: t.achBucketFirstDesc(colorLabel),
+        reward: 5,
+        progress: cat => ({ current: countHuesInBucket(cat, bucket).current > 0 ? 1 : 0, total: 1 }),
+      })
+  }
+
   for (const bucket of CHROMATIC_BUCKETS) {
     const colorLabel = t.achBucketLabels[bucket] ?? bucket
 
-    list.push({
-      id: `bucket_first_${bucket}`,
-      groupKey: `bucket_collection_${bucket}`,
-      stackIndex: 0,
-      hidden: true,
-      title: t.achBucketFirstTitle(colorLabel),
-      desc: t.achBucketFirstDesc(colorLabel),
-      reward: 5,
-      progress: cat => ({ current: countHuesInBucket(cat, bucket).current > 0 ? 1 : 0, total: 1 }),
-    })
     list.push({
       id: `bucket_hues_${bucket}`,
       groupKey: `bucket_collection_${bucket}`,
@@ -306,7 +313,7 @@ export function buildAchievements(): Achievement[] {
   }
 
   // ── 12. Center type collection (hidden, stacked) ──────────────────────────────
-  const centerTypes = ['dot', 'disc', 'stamen'] as const
+  const centerTypes = ['disc', 'stamen'] as const
   for (let i = 0; i < centerTypes.length; i++) {
     const ct = centerTypes[i]
     const centerLabel = t.achCenterLabels[ct] ?? ct
@@ -317,7 +324,7 @@ export function buildAchievements(): Achievement[] {
       hidden: i > 0,
       title: t.achCenterTitle(centerLabel),
       desc: t.achCenterDesc(centerLabel),
-      reward: [5, 15, 35][i],
+      reward: [15, 35][i],
       progress: cat => ({
         current: cat.some(e => expressedCenter(e.plant.centerType) === ct) ? 1 : 0,
         total: 1,
