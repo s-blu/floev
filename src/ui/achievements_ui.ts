@@ -1,7 +1,8 @@
 import type { Achievement } from '../model/achievements'
 import { getVisibleAchievements } from '../engine/achievements'
-import { state, showMsg } from './ui'
+import { state } from './ui'
 import { t } from '../model/i18n'
+import { getAchievements } from '../engine/achievement_defs'
 
 // ─── Toast queue ──────────────────────────────────────────────────────────────
 
@@ -70,7 +71,7 @@ export function renderAchievements(): void {
 
   const visible = getVisibleAchievements(state)
   const totalUnlocked = state.achievements.unlocked.length
-  const totalAll = visible.length
+  const totalAll = getAchievements()?.length
 
   // Header counter
   const counter = panel.querySelector('.ach-header-count')

@@ -114,6 +114,18 @@ html, body {
   }
 }
 
+/* ── Header styles ──────────────────────────────────────────────────────────────── */
+.header-badge {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text3);
+  background: var(--bg3);
+  padding: 1px 7px;
+  border-radius: 99px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 /* ── Shop tab ──────────────────────────────────────────────────────────────── */
 .shop-tab {
   display: inline-flex;

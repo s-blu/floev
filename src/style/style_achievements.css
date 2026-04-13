@@ -22,16 +22,6 @@
   margin-bottom: 0 !important;
 }
 
-.ach-header-count {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--text3);
-  background: var(--bg3);
-  padding: 1px 7px;
-  border-radius: 99px;
-  letter-spacing: 0;
-  text-transform: none;
-}
 
 /* ── Toggle button ────────────────────────────────────────────────────────────── */
 

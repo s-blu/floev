@@ -46,7 +46,7 @@ app.innerHTML = `
     <div class="ach-section-header">
       <p class="section-title" style="margin-bottom:0">
         ${t.achPanelTitle}
-        <span class="ach-header-count" id="ach-count">0 / 0</span>
+        <span class="ach-header-count header-badge">0 / 0</span>
       </p>
       <button class="ach-toggle-btn" title="${t.achPanelTitle}">
         <span class="ach-chevron">▾</span>
@@ -57,7 +57,7 @@ app.innerHTML = `
   </section>
 
   <section>
-    <p class="section-title">${t.sectionDiscoveries} (<span id="catalog-count">0</span>)</p>
+    <p class="section-title">${t.sectionDiscoveries} <span class="header-badge" id="catalog-count">0</span></p>
     <div class="catalog-grid" id="catalog-grid">
       <span class="empty-hint">${t.catalogEmpty}</span>
     </div>
