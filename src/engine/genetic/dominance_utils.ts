@@ -1,6 +1,6 @@
 import { PETAL_SHAPE_DOMINANCE, CENTER_TYPE_DOMINANCE, COLOR_BUCKET_DOMINANCE, LIGHTNESS_DOMINANCE } from "../../model/dominance";
-import { ACHROMATIC_HUE_WHITE, PALETTE_HUES, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from "../../model/genetic_model";
-import { PetalShape, CenterType, ChromaticL } from "../../model/plant";
+import { ACHROMATIC_HUE_WHITE, PALETTE_HUES, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, CENTER_COLORS } from "../../model/genetic_model";
+import { PetalShape, CenterType, ChromaticL, HSLColor } from "../../model/plant";
 import { hueBucket } from "./genetic_utils";
 
 
@@ -19,6 +19,13 @@ export function dominantCenter(a: CenterType, b: CenterType): CenterType {
   const ib = CENTER_TYPE_DOMINANCE.indexOf(b);
   return ia <= ib ? a : b;
 }
+
+export function dominantCenterColor(a: HSLColor, b: HSLColor): HSLColor {
+  const ia = CENTER_COLORS.indexOf(a);
+  const ib = CENTER_COLORS.indexOf(b);
+  return ia <= ib ? a : b;
+}
+
 
 /** Return the more dominant of two hue alleles. */
 

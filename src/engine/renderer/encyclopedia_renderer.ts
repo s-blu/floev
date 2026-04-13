@@ -1,5 +1,5 @@
 import type { Plant } from '../../model/plant';
-import { expressedColor, expressedGradient, expressedShape, expressedNumber, expressedCenter } from '../genetic/genetic_utils';
+import { expressedColor, expressedGradient, expressedShape, expressedNumber, expressedCenter, expressedCenterColor } from '../genetic/genetic_utils';
 import { buildPetalPath, petalToSVG } from './petal_renderer';
 import { renderGradientDef, hsl, darken } from './renderer_utils';
 import { renderCenter } from './center_renderer';
@@ -34,7 +34,7 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
     body += petalToSVG(petal, fillStr, strokeStr);
   }
 
-  const cc = plant.centerColor.a;
+  const cc = expressedCenterColor(plant.centerColor);
   const centerType = expressedCenter(plant.centerType);
   body += renderCenter(centerType, cc, cx, cy);
 
