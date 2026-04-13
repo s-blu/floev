@@ -54,11 +54,9 @@ let panelOpen = false
 
 export function renderAchievements(): void {
   const panel = document.getElementById('achievements-panel')
-  console.log(panel)
   if (!panel) return
 
   const visible = getVisibleAchievements(state)
-  console.log(visible)
   const totalUnlocked = state.achievements.unlocked.length
   const totalAll = visible.length  // only count visible for the header
 
@@ -67,7 +65,6 @@ export function renderAchievements(): void {
   if (counter) counter.textContent = `${totalUnlocked} / ${totalAll}`
 
   const body = panel.querySelector('.ach-body')
-  console.log('body', body)
   if (!body) return
 
   if (!panelOpen) return  // Don't rerender collapsed panel content
@@ -155,7 +152,6 @@ export function initAchievementsPanel(): void {
   if (!header) return
 
   header.addEventListener('click', () => {
-    console.log('sdewqe')
     panelOpen = !panelOpen
     panel.classList.toggle('ach-panel--open', panelOpen)
 
