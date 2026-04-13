@@ -187,6 +187,14 @@ export const de = {
 
   // Help button tooltip
   helpBtnTitle: 'Hilfe & Spielregeln',
+
+  // Achievement panel
+  achPanelTitle: 'Erfolge',
+  achEmpty: 'Noch keine Erfolge in Sicht.',
+  achInProgress: 'In Arbeit',
+  achCompleted: 'Abgeschlossen',
+  achUnlocked: 'Erfolg freigeschaltet',
+
 }
 
 export type I18n = typeof de

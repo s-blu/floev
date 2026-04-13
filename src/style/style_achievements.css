@@ -1,0 +1,284 @@
+/* ── Achievement panel ───────────────────────────────────────────────────────── */
+
+.ach-panel {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* ── Header (always visible, click to toggle) ────────────────────────────────── */
+.ach-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.ach-header:hover {
+  background: var(--bg3);
+}
+
+.ach-header-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.ach-header-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text3);
+  flex: 1;
+}
+
+.ach-header-count {
+  font-size: 11px;
+  color: var(--text3);
+  background: var(--bg3);
+  padding: 1px 8px;
+  border-radius: 99px;
+}
+
+.ach-header-chevron {
+  font-size: 10px;
+  color: var(--text3);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ach-panel--open .ach-header-chevron {
+  transform: rotate(180deg);
+}
+
+/* ── Body ────────────────────────────────────────────────────────────────────── */
+.ach-body {
+  display: none;
+  flex-direction: column;
+  padding: 0 0.75rem 0.75rem;
+  gap: 0;
+  border-top: 0.5px solid var(--border);
+}
+
+.ach-panel--open .ach-body {
+  display: flex;
+}
+
+.ach-empty {
+  font-size: 12px;
+  color: var(--text3);
+  padding: 0.75rem 0.25rem;
+  font-style: italic;
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────────── */
+.ach-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 0.625rem;
+}
+
+.ach-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 2px;
+  padding: 0 0.25rem;
+}
+
+/* ── Achievement card ────────────────────────────────────────────────────────── */
+.ach-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  transition: border-color 0.2s;
+}
+
+.ach-card--done {
+  border-color: rgba(var(--green-rgb, 29,158,117), 0.35);
+  background: color-mix(in srgb, var(--green) 4%, var(--bg));
+}
+
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .ach-card--done { background: var(--bg); }
+}
+
+.ach-card-left {
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.ach-card-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.ach-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ach-card-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.ach-card--done .ach-card-title {
+  color: var(--green);
+}
+
+.ach-card-desc {
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.5;
+}
+
+.ach-card-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 1px;
+}
+
+.ach-card-reward {
+  font-size: 10px;
+  color: var(--text3);
+  white-space: nowrap;
+  opacity: 0.6;
+}
+
+.ach-card-reward--done {
+  color: #8a5e00;
+  opacity: 1;
+  font-weight: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ach-card-reward--done { color: #f0c040; }
+}
+
+/* ── Progress bar ────────────────────────────────────────────────────────────── */
+.ach-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+}
+
+.ach-progress-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ach-progress-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.ach-progress-fill--done {
+  background: var(--green);
+}
+
+.ach-progress-label {
+  font-size: 9px;
+  color: var(--text3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ── Toast notification ──────────────────────────────────────────────────────── */
+.ach-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--bg);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 10px 16px 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 3000;
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+  min-width: 220px;
+  max-width: min(90vw, 340px);
+}
+
+.ach-toast--visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.ach-toast--hiding {
+  transform: translateX(-50%) translateY(80px);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.ach-toast-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.ach-toast-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.ach-toast-title {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+}
+
+.ach-toast-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ach-toast-reward {
+  font-size: 13px;
+  font-weight: 600;
+  color: #8a5e00;
+  flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ach-toast { box-shadow: 0 8px 32px rgba(0,0,0,0.45); }
+  .ach-toast-reward { color: #f0c040; }
+}

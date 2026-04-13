@@ -36,8 +36,9 @@ export interface Plant {
   petalHue:       AllelePair<number>       // palette hue value or achromatic sentinel
   petalLightness: AllelePair<ChromaticL>   // 30 | 60 | 90
 
-  // Optional gradient locus (expressed only when both alleles are non-null)
-  gradientColor:  AllelePair<HSLColor | null>
+  // Gradient locus — expressed only when BOTH alleles are true.
+  // The gradient is always monochrome: L90 near center → L60 mid → L30 at tips.
+  hasGradient:    AllelePair<boolean>
 
   // Center colour (full HSLColor pair, legacy — not yet refactored to loci)
   centerColor:    AllelePair<HSLColor>
@@ -69,8 +70,13 @@ export interface GameState {
   pots:     Pot[]
   catalog:  CatalogEntry[]
   coins:    number
+  achievements: {
+    unlocked: string[]   // achievement ids
+    rewarded: string[]   // ids where coins were already paid
+  }
   lastSave: number
 }
+
 
 // ─── Breed estimate ───────────────────────────────────────────────────────────
 

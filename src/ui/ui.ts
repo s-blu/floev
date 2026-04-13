@@ -12,6 +12,10 @@ import { renderPots } from './pots_ui'
 import { renderBreedPanel } from './breedpanel_ui'
 import { renderCatalog } from './catalog_ui'
 import { t } from '../model/i18n'
+import { checkAchievements } from '../engine/achievements_engine'
+import { renderAchievements, queueAchievementToast, initAchievementsPanel } from './achievements_ui'
+
+
 
 interface BreedState {
   breedSelA: number | null,
@@ -33,7 +37,9 @@ export const breedState: BreedState = {
 export function initUI(gameState: GameState): void {
   state = gameState
   bindStaticEvents()
+  initAchievementsPanel()
   render()
+  checkAndInformAch(gameState)
   setInterval(tick, 2000)
 }
 
@@ -41,7 +47,7 @@ function tick(): void {
   const changed = advancePhases(state, plant => {
     showMsg(t.msgNewBloom(plant.generation))
   })
-  if (changed) saveState(state)
+  if (changed) checkAchAndSave(state)
   render()
 }
 
@@ -80,7 +86,7 @@ export function showMsg(text: string): void {
 export function handlePlantSeed(potId: number): void {
   if (plantSeed(state, potId)) {
     showMsg(t.msgSeedPlanted)
-    saveState(state)
+    checkAchAndSave(state)
     render()
   }
 }
@@ -90,7 +96,7 @@ export function handleRemove(potId: number): void {
   if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
   if (removePlant(state, potId)) {
     showMsg(t.msgPotCleared)
-    saveState(state)
+    checkAchAndSave(state)
     render()
   }
 }
@@ -106,7 +112,7 @@ export function handleSell(potId: number): void {
   if (reward >= 0) {
     showMsg(t.msgSold(reward))
     if (sellBtn) spawnCoinFly(sellBtn, reward)
-    saveState(state)
+    checkAchAndSave(state)
     render()
   }
 }
@@ -194,13 +200,13 @@ function executeSelfPollinate(potId: number): void {
   const placed = placeSeedInEmptyPot(state, child)
   if (placed === null) {
     showMsg(t.breedNoSpace)
-    saveState(state)
+    checkAchAndSave(state)
     render()
     return
   }
 
   showMsg(t.selfPollinateSuccess(child.generation))
-  saveState(state)
+  checkAchAndSave(state)
   render()
 }
 
@@ -218,8 +224,19 @@ function handleBreed(): void {
   }
 
   showMsg(t.breedSuccess(child.generation))
-  saveState(state)
+  checkAchAndSave(state)
   render()
+}
+
+function checkAndInformAch(state: GameState): void {
+  const newly = checkAchievements(state)
+  if (newly.length > 0) queueAchievementToast(newly)
+  renderAchievements()
+}
+
+function checkAchAndSave(state: GameState) {
+  checkAndInformAch(state)
+  saveState(state)
 }
 
 // ─── Static event bindings ───────────────────────────────────────────────────

@@ -95,7 +95,7 @@ function createInitialState(): GameState {
     }))
     
   }
-  return { pots, catalog: [], coins: 0, lastSave: Date.now() }
+  return { pots, catalog: [], coins: 0, achievements: { unlocked: [], rewarded: [] }, lastSave: Date.now() }
 }
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
@@ -107,6 +107,8 @@ export function loadState(): GameState {
       const parsed = JSON.parse(raw) as GameState
       // backwards compatibility: old saves without coins
       if (parsed.coins === undefined) parsed.coins = 0
+      if (!parsed.achievements) parsed.achievements = { unlocked: [], rewarded: [] }
+
       return parsed
     }
   } catch {
