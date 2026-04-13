@@ -1,5 +1,5 @@
 import type { Achievement } from '../model/achievements'
-import { getVisibleAchievements } from '../engine/achievements_engine'
+import { getVisibleAchievements } from '../engine/achievements'
 import { state, showMsg } from './ui'
 import { t } from '../model/i18n'
 

@@ -20,6 +20,8 @@ src/
 │ └── breed.ts          # Logik zur Züchtung und Zuchtvorhersage
 │ └── rarity.ts         # Seltenheitsberechnung
 │ └── game.ts           # State-Management, Phasen, localStorage-Persistenz
+│ └── achievements.ts              # Logic für das Achievement Panel
+│ └── achievement_defs.ts          # Achievement Definition & Checklogik
 │ └── genetic/                     # Folder; Logik zur Vererbung
 │     └── genetic.ts               # Code für genetische Verteilung, randomPlant()
 │     └── dominance_utils.ts       # Helpers, um dominante Eigenschaften zu bestimmen 
@@ -43,11 +45,14 @@ src/
 │ └── breedestimate_ui.ts  # UI für Kreuzungsvorhersage
 │ └── catalog_ui.ts           # UI für Enzyklopädie /Catalog
 │ └── pots_ui.ts              # UI für Pflanztöpfe
+│ └── achievement_ui.ts       # UI für das Achievement Panel
 |-style/                      # Folder; CSS Styles
 │ └── style.css               # Globales CSS
 │ └── style_breed.css         # Styles für das Züchtungspanel
 │ └── style_encyclopedia.css  # Styles für den Katalog/die Enzyklopädie 
 │ └── style_pots.css          # Styles für die Anzuchtstöpfe 
+│ └── style_help.css          # Styles für das Hilfe-Popup 
+│ └── style_achievements.css  # Styles für das Achievement Panel 
 ```
 
 ## Erweiterungspunkte

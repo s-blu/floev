@@ -12,7 +12,7 @@ import { renderPots } from './pots_ui'
 import { renderBreedPanel } from './breedpanel_ui'
 import { renderCatalog } from './catalog_ui'
 import { t } from '../model/i18n'
-import { checkAchievements } from '../engine/achievements_engine'
+import { checkAchievements } from '../engine/achievements'
 import { renderAchievements, queueAchievementToast, initAchievementsPanel } from './achievements_ui'
 
 
