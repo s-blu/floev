@@ -30,24 +30,31 @@ export function getVisibleAchievements(state: GameState): VisibleAchievement[] {
     arr.sort((a, b) => a.stackIndex - b.stackIndex)
   }
 
-  const result: VisibleAchievement[] = []
+const result: VisibleAchievement[] = []
 
   for (const [, stack] of groups) {
-    // Find the first non-unlocked achievement in this stack
-    const candidate = stack.find(a => !unlocked.has(a.id)) ?? stack[stack.length - 1]
+    // Emit every unlocked achievement in this stack individually
+    for (const a of stack) {
+      if (!unlocked.has(a.id)) continue
+      result.push({
+        achievement: a,
+        progress: a.progress(state.catalog),
+        unlocked: true,
+        newlyUnlocked: false,
+      })
+    }
+
+    // Then show the next in-progress candidate (first non-unlocked)
+    const candidate = stack.find(a => !unlocked.has(a.id))
+    if (!candidate) continue
     const prog = candidate.progress(state.catalog)
-    const isUnlocked = unlocked.has(candidate.id)
     const fraction = prog.total > 0 ? prog.current / prog.total : 0
 
-    // Visibility rules:
-    // - Always visible if not hidden
-    // - Always visible if unlocked
-    // - Visible if hidden but fraction >= HIDDEN_REVEAL_THRESHOLD
-    if (!candidate.hidden || isUnlocked || fraction >= HIDDEN_REVEAL_THRESHOLD) {
+    if (!candidate.hidden || fraction >= HIDDEN_REVEAL_THRESHOLD) {
       result.push({
         achievement: candidate,
         progress: prog,
-        unlocked: isUnlocked,
+        unlocked: false,
         newlyUnlocked: false,
       })
     }
