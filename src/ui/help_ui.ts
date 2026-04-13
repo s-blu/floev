@@ -24,6 +24,7 @@ export function showHelp(): void {
   document.body.appendChild(modal);
 
   modal.querySelector('#help-close')?.addEventListener('click', () => closeHelp(modal));
+  modal.querySelector('#help-start-game')?.addEventListener('click', () => closeHelp(modal));
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeHelp(modal);
   });
@@ -117,7 +118,7 @@ function buildHelpContent(): string {
         </section>
 
         <div class="help-footer">
-          <button class="help-start-btn" id="help-close">${t.helpStartBtn}</button>
+          <button class="help-start-btn" id="help-start-game">${t.helpStartBtn}</button>
         </div>
 
       </div>
@@ -126,6 +127,7 @@ function buildHelpContent(): string {
 
 // ─── SVG deco flower (small, static, decorative) ──────────────────────────────
 
+// TODO refactor this and use a plannedPlant with the encyclopedia logic
 function buildDecoFlower(): string {
   const n = 6, r = 14, cx = 32, cy = 32;
   let petals = '';
