@@ -1,0 +1,445 @@
+/* ── Help modal overlay ──────────────────────────────────────────────────────── */
+.help-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+  animation: help-fade-in 0.2s ease;
+}
+
+.help-modal-overlay.help-modal--closing {
+  animation: help-fade-out 0.22s ease forwards;
+}
+
+@keyframes help-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes help-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ── Box ─────────────────────────────────────────────────────────────────────── */
+.help-modal-box {
+  background: var(--bg);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-xl);
+  max-width: 520px;
+  width: 100%;
+  max-height: 88dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  animation: help-slide-up 0.22s ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+}
+
+.help-modal--closing .help-modal-box {
+  animation: none;
+}
+
+@keyframes help-slide-up {
+  from { transform: translateY(18px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── Close button ────────────────────────────────────────────────────────────── */
+.help-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--text3);
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: var(--radius-md);
+  z-index: 2;
+  transition: color 0.12s, background 0.12s;
+}
+.help-modal-close:hover { color: var(--text); background: var(--bg3); }
+
+/* ── Scrollable content ──────────────────────────────────────────────────────── */
+.help-modal-scroll {
+  overflow-y: auto;
+  padding: 1.5rem 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg3) transparent;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────────── */
+.help-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 1.25rem;
+  gap: 8px;
+}
+
+.help-flower-deco {
+  margin-bottom: 2px;
+}
+
+.help-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+}
+
+.help-subtitle {
+  font-size: 13px;
+  color: var(--text3);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────────── */
+.help-section {
+  padding: 1.1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.help-section-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 2px;
+  letter-spacing: -0.01em;
+}
+
+.help-body {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.help-caption {
+  font-size: 11px;
+  color: var(--text3);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.help-divider {
+  border: none;
+  border-top: 0.5px solid var(--border);
+  margin: 0;
+}
+
+/* ── Combo badge ─────────────────────────────────────────────────────────────── */
+.help-combo-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 8px 16px;
+  align-self: flex-start;
+}
+
+.help-combo-number {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: -0.02em;
+}
+
+.help-combo-label {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+/* ── Hue strip ───────────────────────────────────────────────────────────────── */
+.help-hue-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.help-hue-swatch {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 0.5px solid rgba(0,0,0,0.12);
+  flex-shrink: 0;
+}
+
+/* ── Dominance chain ─────────────────────────────────────────────────────────── */
+.help-dominance-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.help-dom-item {
+  font-size: 11px;
+  color: var(--text2);
+  padding: 1px 6px;
+  background: var(--bg2);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.help-dom-item--first {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.help-dom-arrow {
+  font-size: 13px;
+  color: var(--text3);
+}
+
+/* ── Lightness swatches ──────────────────────────────────────────────────────── */
+.help-lightness-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.help-lightness-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.help-lightness-swatch {
+  display: inline-block;
+  width: 28px;
+  height: 20px;
+  border-radius: 4px;
+  border: 0.5px solid rgba(0,0,0,0.12);
+  flex-shrink: 0;
+}
+
+.help-lightness-label {
+  font-size: 11px;
+  color: var(--text2);
+}
+
+/* ── Shape cards ─────────────────────────────────────────────────────────────── */
+.help-shapes-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.help-shape-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  min-width: 60px;
+}
+
+.help-shape-card--secret {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.help-shape-svg {
+  width: 40px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.help-shape-svg--secret {
+  font-size: 22px;
+  color: var(--text3);
+  font-family: Georgia, serif;
+}
+
+.help-shape-label {
+  font-size: 10px;
+  color: var(--text2);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── Rarity list ─────────────────────────────────────────────────────────────── */
+.help-rarity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.help-rarity-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.help-rarity-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+  width: 14px;
+  text-align: center;
+}
+
+.help-rarity-name {
+  font-weight: 500;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.help-rarity-desc {
+  color: var(--text3);
+  font-size: 12px;
+}
+
+/* ── Breed steps ─────────────────────────────────────────────────────────────── */
+.help-breed-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.help-breed-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.help-breed-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.help-breed-text {
+  color: var(--text2);
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* ── Gradient demo ───────────────────────────────────────────────────────────── */
+.help-grad-demo-row {
+  display: flex;
+  gap: 10px;
+}
+
+.help-grad-swatch {
+  width: 64px;
+  height: 28px;
+  border-radius: 6px;
+  border: 0.5px solid rgba(0,0,0,0.12);
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────────── */
+.help-footer {
+  padding-top: 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.help-start-btn {
+  font-size: 14px;
+  font-family: inherit;
+  padding: 9px 32px;
+  border-radius: var(--radius-lg);
+  border: 0.5px solid var(--green);
+  background: var(--green);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.01em;
+}
+
+.help-start-btn:hover {
+  background: #18856A;
+  border-color: #18856A;
+}
+
+.help-start-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Help button in header ───────────────────────────────────────────────────── */
+.help-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 0.5px solid var(--border2);
+  background: transparent;
+  color: var(--text3);
+  font-size: 14px;
+  font-family: Georgia, serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.help-btn:hover {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .help-modal-box {
+    max-height: 94dvh;
+  }
+  .help-modal-scroll {
+    padding: 1.25rem 1.1rem 1rem;
+  }
+  .help-combo-badge {
+    align-self: stretch;
+    justify-content: center;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .help-modal-box {
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  }
+  .help-hue-swatch {
+    border-color: rgba(255,255,255,0.12);
+  }
+}

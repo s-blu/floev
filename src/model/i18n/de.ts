@@ -117,6 +117,76 @@ export const de = {
   msgSeedPlanted: 'Samen gepflanzt!',
   msgPotCleared: 'Topf geleert.',
   msgNewBloom: (gen: number) => `Eine neue Blüte ist aufgegangen! (Gen. ${gen})`,
+
+  // ─── Help modal ─────────────────────────────────────────────────────────────
+
+  helpClose: 'Schließen',
+
+  // Header
+  helpTitle: 'Willkommen bei Floev',
+  helpSubtitle: 'Ein botanisches Züchtungsspiel',
+
+  // Intro
+  helpIntro1: 'Floev ist ein entspanntes Offline-Spiel — du musst nicht ständig dabei sein. Pflanze einen Samen, schau später wieder rein und staune, was geblüht ist. Die Pflanzenwelt macht in deiner Abwesenheit weiter: Wachstumsphasen laufen im Hintergrund ab, und der Fortschritt wird beim nächsten Öffnen automatisch nachgeholt.',
+  helpIntro2: 'Jede Blüte wird aus genetischen Eigenschaften dynamisch berechnet — keine zwei sind exakt gleich. Farbe, Form, Blütenmitte, Helligkeit und seltene Farbverläufe ergeben zusammen über',
+  helpCombos: '7.000+',
+  helpCombosLabel: 'einzigartige Blütenkombinationen',
+
+  // Colors
+  helpColorsTitle: 'Farbe & Helligkeit',
+  helpColorsBody: 'Jede Pflanze trägt zwei Farbgen-Allele und zwei Helligkeits-Allele. Das dominantere Allel bestimmt die sichtbare Farbe. Die Dominanzreihenfolge gilt von links (stärkstes) nach rechts (schwächstes):',
+  helpColorsDominance: 'Farbdominanz — links dominiert, rechts ist rezessiv',
+  helpColorBucket: (bucket: string): string => {
+    const map: Record<string, string> = {
+      white: 'Weiß', yellow: 'Gelb', red: 'Rot', pink: 'Rosa',
+      purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
+    };
+    return map[bucket] ?? bucket;
+  },
+  helpLightnessDominance: 'Helligkeitsdominanz: Dunkel (L30) dominiert Mittel (L60) dominiert Hell (L90)',
+  helpLightnessDark: 'dunkel',
+  helpLightnessMid: 'mittel',
+  helpLightnessLight: 'hell',
+
+  // Shapes
+  helpShapesTitle: 'Blütenformen',
+  helpShapesBody: 'Die ersten drei Formen kannst du von Anfang an entdecken. Zwei weitere sind seltener und rezessiver — finde sie durch gezieltes Kreuzen heraus.',
+  helpShapesDominance: 'Formdominanz: Rund > Lanzett > Tropfen > … (seltenere Formen sind rezessiver und schwerer zu fixieren)',
+  helpShapeSecretLabel: 'Geheimnis',
+
+  // Rarity
+  helpRarityTitle: 'Seltenheitsstufen',
+  helpRarityBody: 'Jede Blüte erhält beim Aufblühen einen Seltenheitsscore — berechnet aus Blütenform, Farbe, Blütenmitte, Farbverlauf, Blattanzahl und Stängelhöhe. Je seltener, desto mehr Münzen beim Verkauf.',
+  helpRarityDesc: (rarity: number): string => {
+    const descs = [
+      'Häufig — runde Formen, einfache Farben',
+      'Ungewöhnliche Merkmalskombination',
+      'Seltene Formen oder besondere Farben',
+      'Sehr seltene Kombination mehrerer Merkmale',
+      'Legendär — extrem schwer zu züchten',
+    ];
+    return descs[rarity] ?? '';
+  },
+
+  // Breeding
+  helpBreedTitle: 'Züchtung & Vererbung',
+  helpBreedBody: 'Wenn zwei Pflanzen blühen, kannst du sie kreuzen. Jedes Kind erbt von jedem Elternteil ein zufälliges Allel pro Eigenschaft — wie echte Mendelsche Vererbung. Die Kreuzungsvorschau zeigt Wahrscheinlichkeiten für Farbe, Form und Mitte.',
+  helpBreedStep1: 'Wähle zwei blühende Pflanzen über „Züchten" aus.',
+  helpBreedStep2: 'Die Vorschau zeigt Wahrscheinlichkeiten für Farbe, Form und Blütenmitte.',
+  helpBreedStep3: 'Klicke „Züchten" — ein neuer Samen landet im nächsten freien Topf.',
+  helpBreedStep4: 'Lass den Samen durch alle Phasen wachsen und beobachte das Ergebnis.',
+  helpSelfBody: 'Mit ↺ (Selbstbestäubung) kannst du eine Pflanze mit sich selbst kreuzen. Das verbraucht die Mutterpflanze, erzeugt aber reinerbigere Nachkommen — ideal, um eine gewünschte Eigenschaft zu fixieren.',
+  helpHomoBody: 'Reinerbige Pflanzen (◈) tragen auf beiden Allelen denselben Wert. Ihre Nachkommen sind deutlich berechenbarer — perfekt für die gezielte Weiterzüchtung seltener Merkmale.',
+
+  // Gradient
+  helpGradientTitle: '✦ Farbverlauf',
+  helpGradientBody: 'Manche Pflanzen tragen ein verborgenes Farbverlauf-Gen. Es zeigt sich nur, wenn beide Allele aktiv sind — ein rezessives Merkmal, das sich durch gezieltes Kreuzen und Selbstbestäuben aufdecken lässt. Blüten mit Farbverlauf schimmern von hell nach dunkel.',
+
+  // Start button
+  helpStartBtn: 'Los geht\'s 🌱',
+
+  // Help button tooltip
+  helpBtnTitle: 'Hilfe & Spielregeln',
 }
 
 export type I18n = typeof de

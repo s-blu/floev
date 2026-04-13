@@ -1,5 +1,6 @@
 import { loadState } from './engine/game'
 import { initUI, showMsg } from './ui/ui'
+import { initHelp, showHelp } from './ui/help_ui'
 import { t } from './model/i18n'
 
 // ─── Inject app shell ────────────────────────────────────────────────────────
@@ -13,6 +14,7 @@ app.innerHTML = `
       <div class="header-actions">
         <span class="coin-badge" id="coin-badge">🪙 0</span>
         <button class="shop-tab" disabled title="${t.shopComingSoon}">${t.shopTab} <span class="shop-soon">${t.shopComingSoon}</span></button>
+        <button class="help-btn" id="help-btn" title="${t.helpBtnTitle}">?</button>
       </div>
     </div>
     <p class="msg-bar" id="msg">${t.welcomeMsg}</p>
@@ -52,5 +54,9 @@ app.innerHTML = `
 
 const state = loadState()
 initUI(state)
+
+// Help modal — show on first visit, bind ? button
+initHelp()
+document.getElementById('help-btn')?.addEventListener('click', showHelp)
 
 ;(window as unknown as Record<string, unknown>).__floev__ = { state, showMsg }
