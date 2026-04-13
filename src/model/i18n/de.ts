@@ -194,7 +194,93 @@ export const de = {
   achInProgress: 'In Arbeit',
   achCompleted: 'Abgeschlossen',
   achUnlocked: 'Erfolg freigeschaltet',
+  achDoneTitle: 'Abgeschlossen',
+  achShowAll: 'alle anzeigen',
+  achHideAll: 'weniger',
 
+  // ─── Achievement definitions ─────────────────────────────────────────────────
+
+  // Rarity milestones
+  achRarityTitle: (label: string) => `${label}e Blüte`,
+  achRarityDesc: (label: string) => `Züchte eine Blüte der Seltenheit „${label}".`,
+  achRarityLabel: (rarity: number): string => {
+    const labels = ['Gewöhnlich', 'Ungewöhnlich', 'Selten', 'Episch', 'Legendär'];
+    return labels[rarity] ?? '';
+  },
+
+  // Catalog size milestones
+  achCatalogTitle: (n: number): string => {
+    if (n >= 100) return 'Sammlerin II';
+    if (n >= 60)  return 'Sammlerin';
+    if (n >= 30)  return 'Sammlerin';
+    return 'Sammler';
+  },
+  achCatalogDesc: (n: number) => `Entdecke ${n} verschiedene Blüten.`,
+
+  // Color diversity
+  achColorDivTitle: (n: number) => n === 8 ? 'Volle Palette' : `${n} Farben`,
+  achColorDivDesc: (n: number) => n === 8
+    ? 'Entdecke Blüten in allen 8 Farbgruppen (inkl. Weiß & Grau).'
+    : `Entdecke Blüten in ${n} verschiedenen Farbgruppen.`,
+
+  // Shape diversity
+  achShapeDivTitle: (n: number) => n === 5 ? 'Alle Formen' : `${n} Blütenformen`,
+  achShapeDivDesc: (n: number) => n === 5
+    ? 'Entdecke Blüten in allen 5 Blütenformen.'
+    : `Entdecke Blüten in ${n} verschiedenen Blütenformen.`,
+
+  // Generation milestones
+  achGenTitle: (g: number) => `Generation ${g}`,
+  achGenDesc: (g: number) => `Züchte eine Blüte der Generation ${g} oder höher.`,
+
+  // Gradient milestones
+  achGradientTitle: (n: number) => n === 1 ? 'Erstes Schimmern' : `${n}× Farbverlauf`,
+  achGradientDesc: (n: number) => n === 1
+    ? 'Entdecke deine erste Blüte mit Farbverlauf.'
+    : `Entdecke ${n} Blüten mit Farbverlauf.`,
+
+  // Homozygous
+  achHomoTitle: 'Reinerbig',
+  achHomoDesc: 'Entdecke eine reinerbige (◈) Blüte.',
+
+  // Petal count × shape
+  achPetalsTitle: (shapeLabel: string, count: number) => `${shapeLabel}, ${count} Blätter`,
+  achPetalsDesc: (shapeLabel: string, count: number) => `Entdecke eine ${shapeLabel}-Blüte mit genau ${count} Blütenblättern.`,
+
+  // Bucket collection
+  achBucketFirstTitle: (colorLabel: string) => `Erste ${colorLabel}töne`,
+  achBucketFirstDesc: (colorLabel: string) => `Entdecke deine erste ${colorLabel}-Blüte.`,
+  achBucketHuesTitle: (colorLabel: string) => `Alle ${colorLabel}töne`,
+  achBucketHuesDesc: (colorLabel: string) => `Entdecke Blüten in allen Farbtönen des ${colorLabel}-Bereichs.`,
+  achBucketShadesTitle: (colorLabel: string) => `Alle ${colorLabel}schattierungen`,
+  achBucketShadesDesc: (colorLabel: string) => `Entdecke alle Farbton-Helligkeits-Kombinationen im ${colorLabel}-Bereich.`,
+
+  // 8-petal shape × color combos
+  achCombo8Title: (shapeLabel: string, colorLabel: string) => `8× ${shapeLabel} (${colorLabel})`,
+  achCombo8Desc: (shapeLabel: string, colorLabel: string) => `Entdecke eine 8-blütige ${shapeLabel}-Blüte in ${colorLabel}.`,
+
+  // Legendary per shape
+  achLegendaryShapeTitle: (shapeLabel: string) => `Legendäre ${shapeLabel}-Blüte`,
+  achLegendaryShapeDesc: (shapeLabel: string) => `Züchte eine legendäre Blüte mit der Form „${shapeLabel}".`,
+
+  // Center type collection
+  achCenterTitle: (centerLabel: string) => `Blütenmitte: ${centerLabel}`,
+  achCenterDesc: (centerLabel: string) => `Entdecke eine Blüte mit der Blütenmitte „${centerLabel}".`,
+
+  // Shared label maps (used in achievement_defs.ts)
+  achShapeLabels: {
+    round: 'Rund', lanzett: 'Lanzett', tropfen: 'Tropfen', wavy: 'Wellig', zickzack: 'Zickzack',
+  } as Record<string, string>,
+  achBucketLabels: {
+    white: 'Weiß', yellow: 'Gelb', red: 'Rot', pink: 'Rosa',
+    purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
+  } as Record<string, string>,
+  achCenterLabels: {
+    dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
+  } as Record<string, string>,
+
+  // help shape secret
+  helpShapeSecret: '?',
 }
 
 export type I18n = typeof de

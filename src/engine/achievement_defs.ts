@@ -8,6 +8,7 @@ import {
 import { PALETTE_HUE_RANGES, PALETTE_HUES, PALETTE_L, PETAL_SHAPES } from '../model/genetic_model'
 import type { ColorBucket } from '../model/genetic_model'
 import type { PetalShape, Rarity } from '../model/plant'
+import { t } from '../model/i18n'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -78,13 +79,6 @@ function countShadesInBucket(catalog: CatalogEntry[], bucket: ColorBucket): { cu
 
 // ─── CHROMATIC buckets only (no white/gray for combo achievements) ────────────
 const CHROMATIC_BUCKETS: ColorBucket[] = ['red', 'yellow', 'pink', 'purple', 'blue', 'green']
-const BUCKET_LABELS: Record<ColorBucket, string> = {
-  white: 'Weiß', yellow: 'Gelb', red: 'Rot', pink: 'Rosa',
-  purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
-}
-const SHAPE_LABELS: Record<PetalShape, string> = {
-  round: 'Rund', lanzett: 'Lanzett', tropfen: 'Tropfen', wavy: 'Wellig', zickzack: 'Zickzack',
-}
 
 // ─── Achievement list ─────────────────────────────────────────────────────────
 
@@ -92,20 +86,21 @@ export function buildAchievements(): Achievement[] {
   const list: Achievement[] = []
 
   // ── 1. Rarity milestones (stacked) ──────────────────────────────────────────
-  const rarityStack: { rarity: Rarity; label: string; reward: number }[] = [
-    { rarity: 1, label: 'Ungewöhnlich',  reward: 10 },
-    { rarity: 2, label: 'Selten',        reward: 25 },
-    { rarity: 3, label: 'Episch',        reward: 60 },
-    { rarity: 4, label: 'Legendär',      reward: 150 },
+  const rarityStack: { rarity: Rarity; reward: number }[] = [
+    { rarity: 1, reward: 10 },
+    { rarity: 2, reward: 25 },
+    { rarity: 3, reward: 60 },
+    { rarity: 4, reward: 150 },
   ]
-  for (const { rarity, label, reward } of rarityStack) {
+  for (const { rarity, reward } of rarityStack) {
+    const label = t.achRarityLabel(rarity)
     list.push({
       id: `rarity_${rarity}`,
       groupKey: 'rarity_milestone',
       stackIndex: rarity - 1,
       hidden: false,
-      title: `${label}e Blüte`,
-      desc: `Züchte eine Blüte der Seltenheit „${label}".`,
+      title: t.achRarityTitle(label),
+      desc: t.achRarityDesc(label),
       reward,
       progress: cat => ({ current: hasRarity(cat, rarity) ? 1 : 0, total: 1 }),
     })
@@ -120,8 +115,8 @@ export function buildAchievements(): Achievement[] {
       groupKey: 'catalog_size',
       stackIndex: i,
       hidden: false,
-      title: `Sammler${n >= 30 ? 'in' : ''}${n >= 60 ? ' II' : ''}`,
-      desc: `Entdecke ${n} verschiedene Blüten.`,
+      title: t.achCatalogTitle(n),
+      desc: t.achCatalogDesc(n),
       reward: [5, 15, 35, 70, 150][i],
       progress: cat => ({ current: Math.min(cat.length, n), total: n }),
     })
@@ -136,10 +131,8 @@ export function buildAchievements(): Achievement[] {
       groupKey: 'color_diversity',
       stackIndex: i,
       hidden: false,
-      title: n === 8 ? 'Volle Palette' : `${n} Farben`,
-      desc: n === 8
-        ? 'Entdecke Blüten in allen 8 Farbgruppen (inkl. Weiß & Grau).'
-        : `Entdecke Blüten in ${n} verschiedenen Farbgruppen.`,
+      title: t.achColorDivTitle(n),
+      desc: t.achColorDivDesc(n),
       reward: [8, 20, 30, 80][i],
       progress: cat => ({ current: Math.min(countUniqueBuckets(cat), n), total: n }),
     })
@@ -154,10 +147,8 @@ export function buildAchievements(): Achievement[] {
       groupKey: 'shape_diversity',
       stackIndex: i,
       hidden: false,
-      title: n === 5 ? 'Alle Formen' : `${n} Blütenformen`,
-      desc: n === 5
-        ? 'Entdecke Blüten in allen 5 Blütenformen.'
-        : `Entdecke Blüten in ${n} verschiedenen Blütenformen.`,
+      title: t.achShapeDivTitle(n),
+      desc: t.achShapeDivDesc(n),
       reward: [15, 50][i],
       progress: cat => ({ current: Math.min(countUniqueShapes(cat), n), total: n }),
     })
@@ -172,8 +163,8 @@ export function buildAchievements(): Achievement[] {
       groupKey: 'generation',
       stackIndex: i,
       hidden: false,
-      title: `Generation ${g}`,
-      desc: `Züchte eine Blüte der Generation ${g} oder höher.`,
+      title: t.achGenTitle(g),
+      desc: t.achGenDesc(g),
       reward: [20, 50, 120][i],
       progress: cat => {
         const maxGen = cat.reduce((m, e) => Math.max(m, e.plant.generation), 0)
@@ -190,11 +181,9 @@ export function buildAchievements(): Achievement[] {
       id: `gradient_${n}`,
       groupKey: 'gradient',
       stackIndex: i,
-      hidden: i === 0 ? false : true,
-      title: n === 1 ? 'Erstes Schimmern' : `${n}× Farbverlauf`,
-      desc: n === 1
-        ? 'Entdecke deine erste Blüte mit Farbverlauf.'
-        : `Entdecke ${n} Blüten mit Farbverlauf.`,
+      hidden: i !== 0,
+      title: t.achGradientTitle(n),
+      desc: t.achGradientDesc(n),
       reward: [20, 45, 100][i],
       progress: cat => {
         const count = cat.filter(e => expressedGradient(e.plant.hasGradient)).length
@@ -209,16 +198,15 @@ export function buildAchievements(): Achievement[] {
     groupKey: 'homozygous',
     stackIndex: 0,
     hidden: false,
-    title: 'Reinerbig',
-    desc: 'Entdecke eine reinerbige (◈) Blüte.',
+    title: t.achHomoTitle,
+    desc: t.achHomoDesc,
     reward: 15,
-    progress: cat => {
-      return { current: cat.some(e => isHomozygous(e.plant)) ? 1 : 0, total: 1 }
-    },
+    progress: cat => ({ current: cat.some(e => isHomozygous(e.plant)) ? 1 : 0, total: 1 }),
   })
 
   // ── 8. All petal counts for a specific shape (hidden, stacked per shape) ──────
   for (const shape of PETAL_SHAPES) {
+    const shapeLabel = t.achShapeLabels[shape] ?? shape
     for (let stackI = 0; stackI < 6; stackI++) {
       const count = stackI + 3   // 3..8
       list.push({
@@ -226,8 +214,8 @@ export function buildAchievements(): Achievement[] {
         groupKey: `petals_shape_${shape}`,
         stackIndex: stackI,
         hidden: true,
-        title: `${SHAPE_LABELS[shape]}, ${count} Blätter`,
-        desc: `Entdecke eine ${SHAPE_LABELS[shape]}-Blüte mit genau ${count} Blütenblättern.`,
+        title: t.achPetalsTitle(shapeLabel, count),
+        desc: t.achPetalsDesc(shapeLabel, count),
         reward: 5 + stackI * 3,
         progress: cat => ({ current: hasShapeWithCount(cat, shape, count) ? 1 : 0, total: 1 }),
       })
@@ -236,36 +224,35 @@ export function buildAchievements(): Achievement[] {
 
   // ── 9. All hues in each chromatic bucket (hidden, stacked: tones then shades) ─
   for (const bucket of CHROMATIC_BUCKETS) {
-    // Stack 0: erste Blüte in diesem Bucket
+    const colorLabel = t.achBucketLabels[bucket] ?? bucket
+
     list.push({
       id: `bucket_first_${bucket}`,
       groupKey: `bucket_collection_${bucket}`,
       stackIndex: 0,
       hidden: true,
-      title: `Erste ${BUCKET_LABELS[bucket]}töne`,
-      desc: `Entdecke deine erste ${BUCKET_LABELS[bucket]}-Blüte.`,
+      title: t.achBucketFirstTitle(colorLabel),
+      desc: t.achBucketFirstDesc(colorLabel),
       reward: 5,
       progress: cat => ({ current: countHuesInBucket(cat, bucket).current > 0 ? 1 : 0, total: 1 }),
     })
-    // Stack 1: alle Hues in diesem Bucket
     list.push({
       id: `bucket_hues_${bucket}`,
       groupKey: `bucket_collection_${bucket}`,
       stackIndex: 1,
       hidden: true,
-      title: `Alle ${BUCKET_LABELS[bucket]}töne`,
-      desc: `Entdecke Blüten in allen Farbtönen des ${BUCKET_LABELS[bucket]}-Bereichs.`,
+      title: t.achBucketHuesTitle(colorLabel),
+      desc: t.achBucketHuesDesc(colorLabel),
       reward: 30,
       progress: cat => countHuesInBucket(cat, bucket),
     })
-    // Stack 2: alle Hues × alle Lightness in diesem Bucket
     list.push({
       id: `bucket_shades_${bucket}`,
       groupKey: `bucket_collection_${bucket}`,
       stackIndex: 2,
       hidden: true,
-      title: `Alle ${BUCKET_LABELS[bucket]}schattierungen`,
-      desc: `Entdecke alle Farbton-Helligkeits-Kombinationen im ${BUCKET_LABELS[bucket]}-Bereich.`,
+      title: t.achBucketShadesTitle(colorLabel),
+      desc: t.achBucketShadesDesc(colorLabel),
       reward: 80,
       progress: cat => countShadesInBucket(cat, bucket),
     })
@@ -273,14 +260,16 @@ export function buildAchievements(): Achievement[] {
 
   // ── 10. Shape × Color combos — 8 petals (hidden) ────────────────────────────
   for (const shape of PETAL_SHAPES) {
+    const shapeLabel = t.achShapeLabels[shape] ?? shape
     for (const bucket of CHROMATIC_BUCKETS) {
+      const colorLabel = t.achBucketLabels[bucket] ?? bucket
       list.push({
         id: `combo_8_${shape}_${bucket}`,
         groupKey: `combo_8petals_${shape}`,
         stackIndex: CHROMATIC_BUCKETS.indexOf(bucket),
         hidden: true,
-        title: `8× ${SHAPE_LABELS[shape]} (${BUCKET_LABELS[bucket]})`,
-        desc: `Entdecke eine 8-blütige ${SHAPE_LABELS[shape]}-Blüte in ${BUCKET_LABELS[bucket]}.`,
+        title: t.achCombo8Title(shapeLabel, colorLabel),
+        desc: t.achCombo8Desc(shapeLabel, colorLabel),
         reward: 25,
         progress: cat => ({
           current: cat.some(e =>
@@ -297,13 +286,14 @@ export function buildAchievements(): Achievement[] {
   // ── 11. Legendary in every shape (hidden, one per shape) ─────────────────────
   for (let i = 0; i < PETAL_SHAPES.length; i++) {
     const shape = PETAL_SHAPES[i]
+    const shapeLabel = t.achShapeLabels[shape] ?? shape
     list.push({
       id: `legendary_shape_${shape}`,
       groupKey: 'legendary_shapes',
       stackIndex: i,
       hidden: true,
-      title: `Legendäre ${SHAPE_LABELS[shape]}-Blüte`,
-      desc: `Züchte eine legendäre Blüte mit der Form „${SHAPE_LABELS[shape]}".`,
+      title: t.achLegendaryShapeTitle(shapeLabel),
+      desc: t.achLegendaryShapeDesc(shapeLabel),
       reward: 100,
       progress: cat => ({
         current: cat.some(e =>
@@ -317,16 +307,16 @@ export function buildAchievements(): Achievement[] {
 
   // ── 12. Center type collection (hidden, stacked) ──────────────────────────────
   const centerTypes = ['dot', 'disc', 'stamen'] as const
-  const centerLabels = { dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter' }
   for (let i = 0; i < centerTypes.length; i++) {
     const ct = centerTypes[i]
+    const centerLabel = t.achCenterLabels[ct] ?? ct
     list.push({
       id: `center_${ct}`,
       groupKey: 'center_collection',
       stackIndex: i,
       hidden: i > 0,
-      title: `Blütenmitte: ${centerLabels[ct]}`,
-      desc: `Entdecke eine Blüte mit der Blütenmitte „${centerLabels[ct]}".`,
+      title: t.achCenterTitle(centerLabel),
+      desc: t.achCenterDesc(centerLabel),
       reward: [5, 15, 35][i],
       progress: cat => ({
         current: cat.some(e => expressedCenter(e.plant.centerType) === ct) ? 1 : 0,

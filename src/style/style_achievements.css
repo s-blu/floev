@@ -1,67 +1,132 @@
-/* ── Achievement panel ───────────────────────────────────────────────────────── */
+/* ── Achievement section wrapper ─────────────────────────────────────────────── */
 
-.ach-panel {
-  background: var(--bg2);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+.ach-section-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-/* ── Header (always visible, click to toggle) ────────────────────────────────── */
-.ach-header {
+/* ── Section header: matches other section headings ──────────────────────────── */
+
+.ach-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.ach-section-header .section-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.15s;
-}
-
-.ach-header:hover {
-  background: var(--bg3);
-}
-
-.ach-header-icon {
-  font-size: 15px;
-  flex-shrink: 0;
-}
-
-.ach-header-title {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--text3);
-  flex: 1;
+  margin-bottom: 0 !important;
 }
 
 .ach-header-count {
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 500;
   color: var(--text3);
   background: var(--bg3);
-  padding: 1px 8px;
+  padding: 1px 7px;
   border-radius: 99px;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
-.ach-header-chevron {
-  font-size: 10px;
+/* ── Toggle button ────────────────────────────────────────────────────────────── */
+
+.ach-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-md);
+  padding: 3px 9px;
+  cursor: pointer;
   color: var(--text3);
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
+  font-size: 11px;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
 }
 
-.ach-panel--open .ach-header-chevron {
+.ach-toggle-btn:hover {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+.ach-chevron {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.ach-panel--open .ach-chevron {
   transform: rotate(180deg);
 }
 
-/* ── Body ────────────────────────────────────────────────────────────────────── */
+/* ── Collapsed preview card ───────────────────────────────────────────────────── */
+
+.ach-collapsed-preview {
+  margin-bottom: 0;
+}
+
+.ach-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+}
+
+.ach-preview-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ach-preview-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ach-preview-desc {
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.4;
+}
+
+.ach-preview-progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ach-preview-reward {
+  font-size: 11px;
+  color: var(--text3);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── Expanded body ────────────────────────────────────────────────────────────── */
+
 .ach-body {
   display: none;
   flex-direction: column;
-  padding: 0 0.75rem 0.75rem;
   gap: 0;
-  border-top: 0.5px solid var(--border);
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.625rem 0.75rem 0.75rem;
 }
 
 .ach-panel--open .ach-body {
@@ -71,16 +136,17 @@
 .ach-empty {
   font-size: 12px;
   color: var(--text3);
-  padding: 0.75rem 0.25rem;
+  padding: 0.25rem;
   font-style: italic;
 }
 
 /* ── Sections ────────────────────────────────────────────────────────────────── */
+
 .ach-section {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding-top: 0.625rem;
+  padding-top: 0.5rem;
 }
 
 .ach-section-label {
@@ -89,11 +155,12 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text3);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   padding: 0 0.25rem;
 }
 
-/* ── Achievement card ────────────────────────────────────────────────────────── */
+/* ── Achievement card (in-progress) ──────────────────────────────────────────── */
+
 .ach-card {
   display: flex;
   align-items: flex-start;
@@ -106,7 +173,7 @@
 }
 
 .ach-card--done {
-  border-color: rgba(var(--green-rgb, 29,158,117), 0.35);
+  border-color: rgba(29, 158, 117, 0.35);
   background: color-mix(in srgb, var(--green) 4%, var(--bg));
 }
 
@@ -173,7 +240,8 @@
   .ach-card-reward--done { color: #f0c040; }
 }
 
-/* ── Progress bar ────────────────────────────────────────────────────────────── */
+/* ── Progress bar ─────────────────────────────────────────────────────────────── */
+
 .ach-progress-row {
   display: flex;
   align-items: center;
@@ -209,7 +277,48 @@
   text-align: right;
 }
 
+/* ── Completed icons row ──────────────────────────────────────────────────────── */
+
+.ach-done-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 2px 0.25rem;
+}
+
+.ach-done-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: default;
+  padding: 4px 5px;
+  border-radius: var(--radius-md);
+  transition: background 0.12s;
+  max-width: 52px;
+}
+
+.ach-done-icon:hover {
+  background: var(--bg3);
+}
+
+.ach-done-icon-medal {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.ach-done-icon-label {
+  font-size: 9px;
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.2;
+  word-break: break-word;
+  hyphens: auto;
+  max-width: 48px;
+}
+
 /* ── Toast notification ──────────────────────────────────────────────────────── */
+
 .ach-toast {
   position: fixed;
   bottom: 24px;

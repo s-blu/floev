@@ -37,8 +37,6 @@ function showAchievementToast(a: Achievement, onDone: () => void): void {
     <span class="ach-toast-reward">+${a.reward} 🪙</span>`
 
   document.body.appendChild(el)
-
-  // Animate in
   requestAnimationFrame(() => el.classList.add('ach-toast--visible'))
 
   setTimeout(() => {
@@ -46,6 +44,20 @@ function showAchievementToast(a: Achievement, onDone: () => void): void {
     el.classList.add('ach-toast--hiding')
     setTimeout(() => { el.remove(); onDone() }, 400)
   }, 3200)
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Find the single in-progress achievement closest to completion (highest pct). */
+function bestInProgress(visible: ReturnType<typeof getVisibleAchievements>) {
+  return visible
+    .filter(v => !v.unlocked)
+    .reduce<ReturnType<typeof getVisibleAchievements>[0] | null>((best, v) => {
+      const pct = v.progress.total > 0 ? v.progress.current / v.progress.total : 0
+      if (!best) return v
+      const bestPct = best.progress.total > 0 ? best.progress.current / best.progress.total : 0
+      return pct >= bestPct ? v : best
+    }, null)
 }
 
 // ─── Panel render ─────────────────────────────────────────────────────────────
@@ -58,22 +70,53 @@ export function renderAchievements(): void {
 
   const visible = getVisibleAchievements(state)
   const totalUnlocked = state.achievements.unlocked.length
-  const totalAll = visible.length  // only count visible for the header
+  const totalAll = visible.length
 
-  // Update header counter
+  // Header counter
   const counter = panel.querySelector('.ach-header-count')
   if (counter) counter.textContent = `${totalUnlocked} / ${totalAll}`
 
-  const body = panel.querySelector('.ach-body')
-  if (!body) return
+  // Collapsed preview: show best in-progress achievement
+  const preview = panel.querySelector('.ach-collapsed-preview') as HTMLElement | null
+  if (preview) {
+    if (!panelOpen) {
+      const best = bestInProgress(visible)
+      preview.innerHTML = best ? buildCollapsedPreview(best) : ''
+      preview.style.display = best ? '' : 'none'
+    } else {
+      preview.style.display = 'none'
+    }
+  }
 
-  if (!panelOpen) return  // Don't rerender collapsed panel content
+  if (!panelOpen) return
 
-  renderAchievementBody(body as HTMLElement, visible)
+  const body = panel.querySelector('.ach-body') as HTMLElement | null
+  if (body) renderAchievementBody(body, visible)
+}
+
+function buildCollapsedPreview(v: ReturnType<typeof getVisibleAchievements>[0]): string {
+  const { achievement: a, progress: prog } = v
+  const pct = prog.total > 0 ? Math.min(1, prog.current / prog.total) : 0
+  const pctPx = Math.round(pct * 100)
+  const hasBar = prog.total > 1
+
+  return `
+    <div class="ach-preview-card">
+      <div class="ach-preview-body">
+        <span class="ach-preview-title">${a.title}</span>
+        ${hasBar ? `
+        <div class="ach-preview-progress">
+          <div class="ach-progress-bar">
+            <div class="ach-progress-fill" style="width:${pctPx}%"></div>
+          </div>
+          <span class="ach-progress-label">${prog.current}/${prog.total}</span>
+        </div>` : `<span class="ach-preview-desc">${a.desc}</span>`}
+      </div>
+      <span class="ach-preview-reward">${a.reward} 🪙</span>
+    </div>`
 }
 
 function renderAchievementBody(body: HTMLElement, visible: ReturnType<typeof getVisibleAchievements>): void {
-  // Split: unlocked vs in-progress
   const inProgress = visible.filter(v => !v.unlocked)
   const done = visible.filter(v => v.unlocked)
 
@@ -98,11 +141,27 @@ function renderAchievementBody(body: HTMLElement, visible: ReturnType<typeof get
     const section = document.createElement('div')
     section.className = 'ach-section'
     section.innerHTML = `<p class="ach-section-label">${t.achCompleted}</p>`
+    const iconsRow = document.createElement('div')
+    iconsRow.className = 'ach-done-icons'
     for (const v of done) {
-      section.appendChild(buildAchievementCard(v))
+      iconsRow.appendChild(buildDoneIcon(v))
     }
+    section.appendChild(iconsRow)
     body.appendChild(section)
   }
+}
+
+function buildDoneIcon(v: ReturnType<typeof getVisibleAchievements>[0]): HTMLElement {
+  const { achievement: a } = v
+  const el = document.createElement('div')
+  el.className = 'ach-done-icon'
+  el.title = `${a.title} — ${a.desc} (+${a.reward} 🪙)`
+  el.innerHTML = `<span class="ach-done-icon-medal">🏅</span>`
+  // Tooltip on hover via title; for better UX also show a small label below
+  el.innerHTML = `
+    <span class="ach-done-icon-medal">🏅</span>
+    <span class="ach-done-icon-label">${a.title}</span>`
+  return el
 }
 
 function buildAchievementCard(v: ReturnType<typeof getVisibleAchievements>[0]): HTMLElement {
@@ -142,23 +201,31 @@ function buildAchievementCard(v: ReturnType<typeof getVisibleAchievements>[0]): 
   return el
 }
 
-// ─── Panel initialisation (called once from main) ─────────────────────────────
+// ─── Panel initialisation ─────────────────────────────────────────────────────
 
 export function initAchievementsPanel(): void {
   const panel = document.getElementById('achievements-panel')
   if (!panel) return
 
-  const header = panel.querySelector('.ach-header')
-  if (!header) return
+  const toggle = panel.querySelector('.ach-toggle-btn')
+  if (!toggle) return
 
-  header.addEventListener('click', () => {
+  toggle.addEventListener('click', () => {
     panelOpen = !panelOpen
     panel.classList.toggle('ach-panel--open', panelOpen)
+
+    const chevron = panel.querySelector('.ach-chevron') as HTMLElement | null
+    if (chevron) chevron.textContent = panelOpen ? '▴' : '▾'
+
+    const preview = panel.querySelector('.ach-collapsed-preview') as HTMLElement | null
+    if (preview) preview.style.display = panelOpen ? 'none' : ''
 
     if (panelOpen) {
       const body = panel.querySelector('.ach-body') as HTMLElement | null
       const visible = getVisibleAchievements(state)
       if (body) renderAchievementBody(body, visible)
     }
+
+    renderAchievements()
   })
 }

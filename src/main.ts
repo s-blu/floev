@@ -42,15 +42,19 @@ app.innerHTML = `
     </div>
   </section>
 
-  <div class="ach-panel" id="achievements-panel">
-    <div class="ach-header">
-      <span class="ach-header-icon">🏅</span>
-      <span class="ach-header-title">${t.achPanelTitle}</span>
-      <span class="ach-header-count" id="ach-count">0 / 0</span>
-      <span class="ach-header-chevron">▾</span>
+  <section class="ach-section-wrapper" id="achievements-panel">
+    <div class="ach-section-header">
+      <p class="section-title" style="margin-bottom:0">
+        ${t.achPanelTitle}
+        <span class="ach-header-count" id="ach-count">0 / 0</span>
+      </p>
+      <button class="ach-toggle-btn" title="${t.achPanelTitle}">
+        <span class="ach-chevron">▾</span>
+      </button>
     </div>
+    <div class="ach-collapsed-preview"></div>
     <div class="ach-body"></div>
-  </div>
+  </section>
 
   <section>
     <p class="section-title">${t.sectionDiscoveries} (<span id="catalog-count">0</span>)</p>
