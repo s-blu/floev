@@ -63,7 +63,6 @@
 
 .ach-preview-card {
   display: flex;
-  align-items: center;
   gap: 10px;
   background: var(--bg2);
   border: 0.5px solid var(--border);
@@ -101,10 +100,12 @@
 }
 
 .ach-preview-reward {
-  font-size: 11px;
+  font-size: 9px;
   color: var(--text3);
   flex-shrink: 0;
   white-space: nowrap;
+  display: inline-block;
+  height: 19px;
 }
 
 /* ── Expanded body ────────────────────────────────────────────────────────────── */
