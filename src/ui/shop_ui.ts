@@ -1,6 +1,7 @@
 import { UPGRADES, POT_COLORS, POT_SHAPES } from '../model/shop'
 import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape } from './ui'
 import { hasUpgrade, hasPotColor, hasPotShape } from '../engine/shop_engine'
+import { renderPotShopPreview } from '../engine/renderer/pot_renderer'
 
 // ─── Shop sidebar ─────────────────────────────────────────────────────────────
 
@@ -119,7 +120,7 @@ function renderDecoSection(): string {
         data-id="${s.id}"
         ${owned ? 'disabled' : (!canAfford ? 'disabled' : '')}
       >
-        <span class="pot-shape-preview">${renderPotShapeSVG(s.id, 'terracotta')}</span>
+        <span class="pot-shape-preview">${renderPotShopPreview(s.id, 'terracotta')}</span>
         <span class="pot-shape-label">${s.label}</span>
         ${owned
           ? `<span class="pot-shape-price" style="color:var(--green)">✓</span>`
@@ -137,40 +138,3 @@ function renderDecoSection(): string {
       <div class="pot-shape-row">${shapeCards}</div>
     </div>`
 }
-
-// ─── Pot shape mini SVG preview ───────────────────────────────────────────────
-
-function renderPotShapeSVG(shape: string, colorId: string): string {
-  const COLORS: Record<string, { body: string; rim: string }> = {
-    terracotta: { body: '#b8724a', rim: '#c8855a' },
-    cream:      { body: '#e8dfc8', rim: '#f0e8d4' },
-    slate:      { body: '#6b7280', rim: '#7d8795' },
-    sage:       { body: '#7a9e7e', rim: '#8db592' },
-    blush:      { body: '#c4867a', rim: '#d49a8e' },
-    cobalt:     { body: '#3d5a8a', rim: '#4a6ea0' },
-    obsidian:   { body: '#2a2825', rim: '#3a3835' },
-    gold:       { body: '#c9963a', rim: '#dba84a' },
-  }
-  const c = COLORS[colorId] ?? COLORS.terracotta
-  const w = 36, h = 32
-  const rimH = 4, potH = 18
-
-  let potPath = ''
-  if (shape === 'conic') {
-    const topX = 8, topW = 20, botX = 4, botW = 28
-    potPath = `<path d="M${topX},${rimH} L${topX + topW},${rimH} L${botX + botW},${rimH + potH} L${botX},${rimH + potH} Z" fill="${c.body}"/>`
-  } else if (shape === 'belly') {
-    potPath = `
-      <rect x="6" y="${rimH}" width="24" height="${potH}" rx="3" fill="${c.body}"/>
-      <ellipse cx="${w / 2}" cy="${rimH + potH * 0.5}" rx="14" ry="${potH * 0.36}" fill="${c.body}"/>`
-  } else {
-    potPath = `<rect x="6" y="${rimH}" width="24" height="${potH}" rx="3" fill="${c.body}"/>`
-  }
-
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-    ${potPath}
-    <rect x="4" y="0" width="28" height="${rimH}" rx="2" fill="${c.rim}"/>
-  </svg>`
-}
-
-

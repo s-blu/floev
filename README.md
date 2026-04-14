@@ -32,6 +32,9 @@ src/
 │     └── encyclopedia_renderer.ts # Blumenrendering für die Enzyklopädie
 │     └── petal_renderer.ts        # Rendering der verschiedenen Blütenarten
 │     └── center_renderer.ts       # Rendering der verschiedenen CenterTypes
+│     └── plant_renderer.ts        # Rendering der Pflanzenphasen (inkl fullBloom)
+│     └── pot_renderer.ts          # Rendering der Töpfe
+│     └── center_renderer.ts       # Rendering der verschiedenen CenterTypes
 │     └── renderer_utils.ts        # Helper functions für SVG Renderings
 |-model/                # Folder; Interfaces and types
 │ └── plant.ts          # Alle TypeScript-Interfaces (Plant, Pot, GameState …)
