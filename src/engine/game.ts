@@ -95,7 +95,15 @@ function createInitialState(): GameState {
     }))
     
   }
-  return { pots, catalog: [], coins: 0, achievements: { unlocked: [], rewarded: [] }, lastSave: Date.now() }
+  return {
+    pots, catalog: [], coins: 0,
+    achievements: { unlocked: [], rewarded: [] },
+    upgrades: [],
+    unlockedPotColors: [],
+    unlockedPotShapes: [],
+    potDesign: { colorId: 'terracotta', shape: 'standard' },
+    lastSave: Date.now(),
+  }
 }
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
@@ -108,6 +116,10 @@ export function loadState(): GameState {
       // backwards compatibility: old saves without coins
       if (parsed.coins === undefined) parsed.coins = 0
       if (!parsed.achievements) parsed.achievements = { unlocked: [], rewarded: [] }
+      if (!parsed.upgrades) parsed.upgrades = []
+      if (!parsed.unlockedPotColors) parsed.unlockedPotColors = []
+      if (!parsed.unlockedPotShapes) parsed.unlockedPotShapes = []
+      if (!parsed.potDesign) parsed.potDesign = { colorId: 'terracotta', shape: 'standard' }
 
       return parsed
     }

@@ -1,8 +1,7 @@
-import type { Plant } from '../../model/plant'
+import type { Plant, PotDesign } from '../../model/plant'
 import {
   expressedColor, expressedShape, expressedCenter,
-  expressedNumber, expressedGradient,
-  expressedCenterColor
+  expressedNumber, expressedGradient
 } from "../genetic/genetic_utils"
 import { buildPetalPath, petalToSVG } from './petal_renderer';
 import { renderCenter } from './center_renderer';
@@ -20,7 +19,7 @@ function renderStem(plant: Plant, cx: number, stemBase: number, bloomY: number):
 
 // ─── Main render function ─────────────────────────────────────────────────────
 
-export function renderPlantSVG(plant: Plant | null, w: number, h: number): string {
+export function renderPlantSVG(plant: Plant | null, w: number, h: number, potDesign?: PotDesign): string {
   const cx = w / 2
   let defs = '';
   let body = '';
@@ -33,7 +32,7 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number): strin
   const stemLen = h * 0.50 * (plant ? expressedNumber(plant.stemHeight) : 0.6);
   const bloomY = stemBase - stemLen;
 
-  body = renderPot(w, groundY, potRimH, potH, body);
+  body = renderPot(w, groundY, potRimH, potH, body, potDesign);
 
   if (!plant) return svg(defs, body, w, h)
 
@@ -81,7 +80,7 @@ function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number,
     body += petalToSVG(petal, fillStr, strokeStr);
   }
 
-  const cc = expressedCenterColor(plant.centerColor);
+  const cc = plant.centerColor.a;
   const centerType = expressedCenter(plant.centerType);
   body += renderCenter(centerType, cc, cx, bloomY);
 
@@ -118,15 +117,61 @@ function renderSeed(cx: number, stemBase: number) {
   return `<ellipse cx="${cx}" cy="${stemBase - 4}" rx="5" ry="3.5" fill="#8B6914"/>`;
 }
 
-function renderPot(w: number, groundY: number, potRimH: number, potH: number, body: string) {
-  const potW = w * 0.72;
-  const potX = (w - potW) / 2;
-  const rimX = (w - potW * 1.09) / 2;
-  const shineX = (w - potW * 0.82) / 2;
-  body += `<rect x="${potX}" y="${groundY + potRimH}" width="${potW}" height="${potH}" rx="4" fill="#b8724a"/>`;
-  body += `<rect x="${rimX}" y="${groundY}" width="${potW * 1.09}" height="${potRimH}" rx="3" fill="#c8855a"/>`;
-  body += `<rect x="${shineX}" y="${groundY + potRimH + 2}" width="${potW * 0.82}" height="3" rx="1" fill="#a86540" opacity="0.35"/>`;
-  return body;
+function renderPot(w: number, groundY: number, potRimH: number, potH: number, body: string, potDesign?: PotDesign): string {
+  const colorId = potDesign?.colorId ?? 'terracotta'
+  const shape   = potDesign?.shape ?? 'standard'
+
+  // Color palette
+  const COLORS: Record<string, { body: string; rim: string; shadow: string }> = {
+    terracotta: { body: '#b8724a', rim: '#c8855a', shadow: '#a86540' },
+    cream:      { body: '#e8dfc8', rim: '#f0e8d4', shadow: '#d4c9ae' },
+    slate:      { body: '#6b7280', rim: '#7d8795', shadow: '#5a6170' },
+    sage:       { body: '#7a9e7e', rim: '#8db592', shadow: '#6a8a6e' },
+    blush:      { body: '#c4867a', rim: '#d49a8e', shadow: '#b07268' },
+    cobalt:     { body: '#3d5a8a', rim: '#4a6ea0', shadow: '#304870' },
+    obsidian:   { body: '#2a2825', rim: '#3a3835', shadow: '#1e1c1a' },
+    gold:       { body: '#c9963a', rim: '#dba84a', shadow: '#b07e28' },
+  }
+  const c = COLORS[colorId] ?? COLORS.terracotta
+
+  const potW   = w * 0.72
+  const potX   = (w - potW) / 2
+  const rimW   = potW * 1.09
+  const rimX   = (w - rimW) / 2
+  const shineW = potW * 0.82
+  const shineX = (w - shineW) / 2
+  const potTop = groundY + potRimH
+  const potBot = potTop + potH
+  const rx     = 4
+
+  if (shape === 'conic') {
+    // Trapezoid: narrower at top, wider at bottom
+    const topW  = potW * 0.72
+    const topX  = (w - topW) / 2
+    const botW  = potW
+    const botX  = (w - botW) / 2
+    body += `<path d="M${topX},${potTop} L${topX + topW},${potTop} L${botX + botW},${potBot} L${botX},${potBot} Z" fill="${c.body}" rx="${rx}"/>`
+    body += `<rect x="${rimX}" y="${groundY}" width="${rimW}" height="${potRimH}" rx="3" fill="${c.rim}"/>`
+    body += `<rect x="${shineX}" y="${potTop + 2}" width="${shineW}" height="3" rx="1" fill="${c.shadow}" opacity="0.35"/>`
+  } else if (shape === 'belly') {
+    // Wider in the middle — approximate with two paths + circle
+    const midY  = potTop + potH * 0.5
+    const bellW = potW * 1.12
+    const bellX = (w - bellW) / 2
+    // Simple approximation: a rect with bulging sides via a wide ellipse clip
+    body += `<rect x="${potX}" y="${potTop}" width="${potW}" height="${potH}" rx="${rx}" fill="${c.body}"/>`
+    // Belly bulge overlay
+    body += `<ellipse cx="${w / 2}" cy="${midY}" rx="${bellW / 2}" ry="${potH * 0.36}" fill="${c.body}"/>`
+    body += `<rect x="${rimX}" y="${groundY}" width="${rimW}" height="${potRimH}" rx="3" fill="${c.rim}"/>`
+    body += `<rect x="${shineX}" y="${potTop + 2}" width="${shineW}" height="3" rx="1" fill="${c.shadow}" opacity="0.35"/>`
+  } else {
+    // Standard
+    body += `<rect x="${potX}" y="${potTop}" width="${potW}" height="${potH}" rx="${rx}" fill="${c.body}"/>`
+    body += `<rect x="${rimX}" y="${groundY}" width="${rimW}" height="${potRimH}" rx="3" fill="${c.rim}"/>`
+    body += `<rect x="${shineX}" y="${potTop + 2}" width="${shineW}" height="3" rx="1" fill="${c.shadow}" opacity="0.35"/>`
+  }
+
+  return body
 }
 
 function svg(defs: string, body: string, w: number, h: number): string {

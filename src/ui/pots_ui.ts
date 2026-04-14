@@ -6,7 +6,7 @@ import { dominantHue } from "../engine/genetic/dominance_utils";
 import { dominantShape, dominantCenter } from "../engine/genetic/dominance_utils";
 import { PALETTE_S } from '../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../model/genetic_model';
-import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds } from './ui';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade } from './ui';
 import { t } from '../model/i18n';
 import type { Pot, ChromaticL } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
@@ -72,16 +72,17 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   }
   headerHtml += '</div>';
 
-  // ── Plant view — magnifier button only for blooming plants ──
+  // ── Plant view — magnifier button only for blooming plants with lupe upgrade ──
   let plantHtml: string;
+  const lupePurchased = hasUpgrade(state, 'unlock_lupe');
   if (isBlooming && pot.plant) {
     plantHtml = `
       <div class="plant-view plant-view--interactive">
-        ${renderPlantSVG(pot.plant, 100, 130)}
-        <button class="plant-magnifier" data-action="allele-inspect" data-pot="${pot.id}" title="${t.alleleInspectTitle}">🔍</button>
+        ${renderPlantSVG(pot.plant, 100, 130, state.potDesign)}
+        ${lupePurchased ? `<button class="plant-magnifier" data-action="allele-inspect" data-pot="${pot.id}" title="${t.alleleInspectTitle}">🔍</button>` : ''}
       </div>`;
   } else {
-    plantHtml = `<div class="plant-view">${renderPlantSVG(pot.plant ?? null, 100, 130)}</div>`;
+    plantHtml = `<div class="plant-view">${renderPlantSVG(pot.plant ?? null, 100, 130, state.potDesign)}</div>`;
   }
 
   // ── Phase label ──
@@ -105,12 +106,13 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const isBreedSelected = pot.id === selA || pot.id === selB;
     const entry = state.catalog.find(e => e.plant.id === pot.plant!.id);
     const coinVal = coinValueForScore(entry?.rarityScore ?? 1);
+    const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
     buttonsHtml = `
       <div class="btn-row">
         <button class="btn-sm btn-breed${isBreedSelected ? ' selected' : ''}" data-action="breed-select" data-pot="${pot.id}">
           ${isBreedSelected ? t.btnBreedDeselect : t.btnBreedSelect}
         </button>
-        <button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>
+        ${selfPurchased ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>` : ''}
         <button class="btn-sm btn-icon btn-sell" data-action="sell" data-pot="${pot.id}" title="${t.btnSellTitle}">🪙${coinVal}</button>
       </div>`;
   } else {

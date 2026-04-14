@@ -8,10 +8,12 @@ import {
   saveState,
 } from '../engine/game'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
+import { buyUpgrade, buyPotColor, buyPotShape, setPotDesign, hasUpgrade } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
 import { renderBreedPanel } from './breedpanel_ui'
 import { renderCatalog } from './catalog_ui'
-import { t } from '../model/i18n'
+import { renderShopSidebar } from '../ui/shop_ui'
+import { t } from '../model/i18n/index'
 import { checkAchievements } from '../engine/achievements'
 import { renderAchievements, queueAchievementToast, initAchievementsPanel } from './achievements_ui'
 
@@ -58,7 +60,39 @@ export function render(): void {
   renderBreedPanel()
   renderCatalog()
   renderCoins()
+  renderShopSidebar()
 }
+
+// ─── Shop action handlers ─────────────────────────────────────────────────────
+
+export function handleBuyUpgrade(id: string): void {
+  if (buyUpgrade(state, id as Parameters<typeof buyUpgrade>[1])) {
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleBuyPotColor(colorId: string): void {
+  if (buyPotColor(state, colorId)) {
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleBuyPotShape(shape: string): void {
+  if (buyPotShape(state, shape)) {
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleSetPotDesign(partial: { colorId?: string; shape?: 'standard' | 'conic' | 'belly' }): void {
+  setPotDesign(state, partial)
+  saveState(state)
+  render()
+}
+
+export { hasUpgrade }
 
 // ─── Coins display ────────────────────────────────────────────────────────────
 

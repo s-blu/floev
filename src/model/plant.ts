@@ -66,6 +66,11 @@ export interface CatalogEntry {
   discovered:  number
 }
 
+export interface PotDesign {
+  colorId: string
+  shape:   'standard' | 'conic' | 'belly'
+}
+
 export interface GameState {
   pots:     Pot[]
   catalog:  CatalogEntry[]
@@ -74,6 +79,11 @@ export interface GameState {
     unlocked: string[]   // achievement ids
     rewarded: string[]   // ids where coins were already paid
   }
+  // Shop
+  upgrades:           string[]   // purchased upgrade ids
+  unlockedPotColors:  string[]   // purchased pot color ids
+  unlockedPotShapes:  string[]   // purchased pot shape ids
+  potDesign:          PotDesign  // currently active pot design
   lastSave: number
 }
 
