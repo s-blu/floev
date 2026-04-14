@@ -4,7 +4,7 @@
  * "white" and "gray" are achromatic sentinels encoded in petalHue.
  */
 
-import type { CenterType, HSLColor, PetalShape } from './plant';
+import type { CenterType, ChromaticL, HSLColor, PetalShape } from './plant';
 
 export type ColorBucket = 'white' | 'yellow' | 'red' | 'pink' | 'purple' | 'blue' | 'green' | 'gray';
 export const PALETTE_HUE_RANGES = {
@@ -87,3 +87,39 @@ export const COLOR_WHITE: HSLColor = { h: 0, s: 0, l: 100 }
 export const COLOR_GRAY_DARK: HSLColor = { h: 0, s: 0, l: 0 }
 export const COLOR_GRAY_MID: HSLColor = { h: 0, s: 0, l: 40 }
 export const COLOR_GRAY_LIGHT: HSLColor = { h: 0, s: 0, l: 70 }
+
+// ─── Allele pools for randomPlant ────────────────────────────────────────────
+//
+// HUE pool: same distribution as before — white common, grays rare.
+// LIGHTNESS pool: L=90 most common (light/pastel), L=30 rarest.
+function buildHueAllelePool(): number[] {
+  const pool: number[] = [];
+
+  // White: häufig
+  for (let i = 0; i < 12; i++) pool.push(ACHROMATIC_HUE_WHITE);
+
+  // Chromatic hues — frequency independent of lightness now
+  for (const h of PALETTE_HUES) {
+    for (let i = 0; i < 9; i++) pool.push(h); // equal weight per hue
+  }
+
+  // Grays: sehr selten
+  for (let i = 0; i < 2; i++) {
+    pool.push(ACHROMATIC_HUE_GRAY_DARK);
+    pool.push(ACHROMATIC_HUE_GRAY_MID);
+    pool.push(ACHROMATIC_HUE_GRAY_LIGHT);
+  }
+
+  return pool;
+}
+
+function buildLightnessAllelePool(): ChromaticL[] {
+  const pool: ChromaticL[] = [];
+  for (let i = 0; i < 5; i++) pool.push(90); // light — häufig
+  for (let i = 0; i < 3; i++) pool.push(60); // mid
+  for (let i = 0; i < 1; i++) pool.push(30); // dark — selten
+  return pool;
+}
+export const HUE_ALLELE_POOL = buildHueAllelePool();
+export const LIGHTNESS_ALLELE_POOL = buildLightnessAllelePool();
+

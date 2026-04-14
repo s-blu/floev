@@ -11,7 +11,7 @@ import {
   MIN_STEM_HEIGHT, PALETTE_HUES, PALETTE_HUES_BUCKETS, PALETTE_L, PALETTE_S, SHAPE_ALLELE_POOL,
   SHAPE_ALLELE_POOL_EXCLUDED_RARES,
 } from "../../model/genetic_model"
-import { HUE_ALLELE_POOL, LIGHTNESS_ALLELE_POOL } from './dominance_utils'
+import { HUE_ALLELE_POOL, LIGHTNESS_ALLELE_POOL } from "../../model/genetic_model"
 
 export function randomPetalShapeAllele(includeRares = true): PetalShape {
   if (includeRares) {
