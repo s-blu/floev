@@ -1,5 +1,5 @@
 import {
-  randomHueForBucket, randomLightnessAllele,
+  randomHueForBucket,
 } from './genetic';
 import { clamp, jitter, pick } from './genetic_utils';
 import { MUTATION_CHANCE, GRADIENT_ALLELE_KEEP_CHANCE, GRADIENT_ALLELE_GAIN_CHANCE } from '../../model/genetic_model';

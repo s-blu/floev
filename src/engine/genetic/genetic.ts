@@ -9,11 +9,16 @@ import {
   CENTER_COLORS, CENTER_TYPES,
   GRADIENT_ALLELE_CHANCE_RANDOM,
   MIN_STEM_HEIGHT, PALETTE_HUES, PALETTE_HUES_BUCKETS, PALETTE_L, PALETTE_S, SHAPE_ALLELE_POOL,
+  SHAPE_ALLELE_POOL_EXCLUDED_RARES,
 } from "../../model/genetic_model"
 import { HUE_ALLELE_POOL, LIGHTNESS_ALLELE_POOL } from './dominance_utils'
 
-export function randomPetalShapeAllele(): PetalShape {
-  return SHAPE_ALLELE_POOL[Math.floor(Math.random() * SHAPE_ALLELE_POOL.length)]
+export function randomPetalShapeAllele(includeRares = true): PetalShape {
+  if (includeRares) {
+    return SHAPE_ALLELE_POOL[Math.floor(Math.random() * SHAPE_ALLELE_POOL.length)]
+  } else {
+    return SHAPE_ALLELE_POOL_EXCLUDED_RARES[Math.floor(Math.random() * SHAPE_ALLELE_POOL_EXCLUDED_RARES.length)]
+  }
 }
 
 // ─── quantizeColor (still used by legacy centerColor logic) ──────────────────
@@ -40,9 +45,9 @@ export function quantizeColor(h: number, s: number, l: number): HSLColor {
   return { h: bestHue, s: PALETTE_S, l: bestL }
 }
 
-function randomCenterColor(): HSLColor {
+function randomCenterColor(includeRares = true): HSLColor {
   const r = Math.random()
-  if (r < 0.12)      return CENTER_COLORS[3]
+  if (r < 0.12)      return includeRares ? CENTER_COLORS[3] : CENTER_COLORS[2]
   else if (r < 0.30) return CENTER_COLORS[2]
   else if (r < 0.55) return CENTER_COLORS[1]
   else               return CENTER_COLORS[0]
@@ -89,15 +94,15 @@ export function randomPlant(): Plant {
     id: uid(),
     stemHeight:     { a: stemA, b: stemB },
     petalCount:     { a: countA, b: countB },
-    petalShape:     { a: randomPetalShapeAllele(), b: randomPetalShapeAllele() },
+    petalShape:     { a: randomPetalShapeAllele(false), b: randomPetalShapeAllele() },
     petalHue:       { a: hueA, b: hueB },
     petalLightness: { a: lA, b: lB },
     hasGradient:    {
-      a: Math.random() < GRADIENT_ALLELE_CHANCE_RANDOM,
+      a: Math.random() < (GRADIENT_ALLELE_CHANCE_RANDOM * 2),
       b: Math.random() < GRADIENT_ALLELE_CHANCE_RANDOM,
     },
-    centerType:     { a: pick(CENTER_TYPES), b: pick(CENTER_TYPES) },
-    centerColor:    { a: randomCenterColor(), b: randomCenterColor() },
+    centerType:     { a: pick(CENTER_TYPES.slice(0, -1)), b: pick(CENTER_TYPES) },
+    centerColor:    { a: randomCenterColor(false), b: randomCenterColor() },
     phase: 1 as PlantPhase,
     generation: 0,
   }

@@ -27,13 +27,18 @@ export const CENTER_COLORS = [
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 export const PETAL_SHAPES: PetalShape[] = ['round', 'lanzett', 'tropfen', 'wavy', 'zickzack']
-export const SHAPE_ALLELE_POOL: PetalShape[] = [
+export const SHAPE_ALLELE_POOL_EXCLUDED_RARES: PetalShape[] = [
   ...Array(35).fill('round'),
   ...Array(25).fill('lanzett'),
   ...Array(18).fill('tropfen'),
-  ...Array(14).fill('wavy'),
+  ...Array(10).fill('wavy'),
+];
+export const SHAPE_ALLELE_POOL: PetalShape[] = [
+  ...SHAPE_ALLELE_POOL_EXCLUDED_RARES,
+  ...Array(4).fill('wavy'),
   ...Array(8).fill('zickzack'),
 ];
+
 
 // ─── Achromatic sentinel hues ─────────────────────────────────────────────────
 //
