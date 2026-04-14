@@ -101,7 +101,6 @@ function createInitialState(): GameState {
     upgrades: [],
     unlockedPotColors: [],
     unlockedPotShapes: [],
-    potDesign: { colorId: 'terracotta', shape: 'standard' },
     lastSave: Date.now(),
   }
 }
@@ -119,7 +118,6 @@ export function loadState(): GameState {
       if (!parsed.upgrades) parsed.upgrades = []
       if (!parsed.unlockedPotColors) parsed.unlockedPotColors = []
       if (!parsed.unlockedPotShapes) parsed.unlockedPotShapes = []
-      if (!parsed.potDesign) parsed.potDesign = { colorId: 'terracotta', shape: 'standard' }
 
       return parsed
     }

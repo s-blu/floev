@@ -56,6 +56,7 @@ export interface Pot {
   id:         number
   plant:      Plant | null
   phaseStart: number | null
+  design?:    PotDesign        // per-pot cosmetic override
 }
 
 export interface CatalogEntry {
@@ -83,7 +84,6 @@ export interface GameState {
   upgrades:           string[]   // purchased upgrade ids
   unlockedPotColors:  string[]   // purchased pot color ids
   unlockedPotShapes:  string[]   // purchased pot shape ids
-  potDesign:          PotDesign  // currently active pot design
   lastSave: number
 }
 

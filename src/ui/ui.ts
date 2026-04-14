@@ -1,4 +1,4 @@
-import type { GameState, BreedEstimate } from '../model/plant'
+import type { GameState, BreedEstimate } from './plant'
 import {
   advancePhases,
   plantSeed,
@@ -86,8 +86,8 @@ export function handleBuyPotShape(shape: string): void {
   }
 }
 
-export function handleSetPotDesign(partial: { colorId?: string; shape?: 'standard' | 'conic' | 'belly' }): void {
-  setPotDesign(state, partial)
+export function handleSetPotDesign(potId: number, partial: { colorId?: string; shape?: 'standard' | 'conic' | 'belly' }): void {
+  setPotDesign(state, potId, partial)
   saveState(state)
   render()
 }

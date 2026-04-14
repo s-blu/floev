@@ -1,14 +1,31 @@
 import { UPGRADES, POT_COLORS, POT_SHAPES } from '../model/shop'
-import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleSetPotDesign } from './ui'
+import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape } from './ui'
 import { hasUpgrade, hasPotColor, hasPotShape } from '../engine/shop_engine'
 
 // ─── Shop sidebar ─────────────────────────────────────────────────────────────
 
 let sidebarOpen = false
 
+let _eventsInitialized = false
+
 export function initShop(): void {
   const btn = document.getElementById('shop-open-btn')
   btn?.addEventListener('click', toggleShop)
+
+  // Bind events once on the stable container, not on re-renders
+  const body = document.getElementById('shop-sidebar-body')
+  if (body && !_eventsInitialized) {
+    body.addEventListener('click', (e) => {
+      const el = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null
+      if (!el) return
+      const action = el.dataset.action
+      const id = el.dataset.id ?? ''
+      if      (action === 'buy-upgrade') handleBuyUpgrade(id)
+      else if (action === 'buy-color')   handleBuyPotColor(id)
+      else if (action === 'buy-shape')   handleBuyPotShape(id)
+    })
+    _eventsInitialized = true
+  }
 }
 
 function toggleShop(): void {
@@ -34,7 +51,6 @@ export function renderShopSidebar(): void {
   const body = document.getElementById('shop-sidebar-body')
   if (!body) return
   body.innerHTML = renderUpgradesSection() + renderDecoSection()
-  bindEvents(body)
 }
 
 // ─── Upgrades section ─────────────────────────────────────────────────────────
@@ -73,54 +89,51 @@ function renderUpgradesSection(): string {
 // ─── Deco section ─────────────────────────────────────────────────────────────
 
 function renderDecoSection(): string {
-  const activeColor = state.potDesign?.colorId ?? 'terracotta'
-  const activeShape = state.potDesign?.shape ?? 'standard'
-
   // ── Color swatches ──
   const colorSwatches = POT_COLORS.map(c => {
     const owned = hasPotColor(state, c.id)
-    const active = c.id === activeColor
     const canAfford = state.coins >= c.price
     return `
       <button
-        class="pot-swatch ${active ? 'pot-swatch--active' : ''} ${!owned ? 'pot-swatch--locked' : ''}"
-        data-action="${owned ? 'set-color' : 'buy-color'}"
+        class="pot-swatch ${owned ? 'pot-swatch--owned' : ''} ${!owned && !canAfford ? 'pot-swatch--cant-afford' : ''}"
+        data-action="${owned ? '' : 'buy-color'}"
         data-id="${c.id}"
-        title="${c.label}${owned ? '' : ` — 🪙 ${c.price}`}"
-        style="--swatch-body: ${c.body}; --swatch-rim: ${c.rim}"
-        ${!owned && !canAfford ? 'disabled' : ''}
+        title="${c.label}${owned ? ' (gekauft)' : ` — 🪙 ${c.price}`}"
+        ${owned ? 'disabled' : (!canAfford ? 'disabled' : '')}
       >
         <span class="pot-swatch-dot" style="background:${c.body};border-color:${c.rim}"></span>
-        ${!owned ? `<span class="pot-swatch-price">🪙${c.price}</span>` : ''}
-        ${active ? `<span class="pot-swatch-check">✓</span>` : ''}
+        ${owned
+          ? `<span class="pot-swatch-check">✓</span>`
+          : `<span class="pot-swatch-price">🪙${c.price}</span>`}
       </button>`
   }).join('')
 
   // ── Shape cards ──
   const shapeCards = POT_SHAPES.map(s => {
     const owned = hasPotShape(state, s.id)
-    const active = s.id === activeShape
     const canAfford = state.coins >= s.price
     return `
       <button
-        class="pot-shape-card ${active ? 'pot-shape-card--active' : ''} ${!owned ? 'pot-shape-card--locked' : ''}"
-        data-action="${owned ? 'set-shape' : 'buy-shape'}"
+        class="pot-shape-card ${owned ? 'pot-shape-card--owned' : ''} ${!owned && !canAfford ? 'pot-shape-card--locked' : ''}"
+        data-action="${owned ? '' : 'buy-shape'}"
         data-id="${s.id}"
-        ${!owned && !canAfford ? 'disabled' : ''}
+        ${owned ? 'disabled' : (!canAfford ? 'disabled' : '')}
       >
-        <span class="pot-shape-preview">${renderPotShapeSVG(s.id, activeColor)}</span>
+        <span class="pot-shape-preview">${renderPotShapeSVG(s.id, 'terracotta')}</span>
         <span class="pot-shape-label">${s.label}</span>
-        ${!owned ? `<span class="pot-shape-price">🪙 ${s.price}</span>` : ''}
-        ${active ? `<span class="pot-shape-active-dot"></span>` : ''}
+        ${owned
+          ? `<span class="pot-shape-price" style="color:var(--green)">✓</span>`
+          : `<span class="pot-shape-price">🪙 ${s.price}</span>`}
       </button>`
   }).join('')
 
   return `
     <div class="shop-section">
       <p class="shop-section-label">Topf-Design</p>
-      <p class="shop-subsection-label">Farbe</p>
+      <p class="shop-subsection-label">Farben freischalten</p>
+      <p class="shop-deco-hint">Gekaufte Designs per 🎨-Button an jedem Topf wechseln.</p>
       <div class="pot-color-grid">${colorSwatches}</div>
-      <p class="shop-subsection-label" style="margin-top:12px">Form</p>
+      <p class="shop-subsection-label" style="margin-top:12px">Formen freischalten</p>
       <div class="pot-shape-row">${shapeCards}</div>
     </div>`
 }
@@ -160,19 +173,4 @@ function renderPotShapeSVG(shape: string, colorId: string): string {
   </svg>`
 }
 
-// ─── Event binding ────────────────────────────────────────────────────────────
 
-function bindEvents(body: HTMLElement): void {
-  body.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null
-    if (!btn) return
-    const action = btn.dataset.action
-    const id = btn.dataset.id ?? ''
-
-    if (action === 'buy-upgrade')  handleBuyUpgrade(id)
-    else if (action === 'buy-color')   handleBuyPotColor(id)
-    else if (action === 'set-color')   handleSetPotDesign({ colorId: id })
-    else if (action === 'buy-shape')   handleBuyPotShape(id)
-    else if (action === 'set-shape')   handleSetPotDesign({ shape: id as 'standard' | 'conic' | 'belly' })
-  })
-}

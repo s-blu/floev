@@ -6,10 +6,12 @@ import { dominantHue } from "../engine/genetic/dominance_utils";
 import { dominantShape, dominantCenter } from "../engine/genetic/dominance_utils";
 import { PALETTE_S } from '../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../model/genetic_model';
-import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade } from './ui';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade, handleSetPotDesign } from './ui';
 import { t } from '../model/i18n';
 import type { Pot, ChromaticL } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
+import { POT_COLORS, POT_SHAPES } from '../model/shop';
+import { hasPotColor, hasPotShape } from '../engine/shop_engine';
 
 const RARITY_ICON: Record<number, string> = {
   0: '▪', 1: '●', 2: '♦', 3: '★', 4: '👑',
@@ -61,14 +63,17 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   ].filter(Boolean).join(' ');
 
   // ── Header: badges anchored top-left / top-right ──
+  const hasCosmetics = (state.unlockedPotColors?.length ?? 0) > 0 || (state.unlockedPotShapes?.length ?? 0) > 0
   let headerHtml = '<div class="pot-card-header">';
   if (isBlooming && pot.plant) {
-
     const homozyg = isHomozygous(pot.plant);
     if (homozyg) {
       headerHtml += `<span class="pot-homozygous-badge" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
     }
     headerHtml += `<span class="pot-rarity-dot" style="color:${RARITY_COLORS[r]}" title="${RARITY_LABELS[r]}">${RARITY_ICON[r]}</span>`;
+  }
+  if (hasCosmetics) {
+    headerHtml += `<button class="pot-design-btn" data-action="pot-design" data-pot="${pot.id}" title="Topf-Design ändern">🎨</button>`;
   }
   headerHtml += '</div>';
 
@@ -78,11 +83,11 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   if (isBlooming && pot.plant) {
     plantHtml = `
       <div class="plant-view plant-view--interactive">
-        ${renderPlantSVG(pot.plant, 100, 130, state.potDesign)}
+        ${renderPlantSVG(pot.plant, 100, 130, pot.design)}
         ${lupePurchased ? `<button class="plant-magnifier" data-action="allele-inspect" data-pot="${pot.id}" title="${t.alleleInspectTitle}">🔍</button>` : ''}
       </div>`;
   } else {
-    plantHtml = `<div class="plant-view">${renderPlantSVG(pot.plant ?? null, 100, 130, state.potDesign)}</div>`;
+    plantHtml = `<div class="plant-view">${renderPlantSVG(pot.plant ?? null, 100, 130, pot.design)}</div>`;
   }
 
   // ── Phase label ──
@@ -136,6 +141,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     else if (action === 'breed-select')   handleBreedSelect(potId);
     else if (action === 'selfpollinate')  handleSelfPollinate(potId);
     else if (action === 'allele-inspect') showAlleleOverlay(potId, card);
+    else if (action === 'pot-design')     showPotDesignOverlay(potId, card);
   });
 
   return card;
@@ -285,5 +291,84 @@ function showAlleleOverlay(potId: number, card: HTMLElement, silent = false): vo
   setTimeout(() => document.addEventListener('click', closeOnOutside), 0)
 
   openAlleleIds.add(potId)
+  card.appendChild(overlay)
+}
+
+// ─── Pot design overlay ───────────────────────────────────────────────────────
+
+const openPotDesignIds = new Set<number>()
+
+function showPotDesignOverlay(potId: number, card: HTMLElement): void {
+  // Toggle
+  const existing = card.querySelector('.pot-design-overlay')
+  if (existing) {
+    existing.remove()
+    openPotDesignIds.delete(potId)
+    return
+  }
+
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot) return
+
+  const activeColor = pot.design?.colorId ?? 'terracotta'
+  const activeShape = pot.design?.shape ?? 'standard'
+
+  // Color swatches — only unlocked ones
+  const colorSwatches = POT_COLORS
+    .filter(c => hasPotColor(state, c.id))
+    .map(c => {
+      const active = c.id === activeColor
+      return `<button
+        class="pod-swatch${active ? ' pod-swatch--active' : ''}"
+        data-pod-color="${c.id}"
+        title="${c.label}"
+        style="background:${c.body};border-color:${active ? '#1D9E75' : c.rim}"
+      ></button>`
+    }).join('')
+
+  // Shape buttons — only unlocked ones
+  const shapeButtons = POT_SHAPES
+    .filter(s => hasPotShape(state, s.id))
+    .map(s => {
+      const active = s.id === activeShape
+      return `<button
+        class="pod-shape${active ? ' pod-shape--active' : ''}"
+        data-pod-shape="${s.id}"
+      >${s.label}</button>`
+    }).join('')
+
+  const overlay = document.createElement('div')
+  overlay.className = 'pot-design-overlay'
+  overlay.innerHTML = `
+    <button class="pot-design-overlay-close" data-pod-close>×</button>
+    <div class="pod-title">Topf-Design</div>
+    ${colorSwatches ? `<div class="pod-swatches">${colorSwatches}</div>` : ''}
+    ${shapeButtons ? `<div class="pod-shapes">${shapeButtons}</div>` : ''}
+  `
+
+  overlay.addEventListener('click', (e) => {
+    const el = e.target as HTMLElement
+    if (el.dataset.podClose !== undefined) {
+      overlay.remove(); openPotDesignIds.delete(potId); return
+    }
+    if (el.dataset.podColor) {
+      handleSetPotDesign(potId, { colorId: el.dataset.podColor })
+    }
+    if (el.dataset.podShape) {
+      handleSetPotDesign(potId, { shape: el.dataset.podShape as 'standard' | 'conic' | 'belly' })
+    }
+    e.stopPropagation()
+  })
+
+  const closeOnOutside = (e: MouseEvent) => {
+    if (!card.contains(e.target as Node)) {
+      overlay.remove()
+      openPotDesignIds.delete(potId)
+      document.removeEventListener('click', closeOnOutside)
+    }
+  }
+  setTimeout(() => document.addEventListener('click', closeOnOutside), 0)
+
+  openPotDesignIds.add(potId)
   card.appendChild(overlay)
 }

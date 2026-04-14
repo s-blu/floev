@@ -62,6 +62,9 @@ export function buyPotShape(state: GameState, shape: string): boolean {
   return true
 }
 
-export function setPotDesign(state: GameState, design: Partial<PotDesign>): void {
-  state.potDesign = { ...(state.potDesign ?? { colorId: 'terracotta', shape: 'standard' }), ...design }
+export function setPotDesign(state: GameState, potId: number, design: Partial<PotDesign>): void {
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot) return
+  const current = pot.design ?? { colorId: 'terracotta', shape: 'standard' }
+  pot.design = { ...current, ...design }
 }
