@@ -4,7 +4,7 @@ import { CENTER_COLORS } from "../model/genetic_model"
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 
-const SHAPE_SCORE: Record<PetalShape, number> = { round: 0, lanzett: 8, tropfen: 16, wavy: 25, zickzack: 40 }
+const SHAPE_SCORE: Record<PetalShape, number> = { round: 0, lanzett: 8, tropfen: 16, wavy: 25, zickzack: 50 }
 
 const COLOR_SCORE: Record<string, number> = {
   white: 0, yellow: 5, red: 12, pink: 16, purple: 20, blue: 27, green: 31, gray: 35,

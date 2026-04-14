@@ -1,5 +1,5 @@
 import { CENTER_COLORS } from '../model/genetic_model';
-import type { Plant } from '../model/plant';
+import type { CatalogEntry, GameState, Plant } from '../model/plant';
 import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedCenterColor } from './genetic/genetic_utils';
 
 
@@ -15,4 +15,11 @@ export function catalogKey(plant: Plant): string {
   const count = Math.round(expressedNumber(plant.petalCount))
 
   return `${count}-${shape}-${center}-${centerColIndex}-${color.h}-${color.s}-${color.l}`
+}
+
+export function getCatalogEntryForPlant(state: GameState, plant: Plant): CatalogEntry | null {
+  if (!plant) return null;
+  const key = catalogKey(plant)
+
+  return state.catalog.find(e => e.key === key) ?? null;
 }
