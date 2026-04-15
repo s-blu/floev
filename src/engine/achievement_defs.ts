@@ -30,6 +30,7 @@ function countUniqueShapes(catalog: CatalogEntry[]): number {
   return seen.size
 }
 
+//FIXME implement a achievement for that
 function hasShapeInBucket(catalog: CatalogEntry[], shape: PetalShape, bucket: ColorBucket): boolean {
   return catalog.some(e =>
     expressedShape(e.plant.petalShape) === shape &&
@@ -125,7 +126,7 @@ export function buildAchievements(): Achievement[] {
   }
 
   // ── 3. Colour diversity (visible) ────────────────────────────────────────────
-  const colorDivStack = [5, 6, 8]
+  const colorDivStack = [6, 7, 8]
   for (let i = 0; i < colorDivStack.length; i++) {
     const n = colorDivStack[i]
     list.push({
@@ -209,8 +210,8 @@ export function buildAchievements(): Achievement[] {
   // ── 8. High petal counts (6, 7, 8) for a specific shape (hidden, stacked per shape) ──────
   for (const shape of PETAL_SHAPES) {
     const shapeLabel = t.achShapeLabels[shape] ?? shape
-    for (let stackI = 0; stackI < 6; stackI++) {
-      const count = stackI + 6   // 6..8
+    for (let stackI = 0; stackI < 2; stackI++) {
+      const count = stackI + 7   // 6..8
       list.push({
         id: `petals_${shape}_${count}`,
         groupKey: `petals_shape_${shape}`,
@@ -218,7 +219,7 @@ export function buildAchievements(): Achievement[] {
         hidden: true,
         title: t.achPetalsTitle(shapeLabel, count),
         desc: t.achPetalsDesc(shapeLabel, count),
-        reward: 5 + stackI * 3,
+        reward: [5, 10][stackI],
         progress: cat => ({ current: hasShapeWithCount(cat, shape, count) ? 1 : 0, total: 1 }),
       })
     }

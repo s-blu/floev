@@ -4,7 +4,7 @@
  * "white" and "gray" are achromatic sentinels encoded in petalHue.
  */
 
-import type { CenterType, ChromaticL, HSLColor, PetalShape } from './plant';
+import type { CenterType, ChromaticL, PetalShape } from './plant';
 
 export type ColorBucket = 'white' | 'yellow' | 'red' | 'pink' | 'purple' | 'blue' | 'green' | 'gray';
 export const PALETTE_HUE_RANGES = {

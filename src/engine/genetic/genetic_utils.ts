@@ -64,7 +64,7 @@ export function expressedColor(
 
   // Achromatic sentinels — lightness locus irrelevant
   if (h === ACHROMATIC_HUE_WHITE)      return { h: 0,   s: 0, l: 100 }
-  if (h === ACHROMATIC_HUE_GRAY_DARK)  return { h: 0,   s: 0, l: 0   }
+  if (h === ACHROMATIC_HUE_GRAY_DARK)  return { h: 0,   s: 0, l: 10  }
   if (h === ACHROMATIC_HUE_GRAY_MID)   return { h: 0,   s: 0, l: 40  }
   if (h === ACHROMATIC_HUE_GRAY_LIGHT) return { h: 0,   s: 0, l: 70  }
 

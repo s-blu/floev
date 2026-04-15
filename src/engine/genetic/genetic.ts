@@ -53,6 +53,7 @@ export function randomPlant(): Plant {
   const lA   = randomLAllele()
   const lB   = randomLAllele()
 
+  // FIXME round these
   const stemA = MIN_STEM_HEIGHT + Math.random() * 0.65
   const stemB = MIN_STEM_HEIGHT + Math.random() * 0.65
 
