@@ -3,8 +3,7 @@ import { MIN_STEM_HEIGHT, CENTER_TYPES, MUTATION_CHANCE, GRADIENT_ALLELE_KEEP_CH
 import { PETAL_SHAPES } from '../model/genetic_model';
 import { inheritHue, inheritLightness, inheritGradient, inheritNumber, inheritDiscrete } from './genetic/inheritance';
 import { type Plant, type PlantPhase, type BreedEstimate, type PetalShape, type CenterType } from '../model/plant';
-import { expressedColor, expressedNumber, expressedShape, expressedGradient } from "./genetic/genetic_utils";
-import { CENTER_COLORS } from "../model/genetic_model";
+import { expressedColor, expressedNumber, expressedShape } from "./genetic/genetic_utils";
 import { dominantShape, dominantCenter } from "./genetic/dominance_utils";
 
 // ─── Cross-breeding ───────────────────────────────────────────────────────────
@@ -22,7 +21,6 @@ export function breedPlants(a: Plant, b: Plant): Plant {
     petalLightness:  inheritLightness(a.petalLightness, b.petalLightness),
     hasGradient:     inheritGradient(a.hasGradient, b.hasGradient),
     centerType:      inheritDiscrete(a.centerType, b.centerType, CENTER_TYPES),
-    centerColor:     inheritColor_centerColor(a, b),
     phase: 1 as PlantPhase,
     generation: Math.max(a.generation ?? 0, b.generation ?? 0) + 1,
     parentIds: [a.id, b.id],
@@ -54,28 +52,12 @@ export function selfPollinateePlant(plant: Plant): Plant {
     petalLightness: inheritLightness(plant.petalLightness, plant.petalLightness),
     hasGradient: inheritGradient(plant.hasGradient, plant.hasGradient),
     centerType:  inheritDiscrete(plant.centerType,  plant.centerType,  CENTER_TYPES),
-    centerColor: inheritColor_centerColor(plant, plant),
     phase: 1 as PlantPhase,
     generation: (plant.generation ?? 0) + 1,
     parentIds: [plant.id, plant.id],
   };
 }
 
-// centerColor still uses the old full-HSLColor inheritance (unchanged)
-function inheritColor_centerColor(a: Plant, b: Plant) {
-  const raw = {
-    a: Math.random() < 0.5 ? a.centerColor.a : a.centerColor.b,
-    b: Math.random() < 0.5 ? b.centerColor.a : b.centerColor.b,
-  };
-  return {
-    a: Math.random() < MUTATION_CHANCE ? randomCenterColorMutation() : raw.a,
-    b: Math.random() < MUTATION_CHANCE ? randomCenterColorMutation() : raw.b,
-  };
-}
-
-function randomCenterColorMutation() {
-  return CENTER_COLORS[Math.floor(Math.random() * CENTER_COLORS.length)];
-}
 
 // ─── Analytical probability helpers ──────────────────────────────────────────
 

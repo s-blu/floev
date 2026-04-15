@@ -1,14 +1,14 @@
 import type {
-  Plant, HSLColor, PetalShape, PlantPhase, ChromaticL,
+  Plant, PetalShape, PlantPhase, ChromaticL,
   CenterType,
 } from '../../model/plant'
 import type { ColorBucket } from "../../model/genetic_model"
 import { pick, uid } from "./genetic_utils"
 import {
   ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_LIGHT, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_WHITE,
-  CENTER_COLORS, CENTER_TYPES,
+  CENTER_TYPES,
   GRADIENT_ALLELE_CHANCE_RANDOM,
-  MIN_STEM_HEIGHT, PALETTE_HUES, PALETTE_HUES_BUCKETS, PALETTE_L, PALETTE_S, SHAPE_ALLELE_POOL,
+  MIN_STEM_HEIGHT, PALETTE_HUES_BUCKETS, PALETTE_L, SHAPE_ALLELE_POOL,
   SHAPE_ALLELE_POOL_EXCLUDED_RARES,
 } from "../../model/genetic_model"
 import { HUE_ALLELE_POOL, LIGHTNESS_ALLELE_POOL } from "../../model/genetic_model"
@@ -21,37 +21,6 @@ export function randomPetalShapeAllele(includeRares = true): PetalShape {
   }
 }
 
-// ─── quantizeColor (still used by legacy centerColor logic) ──────────────────
-
-export function quantizeColor(h: number, s: number, l: number): HSLColor {
-  if (s < 10) {
-    if (l >= 85) return { h: 0, s: 0, l: 100 }
-    if (l >= 55) return { h: 0, s: 0, l: 70 }
-    if (l >= 20) return { h: 0, s: 0, l: 40 }
-    return { h: 0, s: 0, l: 0 }
-  }
-  let bestHue = PALETTE_HUES[0]
-  let bestDist = Infinity
-  for (const ph of PALETTE_HUES) {
-    const d = Math.min(Math.abs(h - ph), 360 - Math.abs(h - ph))
-    if (d < bestDist) { bestDist = d; bestHue = ph }
-  }
-  let bestL = PALETTE_L[0]
-  let bestLDist = Infinity
-  for (const pl of PALETTE_L) {
-    const d = Math.abs(l - pl)
-    if (d < bestLDist) { bestLDist = d; bestL = pl }
-  }
-  return { h: bestHue, s: PALETTE_S, l: bestL }
-}
-
-function randomCenterColor(includeRares = true): HSLColor {
-  const r = Math.random()
-  if (r < 0.12)      return includeRares ? CENTER_COLORS[3] : CENTER_COLORS[2]
-  else if (r < 0.30) return CENTER_COLORS[2]
-  else if (r < 0.55) return CENTER_COLORS[1]
-  else               return CENTER_COLORS[0]
-}
 
 // ─── Random hue/lightness allele for a given ColorBucket ─────────────────────
 
@@ -98,11 +67,10 @@ export function randomPlant(): Plant {
     petalHue:       { a: hueA, b: hueB },
     petalLightness: { a: lA, b: lB },
     hasGradient:    {
-      a: Math.random() < (GRADIENT_ALLELE_CHANCE_RANDOM * 2),
+      a: false,
       b: Math.random() < GRADIENT_ALLELE_CHANCE_RANDOM,
     },
     centerType:     { a: pick(CENTER_TYPES.slice(0, -1)), b: pick(CENTER_TYPES) },
-    centerColor:    { a: randomCenterColor(false), b: randomCenterColor() },
     phase: 1 as PlantPhase,
     generation: 0,
   }
@@ -116,7 +84,6 @@ export function plannedPlant(plantConfiguration: {
   stemHeight?: number,
   petalCount?: number,
   centerType?: CenterType,
-  centerColor?: HSLColor
   plantPhase?: PlantPhase
 }): Plant {
   const config = {
@@ -127,7 +94,6 @@ export function plannedPlant(plantConfiguration: {
     stemHeight: MIN_STEM_HEIGHT + Math.random() * 0.65,
     petalCount: 3 + Math.floor(Math.random() * 6),
     centerType: 'dot' as CenterType,
-    centerColor: CENTER_COLORS[0],
     plantPhase: 4,
     ...plantConfiguration
   }
@@ -144,7 +110,6 @@ export function plannedPlant(plantConfiguration: {
       b: config.hasGradient
     },
     centerType:     { a: config.centerType, b: config.centerType },
-    centerColor:    { a: config.centerColor, b: config.centerColor },
     phase: 1 as PlantPhase,
     generation: 0,
   }

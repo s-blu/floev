@@ -1,11 +1,10 @@
 import type { Plant } from '../../model/plant';
-import { expressedColor, expressedGradient, expressedShape, expressedNumber, expressedCenter, expressedCenterColor } from '../genetic/genetic_utils';
+import { expressedColor, expressedGradient, expressedShape, expressedNumber, expressedCenter } from '../genetic/genetic_utils';
 import { buildPetalPath, petalToSVG } from './petal_renderer';
 import { renderGradientDef, hsl, darken } from './renderer_utils';
 import { renderCenter } from './center_renderer';
 
 // ─── Bloom-only render (for encyclopedia) ────────────────────────────────────
-
 export function renderBloomSVG(plant: Plant, w: number, h: number): string {
   const cx = w / 2;
   const cy = h / 2;
@@ -34,9 +33,8 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
     body += petalToSVG(petal, fillStr, strokeStr);
   }
 
-  const cc = expressedCenterColor(plant.centerColor);
   const centerType = expressedCenter(plant.centerType);
-  body += renderCenter(centerType, cc, cx, cy);
+  body += renderCenter(centerType, cx, cy);
 
   const defsBlock = defs ? `<defs>${defs}</defs>` : '';
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="visible" xmlns="http://www.w3.org/2000/svg">${defsBlock}${body}</svg>`;

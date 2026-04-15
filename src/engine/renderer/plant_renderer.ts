@@ -26,9 +26,8 @@ export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: 
     body += petalToSVG(petal, fillStr, strokeStr);
   }
 
-  const cc = plant.centerColor.a;
   const centerType = expressedCenter(plant.centerType);
-  body += renderCenter(centerType, cc, cx, bloomY);
+  body += renderCenter(centerType, cx, bloomY);
 
   return { defs, body };
 }

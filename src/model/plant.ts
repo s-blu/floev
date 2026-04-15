@@ -40,9 +40,6 @@ export interface Plant {
   // The gradient is always monochrome: L90 near center → L60 mid → L30 at tips.
   hasGradient:    AllelePair<boolean>
 
-  // Center colour (full HSLColor pair, legacy — not yet refactored to loci)
-  centerColor:    AllelePair<HSLColor>
-
   // Runtime state
   phase:      PlantPhase
   generation: number

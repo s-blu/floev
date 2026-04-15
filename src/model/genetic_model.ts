@@ -17,13 +17,9 @@ export const PALETTE_HUE_RANGES = {
 };
 // Lower index = more dominant
 
-export const CENTER_COLORS = [
-  { h: 40, s: 100, l: 95 }, // creme
-  { h: 120, s: 50, l: 80 }, // grün
-  { h: 55, s: 100, l: 50 }, // kräftiges gelb
-  { h: 20, s: 100, l: 65 }, // kräftiges orange
-];
-
+export const CENTER_COLORS = {
+  default: { h: 40, s: 100, l: 95 }
+}
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 export const PETAL_SHAPES: PetalShape[] = ['round', 'lanzett', 'tropfen', 'wavy', 'zickzack']
@@ -80,13 +76,6 @@ export const PALETTE_HUES_BUCKETS = {
 }
 
 export const PALETTE_L = [30, 60, 90] as const
-
-// ─── Achromatic legacy color objects (used by centerColor) ────────────────────
-
-export const COLOR_WHITE: HSLColor = { h: 0, s: 0, l: 100 }
-export const COLOR_GRAY_DARK: HSLColor = { h: 0, s: 0, l: 0 }
-export const COLOR_GRAY_MID: HSLColor = { h: 0, s: 0, l: 40 }
-export const COLOR_GRAY_LIGHT: HSLColor = { h: 0, s: 0, l: 70 }
 
 // ─── Allele pools for randomPlant ────────────────────────────────────────────
 //

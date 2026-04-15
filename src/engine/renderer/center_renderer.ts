@@ -1,14 +1,15 @@
-import { expressedCenter, expressedColor } from '../genetic/genetic_utils';
+import { CENTER_COLORS } from '../../model/genetic_model';
+import { expressedCenter } from '../genetic/genetic_utils';
 import { hsl, clamp } from './renderer_utils';
 
 // ─── Center renderer (shared logic) ──────────────────────────────────────────
 
 export function renderCenter(
   centerType: ReturnType<typeof expressedCenter>,
-  cc: ReturnType<typeof expressedColor>,
   cx: number,
   cy: number
 ): string {
+  const cc = CENTER_COLORS.default
   const ccStr = hsl(cc);
   // A noticeably darker shade for the disc ring / stamen tips
   const ringColor = hsl({ h: cc.h, s: clamp(cc.s + 15, 20, 100), l: clamp(cc.l - 28, 20, 65) });

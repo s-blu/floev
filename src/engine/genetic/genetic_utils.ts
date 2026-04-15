@@ -1,6 +1,6 @@
 import { ColorBucket, PALETTE_HUE_RANGES } from "../../model/genetic_model";
 import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL } from "../../model/plant";
-import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantCenterColor } from "./dominance_utils";
+import { dominantShape, dominantCenter, dominantHue, dominantLightness } from "./dominance_utils";
 import { PALETTE_S } from '../../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../../model/genetic_model';
 
@@ -80,9 +80,7 @@ export function expressedShape(pair: AllelePair<PetalShape>): PetalShape {
 export function expressedCenter(pair: AllelePair<CenterType>): CenterType {
   return dominantCenter(pair.a, pair.b)
 }
-export function expressedCenterColor(pair: AllelePair<HSLColor>): HSLColor {
-  return dominantCenterColor(pair.a, pair.b)
-}
+
 /** Numeric traits use the average of both alleles (incomplete dominance). */
 export function expressedNumber(pair: AllelePair<number>): number {
   return (pair.a + pair.b) / 2

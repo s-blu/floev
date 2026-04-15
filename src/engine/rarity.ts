@@ -1,6 +1,6 @@
-import { Plant, CenterType, PetalShape, Rarity, HSLColor } from "../model/plant"
-import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket, expressedCenterColor } from "./genetic/genetic_utils"
-import { CENTER_COLORS } from "../model/genetic_model"
+import { Plant, CenterType, PetalShape, Rarity } from "../model/plant"
+import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket } from "./genetic/genetic_utils"
+
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 
@@ -12,25 +12,11 @@ const COLOR_SCORE: Record<string, number> = {
 
 const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 8, stamen: 20 }
 
-function centerColorScore(c: HSLColor): number {
-  const colorString = getColorString(c)
-  switch (colorString) {
-    case getColorString(CENTER_COLORS[0]): return 0
-    case getColorString(CENTER_COLORS[1]): return 5
-    case getColorString(CENTER_COLORS[2]): return 10
-    case getColorString(CENTER_COLORS[3]): return 15
-    default: return 0
-  }
-  function getColorString(col: HSLColor) {
-    return `${col.h}-${col.s}-${col.l}`
-  }
-}
 
 export function calcRarityScore(plant: Plant): number {
   const shape  = expressedShape(plant.petalShape)
   const color  = expressedColor(plant.petalHue, plant.petalLightness)
   const center = expressedCenter(plant.centerType)
-  const cc     = expressedCenterColor(plant.centerColor)
   const hasGrad = expressedGradient(plant.hasGradient)
   const count  = Math.round(expressedNumber(plant.petalCount))
   const stem   = expressedNumber(plant.stemHeight)
@@ -39,7 +25,6 @@ export function calcRarityScore(plant: Plant): number {
   score += SHAPE_SCORE[shape]
   score += COLOR_SCORE[colorBucket(color)] ?? 0
   score += CENTER_SCORE[center]
-  score += centerColorScore(cc)
   score += hasGrad ? 20 : 0
   if (count >= 7) score += 5
   if (stem > 0.85) score += 5
