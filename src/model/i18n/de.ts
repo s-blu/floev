@@ -281,6 +281,110 @@ export const de = {
 
   // help shape secret
   helpShapeSecret: '?',
+
+  colorLabelGradient: "-Verlauf",
+
+  colorLabel: {
+  0: {
+    90: {
+      35: "Karmesin",
+      60: "Rot",
+      90: "Koralle",
+    },
+    0: {
+      10: "Anthrazit",
+      40: "Steingrau",
+      70: "Silber",
+      100: "Weiß"
+    }
+  },
+  25: {
+    90: {
+      35: "Rost",
+      60: "Orange",
+      90: "Apricot",
+    },
+  },
+  350: {
+    90: {
+      35: "Rubinrot",
+      60: "Karmin",
+      90: "Rosé",
+    },
+  },
+  60: {
+    90: {
+      35: "Senf",
+      60: "Gelb",
+      90: "Vanille",
+    },
+  },
+  160: {
+    90: {
+      35: "Smaragd",
+      60: "Jade",
+      90: "Mintgrün",
+    },
+  },
+  180: {
+    90: {
+      35: "Tiefsee",
+      60: "Türkis",
+      90: "Eisblau",
+    },
+  },
+  200: {
+    90: {
+      35: "Petrol",
+      60: "Himmelblau",
+      90: "Azur",
+    },
+  },
+  230: {
+    90: {
+      35: "Marineblau",
+      60: "Königsblau",
+      90: "Fernblau",
+    },
+  },
+  250: {
+    90: {
+      35: "Indigo",
+      60: "Violett",
+      90: "Nebellila",
+    },
+  },
+  270: {
+    90: {
+      35: "Amethyst",
+      60: "Lila",
+      90: "Malve",
+    },
+  },
+  290: {
+    90: {
+      35: "Purpur",
+      60: "Magenta",
+      90: "Seidenrosa",
+    },
+  },
+  310: {
+    90: {
+      35: "Pflaume",
+      60: "Fuchsia",
+      90: "Puderrosa",
+    },
+  },
+  330: {
+    90: {
+      35: "Burgund",
+      60: "Purpur",
+      90: "Altrosa",
+    },
+  },
+}  
 }
+
+
 
 export type I18n = typeof de

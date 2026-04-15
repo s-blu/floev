@@ -109,7 +109,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const swatchStyle = hasGrad
     ? `background: linear-gradient(to right, hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,90%), hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,30%))`
     : `background: ${hslMain}`;
-
+  const swatchLabel = hasGrad ?  t.colorLabel[pc.h]?.[pc.s]?.[pc.l] + t.colorLabelGradient : t.colorLabel[pc.h]?.[pc.s]?.[pc.l];
   const parentA = plant.parentIds
     ? state.catalog.find(e => e.plant.id === plant.parentIds![0]) ?? null
     : null;
@@ -176,7 +176,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
         <div class="enc-meta">
           ${renderMetaRow(t.catalogMetaPetals, `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}
           ${renderMetaRow(t.catalogMetaCenter, `${CENTER_LABELS[center] ?? center}`)}
-          ${renderMetaRow(t.catalogMetaColor, `<span class="enc-color-swatch" style="${swatchStyle}"></span>`)}
+          ${renderMetaRow(t.catalogMetaColor, `${swatchLabel} <span class="enc-color-swatch" style="${swatchStyle}"></span>`)}
           ${renderMetaRow(t.catalogMetaGen, `${plant.generation}`)}
         </div>
         <div class="enc-discovered">${formatDate(entry.discovered)}</div>
