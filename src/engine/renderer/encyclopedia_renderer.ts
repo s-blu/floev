@@ -34,7 +34,7 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
   }
 
   const centerType = expressedCenter(plant.centerType);
-  body += renderCenter(centerType, cx, cy);
+  body += renderCenter(centerType, pc.l, cx, cy);
 
   const defsBlock = defs ? `<defs>${defs}</defs>` : '';
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="visible" xmlns="http://www.w3.org/2000/svg">${defsBlock}${body}</svg>`;

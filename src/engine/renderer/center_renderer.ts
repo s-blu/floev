@@ -6,10 +6,11 @@ import { hsl, clamp } from './renderer_utils';
 
 export function renderCenter(
   centerType: ReturnType<typeof expressedCenter>,
+  petalLightness: number,
   cx: number,
   cy: number
 ): string {
-  const cc = CENTER_COLORS.default
+  const cc = CENTER_COLORS[petalLightness] ?? CENTER_COLORS.default
   const ccStr = hsl(cc);
   // A noticeably darker shade for the disc ring / stamen tips
   const ringColor = hsl({ h: cc.h, s: clamp(cc.s + 15, 20, 100), l: clamp(cc.l - 28, 20, 65) });

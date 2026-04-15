@@ -18,7 +18,10 @@ export const PALETTE_HUE_RANGES = {
 // Lower index = more dominant
 
 export const CENTER_COLORS = {
-  default: { h: 40, s: 100, l: 95 }
+  default: { h: 40, s: 100, l: 95 },
+  90: { h: 60, s: 90, l: 80 },
+  60: { h: 60, s: 90, l: 50 },
+  30: { h: 40, s: 90, l: 60 },
 }
 // ─── Constants ───────────────────────────────────────────────────────────────
 

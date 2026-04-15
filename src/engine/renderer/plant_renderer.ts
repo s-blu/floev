@@ -27,7 +27,7 @@ export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: 
   }
 
   const centerType = expressedCenter(plant.centerType);
-  body += renderCenter(centerType, cx, bloomY);
+  body += renderCenter(centerType, pc.l, cx, bloomY);
 
   return { defs, body };
 }

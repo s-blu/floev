@@ -350,7 +350,7 @@ export const de = {
   250: {
     90: {
       35: "Indigo",
-      60: "Violett",
+      60: "Dämmerlila",
       90: "Nebellila",
     },
   },
