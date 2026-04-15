@@ -287,7 +287,7 @@ export const de = {
   colorLabel: {
   0: {
     90: {
-      35: "Karmesin",
+      30: "Karmesin",
       60: "Rot",
       90: "Koralle",
     },
@@ -300,84 +300,84 @@ export const de = {
   },
   25: {
     90: {
-      35: "Rost",
+      30: "Rost",
       60: "Orange",
       90: "Apricot",
     },
   },
   350: {
     90: {
-      35: "Rubinrot",
+      30: "Rubinrot",
       60: "Karmin",
       90: "Rosé",
     },
   },
   60: {
     90: {
-      35: "Senf",
+      30: "Senf",
       60: "Gelb",
       90: "Vanille",
     },
   },
   160: {
     90: {
-      35: "Smaragd",
+      30: "Smaragd",
       60: "Jade",
       90: "Mintgrün",
     },
   },
   180: {
     90: {
-      35: "Tiefsee",
+      30: "Tiefsee",
       60: "Türkis",
       90: "Eisblau",
     },
   },
   200: {
     90: {
-      35: "Petrol",
+      30: "Petrol",
       60: "Himmelblau",
       90: "Azur",
     },
   },
   230: {
     90: {
-      35: "Marineblau",
+      30: "Marineblau",
       60: "Königsblau",
       90: "Fernblau",
     },
   },
   250: {
     90: {
-      35: "Indigo",
+      30: "Indigo",
       60: "Dämmerlila",
       90: "Nebellila",
     },
   },
   270: {
     90: {
-      35: "Amethyst",
+      30: "Amethyst",
       60: "Lila",
       90: "Malve",
     },
   },
   290: {
     90: {
-      35: "Purpur",
+      30: "Purpur",
       60: "Magenta",
       90: "Seidenrosa",
     },
   },
   310: {
     90: {
-      35: "Pflaume",
+      30: "Pflaume",
       60: "Fuchsia",
       90: "Puderrosa",
     },
   },
   330: {
     90: {
-      35: "Burgund",
+      30: "Burgund",
       60: "Purpur",
       90: "Altrosa",
     },
