@@ -14,6 +14,7 @@ export interface AllelePair<T> {
 /** The three discrete lightness levels used as alleles. */
 export type ChromaticL = 30 | 60 | 90
 
+export type StemTypes = "two-leaved-stem"
 export type PetalShape = 'round' | 'lanzett' | 'tropfen' | 'wavy' | 'zickzack'
 export type CenterType = 'dot' | 'disc' | 'stamen'
 export type PlantPhase = 1 | 2 | 3 | 4
@@ -26,6 +27,7 @@ export interface Plant {
 
   // Numeric loci (continuous, incomplete dominance → average)
   stemHeight:     AllelePair<number>
+  stem:           AllelePair<StemTypes>
   petalCount:     AllelePair<number>
 
   // Discrete loci (Mendelian dominance)

@@ -79,6 +79,9 @@ export function expressedShape(pair: AllelePair<PetalShape>): PetalShape {
 export function expressedCenter(pair: AllelePair<CenterType>): CenterType {
   return dominantCenter(pair.a, pair.b)
 }
+export function expressedStem(pair: AllelePair<CenterType>): CenterType {
+  return pair.a;
+}
 
 /** Numeric traits use the average of both alleles (incomplete dominance). */
 export function expressedNumber(pair: AllelePair<number>): number {

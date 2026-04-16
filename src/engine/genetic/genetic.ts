@@ -10,6 +10,7 @@ import {
   GRADIENT_ALLELE_CHANCE_RANDOM,
   MIN_STEM_HEIGHT, PALETTE_HUES_BUCKETS, PALETTE_L, SHAPE_ALLELE_POOL,
   SHAPE_ALLELE_POOL_EXCLUDED_RARES,
+  STEM_TYPES,
 } from "../../model/genetic_model"
 import { HUE_ALLELE_POOL, LIGHTNESS_ALLELE_POOL } from "../../model/genetic_model"
 
@@ -73,6 +74,7 @@ export function randomPlant(): Plant {
     },
     centerType:     { a: pick(CENTER_TYPES.slice(0, -1)), b: pick(CENTER_TYPES) },
     phase: 1 as PlantPhase,
+    stem: { a: STEM_TYPES[0], b: STEM_TYPES[0] },
     generation: 0,
   }
 }
@@ -112,6 +114,7 @@ export function plannedPlant(plantConfiguration: {
     },
     centerType:     { a: config.centerType, b: config.centerType },
     phase: 1 as PlantPhase,
+    stem: { a: STEM_TYPES[0], b: STEM_TYPES[0] },
     generation: 0,
   }
 }

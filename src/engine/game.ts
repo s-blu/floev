@@ -36,7 +36,7 @@ export function coinValueForScore(score: number): number {
   return Math.max(3, Math.round(Math.pow(score / 10, 1.8)))
 }
 
-const useDebugPlants = true;
+const useDebugPlants = false;
 const DEBUG_PLANTS = [
     plannedPlant(
     {
