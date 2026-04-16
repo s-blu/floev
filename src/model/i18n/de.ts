@@ -210,9 +210,9 @@ export const de = {
 
   // Catalog size milestones
   achCatalogTitle: (n: number): string => {
-    if (n >= 100) return 'Sammlerin II';
-    if (n >= 60)  return 'Sammlerin';
-    if (n >= 30)  return 'Sammlerin';
+    if (n >= 100) return 'Sammlerin IV';
+    if (n >= 60)  return 'Sammlerin III';
+    if (n >= 30)  return 'Sammler II';
     return 'Sammler';
   },
   achCatalogDesc: (n: number) => `Entdecke ${n} verschiedene Blüten.`,
@@ -408,7 +408,50 @@ export const de = {
       90: "Altrosa",
     },
   },
-}  
+}, 
+
+petalNames: {
+  round: {
+    3: 'Karge Orbella',
+    4: 'Kleine Orbella',
+    5: 'Gemeine Orbella',
+    6: 'Sommerorbella',
+    7: 'Reiche Orbella',
+    8: 'Volle Orbella',
+  },
+  lanzett: {
+    3: 'Nadel-Lancea',
+    4: 'Schlanke Lancea',
+    5: 'Gemeine Lancea',
+    6: 'Kühne Lancea',
+    7: 'Wilde Lancea',
+    8: 'Himmelslanze',
+  },
+  tropfen: {
+    3: 'Tau-Lumaria',
+    4: 'Junge Lumaria',
+    5: 'Echte Lumaria',
+    6: 'Tränen-Lumaria',
+    7: 'Reiche Lumaria',
+    8: 'Sonnen-Lumaria',
+  },
+  wavy: {
+    3: 'Leichte Velora',
+    4: 'Sanfte Velora',
+    5: 'Echte Velora',
+    6: 'Wogende Velora',
+    7: 'Tanzende Velora',
+    8: 'Große Velora',
+  },
+  zickzack: {
+    3: 'Splitterhauch',
+    4: 'Frühe Serrata',
+    5: 'Echte Serrata',
+    6: 'Scharfwind-Serrata',
+    7: 'Wilde Serrata',
+    8: 'Donnerkranz',
+  },
+}
 }
 
 

@@ -59,6 +59,7 @@ export interface Pot {
 export interface CatalogEntry {
   key:         string
   plant:       Plant
+  plantname:   string
   rarityScore: number
   rarity:      Rarity
   discovered:  number

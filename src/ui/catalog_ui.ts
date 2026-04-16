@@ -163,7 +163,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
 
   el.innerHTML = `
     <div class="enc-title">
-      <div class="enc-entry-name">${t.catalogEntryName(num)}</div>
+      <div class="enc-entry-name">${entry.plantname ?? t.catalogEntryName(num)}</div>
       <div class="enc-entry-num">${t.catalogEntryNum(num)}</div>
     </div>
     <div class="enc-body">

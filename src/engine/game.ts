@@ -1,7 +1,6 @@
-import type { GameState, Pot, Plant, CatalogEntry, Rarity } from '../model/plant'
+import type { GameState, Pot, Plant, Rarity } from '../model/plant'
 import { plannedPlant, randomPlant } from './genetic/genetic'
-import { catalogKey, getCatalogEntryForPlant } from './catalog'
-import { calcRarity, calcRarityScore } from './rarity'
+import { addToCatalog, getCatalogEntryForPlant } from './catalog'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -37,41 +36,54 @@ export function coinValueForScore(score: number): number {
   return Math.max(3, Math.round(Math.pow(score / 10, 1.8)))
 }
 
-const useDebugPlants = false;
+const useDebugPlants = true;
 const DEBUG_PLANTS = [
+    plannedPlant(
+    {
+      hue: 200,
+      petalShape: 'round',
+      hasGradient: false,
+      petalCount: 5
+    }
+  ),
   plannedPlant(
     {
-      hue: 0,
+      hue: 200,
       petalShape: 'lanzett',
-      hasGradient: true
+      hasGradient: false,
+      petalCount: 5
     }
   ),
     plannedPlant(
     {
-      hue: 100,
+      hue: 200,
       petalShape: 'tropfen',
-      hasGradient: true
+      hasGradient: false,
+      petalCount: 5
     }
   ),
     plannedPlant(
     {
       hue: 200,
       petalShape: 'wavy',
-      hasGradient: true
+      hasGradient: false,
+      petalCount: 5
     }
   ),
     plannedPlant(
     {
-      hue: 250,
+      hue: 200,
       petalShape: 'zickzack',
-      hasGradient: true
+      hasGradient: false,
+      petalCount: 5
     }
   ),
       plannedPlant(
     {
-      hue: 310,
+      hue: 200,
       petalShape: 'round',
-      hasGradient: true
+      hasGradient: false,
+      petalCount: 5
     }
   )
 ]
@@ -206,22 +218,4 @@ export function placeSeedInEmptyPot(state: GameState, plant: Plant): number | nu
   pot.plant = plant
   pot.phaseStart = Date.now()
   return pot.id
-}
-
-// ─── Catalog ─────────────────────────────────────────────────────────────────
-
-export function addToCatalog(state: GameState, plant: Plant): boolean {
-  const key = catalogKey(plant)
-  if (state.catalog.find(e => e.key === key)) return false
-  const rarityScore = calcRarityScore(plant)
-  const entry: CatalogEntry = {
-    key,
-    plant: structuredClone(plant),
-    rarityScore,
-    rarity: calcRarity(plant),
-    discovered: Date.now(),
-  }
-  state.catalog.push(entry)
-  state.catalog.sort((a, b) => b.rarityScore - a.rarityScore)
-  return true
 }
