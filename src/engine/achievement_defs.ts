@@ -291,8 +291,8 @@ export function buildAchievements(): Achievement[] {
     }
   }
 
-  // ── 11. Legendary in every shape (hidden, one per shape) ─────────────────────
-  for (let i = 0; i < PETAL_SHAPES.length; i++) {
+  // ── 11. Legendary in all 3 rarer shapes (hidden, one per shape) ─────────────────────
+  for (let i = 2; i < PETAL_SHAPES.length; i++) {
     const shape = PETAL_SHAPES[i]
     const shapeLabel = t.achShapeLabels[shape] ?? shape
     list.push({
