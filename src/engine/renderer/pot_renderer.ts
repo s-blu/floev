@@ -1,23 +1,30 @@
 import type { PotDesign } from '../../model/plant';
 import { POT_COLORS } from '../../model/shop';
 
-
-// ─── Pot shape mini SVG preview ───────────────────────────────────────────────
 export function renderPotShopPreview(shape: string, colorId: string): string {
   const c = POT_COLORS.find(pc => pc.id === colorId) ?? POT_COLORS[0]
   const w = 36, h = 32
   const rimH = 4, potH = 18
+  const potTop = rimH
 
   let potPath = ''
   if (shape === 'conic') {
-    const topX = 8, topW = 20, botX = 4, botW = 28
-    potPath = `<path d="M${topX},${rimH} L${topX + topW},${rimH} L${botX + botW},${rimH + potH} L${botX},${rimH + potH} Z" fill="${c.body}"/>`
+    // Klassische Blumentopfform: oben breit, unten schmal
+    const topX = 5, topW = 26, botX = 10, botW = 16
+    potPath = `<path d="M${topX},${potTop} L${topX + topW},${potTop} L${botX + botW},${potTop + potH} L${botX},${potTop + potH} Z" fill="${c.body}"/>`
   } else if (shape === 'belly') {
-    potPath = `
-      <rect x="6" y="${rimH}" width="24" height="${potH}" rx="3" fill="${c.body}"/>
-      <ellipse cx="${w / 2}" cy="${rimH + potH * 0.5}" rx="14" ry="${potH * 0.36}" fill="${c.body}"/>`
+    // Echter Bauch mit Bézier
+    const bx = w / 2, by = potTop + potH * 0.55
+    const bulge = 7
+    potPath = `<path d="
+      M${w/2 - 10},${potTop}
+      L${w/2 + 10},${potTop}
+      C${w/2 + 10 + bulge},${by} ${w/2 + 10 + bulge},${by} ${w/2 + 8},${potTop + potH}
+      L${w/2 - 8},${potTop + potH}
+      C${w/2 - 10 - bulge},${by} ${w/2 - 10 - bulge},${by} ${w/2 - 10},${potTop}
+      Z" fill="${c.body}"/>`
   } else {
-    potPath = `<rect x="6" y="${rimH}" width="24" height="${potH}" rx="3" fill="${c.body}"/>`
+    potPath = `<rect x="6" y="${potTop}" width="24" height="${potH}" rx="3" fill="${c.body}"/>`
   }
 
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" overflow="visible">
@@ -29,7 +36,6 @@ export function renderPotShopPreview(shape: string, colorId: string): string {
 export function renderPot(w: number, groundY: number, potRimH: number, potH: number, body: string, potDesign?: PotDesign): string {
   const colorId = potDesign?.colorId ?? 'terracotta';
   const shape = potDesign?.shape ?? 'standard';
-
   const c = POT_COLORS.find(pc => pc.id === colorId) ?? POT_COLORS[0];
 
   const potW = w * 0.72;
@@ -40,35 +46,40 @@ export function renderPot(w: number, groundY: number, potRimH: number, potH: num
   const shineX = (w - shineW) / 2;
   const potTop = groundY + potRimH;
   const potBot = potTop + potH;
-  const rx = 4;
+  const cx = w / 2;
 
   if (shape === 'conic') {
-    // Trapezoid: narrower at top, wider at bottom
-    const topW = potW * 0.72;
-    const topX = (w - topW) / 2;
-    const botW = potW;
-    const botX = (w - botW) / 2;
-    body += `<path d="M${topX},${potTop} L${topX + topW},${potTop} L${botX + botW},${potBot} L${botX},${potBot} Z" fill="${c.body}" rx="${rx}"/>`;
+    // Klassische Blumentopfform: oben breit, unten schmal
+    const topHalf = potW * 0.50;
+    const botHalf = potW * 0.32;
+    const tX = cx - topHalf, tX2 = cx + topHalf;
+    const bX = cx - botHalf, bX2 = cx + botHalf;
+    body += `<path d="M${tX},${potTop} L${tX2},${potTop} L${bX2},${potBot} L${bX},${potBot} Z" fill="${c.body}"/>`;
     body += `<rect x="${rimX}" y="${groundY}" width="${rimW}" height="${potRimH}" rx="3" fill="${c.rim}"/>`;
     body += `<rect x="${shineX}" y="${potTop + 2}" width="${shineW}" height="3" rx="1" fill="${c.shadow}" opacity="0.35"/>`;
   } else if (shape === 'belly') {
-    // Wider in the middle — approximate with two paths + circle
-    const midY = potTop + potH * 0.5;
-    const bellW = potW * 1.12;
-    const bellX = (w - bellW) / 2;
-    // Simple approximation: a rect with bulging sides via a wide ellipse clip
-    body += `<rect x="${potX}" y="${potTop}" width="${potW}" height="${potH}" rx="${rx}" fill="${c.body}"/>`;
-    // Belly bulge overlay
-    body += `<ellipse cx="${w / 2}" cy="${midY}" rx="${bellW / 2}" ry="${potH * 0.36}" fill="${c.body}"/>`;
+    // Echter Bauch — Bézier-Kurven auf beiden Seiten
+    const topHalf = potW * 0.42;
+    const botHalf = potW * 0.38;
+    const bulge = potW * 0.22;
+    const midY = potTop + potH * 0.55;
+    const tXL = cx - topHalf, tXR = cx + topHalf;
+    const bXL = cx - botHalf, bXR = cx + botHalf;
+    body += `<path d="
+      M${tXL},${potTop}
+      L${tXR},${potTop}
+      C${tXR + bulge},${midY} ${bXR + bulge * 0.5},${potBot - 4} ${bXR},${potBot}
+      L${bXL},${potBot}
+      C${bXL - bulge * 0.5},${potBot - 4} ${tXL - bulge},${midY} ${tXL},${potTop}
+      Z" fill="${c.body}"/>`;
     body += `<rect x="${rimX}" y="${groundY}" width="${rimW}" height="${potRimH}" rx="3" fill="${c.rim}"/>`;
     body += `<rect x="${shineX}" y="${potTop + 2}" width="${shineW}" height="3" rx="1" fill="${c.shadow}" opacity="0.35"/>`;
   } else {
     // Standard
-    body += `<rect x="${potX}" y="${potTop}" width="${potW}" height="${potH}" rx="${rx}" fill="${c.body}"/>`;
+    body += `<rect x="${potX}" y="${potTop}" width="${potW}" height="${potH}" rx="4" fill="${c.body}"/>`;
     body += `<rect x="${rimX}" y="${groundY}" width="${rimW}" height="${potRimH}" rx="3" fill="${c.rim}"/>`;
     body += `<rect x="${shineX}" y="${potTop + 2}" width="${shineW}" height="3" rx="1" fill="${c.shadow}" opacity="0.35"/>`;
   }
 
   return body;
 }
-

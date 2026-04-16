@@ -1,11 +1,11 @@
 import { renderPlantSVG } from '../engine/renderer/renderer';
 import { getPhaseProgress, RARITY_COLORS, RARITY_LABELS } from '../engine/game';
 import { isHomozygous } from '../engine/genetic/genetic_utils';
-import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade } from './ui';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
 import { t } from '../model/i18n';
 import type { Pot } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
-import { showAlleleOverlay, showPotDesignOverlay } from './pots_overlay_ui';
+import { attachPotDesignRing, showAlleleOverlay, showPotDesignRing } from './pots_overlay_ui';
 import { getCatalogEntryForPlant } from '../engine/catalog';
 
 const RARITY_ICON: Record<number, string> = {
@@ -49,8 +49,6 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   const isSelected = pot.id === selA || pot.id === selB;
   const isBlooming = pot.plant?.phase === 4;
   const r = rarity(pot);
-
-  console.log('pot', pot.id)
 
   card.className = [
     'pot-card',
@@ -138,8 +136,13 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     else if (action === 'breed-select')   handleBreedSelect(potId);
     else if (action === 'selfpollinate')  handleSelfPollinate(potId);
     else if (action === 'allele-inspect') showAlleleOverlay(potId, card);
-    else if (action === 'pot-design')     showPotDesignOverlay(potId, card);
+    else if (action === 'pot-design')     showPotDesignRing(potId, card);
   });
+
+  // Restore design ring if it was open before this re-render
+  if (openPotDesignIds.has(pot.id)) {
+    attachPotDesignRing(pot.id, card, true);
+  }
 
   return card;
 }

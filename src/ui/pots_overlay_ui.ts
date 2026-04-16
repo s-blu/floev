@@ -5,7 +5,7 @@ import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID
 import { de as t } from '../model/i18n/de';
 import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
-import { openAlleleIds, state, handleSetPotDesign } from './ui';
+import { openAlleleIds, state, handleSetPotDesign, openPotDesignIds } from './ui';
 
 export function showAlleleOverlay(potId: number, card: HTMLElement, silent = false): void {
   // Toggle when triggered by user click; skip toggle on silent restore
@@ -87,82 +87,110 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   openAlleleIds.add(potId);
   card.appendChild(overlay);
 }
-// ─── Pot design overlay ───────────────────────────────────────────────────────
-const openPotDesignIds = new Set<number>();
-export function showPotDesignOverlay(potId: number, card: HTMLElement): void {
+// ─── Pot design ring ──────────────────────────────────────────────────────────
+
+export function showPotDesignRing(potId: number, card: HTMLElement): void {
   // Toggle
-  const existing = card.querySelector('.pot-design-overlay');
+  const existing = card.querySelector('.pot-design-ring')
   if (existing) {
-    existing.remove();
-    openPotDesignIds.delete(potId);
-    return;
+    existing.remove()
+    openPotDesignIds.delete(potId)
+    return
   }
+  attachPotDesignRing(potId, card, false)
+}
 
-  const pot = state.pots.find(p => p.id === potId);
-  if (!pot) return;
+export function attachPotDesignRing(potId: number, card: HTMLElement, silent: boolean): void {
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot) return
 
-  const activeColor = pot.design?.colorId ?? 'terracotta';
-  const activeShape = pot.design?.shape ?? 'standard';
+  const activeColor = pot.design?.colorId ?? 'terracotta'
+  const activeShape = pot.design?.shape ?? 'standard'
 
-  // Color swatches — only unlocked ones
-  const colorSwatches = POT_COLORS
-    .filter(c => hasPotColor(state, c.id))
-    .map(c => {
-      const active = c.id === activeColor;
-      return `<button
-        class="pod-swatch${active ? ' pod-swatch--active' : ''}"
-        data-pod-color="${c.id}"
-        title="${c.label}"
-        style="background:${c.body};border-color:${active ? '#1D9E75' : c.rim}"
-      ></button>`;
-    }).join('');
+  const unlockedColors = POT_COLORS.filter(c => hasPotColor(state, c.id))
+  const unlockedShapes = POT_SHAPES.filter(s => hasPotShape(state, s.id))
+  if (unlockedColors.length === 0 && unlockedShapes.length === 0) return
 
-  // Shape buttons — only unlocked ones
-  const shapeButtons = POT_SHAPES
-    .filter(s => hasPotShape(state, s.id))
-    .map(s => {
-      const active = s.id === activeShape;
-      return `<button
-        class="pod-shape${active ? ' pod-shape--active' : ''}"
-        data-pod-shape="${s.id}"
-      >${s.label}</button>`;
-    }).join('');
+  const ring = document.createElement('div')
+  ring.className = 'pot-design-ring'
 
-  const overlay = document.createElement('div');
-  overlay.className = 'pot-design-overlay';
-  overlay.innerHTML = `
-    <button class="pot-design-overlay-close" data-pod-close>×</button>
-    <div class="pod-title">Topf-Design</div>
-    ${colorSwatches ? `<div class="pod-swatches">${colorSwatches}</div>` : ''}
-    ${shapeButtons ? `<div class="pod-shapes">${shapeButtons}</div>` : ''}
-  `;
+  // ── Outer ring: Farben ──
+  const colorItems = unlockedColors.map(c => {
+    const active = c.id === activeColor
+    return `<button
+      class="pdr-color${active ? ' pdr-color--active' : ''}"
+      data-pdr-color="${c.id}"
+      title="${c.label}"
+      style="background:${c.body};outline-color:${active ? '#1D9E75' : 'transparent'}"
+    ></button>`
+  }).join('')
 
-  overlay.addEventListener('click', (e) => {
-    const el = e.target as HTMLElement;
-    if (el.dataset.podClose !== undefined) {
-      overlay.remove(); openPotDesignIds.delete(potId); return;
+  // ── Inner ring: Formen ──
+  const SHAPE_ICONS: Record<string, string> = { standard: '▭', conic: '▽', belly: '◎' }
+  const shapeItems = unlockedShapes.map(s => {
+    const active = s.id === activeShape
+    return `<button
+      class="pdr-shape${active ? ' pdr-shape--active' : ''}"
+      data-pdr-shape="${s.id}"
+      title="${s.label}"
+    >${SHAPE_ICONS[s.id] ?? s.label[0]}</button>`
+  }).join('')
+
+  ring.innerHTML = `
+    <div class="pdr-outer">${colorItems}</div>
+    <div class="pdr-inner">${shapeItems}</div>
+  `
+
+  ring.addEventListener('click', (e) => {
+    const el = e.target as HTMLElement
+    if (el.dataset.pdrColor) {
+      handleSetPotDesign(potId, { colorId: el.dataset.pdrColor })
+      return
     }
-    if (el.dataset.podColor) {
-      handleSetPotDesign(potId, { colorId: el.dataset.podColor });
+    if (el.dataset.pdrShape) {
+      handleSetPotDesign(potId, { shape: el.dataset.pdrShape as 'standard' | 'conic' | 'belly' })
+      return
     }
-    if (el.dataset.podShape) {
-      handleSetPotDesign(potId, { shape: el.dataset.podShape as 'standard' | 'conic' | 'belly' });
-    }
-    e.stopPropagation();
-  });
+    e.stopPropagation()
+  })
 
   const closeOnOutside = (e: MouseEvent) => {
     if (!card.contains(e.target as Node)) {
-      overlay.remove();
-      openPotDesignIds.delete(potId);
-      document.removeEventListener('click', closeOnOutside);
+      const r = card.querySelector('.pot-design-ring')
+      if (r) { r.remove(); openPotDesignIds.delete(potId) }
+      document.removeEventListener('click', closeOnOutside)
     }
-  };
-  setTimeout(() => document.addEventListener('click', closeOnOutside), 0);
+  }
+  if (!silent) setTimeout(() => document.addEventListener('click', closeOnOutside), 0)
 
-  openPotDesignIds.add(potId);
-  card.appendChild(overlay);
-}// ─── Allele overlay ───────────────────────────────────────────────────────────
+  openPotDesignIds.add(potId)
+  card.appendChild(ring)
+
+  requestAnimationFrame(() => {
+    // ring ist jetzt 100% × 100% des card + inset -18px
+    const cardW = card.offsetWidth
+    const cardH = card.offsetHeight
+    
+    const colorBtns = ring.querySelectorAll<HTMLElement>('.pdr-color')
+    const outerR = cardW / 2 + 10
+    colorBtns.forEach((btn, i) => {
+      const angle = (i / colorBtns.length) * Math.PI * 2 - Math.PI / 2
+      btn.style.left = `${cardW / 2 + 18 + Math.cos(angle) * outerR - 9}px`
+      btn.style.top  = `${cardH / 2 + Math.sin(angle) * outerR - 9}px`
+    })
+
+    const shapeBtns = ring.querySelectorAll<HTMLElement>('.pdr-shape')
+    const innerR = cardW / 2 - 4
+    shapeBtns.forEach((btn, i) => {
+      const angle = (i / shapeBtns.length) * Math.PI * 2 - Math.PI / 2
+      btn.style.left = `${cardW / 2 + 18 + Math.cos(angle) * innerR - 11}px`
+      btn.style.top  = `${cardH / 2 + Math.sin(angle) * innerR - 11}px`
+    })
+  })
+}
+
+
+// ─── Allele overlay ───────────────────────────────────────────────────────────
 function hueToCSS(h: number, l: ChromaticL): string {
   if (h === ACHROMATIC_HUE_WHITE) return 'hsl(0,0%,97%)';
   if (h === ACHROMATIC_HUE_GRAY_DARK) return 'hsl(0,0%,15%)';
@@ -224,4 +252,3 @@ export function renderChipPair(
     ></span>`;
   }).join('');
 }
-
