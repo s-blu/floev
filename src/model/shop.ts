@@ -15,6 +15,7 @@ export interface Upgrade {
   icon: string
 }
 
+// FIXME these should be part of the localization file
 export const UPGRADES: Upgrade[] = [
   {
     id: 'unlock_lupe',

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSL Swatches</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            font-size: 10px;
+        }
+        .swatch-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            
+            gap: 10px;
+        }
+        .swatch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3px;
+            background-color: #f0f0f0;
+        }
+        .color-box {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+        }
+        .color-info {
+            text-align: center;
+        }
+
+        .hue-heading {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>HSL Swatches</h1>
+    <div id="swatches" class="swatch-container"></div>
+
+    <script type="module">
+
+function generateHSLSwatches() {
+    // const hues = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350];
+    const hues = [];
+    for (let i = 0; i <= 360; i += 10) {
+        hues.push(i)
+    }
+
+    //const hues = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350]
+
+    const saturationSteps = [90];
+    const lightnessValues = [30, 60, 90];
+
+    const swatches = [];
+
+    hues.forEach(hue => {
+        lightnessValues.forEach(lightness => {
+
+				saturationSteps.forEach(sat => {
+                    const hslString = `hsl(${hue}, ${sat}%, ${lightness}%)`;
+                    swatches.push({
+                        hue,
+                        saturation: sat,
+                        lightness,
+                        color: hslString,
+                    });
+				})
+            
+        });
+    });
+
+    const asd = [10, 40, 70, 100];
+    for (let lightness of asd) {
+        console.log('asd', lightness)
+    swatches.push({
+        hue: 1,
+        saturation: 0,
+        lightness,
+        color: `hsl(0, 0%, ${lightness}%)`,
+    });
+    }
+
+
+    return swatches;
+}
+
+const centerColor = {
+    60: {
+    90: {
+      
+      90: "hsl(60,90%,90%)",
+    },}
+}
+const colorLabel = {
+  0: {
+    90: {
+      30: "Karmesin",
+      60: "Rot",
+      90: "Koralle",
+    },
+    0: {
+      10: "Anthrazit",
+      40: "Steingrau",
+      70: "Silber",
+      100: "Weiß"
+    }
+  },
+  25: {
+    90: {
+      30: "Rost",
+      60: "Orange",
+      90: "Apricot",
+    },
+  },
+  350: {
+    90: {
+      30: "Rubinrot",
+      60: "Karmin",
+      90: "Rosé",
+    },
+  },
+  60: {
+    90: {
+      30: "Senf",
+      60: "Gelb",
+      90: "Vanille",
+    },
+  },
+  160: {
+    90: {
+      30: "Smaragd",
+      60: "Jade",
+      90: "Mintgrün",
+    },
+  },
+  180: {
+    90: {
+      30: "Tiefsee",
+      60: "Türkis",
+      90: "Eisblau",
+    },
+  },
+  200: {
+    90: {
+      30: "Petrol",
+      60: "Himmelblau",
+      90: "Azur",
+    },
+  },
+  230: {
+    90: {
+      30: "Marineblau",
+      60: "Königsblau",
+      90: "Fernblau",
+    },
+  },
+  250: {
+    90: {
+      30: "Indigo",
+      60: "Dämmerlila",
+      90: "Nebellila",
+    },
+  },
+  270: {
+    90: {
+      30: "Amethyst",
+      60: "Lila",
+      90: "Malve",
+    },
+  },
+  290: {
+    90: {
+      30: "Purpur",
+      60: "Magenta",
+      90: "Seidenrosa",
+    },
+  },
+  310: {
+    90: {
+      30: "Pflaume",
+      60: "Fuchsia",
+      90: "Puderrosa",
+    },
+  },
+  330: {
+    90: {
+      30: "Burgund",
+      60: "Purpur",
+      90: "Altrosa",
+    },
+  },
+}  
+        const swatches = generateHSLSwatches();
+        const container = document.getElementById('swatches');
+
+        let previousSwatch;
+        let swatchContainer = document.createElement('div');
+        swatches.forEach(swatch => {
+            console.log('sw', swatch)
+            if (!previousSwatch || previousSwatch.hue !== swatch.hue) {
+                //const breakEl = document.createElement('div');
+                //breakEl.className = 'break';
+                if (swatchContainer) {
+                    container.appendChild(swatchContainer);
+                }
+                swatchContainer = document.createElement('div');
+                const header = document.createElement('h2')
+                header.className = 'hue-heading'
+                header.textContent = swatch.hue;
+                swatchContainer.appendChild(header);
+                
+            }
+            previousSwatch = swatch;
+            const swatchElement = document.createElement('div');
+            swatchElement.className = 'swatch';
+
+            const colorBox = document.createElement('div');
+            colorBox.className = 'color-box';
+            colorBox.style.backgroundColor = swatch.color;
+
+            const info = document.createElement('div');
+            info.className = 'color-info';
+            info.innerHTML = `
+                ${colorLabel[swatch.hue]?.[swatch.saturation]?.[swatch.lightness]}<br/>
+                S: ${swatch.saturation}% / 
+                L: ${swatch.lightness}%
+            `;
+
+            const svgEl = document.createElement('div');
+            svgEl.innerHTML = addFlower(swatch.color, swatch.hue, swatch.saturation, swatch.lightness)
+
+            swatchElement.appendChild(svgEl);
+            swatchElement.appendChild(info);
+            swatchContainer.appendChild(swatchElement);
+        }
+        
+    );
+    container.appendChild(swatchContainer);
+
+    function addFlower(color, hue, s, l) {
+        const border = { h: hue, s: Math.max(s - 10, 0), l:  Math.max(l - 20, 0) }
+        const center = centerColor[hue]?.[s]?.[l] || (l === 90) ? "hsl(60,90%,80%)": (l === 30) ? "hsl(40,90%,60%)": "hsl(60,90%,50%)"
+        return `<svg width="80" height="80" viewBox="0 0 80 80" overflow="visible" xmlns="http://www.w3.org/2000/svg"><ellipse cx="40" cy="23.8" rx="12.96" ry="8.748" fill="${color}" stroke="hsl(${border.h},${border.s}%,${border.l}%)" stroke-width="0.8" transform="rotate(-90,40,23.8)"></ellipse><ellipse cx="54.45605904768633" cy="34.993924691125855" rx="12.96" ry="8.748" fill="${color}" stroke="hsl(${border.h},${border.s}%,${border.l}%)" stroke-width="0.8" transform="rotate(-18,54.45605904768633,34.993924691125855)"></ellipse><ellipse cx="48.93433583484559" cy="53.106075308874146" rx="12.96" ry="8.748" fill="${color}" stroke="hsl(${border.h},${border.s}%,${border.l}%)" stroke-width="0.8" transform="rotate(54,48.93433583484559,53.106075308874146)"></ellipse><ellipse cx="31.06566416515441" cy="53.106075308874146" rx="12.96" ry="8.748" fill="${color}" stroke="hsl(${border.h},${border.s}%,${border.l}%)" stroke-width="0.8" transform="rotate(126,31.06566416515441,53.106075308874146)"></ellipse><ellipse cx="25.543940952313665" cy="34.993924691125855" rx="12.96" ry="8.748" fill="${color}" stroke="hsl(${border.h},${border.s}%,${border.l}%)" stroke-width="0.8" transform="rotate(198.00000000000003,25.543940952313665,34.993924691125855)"></ellipse><circle cx="40" cy="40" r="5.5" fill="${center}"></circle></svg>`    }
+    </script>
+</body>
+</html>
