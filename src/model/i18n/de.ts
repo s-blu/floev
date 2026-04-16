@@ -267,6 +267,32 @@ export const de = {
   achCenterTitle: (centerLabel: string) => `Blütenmitte: ${centerLabel}`,
   achCenterDesc: (centerLabel: string) => `Entdecke eine Blüte mit der Blütenmitte „${centerLabel}".`,
 
+  // ─── New achievements ────────────────────────────────────────────────────────
+
+  // Farbverlauf fixiert
+  achGradFixedTitle: 'Farbverlauf fixiert',
+  achGradFixedDesc: 'Entdecke eine reinerbige Blüte mit Farbverlauf.',
+
+  // Alle Formen reinerbig
+  achAllShapesHomoTitle: (n: number) => `${n} Formen reinerbig`,
+  achAllShapesHomoDesc: (n: number) => `Züchte reinerbige Blüten in ${n} verschiedenen Blütenformen.`,
+
+  // Volle Helligkeit
+  achFullLightnessTitle: (colorLabel: string) => `${colorLabel} — alle Helligkeiten`,
+  achFullLightnessDesc: (colorLabel: string) => `Entdecke dunkle, mittlere und helle Blüten im ${colorLabel}-Farbbereich.`,
+
+  // Monochromes Set
+  achMonochromeTitle: 'Monochrom',
+  achMonochromeDesc: `Entdecke Blüten in Weiß, Silber, Steingrau und Anthrazit.`,
+
+  // Alle Blütenblatt-Anzahlen
+  achAllCountsTitle: 'Vollständige Zählung',
+  achAllCountsDesc: 'Entdecke Blüten mit 3, 4, 5, 6, 7 und 8 Blütenblättern.',
+
+  // Reiche Ernte
+  achRichHarvestTitle: (coins: number) => `${coins} Münzen wert`,
+  achRichHarvestDesc: (coins: number) => `Besitze eine einzelne Blüte die mindestens ${coins} Münzen wert ist.`,
+
   // Shared label maps (used in achievement_defs.ts)
   achShapeLabels: {
     round: 'Rund', lanzett: 'Lanzett', tropfen: 'Tropfen', wavy: 'Wellig', zickzack: 'Zickzack',

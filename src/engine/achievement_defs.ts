@@ -9,6 +9,7 @@ import { PALETTE_HUE_RANGES, PALETTE_HUES, PALETTE_L, PETAL_SHAPES } from '../mo
 import type { ColorBucket } from '../model/genetic_model'
 import type { PetalShape, Rarity } from '../model/plant'
 import { t } from '../model/i18n'
+import { coinValueForScore } from './game'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -328,6 +329,126 @@ export function buildAchievements(): Achievement[] {
       reward: [15, 35][i],
       progress: cat => ({
         current: cat.some(e => expressedCenter(e.plant.centerType) === ct) ? 1 : 0,
+        total: 1,
+      }),
+    })
+  }
+
+    // ── 13. Farbverlauf fixiert ───────────────────────────────────────────────────
+  list.push({
+    id: 'gradient_fixed',
+    groupKey: 'gradient_fixed',
+    stackIndex: 0,
+    hidden: true,
+    title: t.achGradFixedTitle,
+    desc: t.achGradFixedDesc,
+    reward: 60,
+    progress: cat => ({
+      current: cat.some(e =>
+        expressedGradient(e.plant.hasGradient) && isHomozygous(e.plant)
+      ) ? 1 : 0,
+      total: 1,
+    }),
+  })
+
+  // ── 14. Alle Formen reinerbig (gestapelt: 3 / alle 5) ────────────────────────
+  for (let i = 0; i < 2; i++) {
+    const n = i === 0 ? 3 : 5
+    list.push({
+      id: `all_shapes_homo_${n}`,
+      groupKey: 'all_shapes_homo',
+      stackIndex: i,
+      hidden: i > 0,
+      title: t.achAllShapesHomoTitle(n),
+      desc: t.achAllShapesHomoDesc(n),
+      reward: i === 0 ? 40 : 120,
+      progress: cat => {
+        const seen = new Set<string>()
+        for (const e of cat) {
+          if (isHomozygous(e.plant)) seen.add(expressedShape(e.plant.petalShape))
+        }
+        return { current: Math.min(seen.size, n), total: n }
+      },
+    })
+  }
+
+  // ── 15. Volle Helligkeit — pro chromatischem Bucket ──────────────────────────
+  for (const bucket of CHROMATIC_BUCKETS) {
+    const colorLabel = t.achBucketLabels[bucket] ?? bucket
+    list.push({
+      id: `full_lightness_${bucket}`,
+      groupKey: `full_lightness_${bucket}`,
+      stackIndex: 0,
+      hidden: true,
+      title: t.achFullLightnessTitle(colorLabel),
+      desc: t.achFullLightnessDesc(colorLabel),
+      reward: 35,
+      progress: cat => {
+        const lightnessLevels = new Set<number>()
+        for (const e of cat) {
+          const color = expressedColor(e.plant.petalHue, e.plant.petalLightness)
+          if (colorBucket(color) === bucket) lightnessLevels.add(color.l)
+        }
+        return { current: Math.min(lightnessLevels.size, 3), total: 3 }
+      },
+    })
+  }
+
+  // ── 16. Monochromes Set ───────────────────────────────────────────────────────
+  // Ziel: alle 4 achromatischen Typen im Katalog (weiß, hellgrau, grau, dunkelgrau)
+  // expressedColor gibt für achromatic: l=100 (weiß), l=70 (hellgrau), l=40 (grau), l=0 (dunkelgrau)
+  list.push({
+    id: 'monochrome_set',
+    groupKey: 'monochrome_set',
+    stackIndex: 0,
+    hidden: true,
+    title: t.achMonochromeTitle,
+    desc: t.achMonochromeDesc,
+    reward: 50,
+    progress: cat => {
+      const TARGET_LIGHTNESSES = new Set([100, 70, 40, 0])
+      const found = new Set<number>()
+      for (const e of cat) {
+        const color = expressedColor(e.plant.petalHue, e.plant.petalLightness)
+        if (color.s === 0 && TARGET_LIGHTNESSES.has(color.l)) found.add(color.l)
+      }
+      return { current: found.size, total: 4 }
+    },
+  })
+
+  // ── 17. Alle Blütenblatt-Anzahlen ─────────────────────────────────────────────
+  list.push({
+    id: 'all_petal_counts',
+    groupKey: 'all_petal_counts',
+    stackIndex: 0,
+    hidden: false,
+    title: t.achAllCountsTitle,
+    desc: t.achAllCountsDesc,
+    reward: 30,
+    progress: cat => {
+      const counts = new Set<number>()
+      for (const e of cat) counts.add(Math.round(expressedNumber(e.plant.petalCount)))
+      const TARGET = new Set([3, 4, 5, 6, 7, 8])
+      const found = [...TARGET].filter(n => counts.has(n)).length
+      return { current: found, total: 6 }
+    },
+  })
+
+  // ── 18. Reiche Ernte (gestapelt: 20 / 50 / 100 Münzen) ───────────────────────
+  // Proxy: schaut ob irgendeine Katalog-Blüte den entsprechenden coinValue erreicht
+  const harvestStack = [30, 50, 100]
+  for (let i = 0; i < harvestStack.length; i++) {
+    const coins = harvestStack[i]
+    list.push({
+      id: `rich_harvest_${coins}`,
+      groupKey: 'rich_harvest',
+      stackIndex: i,
+      hidden: i > 0,
+      title: t.achRichHarvestTitle(coins),
+      desc: t.achRichHarvestDesc(coins),
+      reward: [15, 40, 100][i],
+      progress: cat => ({
+        current: cat.some(e => coinValueForScore(e.rarityScore) >= coins) ? 1 : 0,
         total: 1,
       }),
     })
