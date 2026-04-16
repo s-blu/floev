@@ -138,8 +138,8 @@ export const de = {
   helpColorsDominance: 'Farbdominanz — links dominiert, rechts ist rezessiv',
   helpColorBucket: (bucket: string): string => {
     const map: Record<string, string> = {
-      white: 'Weiß', yellow: 'Gelb', red: 'Rot', pink: 'Rosa',
-      purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
+      white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Rosa',
+      purple: 'Lila', blue: 'Blau', gray: 'Grau',
     };
     return map[bucket] ?? bucket;
   },
@@ -298,7 +298,7 @@ export const de = {
     round: 'Rund', lanzett: 'Lanzett', tropfen: 'Tropfen', wavy: 'Wellig', zickzack: 'Zickzack',
   } as Record<string, string>,
   achBucketLabels: {
-    white: 'Weiß', yellow: 'Gelb', red: 'Rot', pink: 'Rosa',
+    white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Rosa',
     purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
   } as Record<string, string>,
   achCenterLabels: {

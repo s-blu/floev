@@ -80,8 +80,8 @@ function countShadesInBucket(catalog: CatalogEntry[], bucket: ColorBucket): { cu
 }
 
 // ─── CHROMATIC buckets only (no white/gray for combo achievements) ────────────
-const CHROMATIC_BUCKETS: ColorBucket[] = ['red', 'yellow', 'pink', 'purple', 'blue', 'green', 'gray']
-const CHROMATIC_RARE_BUCKETS: ColorBucket[] = ['purple', 'blue', 'green', 'gray']
+const CHROMATIC_BUCKETS: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray']
+const CHROMATIC_RARE_BUCKETS: ColorBucket[] = ['purple', 'blue', 'gray']
 
 // ─── Achievement list ─────────────────────────────────────────────────────────
 

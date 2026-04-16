@@ -6,13 +6,12 @@
 
 import type { CenterType, ChromaticL, PetalShape } from './plant';
 
-export type ColorBucket = 'white' | 'yellow' | 'red' | 'pink' | 'purple' | 'blue' | 'green' | 'gray';
+export type ColorBucket = 'white' | 'yellowgreen' | 'red' | 'pink' | 'purple' | 'blue' | 'gray';
 export const PALETTE_HUE_RANGES = {
-  yellow: (hue: number): boolean => 35 < hue && hue <= 60,
-  red: (hue: number): boolean => hue <= 35 || hue > 345,
-  green: (hue: number): boolean => 60 < hue && hue <= 155,
-  blue: (hue: number): boolean => 155 < hue && hue <= 240,
-  purple: (hue: number): boolean => 240 < hue && hue <= 275,
+  yellowgreen: (hue: number): boolean => 25 < hue && hue <= 175,
+  red: (hue: number): boolean => hue <= 25 || hue > 345,
+  blue: (hue: number): boolean => 175 < hue && hue <= 245,
+  purple: (hue: number): boolean => 245 < hue && hue <= 275,
   pink: (hue: number): boolean => 275 < hue && hue <= 345,
 };
 // Lower index = more dominant
@@ -66,13 +65,11 @@ export const MIN_STEM_HEIGHT = 0.35
 
 export const PALETTE_S = 90;
 // ─── Palette hues ─────────────────────────────────────────────────────────────
-//                    red   / y / turquoise / blue / purple   / pink        / red
-
+//---------------------------red   / yellgr  / blue / purple   / pink        / red
 export const PALETTE_HUES = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350] as const
 export const PALETTE_HUES_BUCKETS = {
-  yellow: PALETTE_HUES.filter(PALETTE_HUE_RANGES.yellow),
+  yellowgreen: PALETTE_HUES.filter(PALETTE_HUE_RANGES.yellowgreen),
   red: PALETTE_HUES.filter(PALETTE_HUE_RANGES.red),
-  green: PALETTE_HUES.filter(PALETTE_HUE_RANGES.green),
   blue: PALETTE_HUES.filter(PALETTE_HUE_RANGES.blue),
   purple: PALETTE_HUES.filter(PALETTE_HUE_RANGES.purple),
   pink: PALETTE_HUES.filter(PALETTE_HUE_RANGES.pink),

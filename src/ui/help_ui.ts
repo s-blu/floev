@@ -152,7 +152,7 @@ function buildDecoFlower(): string {
 const DISPLAY_HUES = PALETTE_HUES.filter(h => h >= 0);
 
 // Dominance order label keys
-const HUE_BUCKET_ORDER = ['white', 'yellow', 'red', 'pink', 'purple', 'blue', 'green', 'gray'] as const;
+const HUE_BUCKET_ORDER = ['white', 'yellowgreen', 'red', 'pink', 'purple', 'blue', 'gray'] as const;
 
 function buildHueStrip(): string {
   const swatches = DISPLAY_HUES.map(h => {
