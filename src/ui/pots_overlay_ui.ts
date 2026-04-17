@@ -7,8 +7,12 @@ import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
 import { openAlleleIds, state, handleSetPotDesign, openPotDesignIds } from './ui';
 
+
+// FIXME make overlay transparent not blurred
+// FIXME place placeholder element to ing to always have same form no matter how many colors
+// FIXME make ring more compact
+
 export function showAlleleOverlay(potId: number, card: HTMLElement, silent = false): void {
-  // Toggle when triggered by user click; skip toggle on silent restore
   if (!silent) {
     const existing = card.querySelector('.allele-overlay');
     if (existing) {
@@ -25,19 +29,34 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   const [hA, hB] = [plant.petalHue.a, plant.petalHue.b];
   const [lA, lB] = [plant.petalLightness.a, plant.petalLightness.b];
 
-  // Shape: dominant first, collapse if identical
   const shapeA = plant.petalShape.a;
   const shapeB = plant.petalShape.b;
   const shapeValue = shapeA === shapeB
     ? shapeA
     : `${dominantShape(shapeA, shapeB)} · ${shapeA === dominantShape(shapeA, shapeB) ? shapeB : shapeA}`;
 
-  // Center: dominant first, collapse if identical
   const centerA = plant.centerType.a;
   const centerB = plant.centerType.b;
   const centerValue = centerA === centerB
     ? centerA
     : `${dominantCenter(centerA, centerB)} · ${centerA === dominantCenter(centerA, centerB) ? centerB : centerA}`;
+
+  // Gradient alleles
+  const gA = plant.hasGradient.a;
+  const gB = plant.hasGradient.b;
+  const gradientValue = renderGradientChipPair(gA, gB);
+
+  // Petal count alleles (rounded)
+  const pcA = Math.round(plant.petalCount.a);
+  const pcB = Math.round(plant.petalCount.b);
+  const petalCountValue = pcA === pcB
+    ? `${pcA}`
+    : `∅ ${((pcA + pcB) / 2).toFixed(1)} (${pcA} / ${pcB})`;
+
+  // Stem height alleles
+  const shA = Math.round(plant.stemHeight.a * 100);
+  const shB = Math.round(plant.stemHeight.b * 100);
+  const stemValue = `${Math.round((shA + shB) / 2)}% (${shA} / ${shB})`;
 
   const homozyg = isHomozygous(plant);
 
@@ -65,6 +84,18 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayCenter}</span>
       <span class="allele-overlay-value">${centerValue}</span>
+    </div>
+    <div class="allele-overlay-row">
+      <span class="allele-overlay-label">${t.alleleOverlayGradient}</span>
+      <span class="allele-chips-row">${gradientValue}</span>
+    </div>
+    <div class="allele-overlay-row">
+      <span class="allele-overlay-label">${t.alleleOverlayPetalCount}</span>
+      <span class="allele-overlay-value">${petalCountValue}</span>
+    </div>
+    <div class="allele-overlay-row">
+      <span class="allele-overlay-label">${t.alleleOverlayStemHeight}</span>
+      <span class="allele-overlay-value">${stemValue}</span>
     </div>`;
 
   overlay.addEventListener('click', (e) => {
@@ -86,6 +117,35 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
 
   openAlleleIds.add(potId);
   card.appendChild(overlay);
+}
+
+function renderGradientChipPair(a: boolean, b: boolean): string {
+  const chip = (val: boolean, isDom: boolean) => {
+    const bg = val ? 'linear-gradient(135deg, hsl(50,90%,88%), hsl(50,90%,40%))' : 'var(--bg3)';
+    const label = val ? '✦ aktiv' : '○ inaktiv';
+    const domLabel = isDom ? t.estAlleleDominant : t.estAlleleRecessive;
+    // Gradient is expressed only when BOTH are true — no dominance, both matter equally
+    return `<span
+      class="allele-chip allele-chip--dom"
+      style="background:${bg};border:0.5px solid var(--border2)"
+      title="${label} — ${domLabel}"
+    ></span>`;
+  };
+
+  if (a === b) {
+    const bg = a
+      ? 'linear-gradient(135deg, hsl(50,90%,88%), hsl(50,90%,40%))'
+      : 'var(--bg3)';
+    const expressed = a ? '✦ beide aktiv → Verlauf' : '○ beide inaktiv';
+    return `<span
+      class="allele-chip allele-chip--dom"
+      style="background:${bg};border:0.5px solid var(--border2)"
+      title="${expressed}"
+    ></span>`;
+  }
+
+  // a ≠ b: one true, one false → not expressed (recessive-recessive rule)
+  return chip(a, true) + chip(b, false);
 }
 
 // ─── Pot design overlay (new mockup design) ───────────────────────────────────

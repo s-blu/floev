@@ -45,6 +45,9 @@ export const de = {
   alleleOverlayLight: 'Helligkeit',
   alleleOverlayShape: 'Form',
   alleleOverlayCenter: 'Mitte',
+  alleleOverlayGradient: 'Farbverlauf',
+  alleleOverlayPetalCount: 'Blattanzahl',
+  alleleOverlayStemHeight: 'Stängelhöhe',
 
   // Breeding panel
   breedParent1: 'Elter 1',
