@@ -87,11 +87,18 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   openAlleleIds.add(potId);
   card.appendChild(overlay);
 }
-// ─── Pot design ring ──────────────────────────────────────────────────────────
+
+// ─── Pot design overlay (new mockup design) ───────────────────────────────────
+//
+// Layout:
+//   • Semi-circular color ring around the top of the pot card
+//   • Labeled shape buttons at the bottom (above the pot action buttons)
+//   • Close (×) button top-right
+//   • Transparent full-card backdrop to catch mis-clicks
 
 export function showPotDesignRing(potId: number, card: HTMLElement): void {
   // Toggle
-  const existing = card.querySelector('.pot-design-ring')
+  const existing = card.querySelector('.pot-design-overlay-new')
   if (existing) {
     existing.remove()
     openPotDesignIds.delete(potId)
@@ -111,86 +118,126 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   const unlockedShapes = POT_SHAPES.filter(s => hasPotShape(state, s.id))
   if (unlockedColors.length === 0 && unlockedShapes.length === 0) return
 
-  const ring = document.createElement('div')
-  ring.className = 'pot-design-ring'
-
-  // ── Outer ring: Farben ──
-  const colorItems = unlockedColors.map(c => {
-    const active = c.id === activeColor
+  // ── Shape buttons ──
+  const shapeButtons = unlockedShapes.map(s => {
+    const isActive = s.id === activeShape
     return `<button
-      class="pdr-color${active ? ' pdr-color--active' : ''}"
-      data-pdr-color="${c.id}"
-      title="${c.label}"
-      style="background:${c.body};outline-color:${active ? '#1D9E75' : 'transparent'}"
-    ></button>`
+      class="pdo-shape-btn${isActive ? ' pdo-shape-btn--active' : ''}"
+      data-pdo-shape="${s.id}"
+    >${s.label}</button>`
   }).join('')
 
-  // ── Inner ring: Formen ──
-  const SHAPE_ICONS: Record<string, string> = { standard: '▭', conic: '▽', belly: '◎' }
-  const shapeItems = unlockedShapes.map(s => {
-    const active = s.id === activeShape
-    return `<button
-      class="pdr-shape${active ? ' pdr-shape--active' : ''}"
-      data-pdr-shape="${s.id}"
-      title="${s.label}"
-    >${SHAPE_ICONS[s.id] ?? s.label[0]}</button>`
-  }).join('')
-
-  ring.innerHTML = `
-    <div class="pdr-outer">${colorItems}</div>
-    <div class="pdr-inner">${shapeItems}</div>
+  const overlay = document.createElement('div')
+  overlay.className = 'pot-design-overlay-new'
+  overlay.innerHTML = `
+    <button class="pdo-close" data-pdo-action="close" title="Schließen">×</button>
+    ${unlockedShapes.length > 0 ? `
+    <div class="pdo-shapes-row">
+      ${shapeButtons}
+    </div>` : ''}
   `
 
-  ring.addEventListener('click', (e) => {
+  // ── Color swatches positioned in a half-ring ──
+  // We use absolute positioning calculated after mounting
+  const swatchContainer = document.createElement('div')
+  swatchContainer.className = 'pdo-color-ring'
+  unlockedColors.forEach((c, i) => {
+    const btn = document.createElement('button')
+    btn.className = `pdo-color-swatch${c.id === activeColor ? ' pdo-color-swatch--active' : ''}`
+    btn.dataset.pdoColor = c.id
+    btn.title = c.label
+    btn.style.setProperty('--swatch-bg', c.body)
+    btn.style.setProperty('--swatch-rim', c.rim)
+    btn.dataset.index = String(i)
+    btn.dataset.total = String(unlockedColors.length)
+    overlay.appendChild(btn)
+  })
+
+  overlay.appendChild(swatchContainer)
+
+  overlay.addEventListener('click', (e) => {
     const el = e.target as HTMLElement
-    if (el.dataset.pdrColor) {
-      handleSetPotDesign(potId, { colorId: el.dataset.pdrColor })
+    const action = el.dataset.pdoAction
+    const color = el.dataset.pdoColor
+    const shape = el.dataset.pdoShape
+
+    if (action === 'close') {
+      overlay.remove()
+      openPotDesignIds.delete(potId)
       return
     }
-    if (el.dataset.pdrShape) {
-      handleSetPotDesign(potId, { shape: el.dataset.pdrShape as 'standard' | 'conic' | 'belly' })
+    if (color) {
+      handleSetPotDesign(potId, { colorId: color })
+      // Update active state visually
+      overlay.querySelectorAll('[data-pdo-color]').forEach(b => b.classList.remove('pdo-color-swatch--active'))
+      el.classList.add('pdo-color-swatch--active')
+      return
+    }
+    if (shape) {
+      handleSetPotDesign(potId, { shape: shape as 'standard' | 'conic' | 'belly' })
+      overlay.querySelectorAll('[data-pdo-shape]').forEach(b => b.classList.remove('pdo-shape-btn--active'))
+      el.classList.add('pdo-shape-btn--active')
       return
     }
     e.stopPropagation()
   })
 
-  const closeOnOutside = (e: MouseEvent) => {
-    if (!card.contains(e.target as Node)) {
-      const r = card.querySelector('.pot-design-ring')
-      if (r) { r.remove(); openPotDesignIds.delete(potId) }
-      document.removeEventListener('click', closeOnOutside)
-    }
-  }
-  if (!silent) setTimeout(() => document.addEventListener('click', closeOnOutside), 0)
-
   openPotDesignIds.add(potId)
-  card.appendChild(ring)
+  card.appendChild(overlay)
 
+  // Position color swatches in a half-ring after mount
   requestAnimationFrame(() => {
-    // ring ist jetzt 100% × 100% des card + inset -18px
-    const cardW = card.offsetWidth
-    const cardH = card.offsetHeight
-    
-    const colorBtns = ring.querySelectorAll<HTMLElement>('.pdr-color')
-    const outerR = cardW / 2 + 10
-    colorBtns.forEach((btn, i) => {
-      const angle = (i / colorBtns.length) * Math.PI * 2 - Math.PI / 2
-      btn.style.left = `${cardW / 2 + 18 + Math.cos(angle) * outerR - 9}px`
-      btn.style.top  = `${cardH / 2 + Math.sin(angle) * outerR - 9}px`
-    })
+    positionColorSwatches(overlay, card, unlockedColors)
+  })
 
-    const shapeBtns = ring.querySelectorAll<HTMLElement>('.pdr-shape')
-    const innerR = cardW / 2 - 4
-    shapeBtns.forEach((btn, i) => {
-      const angle = (i / shapeBtns.length) * Math.PI * 2 - Math.PI / 2
-      btn.style.left = `${cardW / 2 + 18 + Math.cos(angle) * innerR - 11}px`
-      btn.style.top  = `${cardH / 2 + Math.sin(angle) * innerR - 11}px`
-    })
+  if (!silent) {
+    const closeOnOutside = (e: MouseEvent) => {
+      if (!card.contains(e.target as Node)) {
+        const o = card.querySelector('.pot-design-overlay-new')
+        if (o) { o.remove(); openPotDesignIds.delete(potId) }
+        document.removeEventListener('click', closeOnOutside)
+      }
+    }
+    setTimeout(() => document.addEventListener('click', closeOnOutside), 0)
+  }
+}
+
+function positionColorSwatches(overlay: HTMLElement, card: HTMLElement, colors: typeof POT_COLORS): void {
+  const swatches = overlay.querySelectorAll<HTMLElement>('[data-pdo-color]')
+  const cardW = card.offsetWidth
+  const cardH = card.offsetHeight
+
+  // Center of card (origin for the ring)
+  const cx = cardW / 2
+  const cy = cardH / 2
+
+  // Radius of the ring — just large enough to arc around the flower
+  const radius = Math.min(cardW * 0.54, cardH * 0.48)
+
+  const n = swatches.length
+  // Spread across the top half: from 200° to 340° (bottom-left to bottom-right via top)
+  // i.e. the swatches arc over the top of the card
+  const startAngle = 200  // degrees, measured from right (CSS convention)
+  const endAngle = 340
+  const swatchSize = 22
+
+  swatches.forEach((btn, i) => {
+    const frac = n === 1 ? 0.5 : i / (n - 1)
+    const deg = startAngle + frac * (endAngle - startAngle)
+    const rad = (deg * Math.PI) / 180
+    const x = cx + Math.cos(rad) * radius - swatchSize / 2
+    const y = cy + Math.sin(rad) * radius - swatchSize / 2
+
+    btn.style.position = 'absolute'
+    btn.style.left = `${x}px`
+    btn.style.top = `${y}px`
+    btn.style.width = `${swatchSize}px`
+    btn.style.height = `${swatchSize}px`
   })
 }
 
 
-// ─── Allele overlay ───────────────────────────────────────────────────────────
+// ─── Allele overlay helpers ───────────────────────────────────────────────────
 function hueToCSS(h: number, l: ChromaticL): string {
   if (h === ACHROMATIC_HUE_WHITE) return 'hsl(0,0%,97%)';
   if (h === ACHROMATIC_HUE_GRAY_DARK) return 'hsl(0,0%,15%)';
@@ -208,12 +255,6 @@ function hueLabel(h: number): string {
 function lightnessLabel(l: ChromaticL): string {
   return l === 30 ? 'dunkel' : l === 60 ? 'mittel' : 'hell';
 }
-/**
- * Renders a pair of allele chips where:
- *   dominant allele → wider chip (22 px)
- *   recessive allele → narrower chip (12 px)
- * Size communicates dominance; no border difference needed.
- */
 
 export function renderChipPair(
   aVal: number | ChromaticL,
