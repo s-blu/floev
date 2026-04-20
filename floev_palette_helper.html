@@ -76,7 +76,6 @@ function generateHSLSwatches() {
 
     const asd = [10, 40, 70, 100];
     for (let lightness of asd) {
-        console.log('asd', lightness)
     swatches.push({
         hue: 1,
         saturation: 0,
@@ -201,7 +200,6 @@ const colorLabel = {
         let previousSwatch;
         let swatchContainer = document.createElement('div');
         swatches.forEach(swatch => {
-            console.log('sw', swatch)
             if (!previousSwatch || previousSwatch.hue !== swatch.hue) {
                 //const breakEl = document.createElement('div');
                 //breakEl.className = 'break';

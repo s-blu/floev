@@ -210,7 +210,7 @@ export function buildAchievements(): Achievement[] {
 
   // ── 8. High petal counts (6, 7, 8) for a specific shape (hidden, stacked per shape) ──────
   for (const shape of PETAL_SHAPES) {
-    const shapeLabel = t.achShapeLabels[shape] ?? shape
+    const shapeLabel = t.shapeLabels[shape] ?? shape
     for (let stackI = 0; stackI < 2; stackI++) {
       const count = stackI + 7   // 6..8
       list.push({
@@ -229,7 +229,7 @@ export function buildAchievements(): Achievement[] {
   // ── 9. All hues in each chromatic bucket (hidden, stacked: tones then shades) ─
   // For the first achievement, only take into account rare colors
     for (const bucket of CHROMATIC_RARE_BUCKETS) {
-      const colorLabel = t.achBucketLabels[bucket] ?? bucket
+      const colorLabel = t.colorBucketLabels[bucket] ?? bucket
       list.push({
         id: `bucket_first_${bucket}`,
         groupKey: `bucket_collection_${bucket}`,
@@ -243,7 +243,7 @@ export function buildAchievements(): Achievement[] {
   }
 
   for (const bucket of CHROMATIC_BUCKETS) {
-    const colorLabel = t.achBucketLabels[bucket] ?? bucket
+    const colorLabel = t.colorBucketLabels[bucket] ?? bucket
 
     list.push({
       id: `bucket_hues_${bucket}`,
@@ -269,9 +269,9 @@ export function buildAchievements(): Achievement[] {
 
   // ── 10. Shape × Color combos — 8 petals (hidden) ────────────────────────────
   for (const shape of PETAL_SHAPES) {
-    const shapeLabel = t.achShapeLabels[shape] ?? shape
+    const shapeLabel = t.shapeLabels[shape] ?? shape
     for (const bucket of CHROMATIC_BUCKETS) {
-      const colorLabel = t.achBucketLabels[bucket] ?? bucket
+      const colorLabel = t.colorBucketLabels[bucket] ?? bucket
       list.push({
         id: `combo_8_${shape}_${bucket}`,
         groupKey: `combo_8petals_${shape}`,
@@ -295,7 +295,7 @@ export function buildAchievements(): Achievement[] {
   // ── 11. Legendary in all 3 rarer shapes (hidden, one per shape) ─────────────────────
   for (let i = 2; i < PETAL_SHAPES.length; i++) {
     const shape = PETAL_SHAPES[i]
-    const shapeLabel = t.achShapeLabels[shape] ?? shape
+    const shapeLabel = t.shapeLabels[shape] ?? shape
     list.push({
       id: `legendary_shape_${shape}`,
       groupKey: 'legendary_shapes',
@@ -318,7 +318,7 @@ export function buildAchievements(): Achievement[] {
   const centerTypes = ['disc', 'stamen'] as const
   for (let i = 0; i < centerTypes.length; i++) {
     const ct = centerTypes[i]
-    const centerLabel = t.achCenterLabels[ct] ?? ct
+    const centerLabel = t.centerTypeLabels[ct] ?? ct
     list.push({
       id: `center_${ct}`,
       groupKey: 'center_collection',
@@ -373,8 +373,9 @@ export function buildAchievements(): Achievement[] {
   }
 
   // ── 15. Volle Helligkeit — pro chromatischem Bucket ──────────────────────────
+  //TODO rework torequireALL huesinalllightnesses
   for (const bucket of CHROMATIC_BUCKETS) {
-    const colorLabel = t.achBucketLabels[bucket] ?? bucket
+    const colorLabel = t.colorBucketLabels[bucket] ?? bucket
     list.push({
       id: `full_lightness_${bucket}`,
       groupKey: `full_lightness_${bucket}`,
