@@ -130,22 +130,14 @@ export const de = {
   helpSubtitle: 'Ein botanisches Züchtungsspiel',
 
   // Intro
-  helpIntro1: 'Floev ist ein entspanntes Offline-Spiel — pflanze Samen, schau später wieder rein und staune, was geblüht ist. Wachstumsphasen laufen im Hintergrund ab und werden beim nächsten Öffnen automatisch nachgeholt.',
-  helpIntro2: 'Jede Blüte wird aus genetischen Eigenschaften berechnet — keine zwei sind exakt gleich. Farbe, Form, Blütenmitte, Helligkeit und Farbverläufe ergeben zusammen tausende',
-  helpCombosLabel: 'einzigartige Blütenkombinationen',
+  helpIntro1: 'Floev ist ein entspanntes Offline-Spiel — pflanze Samen, schau später wieder rein und staune, was erblüht ist. Jede Blüte wird aus genetischen Eigenschaften berechnet. Farbe, Form, Blütenmitte und Blüteneffekte ergeben zusammen tausende einzigartige Blütenkombinationen.',
+  helpIntro2: 'Jede ausgewachsene Pflanze trägt zwei Erbgutinformationen in sich und gibt eine durch Kreuzung weiter - lerne die Mechanismen dahinter kennen und entdecke selbst die seltensten Blüten!',
 
   // Colors
   helpColorsTitle: 'Farbe & Helligkeit',
-  helpColorsBody: 'Jede Pflanze trägt zwei Farbgen-Allele und zwei Helligkeits-Allele. Das dominantere Allel bestimmt die sichtbare Farbe.',
+  helpColorsBody: 'Jede Pflanze trägt zwei Farb-Allele und zwei Helligkeits-Allele. Das dominantere Allel bestimmt die sichtbare Farbe.',
   helpColorBucketsExplain: 'Farben sind in Gruppen eingeteilt — von häufig (links) bis selten (rechts). Manche Gruppen sind noch unentdeckt:',
   helpColorsDominance: 'Farbdominanz — links dominiert, rechts ist rezessiv',
-  helpColorBucket: (bucket: string): string => {
-    const map: Record<string, string> = {
-      white: 'Weiß', yellow: 'Gelb', yellowgreen: 'Gelb-Grün', red: 'Rot', pink: 'Rosa',
-      purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
-    };
-    return map[bucket] ?? bucket;
-  },
   helpLightnessDominance: 'Helligkeit: Dunkel dominiert Mittel dominiert Hell',
   helpLightnessDark: 'dunkel',
   helpLightnessMid: 'mittel',
@@ -154,13 +146,13 @@ export const de = {
   // Shapes
   helpShapesTitle: 'Blütenformen',
   helpShapesBody: 'Die ersten drei Formen kannst du von Anfang an entdecken. Zwei weitere sind seltener und rezessiver — finde sie durch gezieltes Kreuzen heraus.',
-  helpShapesDominance: 'Formdominanz: Rund > Lanzett > Tropfen > … (seltenere Formen sind rezessiver)',
+  helpShapesDominance: 'Formdominanz: Rund > Lanzett > Tropfen > ? > ?',
   helpShapeSecretLabel: 'Geheimnis',
   helpShapeSecret: '?',
 
   // Rarity
   helpRarityTitle: 'Seltenheitsstufen',
-  helpRarityBody: 'Jede Blüte erhält beim Aufblühen einen Score aus Form, Farbe, Blütenmitte, Farbverlauf und weiteren Merkmalen. Je seltener, desto mehr Münzen beim Verkauf.',
+  helpRarityBody: 'Jede Blüte erhält beim Aufblühen einen Score aus Form, Farbe, Blütenmitte, Blüteneffekt und weiteren Merkmalen. Je seltener, desto mehr Münzen beim Verkauf.',
   helpRarityDesc: (rarity: number): string => {
     const descs = [
       'Häufig — runde Formen, einfache Farben',
@@ -183,8 +175,8 @@ export const de = {
   helpHomoBody: 'Reinerbige Pflanzen (◈) tragen auf beiden Allelen denselben Wert — ihre Nachkommen sind deutlich berechenbarer.',
 
   // Gradient
-  helpGradientTitle: '✦ Farbverlauf',
-  helpGradientBody: 'Manche Pflanzen tragen ein verborgenes Farbverlauf-Gen. Es zeigt sich nur, wenn beide Allele aktiv sind — ein rezessives Merkmal, das sich durch Kreuzen und Selbstbestäuben fixieren lässt.',
+  helpGradientTitle: '✦ Blüteneffekt',
+  helpGradientBody: 'Manche Pflanzen tragen ein verborgenes Blüteneffekt-Gen. Es zeigt sich nur, wenn beide Allele aktiv sind — ein rezessives Merkmal, das sich durch Kreuzen und Selbstbestäuben fixieren lässt.',
 
   // Start button
   helpStartBtn: 'Los geht\'s 🌱',
@@ -297,15 +289,15 @@ export const de = {
   achRichHarvestTitle: (coins: number) => `${coins} Münzen wert`,
   achRichHarvestDesc: (coins: number) => `Besitze eine einzelne Blüte die mindestens ${coins} Münzen wert ist.`,
 
-  // Shared label maps (used in achievement_defs.ts)
-  achShapeLabels: {
+  // Shared label maps
+  shapeLabels: {
     round: 'Rund', lanzett: 'Lanzett', tropfen: 'Tropfen', wavy: 'Wellig', zickzack: 'Zickzack',
   } as Record<string, string>,
-  achBucketLabels: {
-    white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Rosa',
+  colorBucketLabels: {
+    white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Pink',
     purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
   } as Record<string, string>,
-  achCenterLabels: {
+  centerTypeLabels: {
     dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
   } as Record<string, string>,
 

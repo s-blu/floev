@@ -61,7 +61,7 @@ function buildHelpContent(): string {
         <!-- Intro -->
         <section class="help-section">
           <p class="help-body">${t.helpIntro1}</p>
-          <p class="help-body">${t.helpIntro2} ${t.helpCombosLabel}.</p>
+          <p class="help-body">${t.helpIntro2}</p>
         </section>
 
         <hr class="help-divider" />
@@ -128,12 +128,10 @@ function buildHelpContent(): string {
 function buildDecoFlower(): string {
   const plant = plannedPlant({
     hue: 300,
-    lightness: 60,
+    lightness: 90,
     petalShape: 'round',
     hasGradient: false,
-    petalCount: 6,
-    centerType: 'disc',
-    plantPhase: 4,
+    petalCount: 5,
   });
   return renderBloomSVG(plant, 64, 64);
 }
@@ -164,13 +162,13 @@ function buildHueStrip(): string {
     }
     // Pick a representative hue for the bucket
     const repHue = DISPLAY_HUES.find(h => bucketContains(bucket, h)) ?? 0;
-    const label = t.helpColorBucket(bucket);
+    const label = t.colorBucketLabels[bucket]
     return `<span class="help-hue-swatch" style="background:hsl(${repHue},${PALETTE_S}%,60%)" title="${label}"></span>`;
   }).join('');
 
   // Build dominance chain: known buckets named, secret ones as "?"
   const chainLabels = HUE_BUCKET_ORDER.map(k =>
-    SECRET_BUCKETS.has(k) ? '?' : t.helpColorBucket(k)
+    SECRET_BUCKETS.has(k) ? '?' : t.colorBucketLabels[k]
   );
 
   return `
