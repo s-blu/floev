@@ -1,9 +1,9 @@
 import {
-  randomHueForBucket,
+  randomHueForBucket
 } from './genetic';
 import { clamp, jitter, pick } from './genetic_utils';
-import { MUTATION_CHANCE, GRADIENT_ALLELE_KEEP_CHANCE, GRADIENT_ALLELE_GAIN_CHANCE } from '../../model/genetic_model';
-import { type AllelePair, type ChromaticL } from '../../model/plant';
+import { MUTATION_CHANCE, PETAL_EFFECTS } from '../../model/genetic_model';
+import { type AllelePair, type ChromaticL, type PetalEffect } from '../../model/plant';
 import { COLOR_BUCKET_DOMINANCE, LIGHTNESS_DOMINANCE } from "../../model/dominance";
 
 // ─── Generic allele inheritance ───────────────────────────────────────────────
@@ -46,9 +46,6 @@ export function inheritDiscrete<T>(
 }
 
 // ─── Hue locus ────────────────────────────────────────────────────────────────
-//
-// Hue is a discrete trait with bucket-based dominance.
-// Mutation → jump to a random hue from a random colour bucket.
 
 export function inheritHue(
   parentA: AllelePair<number>,
@@ -66,10 +63,6 @@ export function inheritHue(
 }
 
 // ─── Lightness locus ──────────────────────────────────────────────────────────
-//
-// Lightness is a discrete Mendelian trait: 30 | 60 | 90.
-// Dominance order: 30 > 60 > 90.
-// Mutation → jump to a random lightness level.
 
 export function inheritLightness(
   parentA: AllelePair<ChromaticL>,
@@ -86,29 +79,17 @@ export function inheritLightness(
   };
 }
 
-// ─── Gradient locus ───────────────────────────────────────────────────────────
+// ─── Effect locus ─────────────────────────────────────────────────────────────
 //
-// hasGradient is a boolean allele pair.
-// Expressed only when BOTH alleles are true (recessive phenotype — rare).
-// - A true allele has GRADIENT_ALLELE_KEEP_CHANCE of staying true.
-// - A false allele has GRADIENT_ALLELE_GAIN_CHANCE of flipping to true.
+// Replaces the old boolean hasGradient locus.
+// Standard Mendelian inheritance with MUTATION_CHANCE to any effect.
+// Rarer effects (shimmer, crystalline, iridescent) are naturally uncommon
+// because they are underrepresented in the allele pool and are recessive
+// against everything more dominant.
 
-export function inheritGradient(
-  parentA: AllelePair<boolean>,
-  parentB: AllelePair<boolean>,
-): AllelePair<boolean> {
-  const raw = inheritAllele(parentA, parentB);
-
-  const resolveAllele = (allele: boolean): boolean => {
-    if (allele) {
-      return Math.random() < GRADIENT_ALLELE_KEEP_CHANCE;
-    } else {
-      return Math.random() < GRADIENT_ALLELE_GAIN_CHANCE;
-    }
-  };
-
-  return {
-    a: resolveAllele(raw.a),
-    b: resolveAllele(raw.b),
-  };
+export function inheritEffect(
+  parentA: AllelePair<PetalEffect>,
+  parentB: AllelePair<PetalEffect>,
+): AllelePair<PetalEffect> {
+  return inheritDiscrete(parentA, parentB, PETAL_EFFECTS);
 }

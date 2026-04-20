@@ -15,10 +15,11 @@ export interface AllelePair<T> {
 export type ChromaticL = 30 | 60 | 90
 
 export type StemTypes = "two-leaved-stem"
-export type PetalShape = 'round' | 'lanzett' | 'tropfen' | 'wavy' | 'zickzack'
-export type CenterType = 'dot' | 'disc' | 'stamen'
-export type PlantPhase = 1 | 2 | 3 | 4
-export type Rarity     = 0 | 1 | 2 | 3 | 4
+export type PetalShape  = 'round' | 'lanzett' | 'tropfen' | 'wavy' | 'zickzack'
+export type CenterType  = 'dot' | 'disc' | 'stamen'
+export type PlantPhase  = 1 | 2 | 3 | 4
+export type Rarity      = 0 | 1 | 2 | 3 | 4
+export type PetalEffect = 'none' | 'bicolor' | 'gradient' | 'shimmer' | 'crystalline' | 'iridescent'
 
 // ─── Plant ────────────────────────────────────────────────────────────────────
 
@@ -38,9 +39,8 @@ export interface Plant {
   petalHue:       AllelePair<number>       // palette hue value or achromatic sentinel
   petalLightness: AllelePair<ChromaticL>   // 30 | 60 | 90
 
-  // Gradient locus — expressed only when BOTH alleles are true.
-  // The gradient is always monochrome: L90 near center → L60 mid → L30 at tips.
-  hasGradient:    AllelePair<boolean>
+  // Effect locus — Mendelian dominance, none is most dominant (most common)
+  petalEffect:    AllelePair<PetalEffect>
 
   // Runtime state
   phase:      PlantPhase
@@ -107,7 +107,9 @@ export interface BreedEstimate {
   shapeProbs:  { shape: PetalShape; pct: number }[]
   centerProbs: { center: CenterType; pct: number }[]
 
-  // Gradient probability
+  // Effect probabilities (replaces gradPct)
+  effectProbs: { effect: PetalEffect; pct: number }[]
+  /** @deprecated kept for breedestimate_ui compatibility — use effectProbs instead */
   gradPct: number
 
   // Hidden allele chips — both raw hue alleles of each parent, for display

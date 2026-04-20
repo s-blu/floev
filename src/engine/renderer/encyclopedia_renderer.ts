@@ -1,37 +1,37 @@
 import type { Plant } from '../../model/plant';
-import { expressedColor, expressedGradient, expressedShape, expressedNumber, expressedCenter } from '../genetic/genetic_utils';
+import { expressedColor, expressedShape, expressedNumber, expressedCenter, expressedEffect } from '../genetic/genetic_utils';
 import { buildPetalPath, petalToSVG } from './petal_renderer';
-import { renderGradientDef, hsl, darken } from './renderer_utils';
+import { resolvePetalEffect } from './renderer_utils';
 import { renderCenter } from './center_renderer';
 
 // ─── Bloom-only render (for encyclopedia) ────────────────────────────────────
+
 export function renderBloomSVG(plant: Plant, w: number, h: number): string {
   const cx = w / 2;
   const cy = h / 2;
 
-  const pc = expressedColor(plant.petalHue, plant.petalLightness);
-  const hasGrad = expressedGradient(plant.hasGradient);
-  const shape = expressedShape(plant.petalShape);
-  const n = Math.round(expressedNumber(plant.petalCount));
-
-  const pr = 12 + (8 - n) * 1.4;
+  const pc     = expressedColor(plant.petalHue, plant.petalLightness);
+  const effect = expressedEffect(plant.petalEffect);
+  const shape  = expressedShape(plant.petalShape);
+  const n      = Math.round(expressedNumber(plant.petalCount));
+  const pr     = 12 + (8 - n) * 1.4;
 
   let defs = '';
   let body = '';
 
-  const gradId = `gb${plant.id.replace(/[^a-z0-9]/gi, '')}`;
-  if (hasGrad) {
-    defs += renderGradientDef(pc, shape, gradId);
-  }
-
-  const fillStr = hasGrad ? `url(#${gradId})` : hsl(pc);
-  const strokeStr = hsl(darken(pc));
+  const fills = resolvePetalEffect(effect, pc, shape, plant.id);
 
   for (let i = 0; i < n; i++) {
-    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
-    const petal = buildPetalPath(shape, angle, cx, cy, pr);
-    body += petalToSVG(petal, fillStr, strokeStr);
+    const angle  = (i / n) * Math.PI * 2 - Math.PI / 2;
+    const petal  = buildPetalPath(shape, angle, cx, cy, pr);
+    const fill   = fills.getFill(i, n, angle);
+    const stroke = fills.getStroke(i, n, angle);
+    body += petalToSVG(petal, fill, stroke);
+    body += fills.getOverlay(i, n, angle, '');
   }
+
+  // bicolor uses a lazy defs getter — access after all getFill calls
+  defs += fills.defs;
 
   const centerType = expressedCenter(plant.centerType);
   body += renderCenter(centerType, pc.l, cx, cy);

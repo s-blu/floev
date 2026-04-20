@@ -1,6 +1,6 @@
 import { ColorBucket, PALETTE_HUE_RANGES } from "../../model/genetic_model";
-import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL } from "../../model/plant";
-import { dominantShape, dominantCenter, dominantHue, dominantLightness } from "./dominance_utils";
+import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL, PetalEffect } from "../../model/plant";
+import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from "./dominance_utils";
 import { PALETTE_S } from '../../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../../model/genetic_model';
 
@@ -24,10 +24,10 @@ export function hueBucket(h: number): ColorBucket {
   if (h === ACHROMATIC_HUE_GRAY_MID)   return 'gray'
   if (h === ACHROMATIC_HUE_GRAY_LIGHT) return 'gray'
   if (PALETTE_HUE_RANGES.yellowgreen(h)) return 'yellowgreen'
-  if (PALETTE_HUE_RANGES.red(h))    return 'red'
-  if (PALETTE_HUE_RANGES.blue(h))   return 'blue'
-  if (PALETTE_HUE_RANGES.purple(h)) return 'purple'
-  if (PALETTE_HUE_RANGES.pink(h))   return 'pink'
+  if (PALETTE_HUE_RANGES.red(h))         return 'red'
+  if (PALETTE_HUE_RANGES.blue(h))        return 'blue'
+  if (PALETTE_HUE_RANGES.purple(h))      return 'purple'
+  if (PALETTE_HUE_RANGES.pink(h))        return 'pink'
   return 'blue'
 }
 
@@ -45,27 +45,18 @@ export function colorBucket(c: HSLColor): ColorBucket {
   return hueBucket(c.h)
 }
 
-// ─── expressedColor — assembles HSLColor from the two separate loci ───────────
+// ─── expressedColor ───────────────────────────────────────────────────────────
 
-/**
- * Assembles the expressed HSLColor from the two independent loci:
- *   - petalHue        → dominant hue allele wins
- *   - petalLightness  → dominant lightness allele wins (30 > 60 > 90)
- *
- * For achromatic hues (white / gray sentinels) the lightness locus is ignored
- * and the sentinel's fixed HSLColor is returned directly.
- */
 export function expressedColor(
   huePair: AllelePair<number>,
   lightnessPair: AllelePair<ChromaticL>,
 ): HSLColor {
   const h = expressedHue(huePair)
 
-  // Achromatic sentinels — lightness locus irrelevant
-  if (h === ACHROMATIC_HUE_WHITE)      return { h: 0,   s: 0, l: 100 }
-  if (h === ACHROMATIC_HUE_GRAY_DARK)  return { h: 0,   s: 0, l: 10  }
-  if (h === ACHROMATIC_HUE_GRAY_MID)   return { h: 0,   s: 0, l: 40  }
-  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return { h: 0,   s: 0, l: 70  }
+  if (h === ACHROMATIC_HUE_WHITE)      return { h: 0, s: 0, l: 100 }
+  if (h === ACHROMATIC_HUE_GRAY_DARK)  return { h: 0, s: 0, l: 0   }
+  if (h === ACHROMATIC_HUE_GRAY_MID)   return { h: 0, s: 0, l: 40  }
+  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return { h: 0, s: 0, l: 70  }
 
   const l = expressedLightness(lightnessPair)
   return { h, s: PALETTE_S, l }
@@ -88,43 +79,39 @@ export function expressedNumber(pair: AllelePair<number>): number {
   return (pair.a + pair.b) / 2
 }
 
+/** Returns the expressed petal effect (most dominant allele wins). */
+export function expressedEffect(pair: AllelePair<PetalEffect>): PetalEffect {
+  if (!pair) return 'none';
+  return dominantEffect(pair.a, pair.b)
+}
+
 /**
- * Gradient is expressed only when BOTH alleles are true (recessive-recessive).
- * Returns true when the plant shows the gradient phenotype.
+ * Convenience: returns true when the expressed effect is 'gradient'.
+ * Used by rarity, achievements and the breed estimate for backwards compat.
+ * For new code, prefer expressedEffect() directly.
  */
-export function expressedGradient(pair: AllelePair<boolean>): boolean {
-  return pair.a === true && pair.b === true
+export function expressedGradient(pair: AllelePair<PetalEffect>): boolean {
+  return expressedEffect(pair) === 'gradient'
 }
 
 /** Expressed lightness phenotype from an AllelePair. */
 export function expressedLightness(pair: AllelePair<ChromaticL>): ChromaticL {
-  if (!pair) return 30; // TODO quickfix; this gets called with undefined, find out why
+  if (!pair) return 30;
   return dominantLightness(pair.a, pair.b)
 }
 
 // ─── Homozygosity ─────────────────────────────────────────────────────────────
 
-/**
- * Returns true if ALL genetically meaningful loci of a plant are homozygous
- * (both alleles identical). Used to show the "pure line" indicator.
- *
- * Numeric loci (stemHeight, petalCount) are considered homozygous when their
- * alleles are within a small tolerance, since they carry continuous jitter.
- */
 export function isHomozygous(plant: import('../../model/plant').Plant): boolean {
-  // Discrete loci — must be strictly equal
-  if (plant.petalShape.a    !== plant.petalShape.b)    return false
-  if (plant.centerType.a    !== plant.centerType.b)    return false
-  if (plant.petalHue.a      !== plant.petalHue.b)      return false
+  if (plant.petalShape.a     !== plant.petalShape.b)     return false
+  if (plant.centerType.a     !== plant.centerType.b)     return false
+  if (plant.petalHue.a       !== plant.petalHue.b)       return false
   if (plant.petalLightness.a !== plant.petalLightness.b) return false
+  if (plant.petalEffect.a    !== plant.petalEffect.b)    return false
 
-  // Gradient locus
-  if (plant.hasGradient.a !== plant.hasGradient.b) return false
-
-  // Numeric loci — allow small tolerance (jitter artefacts)
   const NUM_TOL = 0.12
-  if (Math.abs(plant.stemHeight.a  - plant.stemHeight.b)  > NUM_TOL) return false
-  if (Math.abs(plant.petalCount.a  - plant.petalCount.b)  > 1.0)     return false
+  if (Math.abs(plant.stemHeight.a - plant.stemHeight.b) > NUM_TOL) return false
+  if (Math.abs(plant.petalCount.a - plant.petalCount.b) > 1.0)     return false
 
   return true
 }

@@ -1,23 +1,37 @@
-import { Plant, CenterType, PetalShape, Rarity } from "../model/plant"
-import { expressedCenter, expressedColor, expressedGradient, expressedNumber, expressedShape, colorBucket } from "./genetic/genetic_utils"
-
+import { Plant, CenterType, PetalShape, PetalEffect, Rarity } from "../model/plant"
+import { expressedCenter, expressedColor, expressedEffect, expressedNumber, expressedShape, colorBucket } from "./genetic/genetic_utils"
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 
-const SHAPE_SCORE: Record<PetalShape, number> = { round: 0, lanzett: 8, tropfen: 16, wavy: 25, zickzack: 50 }
+const SHAPE_SCORE: Record<PetalShape, number> = {
+  round: 0, lanzett: 8, tropfen: 16, wavy: 25, zickzack: 50,
+}
 
 const COLOR_SCORE: Record<string, number> = {
-  white: 0, yellow: 5, red: 12, pink: 16, purple: 20, blue: 27, green: 31, gray: 35,
+  white: 0, yellowgreen: 5, red: 12, pink: 16, purple: 20, blue: 27, gray: 35,
 }
 
 const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 8, stamen: 20 }
 
+/**
+ * Effect score — contributes to rarity.
+ * Ordered to complement the dominance chain: rarer effects yield higher scores.
+ * crystalline and iridescent push clearly into epic/legendary territory.
+ */
+const EFFECT_SCORE: Record<PetalEffect, number> = {
+  none:        0,
+  bicolor:     8,
+  gradient:   15,
+  shimmer:    22,
+  crystalline: 30,
+  iridescent:  35,
+}
 
 export function calcRarityScore(plant: Plant): number {
   const shape  = expressedShape(plant.petalShape)
   const color  = expressedColor(plant.petalHue, plant.petalLightness)
   const center = expressedCenter(plant.centerType)
-  const hasGrad = expressedGradient(plant.hasGradient)
+  const effect = expressedEffect(plant.petalEffect)
   const count  = Math.round(expressedNumber(plant.petalCount))
   const stem   = expressedNumber(plant.stemHeight)
 
@@ -25,7 +39,7 @@ export function calcRarityScore(plant: Plant): number {
   score += SHAPE_SCORE[shape]
   score += COLOR_SCORE[colorBucket(color)] ?? 0
   score += CENTER_SCORE[center]
-  score += hasGrad ? 20 : 0
+  score += EFFECT_SCORE[effect]
   if (count >= 7) score += 5
   if (stem > 0.85) score += 5
 

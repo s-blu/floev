@@ -4,6 +4,7 @@ import {
   expressedColor, expressedShape, expressedCenter,
   expressedNumber, expressedGradient, colorBucket,
   isHomozygous,
+  expressedEffect,
 } from './genetic/genetic_utils'
 import { PALETTE_HUE_RANGES, PALETTE_HUES, PALETTE_L, PETAL_SHAPES } from '../model/genetic_model'
 import type { ColorBucket } from '../model/genetic_model'
@@ -177,7 +178,9 @@ export function buildAchievements(): Achievement[] {
     })
   }
 
-  // ── 6. Gradient milestones (stacked) ─────────────────────────────────────────
+  // ── 6. Effect milestones — gradient (stacked, hidden) ────────────────────────
+  // Kept as 'gradient' specifically for backwards compat with existing save data.
+  // New effect achievements below cover shimmer / crystalline / iridescent.
   const gradStack = [1, 5, 15]
   for (let i = 0; i < gradStack.length; i++) {
     const n = gradStack[i]
@@ -190,11 +193,35 @@ export function buildAchievements(): Achievement[] {
       desc: t.achGradientDesc(n),
       reward: [20, 45, 100][i],
       progress: cat => {
-        const count = cat.filter(e => expressedGradient(e.plant.hasGradient)).length
+        const count = cat.filter(e => expressedEffect(e.plant.petalEffect) === 'gradient').length
         return { current: Math.min(count, n), total: n }
       },
     })
   }
+
+  // ── 6b. Effect milestones — rarer effects (each hidden) ──────────────────────
+  const rareEffects = [
+    { effect: 'bicolor'     as const, reward: 15, groupKey: 'effect_bicolor'     },
+    { effect: 'shimmer'     as const, reward: 30, groupKey: 'effect_shimmer'     },
+    { effect: 'crystalline' as const, reward: 60, groupKey: 'effect_crystalline' },
+    { effect: 'iridescent'  as const, reward: 100, groupKey: 'effect_iridescent'  },
+  ]
+  for (const { effect, reward, groupKey } of rareEffects) {
+    list.push({
+      id: `effect_first_${effect}`,
+      groupKey,
+      stackIndex: 0,
+      hidden: true,
+      title: effect.charAt(0).toUpperCase() + effect.slice(1),
+      desc: `Entdecke deine erste Blüte mit dem Effekt „${effect}".`,
+      reward,
+      progress: cat => ({
+        current: cat.some(e => expressedEffect(e.plant.petalEffect) === effect) ? 1 : 0,
+        total: 1,
+      }),
+    })
+  }
+
 
   // ── 7. Self-pollination — homozygous (visible) ────────────────────────────────
   list.push({

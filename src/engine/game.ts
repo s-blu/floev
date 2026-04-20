@@ -1,11 +1,12 @@
-import type { GameState, Pot, Plant, Rarity } from '../model/plant'
+import type { GameState, Pot, Plant, CatalogEntry, Rarity } from '../model/plant'
 import { plannedPlant, randomPlant } from './genetic/genetic'
-import { addToCatalog, getCatalogEntryForPlant } from './catalog'
+import { catalogKey } from './catalog'
+import { calcRarity, calcRarityScore } from './rarity'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const STORAGE_KEY = 'bloom_v1'
-const POT_COUNT = 9
+const STORAGE_KEY   = 'bloom_v1'
+const POT_COUNT     = 9
 const STARTER_PLANTS = 3;
 
 export const PHASE_DURATION_MS: Record<number, number> = {
@@ -30,10 +31,9 @@ export const RARITY_COLORS: Record<Rarity, string> = {
   4: '#f08000',
 }
 
-
 /** Maps a 1–100 rarity score to coins. Roughly exponential. */
 export function coinValueForScore(score: number): number {
-  return Math.max(3, Math.round(Math.pow(score / 10, 1.8)))
+  return Math.max(1, Math.round(Math.pow(score / 10, 1.8)))
 }
 
 const useDebugPlants = false;
@@ -42,7 +42,7 @@ const DEBUG_PLANTS = [
     {
       hue: 200,
       petalShape: 'round',
-      hasGradient: false,
+      petalEffect: 'none',
       petalCount: 5
     }
   ),
@@ -50,7 +50,7 @@ const DEBUG_PLANTS = [
     {
       hue: 200,
       petalShape: 'lanzett',
-      hasGradient: false,
+      petalEffect: 'none',
       petalCount: 5
     }
   ),
@@ -58,7 +58,7 @@ const DEBUG_PLANTS = [
     {
       hue: 200,
       petalShape: 'tropfen',
-      hasGradient: false,
+      petalEffect: 'none',
       petalCount: 5
     }
   ),
@@ -66,7 +66,7 @@ const DEBUG_PLANTS = [
     {
       hue: 200,
       petalShape: 'wavy',
-      hasGradient: false,
+      petalEffect: 'none',
       petalCount: 5
     }
   ),
@@ -74,7 +74,7 @@ const DEBUG_PLANTS = [
     {
       hue: 200,
       petalShape: 'zickzack',
-      hasGradient: false,
+      petalEffect: 'none',
       petalCount: 5
     }
   ),
@@ -82,7 +82,7 @@ const DEBUG_PLANTS = [
     {
       hue: 200,
       petalShape: 'round',
-      hasGradient: false,
+      petalEffect: 'none',
       petalCount: 5
     }
   )
@@ -95,26 +95,17 @@ function createInitialState(): GameState {
   if (useDebugPlants) {
     pots = Array.from({ length: POT_COUNT }, (_, i) => ({
       id: i,
-      plant: i < DEBUG_PLANTS.length ? DEBUG_PLANTS[i]: null,
+      plant: i < DEBUG_PLANTS.length ? DEBUG_PLANTS[i] : null,
       phaseStart: i < DEBUG_PLANTS.length ? Date.now() - 90000 : null,
     }))
-    
   } else {
     pots = Array.from({ length: POT_COUNT }, (_, i) => ({
       id: i,
       plant: i < STARTER_PLANTS ? randomPlant() : null,
       phaseStart: i < STARTER_PLANTS ? Date.now() - 50000 : null,
     }))
-    
   }
-  return {
-    pots, catalog: [], coins: 0,
-    achievements: { unlocked: [], rewarded: [] },
-    upgrades: [],
-    unlockedPotColors: [],
-    unlockedPotShapes: [],
-    lastSave: Date.now(),
-  }
+  return { pots, catalog: [], coins: 0, achievements: { unlocked: [], rewarded: [] }, lastSave: Date.now() }
 }
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
@@ -124,6 +115,7 @@ export function loadState(): GameState {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed = JSON.parse(raw) as GameState
+
       // backwards compatibility: old saves without coins
       if (parsed.coins === undefined) parsed.coins = 0
       if (!parsed.achievements) parsed.achievements = { unlocked: [], rewarded: [] }
@@ -171,7 +163,7 @@ export function advancePhases(
     if (!pot.plant || pot.plant.phase >= 4) continue
     if (getPhaseProgress(pot) >= 1) {
       pot.plant.phase = (pot.plant.phase + 1) as Plant['phase']
-      pot.phaseStart = Date.now()
+      pot.phaseStart  = Date.now()
       if (pot.plant.phase === 4) {
         addToCatalog(state, pot.plant)
         onBloom?.(pot.plant)
@@ -187,7 +179,7 @@ export function advancePhases(
 export function plantSeed(state: GameState, potId: number): boolean {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot || pot.plant) return false
-  pot.plant = randomPlant()
+  pot.plant      = randomPlant()
   pot.phaseStart = Date.now()
   return true
 }
@@ -195,19 +187,18 @@ export function plantSeed(state: GameState, potId: number): boolean {
 export function removePlant(state: GameState, potId: number): boolean {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot) return false
-  pot.plant = null
+  pot.plant      = null
   pot.phaseStart = null
   return true
 }
 
-/** Sell a blooming plant: removes it and awards coins based on rarity. Returns coins earned or -1 on failure. */
 export function sellPlant(state: GameState, potId: number): number {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot?.plant || pot.plant.phase < 4) return -1
-  const entry = getCatalogEntryForPlant(state, pot.plant)
+  const entry  = state.catalog.find(e => e.plant.id === pot.plant!.id)
   const reward = coinValueForScore(entry?.rarityScore ?? 1)
   state.coins += reward
-  pot.plant = null
+  pot.plant      = null
   pot.phaseStart = null
   return reward
 }
@@ -215,7 +206,7 @@ export function sellPlant(state: GameState, potId: number): number {
 export function placeSeedInEmptyPot(state: GameState, plant: Plant): number | null {
   const pot = state.pots.find(p => !p.plant)
   if (!pot) return null
-  pot.plant = plant
+  pot.plant      = plant
   pot.phaseStart = Date.now()
   return pot.id
 }
