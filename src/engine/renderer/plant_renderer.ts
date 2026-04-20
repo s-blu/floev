@@ -12,7 +12,7 @@ export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: 
   const pr = 12 + (8 - n) * 1.4;
 
   const effect = expressedEffect(plant.petalEffect);
-  const fills  = resolvePetalEffect(effect, pc, shape, plant.id);
+  const fills = resolvePetalEffect(effect, pc, shape, plant.id, cx, bloomY);
   // defs wird erst nach allen getFill-Calls gezogen (lazy getter für bicolor)
   for (let i = 0; i < n; i++) {
     const angle = (i / n) * Math.PI * 2 - Math.PI / 2;

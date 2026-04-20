@@ -38,7 +38,7 @@ export function coinValueForScore(score: number): number {
 const useDebugPlants = true;
 const sharedDebugConfig = {
       hue: 200,
-      petalEffect: 'shimmer' as PetalEffect,
+      petalEffect: 'crystalline' as PetalEffect,
       petalCount: 5
 }
 const DEBUG_PLANTS = [

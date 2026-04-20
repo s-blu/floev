@@ -19,7 +19,7 @@ export function renderBloomSVG(plant: Plant, w: number, h: number): string {
   let defs = '';
   let body = '';
 
-  const fills = resolvePetalEffect(effect, pc, shape, plant.id);
+  const fills = resolvePetalEffect(effect, pc, shape, plant.id, cx, cy);
 
   for (let i = 0; i < n; i++) {
     const angle  = (i / n) * Math.PI * 2 - Math.PI / 2;
