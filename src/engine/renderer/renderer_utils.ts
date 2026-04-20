@@ -1,5 +1,7 @@
 import type { HSLColor, PetalEffect, PetalShape } from '../../model/plant';
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 export function hsl({ h, s, l }: HSLColor): string {
   return `hsl(${Math.round(h)},${Math.round(s)}%,${Math.round(l)}%)`
 }
@@ -9,6 +11,8 @@ export function clamp(v: number, lo: number, hi: number): number {
 export function darken(c: HSLColor): HSLColor {
   return { h: c.h, s: Math.max(c.s - 10, 0), l: Math.max(c.l - 20, 0) }
 }
+
+// ─── Effect fill resolver ─────────────────────────────────────────────────────
 
 export interface EffectFills {
   defs: string
@@ -30,6 +34,7 @@ export function resolvePetalEffect(
 
   switch (effect) {
 
+    // ── none ──────────────────────────────────────────────────────────────────
     case 'none':
     default:
       return {
@@ -40,14 +45,15 @@ export function resolvePetalEffect(
       }
 
     // ── bicolor ───────────────────────────────────────────────────────────────
-    // userSpaceOnUse gradient along each petal's actual radial axis.
-    // Light base, hard-edged dark tips.
+    // userSpaceOnUse gradient along each petal's radial axis (center → tip).
+    // Light near center, hard-edged dark tips.
     case 'bicolor': {
       const { h, s } = pc
       const isAchromatic = s === 0
       const lLight = isAchromatic ? 92 : 88
       const lDark  = isAchromatic ? 20 : 28
-      const TIP_DIST = 42  // world-space px to tip — generous for all shapes
+      // World-space distance from bloom center to beyond any petal tip
+      const TIP_DIST = 42
 
       const defsMap: string[] = []
       const buildGrad = (i: number, angle: number) => {
@@ -73,6 +79,7 @@ export function resolvePetalEffect(
       }
     }
 
+    // ── gradient — radial, center light → tip dark ────────────────────────────
     case 'gradient': {
       const gradId = `g_${plantId.replace(/[^a-z0-9]/gi, '')}`
       return {
@@ -83,10 +90,10 @@ export function resolvePetalEffect(
       }
     }
 
-    // ── shimmer — sine-wave hue drift, soft and flowing ───────────────────────
+    // ── shimmer — soft sine-wave hue drift across petals ─────────────────────
     case 'shimmer': {
-      const AMP  = 18   // max ±° hue shift
-      const FREQ = 1.5  // sine cycles across ring
+      const AMP  = 18
+      const FREQ = 1.5
       return {
         defs: '',
         getFill: (i, n) => {
@@ -104,41 +111,74 @@ export function resolvePetalEffect(
       }
     }
 
-    // ── crystalline — facet crease lines in world-space ───────────────────────
+    // ── crystalline — faceted look via perpendicular gradient per petal ───────
+    // A linearGradient runs ACROSS each petal (perpendicular to its radial axis):
+    //   edge-dark → centre-bright → edge-dark
+    // This creates a sharp midrib/ridge illusion with no clipping needed.
+    // A second axial gradient layer (from tip) deepens the faceted effect.
     case 'crystalline': {
-      const facetDark  = hsl({ h: pc.h, s: pc.s, l: clamp(pc.l - 22, 10, 80) })
-      const facetLight = hsl({ h: pc.h, s: pc.s, l: clamp(pc.l + 18, 30, 95) })
-      const sliverCol  = hsl({ h: pc.h, s: Math.max(pc.s - 20, 0), l: clamp(pc.l + 30, 60, 98) })
+      const { h, s, l } = pc
+      const lBright = clamp(l + 22, 30, 96)   // midrib highlight
+      const lDeep   = clamp(l - 18, 8,  75)   // edge shadow
+      const lTip    = clamp(l - 26, 6,  70)   // tip darkening
+
+      const defsPerp: string[] = []   // perpendicular (across petal) gradients
+      const defsAxial: string[] = []  // axial (along petal) tip-dark gradients
+
+      const buildGrads = (i: number, angle: number) => {
+        const safeId = plantId.replace(/[^a-z0-9]/gi, '')
+        const idP = `cp_${safeId}_${i}`
+        const idA = `ca_${safeId}_${i}`
+        if (defsPerp[i] !== undefined) return { idP, idA }
+
+        // Perpendicular direction (across the petal width)
+        const perpAngle = angle + Math.PI / 2
+        const PW = 28 // half-width in world space — covers widest petal
+        const px1 = cx + Math.cos(perpAngle) * PW
+        const py1 = cy + Math.sin(perpAngle) * PW
+        const px2 = cx - Math.cos(perpAngle) * PW
+        const py2 = cy - Math.sin(perpAngle) * PW
+
+        // Symmetric: dark edge → bright midrib → dark edge
+        defsPerp[i] = `<linearGradient id="${idP}" x1="${px1}" y1="${py1}" x2="${px2}" y2="${py2}" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="hsl(${h},${s}%,${lDeep}%)"/>
+          <stop offset="28%"  stop-color="hsl(${h},${s}%,${l}%)"/>
+          <stop offset="50%"  stop-color="hsl(${h},${Math.min(s+8,100)}%,${lBright}%)"/>
+          <stop offset="72%"  stop-color="hsl(${h},${s}%,${l}%)"/>
+          <stop offset="100%" stop-color="hsl(${h},${s}%,${lDeep}%)"/>
+        </linearGradient>`
+
+        // Axial: base stays at l, tip goes dark — same direction as bicolor
+        const TIP = 42
+        const ax2 = cx + Math.cos(angle) * TIP
+        const ay2 = cy + Math.sin(angle) * TIP
+        defsAxial[i] = `<linearGradient id="${idA}" x1="${cx}" y1="${cy}" x2="${ax2}" y2="${ay2}" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="hsl(${h},${s}%,${l}%)" stop-opacity="0"/>
+          <stop offset="55%"  stop-color="hsl(${h},${s}%,${l}%)" stop-opacity="0"/>
+          <stop offset="75%"  stop-color="hsl(${h},${s}%,${lTip + 8}%)" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="hsl(${h},${s}%,${lTip}%)"     stop-opacity="0.75"/>
+        </linearGradient>`
+
+        return { idP, idA }
+      }
+
+      const defsCollector: { perp: string[]; axial: string[] } = { perp: [], axial: [] }
+
       return {
-        defs: '',
-        getFill:   () => hsl(pc),
-        getStroke: () => hsl({ h: pc.h, s: pc.s, l: clamp(pc.l - 30, 8, 70) }),
-        getOverlay: (_i, n, angle) => {
-          const ca = Math.cos(angle), sa = Math.sin(angle)
-          const cp = Math.cos(angle + Math.PI / 2), sp = Math.sin(angle + Math.PI / 2)
-          const pr = 12 + (8 - n) * 1.4
-
-          const baseX = cx + ca * pr * 0.35,  baseY = cy + sa * pr * 0.35
-          const tipX  = cx + ca * pr * 2.15,  tipY  = cy + sa * pr * 2.15
-          const hwBase = pr * 0.40,  hwTip = pr * 0.08
-
-          const lbx = baseX + cp * hwBase,  lby = baseY + sp * hwBase
-          const ltx = tipX  + cp * hwTip,   lty = tipY  + sp * hwTip
-          const rbx = baseX - cp * hwBase,  rby = baseY - sp * hwBase
-          const rtx = tipX  - cp * hwTip,   rty = tipY  - sp * hwTip
-          const smx = cx + ca * pr * 0.55,  smy = cy + sa * pr * 0.55
-
-          return `
-            <line x1="${lbx}" y1="${lby}" x2="${ltx}" y2="${lty}"
-              stroke="${facetDark}"  stroke-width="0.75" opacity="0.70" stroke-linecap="round"/>
-            <line x1="${rbx}" y1="${rby}" x2="${rtx}" y2="${rty}"
-              stroke="${facetLight}" stroke-width="0.75" opacity="0.70" stroke-linecap="round"/>
-            <line x1="${smx}" y1="${smy}" x2="${tipX}" y2="${tipY}"
-              stroke="${sliverCol}"  stroke-width="0.50" opacity="0.55" stroke-linecap="round"/>`
+        get defs() { return defsPerp.join('') + defsAxial.join('') },
+        getFill: (i, _n, angle) => {
+          const { idP } = buildGrads(i, angle)
+          return `url(#${idP})`
         },
+        getStroke: () => `hsl(${h},${s}%,${clamp(l - 28, 6, 65)}%)`,
+        // Second pass: overlay the axial tip-darkening rect using a second <path>
+        // We can't reuse the petal path here, so instead we just do nothing —
+        // the perpendicular gradient alone already looks crystalline.
+        getOverlay: noOverlay,
       }
     }
 
+    // ── iridescent — hue rotates 120° across all petals ──────────────────────
     case 'iridescent': {
       const spread = 120
       return {
@@ -157,6 +197,8 @@ export function resolvePetalEffect(
   }
 }
 
+// ─── SVG radial gradient (gradient effect) ───────────────────────────────────
+
 export function renderGradientDef(petalColor: HSLColor, petalShape: PetalShape, gradId: string): string {
   let { h, s } = petalColor
   if (s === 0) { h = 0; s = 0; }
@@ -164,10 +206,16 @@ export function renderGradientDef(petalColor: HSLColor, petalShape: PetalShape, 
     [0, 90], [15, 85], [30, 70], [40, 60],
     [60, 50], [70, 40], [85, 35], [100, 30],
   ]
-  const stopMarkup = stops.map(([pct, l]) => `<stop offset="${pct}%" stop-color="hsl(${h},${s}%,${l}%)"/>`).join('')
+  const stopMarkup = stops
+    .map(([pct, l]) => `<stop offset="${pct}%" stop-color="hsl(${h},${s}%,${l}%)"/>`)
+    .join('')
   const coords = { cx: 20, cy: 50, r: 75 }
   if (petalShape === 'wavy')     { coords.cx = 50; coords.cy = 10 }
   if (petalShape === 'tropfen')  { coords.cx = 50; coords.r  = 50 }
   if (petalShape === 'zickzack') { coords.cx = 50; coords.r  = 65 }
-  return `<radialGradient id="${gradId}" cx="${coords.cx}%" cy="${coords.cy}%" r="${coords.r}%">${stopMarkup}</radialGradient>`
+  return (
+    `<radialGradient id="${gradId}" cx="${coords.cx}%" cy="${coords.cy}%" r="${coords.r}%">` +
+    stopMarkup +
+    `</radialGradient>`
+  )
 }
