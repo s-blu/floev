@@ -180,7 +180,7 @@ export function buildAchievements(): Achievement[] {
 
   // ── 6. Effect milestones — gradient (stacked, hidden) ────────────────────────
   // Kept as 'gradient' specifically for backwards compat with existing save data.
-  // New effect achievements below cover shimmer / crystalline / iridescent.
+  // New effect achievements below cover shimmer / iridescent.
   const gradStack = [1, 5, 15]
   for (let i = 0; i < gradStack.length; i++) {
     const n = gradStack[i]
@@ -203,8 +203,7 @@ export function buildAchievements(): Achievement[] {
   const rareEffects = [
     { effect: 'bicolor'     as const, reward: 15, groupKey: 'effect_bicolor'     },
     { effect: 'shimmer'     as const, reward: 30, groupKey: 'effect_shimmer'     },
-    { effect: 'crystalline' as const, reward: 60, groupKey: 'effect_crystalline' },
-    { effect: 'iridescent'  as const, reward: 100, groupKey: 'effect_iridescent'  },
+    { effect: 'iridescent'  as const, reward: 250, groupKey: 'effect_iridescent'  },
   ]
   for (const { effect, reward, groupKey } of rareEffects) {
     list.push({

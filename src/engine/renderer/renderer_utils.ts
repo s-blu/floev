@@ -92,7 +92,7 @@ export function resolvePetalEffect(
 
     // ── shimmer — soft sine-wave hue drift across petals ─────────────────────
     case 'shimmer': {
-      const AMP  = 18
+      const AMP  = 12
       const FREQ = 1.5
       return {
         defs: '',
@@ -107,73 +107,6 @@ export function resolvePetalEffect(
           const hShift = Math.sin(t * Math.PI * FREQ * 2) * AMP
           return hsl(darken({ h: (pc.h + hShift + 360) % 360, s: pc.s, l: pc.l }))
         },
-        getOverlay: noOverlay,
-      }
-    }
-
-    // ── crystalline — faceted look via perpendicular gradient per petal ───────
-    // A linearGradient runs ACROSS each petal (perpendicular to its radial axis):
-    //   edge-dark → centre-bright → edge-dark
-    // This creates a sharp midrib/ridge illusion with no clipping needed.
-    // A second axial gradient layer (from tip) deepens the faceted effect.
-    case 'crystalline': {
-      const { h, s, l } = pc
-      const lBright = clamp(l + 22, 30, 96)   // midrib highlight
-      const lDeep   = clamp(l - 18, 8,  75)   // edge shadow
-      const lTip    = clamp(l - 26, 6,  70)   // tip darkening
-
-      const defsPerp: string[] = []   // perpendicular (across petal) gradients
-      const defsAxial: string[] = []  // axial (along petal) tip-dark gradients
-
-      const buildGrads = (i: number, angle: number) => {
-        const safeId = plantId.replace(/[^a-z0-9]/gi, '')
-        const idP = `cp_${safeId}_${i}`
-        const idA = `ca_${safeId}_${i}`
-        if (defsPerp[i] !== undefined) return { idP, idA }
-
-        // Perpendicular direction (across the petal width)
-        const perpAngle = angle + Math.PI / 2
-        const PW = 28 // half-width in world space — covers widest petal
-        const px1 = cx + Math.cos(perpAngle) * PW
-        const py1 = cy + Math.sin(perpAngle) * PW
-        const px2 = cx - Math.cos(perpAngle) * PW
-        const py2 = cy - Math.sin(perpAngle) * PW
-
-        // Symmetric: dark edge → bright midrib → dark edge
-        defsPerp[i] = `<linearGradient id="${idP}" x1="${px1}" y1="${py1}" x2="${px2}" y2="${py2}" gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stop-color="hsl(${h},${s}%,${lDeep}%)"/>
-          <stop offset="28%"  stop-color="hsl(${h},${s}%,${l}%)"/>
-          <stop offset="50%"  stop-color="hsl(${h},${Math.min(s+8,100)}%,${lBright}%)"/>
-          <stop offset="72%"  stop-color="hsl(${h},${s}%,${l}%)"/>
-          <stop offset="100%" stop-color="hsl(${h},${s}%,${lDeep}%)"/>
-        </linearGradient>`
-
-        // Axial: base stays at l, tip goes dark — same direction as bicolor
-        const TIP = 42
-        const ax2 = cx + Math.cos(angle) * TIP
-        const ay2 = cy + Math.sin(angle) * TIP
-        defsAxial[i] = `<linearGradient id="${idA}" x1="${cx}" y1="${cy}" x2="${ax2}" y2="${ay2}" gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stop-color="hsl(${h},${s}%,${l}%)" stop-opacity="0"/>
-          <stop offset="55%"  stop-color="hsl(${h},${s}%,${l}%)" stop-opacity="0"/>
-          <stop offset="75%"  stop-color="hsl(${h},${s}%,${lTip + 8}%)" stop-opacity="0.55"/>
-          <stop offset="100%" stop-color="hsl(${h},${s}%,${lTip}%)"     stop-opacity="0.75"/>
-        </linearGradient>`
-
-        return { idP, idA }
-      }
-
-      const defsCollector: { perp: string[]; axial: string[] } = { perp: [], axial: [] }
-
-      return {
-        get defs() { return defsPerp.join('') + defsAxial.join('') },
-        getFill: (i, _n, angle) => {
-          const { idP } = buildGrads(i, angle)
-          return `url(#${idP})`
-        },
-        getStroke: () => `hsl(${h},${s}%,${clamp(l - 28, 6, 65)}%)`,
-        // Second pass: overlay the axial tip-darkening rect using a second <path>
-        // We can't reuse the petal path here, so instead we just do nothing —
-        // the perpendicular gradient alone already looks crystalline.
         getOverlay: noOverlay,
       }
     }

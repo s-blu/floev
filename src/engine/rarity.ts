@@ -16,14 +16,13 @@ const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 8, stamen: 20 }
 /**
  * Effect score — contributes to rarity.
  * Ordered to complement the dominance chain: rarer effects yield higher scores.
- * crystalline and iridescent push clearly into epic/legendary territory.
+ * iridescent push clearly into epic/legendary territory.
  */
 const EFFECT_SCORE: Record<PetalEffect, number> = {
   none:        0,
   bicolor:     8,
   gradient:   15,
   shimmer:    22,
-  crystalline: 30,
   iridescent:  35,
 }
 

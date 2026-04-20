@@ -20,7 +20,6 @@ export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: 
     const fill   = fills.getFill(i, n, angle);
     const stroke = fills.getStroke(i, n, angle);
     body += petalToSVG(petal, fill, stroke);
-    body += fills.getOverlay(i, n, angle, '');  // crystalline creases
   }
   defs += fills.defs;
 

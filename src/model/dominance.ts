@@ -14,7 +14,7 @@ export const COLOR_BUCKET_DOMINANCE: ColorBucket[] = [
 export const LIGHTNESS_DOMINANCE: ChromaticL[] = [30, 60, 90];
 
 // ─── Effect dominance ─────────────────────────────────────────────────────────
-// none (common) → bicolor → gradient → shimmer → crystalline → iridescent (rarest)
+// none (common) → bicolor → gradient → shimmer  → iridescent (rarest)
 export const PETAL_EFFECT_DOMINANCE: PetalEffect[] = [
-  'none', 'bicolor', 'gradient', 'shimmer', 'crystalline', 'iridescent',
+  'none', 'bicolor', 'gradient', 'shimmer', 'iridescent',
 ];

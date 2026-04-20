@@ -19,7 +19,7 @@ export type PetalShape  = 'round' | 'lanzett' | 'tropfen' | 'wavy' | 'zickzack'
 export type CenterType  = 'dot' | 'disc' | 'stamen'
 export type PlantPhase  = 1 | 2 | 3 | 4
 export type Rarity      = 0 | 1 | 2 | 3 | 4
-export type PetalEffect = 'none' | 'bicolor' | 'gradient' | 'shimmer' | 'crystalline' | 'iridescent'
+export type PetalEffect = 'none' | 'bicolor' | 'gradient' | 'shimmer' | 'iridescent'
 
 // ─── Plant ────────────────────────────────────────────────────────────────────
 

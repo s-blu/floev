@@ -33,7 +33,7 @@ export function dominantLightness(a: ChromaticL, b: ChromaticL): ChromaticL {
 
 /**
  * Return the more dominant of two petal effect alleles.
- * none > bicolor > gradient > shimmer > crystalline > iridescent
+ * none > bicolor > gradient > shimmer > iridescent
  */
 export function dominantEffect(a: PetalEffect, b: PetalEffect): PetalEffect {
   const ia = PETAL_EFFECT_DOMINANCE.indexOf(a);

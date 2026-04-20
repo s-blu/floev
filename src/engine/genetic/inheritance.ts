@@ -83,7 +83,7 @@ export function inheritLightness(
 //
 // Replaces the old boolean hasGradient locus.
 // Standard Mendelian inheritance with MUTATION_CHANCE to any effect.
-// Rarer effects (shimmer, crystalline, iridescent) are naturally uncommon
+// Rarer effects (shimmer, iridescent) are naturally uncommon
 // because they are underrepresented in the allele pool and are recessive
 // against everything more dominant.
 

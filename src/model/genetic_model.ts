@@ -41,7 +41,7 @@ export const SHAPE_ALLELE_POOL: PetalShape[] = [
 // ─── Petal effects ────────────────────────────────────────────────────────────
 
 export const PETAL_EFFECTS: PetalEffect[] = [
-  'none', 'bicolor', 'gradient', 'shimmer', 'crystalline', 'iridescent',
+  'none', 'bicolor', 'gradient', 'shimmer', 'iridescent',
 ]
 
 /**
@@ -52,7 +52,6 @@ export const PETAL_EFFECTS: PetalEffect[] = [
  *   bicolor     ~20%   (uncommon)
  *   gradient    ~10%   (rare — expressed only when homozygous or vs none)
  *   shimmer      ~5%   (epic)
- *   crystalline  ~2%   (very rare)
  *   iridescent   ~1%   (legendary rarity)
  */
 function buildEffectAllelePool(): PetalEffect[] {
@@ -61,7 +60,6 @@ function buildEffectAllelePool(): PetalEffect[] {
   for (let i = 0; i < 20; i++) pool.push('bicolor')
   for (let i = 0; i < 10; i++) pool.push('gradient')
   for (let i = 0;  i < 5; i++) pool.push('shimmer')
-  for (let i = 0;  i < 2; i++) pool.push('crystalline')
   for (let i = 0;  i < 1; i++) pool.push('iridescent')
   return pool
 }
