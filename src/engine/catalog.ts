@@ -1,5 +1,5 @@
 import type { CatalogEntry, GameState, Plant } from '../model/plant';
-import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedGradient, expressedHue, expressedLightness, expressedStem } from './genetic/genetic_utils';
+import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedGradient, expressedHue, expressedLightness, expressedStem, expressedEffect } from './genetic/genetic_utils';
 import { calcRarityScore, calcRarity } from './rarity';
 import { t } from '../model/i18n'
 
@@ -10,12 +10,12 @@ export function catalogKey(plant: Plant): string {
   const color = expressedColor(plant.petalHue, plant.petalLightness)
   const shape = expressedShape(plant.petalShape)
   const center = expressedCenter(plant.centerType)
-  const petalEffect = expressedGradient(plant.hasGradient) ? '-gradient' : '';
+  const petalEffect = expressedEffect(plant.petalEffect);
 
   const count = Math.round(expressedNumber(plant.petalCount))
   const stem = expressedStem(plant.stem)
 
-  return `${count}-${shape}-${center}-${stem}-${color.h}-${color.s}-${color.l}${petalEffect}`
+  return `${count}-${shape}-${center}-${stem}-${color.h}-${color.s}-${color.l}-${petalEffect}`
 }
 
 export function getCatalogEntryForPlant(state: GameState, plant: Plant): CatalogEntry | null {

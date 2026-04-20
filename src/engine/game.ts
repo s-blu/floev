@@ -1,7 +1,6 @@
-import type { GameState, Pot, Plant, CatalogEntry, Rarity } from '../model/plant'
+import type { GameState, Pot, Plant, Rarity, PetalEffect } from '../model/plant'
 import { plannedPlant, randomPlant } from './genetic/genetic'
-import { catalogKey } from './catalog'
-import { calcRarity, calcRarityScore } from './rarity'
+import { addToCatalog, getCatalogEntryForPlant } from './catalog'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -33,59 +32,46 @@ export const RARITY_COLORS: Record<Rarity, string> = {
 
 /** Maps a 1–100 rarity score to coins. Roughly exponential. */
 export function coinValueForScore(score: number): number {
-  return Math.max(1, Math.round(Math.pow(score / 10, 1.8)))
+  return Math.max(3, Math.round(Math.pow(score / 10, 1.8)))
 }
 
-const useDebugPlants = false;
+const useDebugPlants = true;
+const sharedDebugConfig = {
+      hue: 200,
+      petalEffect: 'shimmer' as PetalEffect,
+      petalCount: 5
+}
 const DEBUG_PLANTS = [
     plannedPlant(
     {
-      hue: 200,
+      ...sharedDebugConfig,
       petalShape: 'round',
-      petalEffect: 'none',
-      petalCount: 5
     }
   ),
   plannedPlant(
     {
-      hue: 200,
+      ...sharedDebugConfig,
       petalShape: 'lanzett',
-      petalEffect: 'none',
-      petalCount: 5
     }
   ),
     plannedPlant(
     {
-      hue: 200,
+      ...sharedDebugConfig,
       petalShape: 'tropfen',
-      petalEffect: 'none',
-      petalCount: 5
     }
   ),
     plannedPlant(
     {
-      hue: 200,
+      ...sharedDebugConfig,
       petalShape: 'wavy',
-      petalEffect: 'none',
-      petalCount: 5
     }
   ),
     plannedPlant(
     {
-      hue: 200,
+      ...sharedDebugConfig,
       petalShape: 'zickzack',
-      petalEffect: 'none',
-      petalCount: 5
     }
   ),
-      plannedPlant(
-    {
-      hue: 200,
-      petalShape: 'round',
-      petalEffect: 'none',
-      petalCount: 5
-    }
-  )
 ]
 
 // ─── Initial state ────────────────────────────────────────────────────────────
@@ -195,7 +181,7 @@ export function removePlant(state: GameState, potId: number): boolean {
 export function sellPlant(state: GameState, potId: number): number {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot?.plant || pot.plant.phase < 4) return -1
-  const entry  = state.catalog.find(e => e.plant.id === pot.plant!.id)
+  const entry  = getCatalogEntryForPlant(state, pot.plant)
   const reward = coinValueForScore(entry?.rarityScore ?? 1)
   state.coins += reward
   pot.plant      = null
