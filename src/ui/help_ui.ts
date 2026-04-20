@@ -1,6 +1,8 @@
 import { t } from '../model/i18n';
 import { PALETTE_HUES, PALETTE_S } from '../model/genetic_model';
 import { RARITY_COLORS } from '../engine/game';
+import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
+import { plannedPlant } from '../engine/genetic/genetic';
 import type { Rarity } from '../model/plant';
 
 // ─── Help modal ───────────────────────────────────────────────────────────────
@@ -59,11 +61,7 @@ function buildHelpContent(): string {
         <!-- Intro -->
         <section class="help-section">
           <p class="help-body">${t.helpIntro1}</p>
-          <p class="help-body">${t.helpIntro2}</p>
-          <div class="help-combo-badge">
-            <span class="help-combo-number">${t.helpCombos}</span>
-            <span class="help-combo-label">${t.helpCombosLabel}</span>
-          </div>
+          <p class="help-body">${t.helpIntro2} ${t.helpCombosLabel}.</p>
         </section>
 
         <hr class="help-divider" />
@@ -125,25 +123,19 @@ function buildHelpContent(): string {
     </div>`;
 }
 
-// ─── SVG deco flower (small, static, decorative) ──────────────────────────────
+// ─── Deco flower using encyclopedia renderer ──────────────────────────────────
 
-// TODO refactor this and use a plannedPlant with the encyclopedia logic
 function buildDecoFlower(): string {
-  const n = 6, r = 14, cx = 32, cy = 32;
-  let petals = '';
-  for (let i = 0; i < n; i++) {
-    const a = (i / n) * Math.PI * 2 - Math.PI / 2;
-    const px = cx + Math.cos(a) * (r - 2);
-    const py = cy + Math.sin(a) * r;
-    petals += `<ellipse cx="${px}" cy="${py}" rx="${r * 0.62}" ry="${r * 0.38}"
-      fill="hsl(300,70%,72%)" stroke="hsl(300,60%,58%)" stroke-width="0.8"
-      transform="rotate(${(a * 180) / Math.PI},${px},${py})" opacity="0.9"/>`;
-  }
-  return `<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-    ${petals}
-    <circle cx="${cx}" cy="${cy}" r="8" fill="hsl(45,100%,65%)"/>
-    <circle cx="${cx - 1.5}" cy="${cy - 1.5}" r="3" fill="white" opacity="0.25"/>
-  </svg>`;
+  const plant = plannedPlant({
+    hue: 300,
+    lightness: 60,
+    petalShape: 'round',
+    hasGradient: false,
+    petalCount: 6,
+    centerType: 'disc',
+    plantPhase: 4,
+  });
+  return renderBloomSVG(plant, 64, 64);
 }
 
 // ─── Hue strip ────────────────────────────────────────────────────────────────
@@ -151,33 +143,65 @@ function buildDecoFlower(): string {
 // Chromatic hues only (no achromatic sentinels)
 const DISPLAY_HUES = PALETTE_HUES.filter(h => h >= 0);
 
-// Dominance order label keys
+// The actual dominance order for the current model buckets.
+// gray, purple, blue are the rarest (= most recessive) buckets — shown as secrets.
 const HUE_BUCKET_ORDER = ['white', 'yellowgreen', 'red', 'pink', 'purple', 'blue', 'gray'] as const;
 
+// Buckets that are hidden/secret in the help UI
+const SECRET_BUCKETS = new Set(['gray', 'purple', 'blue']);
+
 function buildHueStrip(): string {
-  const swatches = DISPLAY_HUES.map(h => {
-    return `<span class="help-hue-swatch" style="background:hsl(${h},${PALETTE_S}%,60%)" title="${h}°"></span>`;
+  // Group chromatic hues by bucket for visual display
+  // Rare/secret buckets show a "?" swatch instead of the actual color
+
+  // Build swatch per bucket in dominance order (skip white for the color row, add at end)
+  const bucketSwatches = HUE_BUCKET_ORDER.map(bucket => {
+    if (bucket === 'white') {
+      return `<span class="help-hue-swatch" style="background:hsl(0,0%,97%);border-color:rgba(0,0,0,0.2)" title="Weiß"></span>`;
+    }
+    if (SECRET_BUCKETS.has(bucket)) {
+      return `<span class="help-hue-swatch help-hue-swatch--secret" title="?">?</span>`;
+    }
+    // Pick a representative hue for the bucket
+    const repHue = DISPLAY_HUES.find(h => bucketContains(bucket, h)) ?? 0;
+    const label = t.helpColorBucket(bucket);
+    return `<span class="help-hue-swatch" style="background:hsl(${repHue},${PALETTE_S}%,60%)" title="${label}"></span>`;
   }).join('');
-  // White and gray as special swatches
-  const special = `
-    <span class="help-hue-swatch" style="background:hsl(0,0%,97%);border-color:rgba(0,0,0,0.2)" title="Weiß"></span>
-    <span class="help-hue-swatch" style="background:hsl(0,0%,72%)" title="Grau"></span>
-  `;
-  return `<div class="help-hue-swatches">${swatches}${special}</div>
-    <div class="help-dominance-chain">${buildDominanceChain(HUE_BUCKET_ORDER.map(k => t.helpColorBucket(k)))}</div>`;
+
+  // Build dominance chain: known buckets named, secret ones as "?"
+  const chainLabels = HUE_BUCKET_ORDER.map(k =>
+    SECRET_BUCKETS.has(k) ? '?' : t.helpColorBucket(k)
+  );
+
+  return `
+    <p class="help-caption" style="margin-bottom:6px">${t.helpColorBucketsExplain}</p>
+    <div class="help-hue-swatches">${bucketSwatches}</div>
+    <div class="help-dominance-chain">${buildDominanceChain(chainLabels)}</div>`;
+}
+
+function bucketContains(bucket: string, hue: number): boolean {
+  switch (bucket) {
+    case 'yellowgreen': return hue > 25 && hue <= 175;
+    case 'red':         return hue <= 25 || hue > 345;
+    case 'pink':        return hue > 275 && hue <= 345;
+    case 'purple':      return hue > 245 && hue <= 275;
+    case 'blue':        return hue > 175 && hue <= 245;
+    default:            return false;
+  }
 }
 
 function buildDominanceChain(items: string[]): string {
   return items.map((item, i) => {
     const isLast = i === items.length - 1;
-    return `<span class="help-dom-item${i === 0 ? ' help-dom-item--first' : ''}">${item}</span>${!isLast ? '<span class="help-dom-arrow">›</span>' : ''}`;
+    const isSecret = item === '?';
+    return `<span class="help-dom-item${i === 0 ? ' help-dom-item--first' : ''}${isSecret ? ' help-dom-item--secret' : ''}">${item}</span>${!isLast ? '<span class="help-dom-arrow">›</span>' : ''}`;
   }).join('');
 }
 
 // ─── Lightness swatches ───────────────────────────────────────────────────────
 
 function buildLightnessSwatches(): string {
-  const hue = 270; // purple — distinctive example color
+  const hue = 310; // pink — clear example color
   const levels: [number, string][] = [
     [30, t.helpLightnessDark],
     [60, t.helpLightnessMid],
@@ -199,7 +223,6 @@ function buildShapeCards(): string {
     { name: 'lanzett', label: t.shapeLanzett, svg: buildShapeSVG('lanzett') },
     { name: 'tropfen', label: t.shapeDrop,    svg: buildShapeSVG('tropfen') },
   ];
-  const secret = [t.helpShapeSecret, t.helpShapeSecret];
 
   const knownHtml = known.map(s =>
     `<div class="help-shape-card">
@@ -208,7 +231,7 @@ function buildShapeCards(): string {
     </div>`
   ).join('');
 
-  const secretHtml = secret.map(() =>
+  const secretHtml = [0, 1].map(() =>
     `<div class="help-shape-card help-shape-card--secret">
       <div class="help-shape-svg help-shape-svg--secret">?</div>
       <span class="help-shape-label">${t.helpShapeSecretLabel}</span>

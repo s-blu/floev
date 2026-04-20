@@ -130,23 +130,23 @@ export const de = {
   helpSubtitle: 'Ein botanisches Züchtungsspiel',
 
   // Intro
-  helpIntro1: 'Floev ist ein entspanntes Offline-Spiel — du musst nicht ständig dabei sein. Pflanze einen Samen, schau später wieder rein und staune, was geblüht ist. Die Pflanzenwelt macht in deiner Abwesenheit weiter: Wachstumsphasen laufen im Hintergrund ab, und der Fortschritt wird beim nächsten Öffnen automatisch nachgeholt.',
-  helpIntro2: 'Jede Blüte wird aus genetischen Eigenschaften dynamisch berechnet — keine zwei sind exakt gleich. Farbe, Form, Blütenmitte, Helligkeit und seltene Farbverläufe ergeben zusammen über',
-  helpCombos: '7.000+',
+  helpIntro1: 'Floev ist ein entspanntes Offline-Spiel — pflanze Samen, schau später wieder rein und staune, was geblüht ist. Wachstumsphasen laufen im Hintergrund ab und werden beim nächsten Öffnen automatisch nachgeholt.',
+  helpIntro2: 'Jede Blüte wird aus genetischen Eigenschaften berechnet — keine zwei sind exakt gleich. Farbe, Form, Blütenmitte, Helligkeit und Farbverläufe ergeben zusammen tausende',
   helpCombosLabel: 'einzigartige Blütenkombinationen',
 
   // Colors
   helpColorsTitle: 'Farbe & Helligkeit',
-  helpColorsBody: 'Jede Pflanze trägt zwei Farbgen-Allele und zwei Helligkeits-Allele. Das dominantere Allel bestimmt die sichtbare Farbe. Die Dominanzreihenfolge gilt von links (stärkstes) nach rechts (schwächstes):',
+  helpColorsBody: 'Jede Pflanze trägt zwei Farbgen-Allele und zwei Helligkeits-Allele. Das dominantere Allel bestimmt die sichtbare Farbe.',
+  helpColorBucketsExplain: 'Farben sind in Gruppen eingeteilt — von häufig (links) bis selten (rechts). Manche Gruppen sind noch unentdeckt:',
   helpColorsDominance: 'Farbdominanz — links dominiert, rechts ist rezessiv',
   helpColorBucket: (bucket: string): string => {
     const map: Record<string, string> = {
-      white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Rosa',
-      purple: 'Lila', blue: 'Blau', gray: 'Grau',
+      white: 'Weiß', yellow: 'Gelb', yellowgreen: 'Gelb-Grün', red: 'Rot', pink: 'Rosa',
+      purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
     };
     return map[bucket] ?? bucket;
   },
-  helpLightnessDominance: 'Helligkeitsdominanz: Dunkel (L30) dominiert Mittel (L60) dominiert Hell (L90)',
+  helpLightnessDominance: 'Helligkeit: Dunkel dominiert Mittel dominiert Hell',
   helpLightnessDark: 'dunkel',
   helpLightnessMid: 'mittel',
   helpLightnessLight: 'hell',
@@ -154,12 +154,13 @@ export const de = {
   // Shapes
   helpShapesTitle: 'Blütenformen',
   helpShapesBody: 'Die ersten drei Formen kannst du von Anfang an entdecken. Zwei weitere sind seltener und rezessiver — finde sie durch gezieltes Kreuzen heraus.',
-  helpShapesDominance: 'Formdominanz: Rund > Lanzett > Tropfen > … (seltenere Formen sind rezessiver und schwerer zu fixieren)',
+  helpShapesDominance: 'Formdominanz: Rund > Lanzett > Tropfen > … (seltenere Formen sind rezessiver)',
   helpShapeSecretLabel: 'Geheimnis',
+  helpShapeSecret: '?',
 
   // Rarity
   helpRarityTitle: 'Seltenheitsstufen',
-  helpRarityBody: 'Jede Blüte erhält beim Aufblühen einen Seltenheitsscore — berechnet aus Blütenform, Farbe, Blütenmitte, Farbverlauf, Blattanzahl und Stängelhöhe. Je seltener, desto mehr Münzen beim Verkauf.',
+  helpRarityBody: 'Jede Blüte erhält beim Aufblühen einen Score aus Form, Farbe, Blütenmitte, Farbverlauf und weiteren Merkmalen. Je seltener, desto mehr Münzen beim Verkauf.',
   helpRarityDesc: (rarity: number): string => {
     const descs = [
       'Häufig — runde Formen, einfache Farben',
@@ -173,17 +174,17 @@ export const de = {
 
   // Breeding
   helpBreedTitle: 'Züchtung & Vererbung',
-  helpBreedBody: 'Wenn zwei Pflanzen blühen, kannst du sie kreuzen. Jedes Kind erbt von jedem Elternteil ein zufälliges Allel pro Eigenschaft — wie echte Mendelsche Vererbung. Die Kreuzungsvorschau zeigt Wahrscheinlichkeiten für Farbe, Form und Mitte.',
+  helpBreedBody: 'Kreuze zwei blühende Pflanzen — jedes Kind erbt von jedem Elternteil ein zufälliges Allel pro Eigenschaft. Die Vorschau zeigt Wahrscheinlichkeiten für Farbe, Form und Blütenmitte.',
   helpBreedStep1: 'Wähle zwei blühende Pflanzen über „Züchten" aus.',
   helpBreedStep2: 'Die Vorschau zeigt Wahrscheinlichkeiten für Farbe, Form und Blütenmitte.',
   helpBreedStep3: 'Klicke „Züchten" — ein neuer Samen landet im nächsten freien Topf.',
-  helpBreedStep4: 'Lass den Samen durch alle Phasen wachsen und beobachte das Ergebnis.',
-  helpSelfBody: 'Mit ↺ (Selbstbestäubung) kannst du eine Pflanze mit sich selbst kreuzen. Das verbraucht die Mutterpflanze, erzeugt aber reinerbigere Nachkommen — ideal, um eine gewünschte Eigenschaft zu fixieren.',
-  helpHomoBody: 'Reinerbige Pflanzen (◈) tragen auf beiden Allelen denselben Wert. Ihre Nachkommen sind deutlich berechenbarer — perfekt für die gezielte Weiterzüchtung seltener Merkmale.',
+  helpBreedStep4: 'Lass den Samen wachsen und beobachte das Ergebnis.',
+  helpSelfBody: 'Mit ↺ (Selbstbestäubung) kreuzt sich eine Pflanze mit sich selbst — das verbraucht die Mutterpflanze, erzeugt aber reinerbigere Nachkommen.',
+  helpHomoBody: 'Reinerbige Pflanzen (◈) tragen auf beiden Allelen denselben Wert — ihre Nachkommen sind deutlich berechenbarer.',
 
   // Gradient
   helpGradientTitle: '✦ Farbverlauf',
-  helpGradientBody: 'Manche Pflanzen tragen ein verborgenes Farbverlauf-Gen. Es zeigt sich nur, wenn beide Allele aktiv sind — ein rezessives Merkmal, das sich durch gezieltes Kreuzen und Selbstbestäuben aufdecken lässt. Blüten mit Farbverlauf schimmern von hell nach dunkel.',
+  helpGradientBody: 'Manche Pflanzen tragen ein verborgenes Farbverlauf-Gen. Es zeigt sich nur, wenn beide Allele aktiv sind — ein rezessives Merkmal, das sich durch Kreuzen und Selbstbestäuben fixieren lässt.',
 
   // Start button
   helpStartBtn: 'Los geht\'s 🌱',
@@ -308,8 +309,6 @@ export const de = {
     dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
   } as Record<string, string>,
 
-  // help shape secret
-  helpShapeSecret: '?',
 
   colorLabelGradient: "-Verlauf",
 

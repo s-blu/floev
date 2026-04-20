@@ -443,3 +443,28 @@
     border-color: rgba(255,255,255,0.12);
   }
 }
+
+/* ── Secret hue swatch (shown as ?) ─────────────────────────────────────────── */
+
+.help-hue-swatch--secret {
+  background: var(--bg3) !important;
+  border-color: var(--border2) !important;
+  color: var(--text3);
+  font-size: 11px;
+  font-family: Georgia, serif;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  user-select: none;
+}
+
+/* ── Secret dominance chain item ────────────────────────────────────────────── */
+
+.help-dom-item--secret {
+  opacity: 0.45;
+  font-style: italic;
+  background: var(--bg3);
+  color: var(--text3);
+}
