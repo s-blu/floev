@@ -1,5 +1,10 @@
 // ─── Floev — German UI strings ───────────────────────────────────────────────
 
+const colorBucketLabels = {
+    white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Pink',
+    purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
+  } as Record<string, string>;
+
 export const de = {
   // App shell
   appTitle: 'Floev',
@@ -293,74 +298,87 @@ export const de = {
   shapeLabels: {
     round: 'Rund', lanzett: 'Lanzett', tropfen: 'Tropfen', wavy: 'Wellig', zickzack: 'Zickzack',
   } as Record<string, string>,
-  colorBucketLabels: {
-    white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Pink',
-    purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
-  } as Record<string, string>,
+  colorBucketLabels,
+  
   centerTypeLabels: {
     dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
   } as Record<string, string>,
-
 
   colorLabelGradient: "-Verlauf",
 
   colorLabel: {
   0: {
+    hueName: `Karmin (${colorBucketLabels.red})`,
     90: {
       30: "Karmesin",
-      60: "Rot",
-      90: "Koralle",
-    },
+      60: "Karminrot",
+      90: "Korallenrot",
+    }
+  },
+  1: {
+    hueName: 'Weiß',
+    0: {
+      100: "Weiß"
+    }
+  },
+  2: {
+    hueName: 'Grau',
     0: {
       10: "Anthrazit",
       40: "Steingrau",
       70: "Silber",
-      100: "Weiß"
     }
   },
   25: {
+    hueName: `Rost (${colorBucketLabels.red})`,
     90: {
       30: "Rost",
-      60: "Orange",
+      60: "Rostorange",
       90: "Apricot",
     },
   },
   350: {
+    hueName: `Rubin (${colorBucketLabels.red})`,
     90: {
       30: "Rubinrot",
-      60: "Karmin",
+      60: "Rhodolith",
       90: "Rosé",
     },
   },
   60: {
+    hueName: `Gelb (${colorBucketLabels.yellowgreen})`,
     90: {
       30: "Senf",
-      60: "Gelb",
-      90: "Vanille",
+      60: "Goldgelb",
+      90: "Vanillegelb",
     },
   },
   160: {
+    hueName: `Smaragd (${colorBucketLabels.yellowgreen})`,
     90: {
       30: "Smaragd",
-      60: "Jade",
+      60: "Jadegrün",
       90: "Mintgrün",
     },
   },
   180: {
+    hueName: `Türkis (${colorBucketLabels.blue})`,
     90: {
-      30: "Tiefsee",
+      30: "Tiefseetürkis",
       60: "Türkis",
       90: "Eisblau",
     },
   },
   200: {
+    hueName: `Azur (${colorBucketLabels.blue})`,
     90: {
       30: "Petrol",
       60: "Himmelblau",
-      90: "Azur",
+      90: "Azurblau",
     },
   },
   230: {
+    hueName: `Marine (${colorBucketLabels.blue})`,
     90: {
       30: "Marineblau",
       60: "Königsblau",
@@ -368,6 +386,7 @@ export const de = {
     },
   },
   250: {
+    hueName: `Grauviolett (${colorBucketLabels.purple})`,
     90: {
       30: "Indigo",
       60: "Dämmerlila",
@@ -375,13 +394,15 @@ export const de = {
     },
   },
   270: {
+    hueName: `Amethyst (${colorBucketLabels.purple})`,
     90: {
       30: "Amethyst",
-      60: "Lila",
-      90: "Malve",
+      60: "Amethystlila",
+      90: "Kunzit",
     },
   },
   290: {
+    hueName: `Magenta (${colorBucketLabels.pink})`,
     90: {
       30: "Purpur",
       60: "Magenta",
@@ -389,6 +410,7 @@ export const de = {
     },
   },
   310: {
+    hueName: `Fuchsia (${colorBucketLabels.pink})`,
     90: {
       30: "Pflaume",
       60: "Fuchsia",
@@ -396,13 +418,14 @@ export const de = {
     },
   },
   330: {
+    hueName: `Burgund (${colorBucketLabels.pink})`,
     90: {
       30: "Burgund",
-      60: "Purpur",
+      60: "Burgundrot",
       90: "Altrosa",
     },
   },
-}, 
+},
 
 petalNames: {
   round: {
@@ -447,7 +470,5 @@ petalNames: {
   },
 }
 }
-
-
 
 export type I18n = typeof de

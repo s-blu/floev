@@ -53,10 +53,10 @@ export function expressedColor(
 ): HSLColor {
   const h = expressedHue(huePair)
 
-  if (h === ACHROMATIC_HUE_WHITE)      return { h: 0, s: 0, l: 100 }
-  if (h === ACHROMATIC_HUE_GRAY_DARK)  return { h: 0, s: 0, l: 0   }
-  if (h === ACHROMATIC_HUE_GRAY_MID)   return { h: 0, s: 0, l: 40  }
-  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return { h: 0, s: 0, l: 70  }
+  if (h === ACHROMATIC_HUE_WHITE)      return { h: 1, s: 0, l: 100 }
+  if (h === ACHROMATIC_HUE_GRAY_DARK)  return { h: 2, s: 0, l: 10  }
+  if (h === ACHROMATIC_HUE_GRAY_MID)   return { h: 2, s: 0, l: 40  }
+  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return { h: 2, s: 0, l: 70  }
 
   const l = expressedLightness(lightnessPair)
   return { h, s: PALETTE_S, l }
