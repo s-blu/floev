@@ -1,7 +1,7 @@
 import { RARITY_COLORS, RARITY_LABELS } from '../engine/game';
-import { expressedColor, expressedGradient, expressedShape, expressedCenter, expressedNumber, isHomozygous } from '../engine/genetic/genetic_utils';
+import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedEffect, isHomozygous } from '../engine/genetic/genetic_utils';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
-import type { Rarity, CatalogEntry } from '../model/plant';
+import type { Rarity, CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
 import { openAncestryIds, state } from './ui';
 import { t } from '../model/i18n';
 
@@ -98,19 +98,15 @@ export function renderCatalog(): void {
 function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const plant = entry.plant;
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
-  // const hasGrad = expressedGradient(plant.hasGradient);
   const shape = expressedShape(plant.petalShape);
   const center = expressedCenter(plant.centerType);
   const count = Math.round(expressedNumber(plant.petalCount));
+  const effect = expressedEffect(plant.petalEffect);
   const homozyg = isHomozygous(plant);
 
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`;
-  // For gradient plants: show a linear swatch from L90 to L30 of the same hue
-  // FIXME this needs to be reworked for the new petalEffects
-  // const swatchStyle = hasGrad
-  //   ? `background: linear-gradient(to right, hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,90%), hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,30%))`
-  //   : `background: ${hslMain}`;
-  // const swatchLabel = hasGrad ?  t.colorLabel[pc.h]?.[pc.s]?.[pc.l] + t.colorLabelGradient : t.colorLabel[pc.h]?.[pc.s]?.[pc.l];
+  const swatchStyle = `background: ${hslMain}`;
+  const swatchLabel = (t.colorLabel as any)[pc.h]?.[pc.s]?.[pc.l] ?? '';
   const parentA = plant.parentIds
     ? state.catalog.find(e => e.plant.id === plant.parentIds![0]) ?? null
     : null;
@@ -178,6 +174,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
           ${renderMetaRow(t.catalogMetaPetals, `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}
           ${renderMetaRow(t.catalogMetaCenter, `${CENTER_LABELS[center] ?? center}`)}
           ${renderMetaRow(t.catalogMetaColor, `${swatchLabel} <span class="enc-color-swatch" style="${swatchStyle}"></span>`)}
+          ${effect !== 'none' ? renderMetaRow(t.catalogMetaEffect, `${(t.effectLabels as Record<string, string>)[effect] ?? effect} <span class="enc-color-swatch" style="${buildEffectSwatchStyle(effect, pc)}"></span>`) : ''}
           ${renderMetaRow(t.catalogMetaGen, `${plant.generation}`)}
         </div>
         <div class="enc-discovered">${formatDate(entry.discovered)}</div>
@@ -193,4 +190,25 @@ function renderMetaRow(label: string, value: string): string {
     <span class="enc-meta-label">${label}</span>
     <span class="enc-meta-value">${value}</span>
   </div>`;
+}
+
+function buildEffectSwatchStyle(effect: PetalEffect, pc: HSLColor): string {
+  const { h, s, l } = pc;
+  const hsl = (hue: number, sat: number, lig: number) =>
+    `hsl(${((hue % 360) + 360) % 360},${sat}%,${lig}%)`;
+  const diagonal4 = (colors: string[]) =>
+    `background: linear-gradient(135deg, ${colors[0]} 25%, ${colors[1]} 25%, ${colors[1]} 50%, ${colors[2]} 50%, ${colors[2]} 75%, ${colors[3]} 75%)`;
+
+  switch (effect) {
+    case 'bicolor':
+      return `background: linear-gradient(90deg, ${hsl(h, s, s === 0 ? 90 : 88)} 50%, ${hsl(h, s, s === 0 ? 20 : 28)} 50%)`;
+    case 'gradient':
+      return `background: linear-gradient(to right, ${hsl(h, s, 90)}, ${hsl(h, s, 30)})`;
+    case 'shimmer':
+      return diagonal4([-12, 0, 12, 0].map(o => hsl(h + o, s, l)));
+    case 'iridescent':
+      return diagonal4([0, 40, 80, 120].map(o => hsl(h + o, s, l)));
+    default:
+      return `background: ${hsl(h, s, l)}`;
+  }
 }

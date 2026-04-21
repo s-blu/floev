@@ -1,4 +1,4 @@
-import { dominantShape, dominantCenter, dominantHue, dominantLightness } from '../engine/genetic/dominance_utils';
+import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from '../engine/genetic/dominance_utils';
 import { isHomozygous } from '../engine/genetic/genetic_utils';
 import { hasPotColor, hasPotShape } from '../engine/shop_engine';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../model/genetic_model';
@@ -40,6 +40,15 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   const centerValue = centerA === centerB
     ? centerA
     : `${dominantCenter(centerA, centerB)} · ${centerA === dominantCenter(centerA, centerB) ? centerB : centerA}`;
+
+  const effectA = plant.petalEffect.a;
+  const effectB = plant.petalEffect.b;
+  const effectLabel = (e: string) => e === 'none' ? '–' : ((t.effectLabels as Record<string, string>)[e] ?? e);
+  const domEff = dominantEffect(effectA, effectB);
+  const recEff = effectA === domEff ? effectB : effectA;
+  const effectValue = effectA === effectB
+    ? effectLabel(effectA)
+    : `${effectLabel(domEff)} · ${effectLabel(recEff)}`;
 
   // Gradient alleles
   // FIXME this is using the old "hasGradient", needs to be replaced with a effect information
@@ -85,6 +94,10 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayCenter}</span>
       <span class="allele-overlay-value">${centerValue}</span>
+    </div>
+    <div class="allele-overlay-row">
+      <span class="allele-overlay-label">${t.alleleOverlayEffect}</span>
+      <span class="allele-overlay-value">${effectValue}</span>
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayPetalCount}</span>
