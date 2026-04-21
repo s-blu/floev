@@ -368,7 +368,7 @@
 
 /* ── AI Disclaimer ───────────────────────────────────────────────────────────── */
 .help-disclaimer {
-  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
   padding: 10px 14px;
   background: hsl(50, 85%, 95%);
   border: 1.5px dotted hsl(45, 60%, 65%);

@@ -65,6 +65,10 @@ function buildHelpContent(): string {
           <p class="help-body">${t.helpIntro2}</p>
         </section>
 
+        <div class="help-disclaimer">
+          <p class="help-disclaimer-text">${t.helpDisclaimerText}</p>
+        </div>
+
         <hr class="help-divider" />
 
         <!-- Colors -->
@@ -113,12 +117,7 @@ function buildHelpContent(): string {
         <section class="help-section">
           <h3 class="help-section-title">${t.helpGradientTitle}</h3>
           <p class="help-body">${t.helpGradientBody}</p>
-          <div class="help-gradient-demo">${buildGradientDemo()}</div>
         </section>
-
-        <div class="help-disclaimer">
-          <p class="help-disclaimer-text">${t.helpDisclaimerText}</p>
-        </div>
 
         <div class="help-footer">
           <button class="help-start-btn" id="help-start-game">${t.helpStartBtn}</button>
@@ -293,16 +292,4 @@ function buildBreedSteps(): string {
       <span class="help-breed-text">${step}</span>
     </div>`
   ).join('');
-}
-
-// ─── Gradient demo ────────────────────────────────────────────────────────────
-
-function buildGradientDemo(): string {
-  const hue = 200;
-  return `
-    <div class="help-grad-demo-row">
-      <div class="help-grad-swatch" style="background:linear-gradient(135deg, hsl(${hue},${PALETTE_S}%,90%), hsl(${hue},${PALETTE_S}%,30%))"></div>
-      <div class="help-grad-swatch" style="background:linear-gradient(135deg, hsl(330,${PALETTE_S}%,90%), hsl(330,${PALETTE_S}%,30%))"></div>
-      <div class="help-grad-swatch" style="background:linear-gradient(135deg, hsl(60,${PALETTE_S}%,90%), hsl(60,${PALETTE_S}%,30%))"></div>
-    </div>`;
 }

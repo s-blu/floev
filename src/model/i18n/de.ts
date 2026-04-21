@@ -205,7 +205,7 @@ export const de = {
 
   // Help button tooltip
   helpBtnTitle: 'Hilfe & Spielregeln',
-  helpDisclaimerText: 'Placeholder – hier kommt dein Text hin.',
+  helpDisclaimerText: 'KI Nutzung. Dieses Spiel ist ein KI-Experiment, um herauszufinden, wie leistungsstark KI in der Webentwicklung ist und wo die Grenzen liegen. Der Großteil des Spiels ist durch Claude Sonnet 4.6 geschrieben und von einem menschlichen Entwickler überprüft.',
 
   // Achievement panel
   achPanelTitle: 'Erfolge',
