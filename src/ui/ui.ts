@@ -1,4 +1,4 @@
-import type { GameState, BreedEstimate } from './plant'
+import type { GameState, BreedEstimate } from '../model/plant'
 import {
   advancePhases,
   plantSeed,

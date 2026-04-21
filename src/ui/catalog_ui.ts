@@ -98,7 +98,7 @@ export function renderCatalog(): void {
 function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const plant = entry.plant;
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
-  const hasGrad = expressedGradient(plant.hasGradient);
+  // const hasGrad = expressedGradient(plant.hasGradient);
   const shape = expressedShape(plant.petalShape);
   const center = expressedCenter(plant.centerType);
   const count = Math.round(expressedNumber(plant.petalCount));
@@ -106,10 +106,11 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
 
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`;
   // For gradient plants: show a linear swatch from L90 to L30 of the same hue
-  const swatchStyle = hasGrad
-    ? `background: linear-gradient(to right, hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,90%), hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,30%))`
-    : `background: ${hslMain}`;
-  const swatchLabel = hasGrad ?  t.colorLabel[pc.h]?.[pc.s]?.[pc.l] + t.colorLabelGradient : t.colorLabel[pc.h]?.[pc.s]?.[pc.l];
+  // FIXME this needs to be reworked for the new petalEffects
+  // const swatchStyle = hasGrad
+  //   ? `background: linear-gradient(to right, hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,90%), hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,30%))`
+  //   : `background: ${hslMain}`;
+  // const swatchLabel = hasGrad ?  t.colorLabel[pc.h]?.[pc.s]?.[pc.l] + t.colorLabelGradient : t.colorLabel[pc.h]?.[pc.s]?.[pc.l];
   const parentA = plant.parentIds
     ? state.catalog.find(e => e.plant.id === plant.parentIds![0]) ?? null
     : null;

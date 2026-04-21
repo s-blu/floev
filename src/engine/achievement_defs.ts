@@ -2,13 +2,13 @@ import type { CatalogEntry } from '../model/plant'
 import type { Achievement } from '../model/achievements'
 import {
   expressedColor, expressedShape, expressedCenter,
-  expressedNumber, expressedGradient, colorBucket,
+  expressedNumber, colorBucket,
   isHomozygous,
   expressedEffect,
 } from './genetic/genetic_utils'
 import { PALETTE_HUE_RANGES, PALETTE_HUES, PALETTE_L, PETAL_SHAPES } from '../model/genetic_model'
 import type { ColorBucket } from '../model/genetic_model'
-import type { PetalShape, Rarity } from '../model/plant'
+import type { Rarity } from '../model/plant'
 import { t } from '../model/i18n'
 import { coinValueForScore } from './game'
 
@@ -39,13 +39,6 @@ function countShapesInBucket(catalog: CatalogEntry[], bucket: ColorBucket): { cu
       seen.add(expressedShape(e.plant.petalShape))
   }
   return { current: seen.size, total: PETAL_SHAPES.length }
-}
-
-function hasShapeWithCount(catalog: CatalogEntry[], shape: PetalShape, count: number): boolean {
-  return catalog.some(e =>
-    expressedShape(e.plant.petalShape) === shape &&
-    Math.round(expressedNumber(e.plant.petalCount)) === count
-  )
 }
 
 /** Count how many distinct hue values from a bucket appear in catalog */

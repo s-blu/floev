@@ -42,9 +42,10 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     : `${dominantCenter(centerA, centerB)} · ${centerA === dominantCenter(centerA, centerB) ? centerB : centerA}`;
 
   // Gradient alleles
-  const gA = plant.hasGradient.a;
-  const gB = plant.hasGradient.b;
-  const gradientValue = renderGradientChipPair(gA, gB);
+  // FIXME this is using the old "hasGradient", needs to be replaced with a effect information
+  // const gA = plant.hasGradient.a;
+  // const gB = plant.hasGradient.b;
+  // const gradientValue = renderGradientChipPair(gA, gB);
 
   // Petal count alleles (rounded)
   const pcA = Math.round(plant.petalCount.a);
@@ -84,10 +85,6 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayCenter}</span>
       <span class="allele-overlay-value">${centerValue}</span>
-    </div>
-    <div class="allele-overlay-row">
-      <span class="allele-overlay-label">${t.alleleOverlayGradient}</span>
-      <span class="allele-chips-row">${gradientValue}</span>
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayPetalCount}</span>

@@ -1,5 +1,5 @@
 import { ColorBucket, PALETTE_HUE_RANGES } from "../../model/genetic_model";
-import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL, PetalEffect } from "../../model/plant";
+import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL, PetalEffect, StemTypes } from "../../model/plant";
 import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from "./dominance_utils";
 import { PALETTE_S } from '../../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../../model/genetic_model';
@@ -70,7 +70,7 @@ export function expressedShape(pair: AllelePair<PetalShape>): PetalShape {
 export function expressedCenter(pair: AllelePair<CenterType>): CenterType {
   return dominantCenter(pair.a, pair.b)
 }
-export function expressedStem(pair: AllelePair<CenterType>): CenterType {
+export function expressedStem(pair: AllelePair<StemTypes>): StemTypes {
   return pair.a;
 }
 

@@ -1,5 +1,5 @@
 import type { CatalogEntry, GameState, Plant } from '../model/plant';
-import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedGradient, expressedHue, expressedLightness, expressedStem, expressedEffect } from './genetic/genetic_utils';
+import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedStem, expressedEffect } from './genetic/genetic_utils';
 import { calcRarityScore, calcRarity } from './rarity';
 import { t } from '../model/i18n'
 

@@ -130,7 +130,7 @@ function buildDecoFlower(): string {
     hue: 300,
     lightness: 90,
     petalShape: 'round',
-    hasGradient: false,
+    petalEffect: 'none',
     petalCount: 5,
   });
   return renderBloomSVG(plant, 64, 64);

@@ -3,8 +3,7 @@ import { MIN_STEM_HEIGHT, CENTER_TYPES, MUTATION_CHANCE, PETAL_EFFECTS } from '.
 import { PETAL_SHAPES } from '../model/genetic_model';
 import { inheritHue, inheritLightness, inheritEffect, inheritNumber, inheritDiscrete } from './genetic/inheritance';
 import { type Plant, type PlantPhase, type BreedEstimate, type PetalShape, type CenterType, type PetalEffect } from '../model/plant';
-import { expressedColor, expressedNumber, expressedShape, expressedEffect } from "./genetic/genetic_utils";
-import { CENTER_COLORS } from "../model/genetic_model";
+import { expressedColor, expressedNumber, expressedShape } from "./genetic/genetic_utils";
 import { dominantShape, dominantCenter, dominantEffect } from "./genetic/dominance_utils";
 
 // ─── Cross-breeding ───────────────────────────────────────────────────────────
