@@ -1,6 +1,6 @@
 {
   "name": "floev",
-  "version": "1.0.0-SNAPSHOT",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -12,5 +12,4 @@
     "vite": "^5.2.0",
     "prettier": "^3.8.1"
   }
-  
 }
