@@ -4,6 +4,7 @@ import { RARITY_COLORS } from '../engine/game';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import { plannedPlant } from '../engine/genetic/genetic';
 import type { Rarity } from '../model/plant';
+import { version } from '../../package.json';
 
 // ─── Help modal ───────────────────────────────────────────────────────────────
 
@@ -115,8 +116,13 @@ function buildHelpContent(): string {
           <div class="help-gradient-demo">${buildGradientDemo()}</div>
         </section>
 
+        <div class="help-disclaimer">
+          <p class="help-disclaimer-text">Placeholder – hier kommt dein Text hin.</p>
+        </div>
+
         <div class="help-footer">
           <button class="help-start-btn" id="help-start-game">${t.helpStartBtn}</button>
+          <p class="help-version">v${version}</p>
         </div>
 
       </div>
