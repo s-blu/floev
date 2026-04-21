@@ -21,6 +21,8 @@ export const de = {
   phaseSprout: 'Keimling',
   phaseBud: 'Jungpflanze',
   phaseBloom: (name: string) => name,
+  phaseTimeLeft: (min: number) => `noch ${min} Min`,
+  phaseAlmostDone: 'gleich fertig',
 
   // Rarity labels
   rarityCommon: 'gewöhnlich',

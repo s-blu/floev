@@ -1,4 +1,4 @@
-import type { GameState, Pot, Plant, Rarity, PetalEffect } from '../model/plant'
+import type { GameState, Pot, Plant, Rarity, PetalEffect, PlantPhase } from '../model/plant'
 import { plannedPlant, randomPlant } from './genetic/genetic'
 import { addToCatalog, getCatalogEntryForPlant } from './catalog'
 
@@ -6,12 +6,12 @@ import { addToCatalog, getCatalogEntryForPlant } from './catalog'
 
 const STORAGE_KEY   = 'bloom_v1'
 const POT_COUNT     = 9
-const STARTER_PLANTS = 3;
+const STARTER_PLANTS = 4;
 
 export const PHASE_DURATION_MS: Record<number, number> = {
-  1: 10_000,
-  2: 18_000,
-  3: 28_000,
+  1: 360_000,  // 6 min
+  2: 480_000,  // 8 min
+  3: 600_000,  // 10 min 
 }
 
 export const RARITY_LABELS: Record<Rarity, string> = {
@@ -38,32 +38,36 @@ export function coinValueForScore(score: number): number {
 const useDebugPlants = false;
 const sharedDebugConfig = {
       hue: 200,
-      petalEffect: 'shimmer' as PetalEffect,
-      petalCount: 5
+      petalCount: 5,
+      plantPhase: 3 as PlantPhase,
 }
 const DEBUG_PLANTS = [
     plannedPlant(
     {
       ...sharedDebugConfig,
       petalShape: 'round',
+      petalEffect: 'shimmer' as PetalEffect,
     }
   ),
   plannedPlant(
     {
       ...sharedDebugConfig,
       petalShape: 'lanzett',
+      petalEffect: 'bicolor' as PetalEffect,
     }
   ),
     plannedPlant(
     {
       ...sharedDebugConfig,
       petalShape: 'tropfen',
+      petalEffect: 'iridescent' as PetalEffect,
     }
   ),
     plannedPlant(
     {
       ...sharedDebugConfig,
       petalShape: 'wavy',
+      petalEffect: 'gradient' as PetalEffect,
     }
   ),
     plannedPlant(
@@ -82,14 +86,18 @@ function createInitialState(): GameState {
     pots = Array.from({ length: POT_COUNT }, (_, i) => ({
       id: i,
       plant: i < DEBUG_PLANTS.length ? DEBUG_PLANTS[i] : null,
-      phaseStart: i < DEBUG_PLANTS.length ? Date.now() - 90000 : null,
+      phaseStart: i < DEBUG_PLANTS.length ? Date.now() - 5000 : null,
     }))
   } else {
-    pots = Array.from({ length: POT_COUNT }, (_, i) => ({
-      id: i,
-      plant: i < STARTER_PLANTS ? randomPlant() : null,
-      phaseStart: i < STARTER_PLANTS ? Date.now() - 50000 : null,
-    }))
+    // Starter plants: all in phase 3 (Bud), finishing at 6s / 30s / 60s / 3min
+    const phase3Dur = PHASE_DURATION_MS[3];
+    const starterOffsets = [12_000, 30_000, 60_000, 180_000];
+    pots = Array.from({ length: POT_COUNT }, (_, i) => {
+      if (i >= STARTER_PLANTS) return { id: i, plant: null, phaseStart: null };
+      const plant = randomPlant();
+      plant.phase = 3 as PlantPhase;
+      return { id: i, plant, phaseStart: Date.now() - (phase3Dur - starterOffsets[i]) };
+    });
   }
   return { pots, catalog: [], coins: 0, achievements: { unlocked: [], rewarded: [] }, lastSave: Date.now() }
 }

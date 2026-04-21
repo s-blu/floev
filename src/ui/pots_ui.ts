@@ -1,5 +1,5 @@
 import { renderPlantSVG } from '../engine/renderer/renderer';
-import { getPhaseProgress, RARITY_COLORS, RARITY_LABELS } from '../engine/game';
+import { getPhaseProgress, RARITY_COLORS, RARITY_LABELS, PHASE_DURATION_MS } from '../engine/game';
 import { isHomozygous } from '../engine/genetic/genetic_utils';
 import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
 import { t } from '../model/i18n';
@@ -85,14 +85,23 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     plantHtml = `<div class="plant-view">${renderPlantSVG(pot.plant ?? null, 100, 130, pot.design)}</div>`;
   }
 
-  // ── Phase label ──
-  const labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)}</p>`;
-
-  // ── Progress bar ──
+  // ── Phase label + progress ──
   let progressHtml = '';
+  let labelHtml: string;
   if (pot.plant && pot.plant.phase < 4) {
-    const pct = Math.round(getPhaseProgress(pot) * 100);
+    const progress = getPhaseProgress(pot);
+    const pct = (progress * 100).toFixed(2);
+    const currentPhaseRemainingMs = PHASE_DURATION_MS[pot.plant.phase] * (1 - progress);
+    const laterPhasesMs = Object.entries(PHASE_DURATION_MS)
+      .filter(([p]) => Number(p) > pot.plant!.phase)
+      .reduce((sum, [, dur]) => sum + dur, 0);
+    const remainingMs = currentPhaseRemainingMs + laterPhasesMs;
+    const remainingMin = Math.ceil(remainingMs / 60_000);
+    const timeLabel = remainingMin < 1 ? t.phaseAlmostDone : t.phaseTimeLeft(remainingMin);
+    labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)} · <span class="phase-pct">${timeLabel}</span></p>`;
     progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
+  } else {
+    labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)}</p>`;
   }
 
   // ── Action buttons — single row ──
