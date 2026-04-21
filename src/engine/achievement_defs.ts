@@ -103,10 +103,8 @@ export function buildAchievements(): Achievement[] {
     })
   }
 
-  // TODO Züchte alle Blüttenblätteranzahlen (also 3-8) mit runden Blüttenblättern
-
   // ── 2. Catalog size milestones (stacked) ─────────────────────────────────────
-  const sizeStack = [15, 30, 60, 100]
+  const sizeStack = [25, 50, 75, 100]
   for (let i = 0; i < sizeStack.length; i++) {
     const n = sizeStack[i]
     list.push({
@@ -116,7 +114,7 @@ export function buildAchievements(): Achievement[] {
       hidden: false,
       title: t.achCatalogTitle(n),
       desc: t.achCatalogDesc(n),
-      reward: [10, 25, 50, 150][i],
+      reward: [15, 25, 50, 150][i],
       progress: cat => ({ current: Math.min(cat.length, n), total: n }),
     })
   }
