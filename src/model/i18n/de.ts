@@ -143,7 +143,7 @@ export const de = {
   // Colors
   helpColorsTitle: 'Farbe & Helligkeit',
   helpColorsBody: 'Jede Pflanze trägt zwei Farb-Allele und zwei Helligkeits-Allele. Das dominantere Allel bestimmt die sichtbare Farbe.',
-  helpColorBucketsExplain: 'Farben sind in Gruppen eingeteilt — von häufig (links) bis selten (rechts). Manche Gruppen sind noch unentdeckt:',
+  helpColorBucketsExplain: 'Farben sind in Bereiche eingeteilt — von häufig (links) bis selten (rechts). Manche Bereiche sind noch unentdeckt:',
   helpColorsDominance: 'Farbdominanz — links dominiert, rechts ist rezessiv',
   helpLightnessDominance: 'Helligkeit: Dunkel dominiert Mittel dominiert Hell',
   helpLightnessDark: 'dunkel',
@@ -223,8 +223,8 @@ export const de = {
   // Color diversity
   achColorDivTitle: (n: number) => n === 8 ? 'Volle Palette' : `${n} Farben`,
   achColorDivDesc: (n: number) => n === 8
-    ? 'Entdecke Blüten in allen 8 Farbgruppen (inkl. Weiß & Grau).'
-    : `Entdecke Blüten in ${n} verschiedenen Farbgruppen.`,
+    ? 'Entdecke Blüten in allen 8 Farbbereichen (inkl. Weiß & Grau).'
+    : `Entdecke Blüten in ${n} verschiedenen Farbbereichen.`,
 
   // Shape diversity
   achShapeDivTitle: (n: number) => n === 5 ? 'Alle Formen' : `${n} Blütenformen`,
@@ -263,11 +263,11 @@ export const de = {
   achPetalsDesc: (shapeLabel: string, count: number) => `Entdecke eine ${shapeLabel}-Blüte mit genau ${count} Blütenblättern.`,
 
   // Bucket collection
-  achBucketFirstTitle: (colorLabel: string) => `Erste ${colorLabel}töne`,
+  achBucketFirstTitle: (colorLabel: string) => `Im ${colorLabel}-Bereich`,
   achBucketFirstDesc: (colorLabel: string) => `Entdecke deine erste Blüte im ${colorLabel}-Bereich.`,
-  achBucketHuesTitle: (colorLabel: string) => `Alle ${colorLabel}töne`,
-  achBucketHuesDesc: (colorLabel: string) => `Entdecke jeweils mindestens eine Blüte aus allen Farbgruppen des ${colorLabel}-Bereichs.`,
-  achBucketShadesTitle: (colorLabel: string) => `Alle ${colorLabel}schattierungen`,
+  achBucketHuesTitle: (colorLabel: string) => `Alle ${colorLabel}-Gruppen`,
+  achBucketHuesDesc: (colorLabel: string) => `Entdecke jeweils mindestens eine Blüte aus allen Gruppen des ${colorLabel}-Bereichs.`,
+  achBucketShadesTitle: (colorLabel: string) => `Alle ${colorLabel}-Farbtöne`,
   achBucketShadesDesc: (colorLabel: string) => `Entdecke alle Farbton-Helligkeits-Kombinationen im ${colorLabel}-Bereich.`,
 
   // 8-petal shape × color combos
