@@ -2,6 +2,7 @@ import { UPGRADES, POT_COLORS, POT_SHAPES } from '../model/shop'
 import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape } from './ui'
 import { hasUpgrade, hasPotColor, hasPotShape } from '../engine/shop_engine'
 import { renderPotShopPreview } from '../engine/renderer/pot_renderer'
+import { t } from '../model/i18n'
 
 // ─── Shop sidebar ─────────────────────────────────────────────────────────────
 
@@ -70,7 +71,7 @@ function renderUpgradesSection(): string {
         </div>
         <div class="shop-item-action">
           ${owned
-            ? `<span class="shop-item-owned-badge">Gekauft</span>`
+            ? `<span class="shop-item-owned-badge">${t.shopItemOwned}</span>`
             : `<button class="shop-buy-btn ${!canAfford ? 'shop-buy-btn--locked' : ''}"
                  data-action="buy-upgrade" data-id="${u.id}" ${disabled ? 'disabled' : ''}>
                  🪙 ${u.price}
@@ -82,7 +83,7 @@ function renderUpgradesSection(): string {
 
   return `
     <div class="shop-section">
-      <p class="shop-section-label">Upgrades</p>
+      <p class="shop-section-label">${t.shopSectionUpgrades}</p>
       <div class="shop-items-list">${items}</div>
     </div>`
 }
@@ -99,7 +100,7 @@ function renderDecoSection(): string {
         class="pot-swatch ${owned ? 'pot-swatch--owned' : ''} ${!owned && !canAfford ? 'pot-swatch--cant-afford' : ''}"
         data-action="${owned ? '' : 'buy-color'}"
         data-id="${c.id}"
-        title="${c.label}${owned ? ' (gekauft)' : ` — 🪙 ${c.price}`}"
+        title="${c.label}${owned ? t.shopOwnedSuffix : ` — 🪙 ${c.price}`}"
         ${owned ? 'disabled' : (!canAfford ? 'disabled' : '')}
       >
         <span class="pot-swatch-dot" style="background:${c.body};border-color:${c.rim}"></span>
@@ -130,11 +131,11 @@ function renderDecoSection(): string {
 
   return `
     <div class="shop-section">
-      <p class="shop-section-label">Topf-Design</p>
-      <p class="shop-subsection-label">Farben freischalten</p>
-      <p class="shop-deco-hint">Gekaufte Designs per 🎨-Button an jedem Topf wechseln.</p>
+      <p class="shop-section-label">${t.shopSectionDeco}</p>
+      <p class="shop-subsection-label">${t.shopSubsectionColors}</p>
+      <p class="shop-deco-hint">${t.shopDecoHint}</p>
       <div class="pot-color-grid">${colorSwatches}</div>
-      <p class="shop-subsection-label" style="margin-top:12px">Formen freischalten</p>
+      <p class="shop-subsection-label" style="margin-top:12px">${t.shopSubsectionShapes}</p>
       <div class="pot-shape-row">${shapeCards}</div>
     </div>`
 }

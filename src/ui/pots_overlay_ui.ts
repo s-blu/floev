@@ -200,7 +200,7 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   const overlay = document.createElement('div')
   overlay.className = 'pot-design-overlay-new'
   overlay.innerHTML = `
-    <button class="pdo-close" data-pdo-action="close" title="Schließen">×</button>
+    <button class="pdo-close" data-pdo-action="close" title="${t.helpClose}">×</button>
     ${unlockedShapes.length > 0 ? `
     <div class="pdo-shapes-row">
       ${shapeButtons}
@@ -316,14 +316,14 @@ function hueToCSS(h: number, l: ChromaticL): string {
   return `hsl(${Math.round(h)},${PALETTE_S}%,${l}%)`;
 }
 function hueLabel(h: number): string {
-  if (h === ACHROMATIC_HUE_WHITE) return 'weiß';
-  if (h === ACHROMATIC_HUE_GRAY_DARK) return 'dunkelgrau';
-  if (h === ACHROMATIC_HUE_GRAY_MID) return 'grau';
-  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return 'hellgrau';
+  if (h === ACHROMATIC_HUE_WHITE) return t.alleleHueWhite;
+  if (h === ACHROMATIC_HUE_GRAY_DARK) return t.alleleHueGrayDark;
+  if (h === ACHROMATIC_HUE_GRAY_MID) return t.alleleHueGrayMid;
+  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return t.alleleHueGrayLight;
   return `${Math.round(h)}°`;
 }
 function lightnessLabel(l: ChromaticL): string {
-  return l === 30 ? 'dunkel' : l === 60 ? 'mittel' : 'hell';
+  return l === 30 ? t.helpLightnessDark : l === 60 ? t.helpLightnessMid : t.helpLightnessLight;
 }
 
 export function renderChipPair(

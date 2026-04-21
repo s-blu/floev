@@ -30,6 +30,7 @@ export const de = {
   rarityLegendary: 'legendär',
 
   // Pot buttons
+  potDesignBtnTitle: 'Topf-Design ändern',
   btnPlant: 'Pflanzen',
   btnBreedSelect: 'Züchten',
   btnBreedDeselect: 'Abwählen',
@@ -45,6 +46,10 @@ export const de = {
 
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Allele anzeigen',
+  alleleHueWhite: 'weiß',
+  alleleHueGrayDark: 'dunkelgrau',
+  alleleHueGrayMid: 'grau',
+  alleleHueGrayLight: 'hellgrau',
   alleleOverlayTitle: 'Genetik',
   alleleOverlayHue: 'Farbe',
   alleleOverlayLight: 'Helligkeit',
@@ -106,6 +111,7 @@ export const de = {
   catalogMetaEffect: 'Effekt',
   catalogMetaGen: 'Gen.',
   catalogAncestry: 'Stammbaum',
+  catalogSelfPollinatedTitle: 'Selbstbestäubt',
   catalogParentUnknown: 'Unbekannt',
   catalogEntryNum: (n: number) => `Nr. ${n}`,
   catalogEntryName: (n: number) => `Blüte ${n}`,
@@ -122,6 +128,15 @@ export const de = {
   // Shop (placeholder)
   shopTab: 'Shop',
   shopComingSoon: 'Bald verfügbar',
+
+  // Shop sidebar
+  shopSectionUpgrades: 'Upgrades',
+  shopItemOwned: 'Gekauft',
+  shopOwnedSuffix: ' (gekauft)',
+  shopSectionDeco: 'Topf-Design',
+  shopSubsectionColors: 'Farben freischalten',
+  shopDecoHint: 'Gekaufte Designs per 🎨-Button an jedem Topf wechseln.',
+  shopSubsectionShapes: 'Formen freischalten',
 
   // Messages
   msgSeedPlanted: 'Samen gepflanzt!',
@@ -190,6 +205,7 @@ export const de = {
 
   // Help button tooltip
   helpBtnTitle: 'Hilfe & Spielregeln',
+  helpDisclaimerText: 'Placeholder – hier kommt dein Text hin.',
 
   // Achievement panel
   achPanelTitle: 'Erfolge',

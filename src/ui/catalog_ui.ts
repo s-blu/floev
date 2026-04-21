@@ -10,7 +10,7 @@ const SHAPE_LABELS: Record<string, string> = {
   round: t.shapeRound, lanzett: t.shapeLanzett, tropfen: t.shapeDrop, wavy: t.shapeWavy, zickzack: t.shapeZickzack,
 };
 const CENTER_LABELS: Record<string, string> = {
-  dot: t.centerDot, disc: t.centerDisc, stamen: 'Staubblätter',
+  dot: t.centerDot, disc: t.centerDisc, stamen: t.centerTypeLabels.stamen,
 };
 const RARITY_BADGE_STYLES: Record<Rarity, { bg: string; color: string }> = {
   0: { bg: '#F1EFE8', color: '#5F5E5A' },
@@ -142,7 +142,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
           <summary>${t.catalogAncestry}</summary>
           <div class="enc-parents-row">
             ${renderParentSlot(parentA, plant.parentIds[0])}
-            <span class="enc-parent-cross" title="Selbstbestäubt">↺</span>
+            <span class="enc-parent-cross" title="${t.catalogSelfPollinatedTitle}">↺</span>
           </div>
         </details>`;
     } else {

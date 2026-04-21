@@ -68,7 +68,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     headerHtml += `<span class="pot-rarity-dot" style="color:${RARITY_COLORS[r]}" title="${RARITY_LABELS[r]}">${RARITY_ICON[r]}</span>`;
   }
   if (hasCosmetics) {
-    headerHtml += `<button class="pot-design-btn" data-action="pot-design" data-pot="${pot.id}" title="Topf-Design ändern">🎨</button>`;
+    headerHtml += `<button class="pot-design-btn" data-action="pot-design" data-pot="${pot.id}" title="${t.potDesignBtnTitle}">🎨</button>`;
   }
   headerHtml += '</div>';
 

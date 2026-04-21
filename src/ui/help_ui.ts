@@ -117,7 +117,7 @@ function buildHelpContent(): string {
         </section>
 
         <div class="help-disclaimer">
-          <p class="help-disclaimer-text">Placeholder – hier kommt dein Text hin.</p>
+          <p class="help-disclaimer-text">${t.helpDisclaimerText}</p>
         </div>
 
         <div class="help-footer">
