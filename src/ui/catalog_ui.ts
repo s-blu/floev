@@ -104,9 +104,13 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const effect = expressedEffect(plant.petalEffect);
   const homozyg = isHomozygous(plant);
 
+  const hasEffect = effect !== 'none' && pc.s > 0;
+  const pcForEffect = hasEffect ? { ...pc, l: 60 as const } : pc;
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`;
-  const swatchStyle = `background: ${hslMain}`;
-  const swatchLabel = (t.colorLabel as any)[pc.h]?.[pc.s]?.[pc.l] ?? '';
+  const swatchStyle = hasEffect ? buildFamilySwatchStyle(pc) : `background: ${hslMain}`;
+  const swatchLabel = hasEffect
+    ? (t.colorLabel as any)[pc.h]?.hueName ?? ''
+    : (t.colorLabel as any)[pc.h]?.[pc.s]?.[pc.l] ?? '';
   const parentA = plant.parentIds
     ? state.catalog.find(e => e.plant.id === plant.parentIds![0]) ?? null
     : null;
@@ -174,7 +178,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
           ${renderMetaRow(t.catalogMetaPetals, `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}
           ${renderMetaRow(t.catalogMetaCenter, `${CENTER_LABELS[center] ?? center}`)}
           ${renderMetaRow(t.catalogMetaColor, `${swatchLabel} <span class="enc-color-swatch" style="${swatchStyle}"></span>`)}
-          ${effect !== 'none' ? renderMetaRow(t.catalogMetaEffect, `${(t.effectLabels as Record<string, string>)[effect] ?? effect} <span class="enc-color-swatch" style="${buildEffectSwatchStyle(effect, pc)}"></span>`) : ''}
+          ${effect !== 'none' ? renderMetaRow(t.catalogMetaEffect, `${(t.effectLabels as Record<string, string>)[effect] ?? effect} <span class="enc-color-swatch" style="${buildEffectSwatchStyle(effect, pcForEffect)}"></span>`) : ''}
           ${renderMetaRow(t.catalogMetaGen, `${plant.generation}`)}
         </div>
         <div class="enc-discovered">${formatDate(entry.discovered)}</div>
@@ -190,6 +194,12 @@ function renderMetaRow(label: string, value: string): string {
     <span class="enc-meta-label">${label}</span>
     <span class="enc-meta-value">${value}</span>
   </div>`;
+}
+
+function buildFamilySwatchStyle(pc: HSLColor): string {
+  const { h, s } = pc;
+  const c = (l: number) => `hsl(${Math.round(h)},${Math.round(s)}%,${l}%)`;
+  return `background: linear-gradient(to right, ${c(30)} 33%, ${c(60)} 33%, ${c(60)} 66%, ${c(90)} 66%)`;
 }
 
 function buildEffectSwatchStyle(effect: PetalEffect, pc: HSLColor): string {
