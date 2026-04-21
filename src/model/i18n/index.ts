@@ -1,4 +1,4 @@
-// ─── Active locale ────────────────────────────────────────────────────────────
-// Swap the import below to switch languages:
-//   import { en } from './en'   →  export const t = en
-export { de as t } from './de'
+import { de } from './de'
+import { en } from './en'
+
+export const t = navigator.language.startsWith('de') ? de : en
