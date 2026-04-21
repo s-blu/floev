@@ -3,7 +3,8 @@ import { expressedColor, expressedShape, expressedNumber, expressedCenter, expre
 import { renderCenter } from './center_renderer';
 import { buildPetalPath, petalToSVG } from './petal_renderer';
 import { renderStem } from './renderer';
-import { hsl, clamp, resolvePetalEffect } from './renderer_utils';
+import { hsl, clamp } from './renderer_utils';
+import { resolvePetalEffect } from './petaleffect_renderer';
 
 export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number, body: string) {
   const pc = expressedColor(plant.petalHue, plant.petalLightness);

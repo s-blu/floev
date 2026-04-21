@@ -1,7 +1,7 @@
 import type { Plant } from '../../model/plant';
 import { expressedColor, expressedShape, expressedNumber, expressedCenter, expressedEffect } from '../genetic/genetic_utils';
 import { buildPetalPath, petalToSVG } from './petal_renderer';
-import { resolvePetalEffect } from './renderer_utils';
+import { resolvePetalEffect } from './petaleffect_renderer';
 import { renderCenter } from './center_renderer';
 
 // ─── Bloom-only render (for encyclopedia) ────────────────────────────────────
