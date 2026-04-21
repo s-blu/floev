@@ -1,0 +1,1 @@
+Always write UI texts to the i18n/ files. 
