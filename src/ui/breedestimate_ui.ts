@@ -41,7 +41,7 @@ function hueProbs(
       h,
       pct: Math.round((count / 4) * 100),
       css: hueToCSS(h, avgS, avgL),
-      label: "",
+      label: (t.colorLabel as any)[h]?.hueName ?? '',
     });
   }
   return result.filter(x => x.pct > 0).sort((a, b) => b.pct - a.pct);
@@ -83,10 +83,10 @@ const SHAPE_DE: Record<string, string> = {
 const CENTER_DE: Record<string, string> = {
   dot: t.centerDot, disc: t.centerDisc, stamen: t.centerStamen,
 };
-function renderBar(label: string, pct: number, swatchCss?: string): string {
+function renderBar(label: string, pct: number, swatchCss?: string, swatchTitle?: string): string {
   const barClass = pct > 49 ? 'high' : pct > 29 ? 'middle' : 'low';
   const swatch = swatchCss
-    ? `<span class="prob-swatch" style="background:${swatchCss}"></span>`
+    ? `<span class="prob-swatch" style="background:${swatchCss}"${swatchTitle ? ` title="${swatchTitle}"` : ''}></span>`
     : '';
   return `<div class="prob-entry">
     ${swatch}
@@ -107,7 +107,7 @@ function gradientSwatchCSS(avgH: number, avgS: number): string {
 // ─── Estimate formatter ───────────────────────────────────────────────────────
 export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): string {
   const colorBars = hueProbs(plantA, plantB, e.avgS, e.avgL)
-    .map(x => renderBar(x.label, x.pct, x.css))
+    .map(x => renderBar('', x.pct, x.css, x.label))
     .join('');
 
   const lightBars = lightnessProbs(plantA, plantB)

@@ -111,6 +111,10 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const swatchLabel = hasEffect
     ? (t.colorLabel as any)[pc.h]?.hueName ?? ''
     : (t.colorLabel as any)[pc.h]?.[pc.s]?.[pc.l] ?? '';
+  const groupLabel = (t.colorLabel as any)[pc.h]?.hueName ?? '';
+  const swatchTitle = hasEffect
+    ? groupLabel
+    : [swatchLabel, groupLabel].filter(Boolean).join(' · ');
   const parentA = plant.parentIds
     ? state.catalog.find(e => e.plant.id === plant.parentIds![0]) ?? null
     : null;
@@ -177,7 +181,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
         <div class="enc-meta">
           ${renderMetaRow(t.catalogMetaPetals, `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}
           ${renderMetaRow(t.catalogMetaCenter, `${CENTER_LABELS[center] ?? center}`)}
-          ${renderMetaRow(t.catalogMetaColor, `${swatchLabel} <span class="enc-color-swatch" style="${swatchStyle}"></span>`)}
+          ${renderMetaRow(t.catalogMetaColor, `${swatchLabel} <span class="enc-color-swatch" style="${swatchStyle}" title="${swatchTitle}"></span>`)}
           ${effect !== 'none' ? renderMetaRow(t.catalogMetaEffect, `${(t.effectLabels as Record<string, string>)[effect] ?? effect} <span class="enc-color-swatch" style="${buildEffectSwatchStyle(effect, pcForEffect)}"></span>`) : ''}
           ${renderMetaRow(t.catalogMetaGen, `${plant.generation}`)}
         </div>
