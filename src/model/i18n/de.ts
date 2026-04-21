@@ -264,9 +264,9 @@ export const de = {
 
   // Bucket collection
   achBucketFirstTitle: (colorLabel: string) => `Erste ${colorLabel}töne`,
-  achBucketFirstDesc: (colorLabel: string) => `Entdecke deine erste ${colorLabel}-Blüte.`,
+  achBucketFirstDesc: (colorLabel: string) => `Entdecke deine erste Blüte im ${colorLabel}-Bereich.`,
   achBucketHuesTitle: (colorLabel: string) => `Alle ${colorLabel}töne`,
-  achBucketHuesDesc: (colorLabel: string) => `Entdecke Blüten in allen Farbtönen des ${colorLabel}-Bereichs.`,
+  achBucketHuesDesc: (colorLabel: string) => `Entdecke jeweils mindestens eine Blüte aus allen Farbgruppen des ${colorLabel}-Bereichs.`,
   achBucketShadesTitle: (colorLabel: string) => `Alle ${colorLabel}schattierungen`,
   achBucketShadesDesc: (colorLabel: string) => `Entdecke alle Farbton-Helligkeits-Kombinationen im ${colorLabel}-Bereich.`,
 
@@ -328,7 +328,7 @@ export const de = {
 
   colorLabel: {
   0: {
-    hueName: `Karmin (${colorBucketLabels.red})`,
+    hueName: `Karmin (Gruppe)`,
     90: {
       30: "Karmesin",
       60: "Karminrot",
@@ -336,13 +336,13 @@ export const de = {
     }
   },
   1: {
-    hueName: 'Weiß',
+    hueName: 'Weiß (Gruppe)',
     0: {
       100: "Weiß"
     }
   },
   2: {
-    hueName: 'Grau',
+    hueName: 'Grau (Gruppe)',
     0: {
       10: "Anthrazit",
       40: "Steingrau",
@@ -350,7 +350,7 @@ export const de = {
     }
   },
   25: {
-    hueName: `Rost (${colorBucketLabels.red})`,
+    hueName: `Rost (Gruppe)`,
     90: {
       30: "Rost",
       60: "Rostorange",
@@ -358,7 +358,7 @@ export const de = {
     },
   },
   350: {
-    hueName: `Rubin (${colorBucketLabels.red})`,
+    hueName: `Rubin (Gruppe)`,
     90: {
       30: "Rubinrot",
       60: "Rhodolith",
@@ -366,7 +366,7 @@ export const de = {
     },
   },
   60: {
-    hueName: `Gelb (${colorBucketLabels.yellowgreen})`,
+    hueName: `Gelb (Gruppe)`,
     90: {
       30: "Senf",
       60: "Goldgelb",
@@ -374,7 +374,7 @@ export const de = {
     },
   },
   160: {
-    hueName: `Smaragd (${colorBucketLabels.yellowgreen})`,
+    hueName: `Smaragd (Gruppe)`,
     90: {
       30: "Smaragd",
       60: "Jadegrün",
@@ -382,7 +382,7 @@ export const de = {
     },
   },
   180: {
-    hueName: `Türkis (${colorBucketLabels.blue})`,
+    hueName: `Türkis (Gruppe)`,
     90: {
       30: "Tiefseetürkis",
       60: "Türkis",
@@ -390,7 +390,7 @@ export const de = {
     },
   },
   200: {
-    hueName: `Azur (${colorBucketLabels.blue})`,
+    hueName: `Azur (Gruppe)`,
     90: {
       30: "Petrol",
       60: "Himmelblau",
@@ -398,7 +398,7 @@ export const de = {
     },
   },
   230: {
-    hueName: `Marine (${colorBucketLabels.blue})`,
+    hueName: `Marine (Gruppe)`,
     90: {
       30: "Marineblau",
       60: "Königsblau",
@@ -406,7 +406,7 @@ export const de = {
     },
   },
   250: {
-    hueName: `Grauviolett (${colorBucketLabels.purple})`,
+    hueName: `Grauviolett (Gruppe)`,
     90: {
       30: "Indigo",
       60: "Dämmerlila",
@@ -414,7 +414,7 @@ export const de = {
     },
   },
   270: {
-    hueName: `Amethyst (${colorBucketLabels.purple})`,
+    hueName: `Amethyst (Gruppe)`,
     90: {
       30: "Amethyst",
       60: "Amethystlila",
@@ -422,7 +422,7 @@ export const de = {
     },
   },
   290: {
-    hueName: `Magenta (${colorBucketLabels.pink})`,
+    hueName: `Magenta (Gruppe)`,
     90: {
       30: "Purpur",
       60: "Magenta",
@@ -430,7 +430,7 @@ export const de = {
     },
   },
   310: {
-    hueName: `Fuchsia (${colorBucketLabels.pink})`,
+    hueName: `Fuchsia (Gruppe)`,
     90: {
       30: "Pflaume",
       60: "Fuchsia",
@@ -438,7 +438,7 @@ export const de = {
     },
   },
   330: {
-    hueName: `Burgund (${colorBucketLabels.pink})`,
+    hueName: `Burgund (Gruppe)`,
     90: {
       30: "Burgund",
       60: "Burgundrot",
