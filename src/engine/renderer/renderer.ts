@@ -2,6 +2,7 @@ import type { Plant, PotDesign } from '../../model/plant'
 import { expressedNumber} from "../genetic/genetic_utils"
 import { renderPot } from './pot_renderer';
 import { renderSeed, renderSprout, renderStemWithLeaves, renderBud, renderFullBloom } from './plant_renderer';
+import { svg } from './renderer_utils';
 
 // ─── Curved stem ─────────────────────────────────────────────────────────────
 
@@ -54,7 +55,3 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number, potDes
   return svg(defs, body, w, h)
 }
 
-function svg(defs: string, body: string, w: number, h: number): string {
-  const defsBlock = defs ? `<defs>${defs}</defs>` : ''
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${defsBlock}${body}</svg>`
-}
