@@ -11,11 +11,19 @@ import {
   HUE_ALLELE_POOL,
   LIGHTNESS_ALLELE_POOL,
   MIN_STEM_HEIGHT,PALETTE_HUES_BUCKETS, PALETTE_L, SHAPE_ALLELE_POOL,
+  SHAPE_ALLELE_POOL_EXCLUDED_RARES,
   STEM_TYPES,
 } from "../../model/genetic_model"
-export function randomPetalShapeAllele(): PetalShape {
-  return SHAPE_ALLELE_POOL[Math.floor(Math.random() * SHAPE_ALLELE_POOL.length)]
+
+
+export function randomPetalShapeAllele(includeRares = true): PetalShape {
+  if (includeRares) {
+    return SHAPE_ALLELE_POOL[Math.floor(Math.random() * SHAPE_ALLELE_POOL.length)]
+  } else {
+    return SHAPE_ALLELE_POOL_EXCLUDED_RARES[Math.floor(Math.random() * SHAPE_ALLELE_POOL_EXCLUDED_RARES.length)]
+  }
 }
+
 
 // ─── Random hue/lightness allele for a given ColorBucket ─────────────────────
 

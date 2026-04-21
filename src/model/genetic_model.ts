@@ -30,11 +30,11 @@ export const SHAPE_ALLELE_POOL_EXCLUDED_RARES: PetalShape[] = [
   ...Array(35).fill('round'),
   ...Array(25).fill('lanzett'),
   ...Array(18).fill('tropfen'),
-  ...Array(10).fill('wavy'),
+  ...Array(4).fill('wavy'),
 ];
 export const SHAPE_ALLELE_POOL: PetalShape[] = [
   ...SHAPE_ALLELE_POOL_EXCLUDED_RARES,
-  ...Array(4).fill('wavy'),
+  ...Array(10).fill('wavy'),
   ...Array(8).fill('zickzack'),
 ];
 
