@@ -46,12 +46,12 @@
 
 function generateHSLSwatches() {
     // const hues = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350];
-    const hues = [];
-    for (let i = 0; i <= 360; i += 10) {
-        hues.push(i)
-    }
+    // const hues = [];
+    // for (let i = 0; i <= 360; i += 10) {
+        // hues.push(i)
+    // }
 
-    //const hues = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350]
+    const hues = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350]
 
     const saturationSteps = [90];
     const lightnessValues = [30, 60, 90];
@@ -91,67 +91,98 @@ function generateHSLSwatches() {
 const centerColor = {
     60: {
     90: {
-      
       90: "hsl(60,90%,90%)",
     },}
 }
-const colorLabel = {
+
+const translations = {
+  // Shared label maps
+  shapeLabels: {
+    round: 'Rund', lanzett: 'Lanzett', tropfen: 'Tropfen', wavy: 'Wellig', zickzack: 'Zickzack',
+  },
+  colorBucketLabels: {
+    white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Pink',
+    purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
+  },
+  centerTypeLabels: {
+    dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
+  },
+
+  colorLabelGradient: "-Verlauf",
+
+  colorLabel: {
   0: {
+    hueName: `Karmin (${getTranslation('colorBucketLabels', 'red')})`,
     90: {
       30: "Karmesin",
-      60: "Rot",
-      90: "Koralle",
-    },
+      60: "Karminrot",
+      90: "Korallenrot",
+    }
+  },
+  1: {
+    hueName: 'Weiß',
+    0: {
+      100: "Weiß"
+    }
+  },
+  2: {
+    hueName: 'Grau',
     0: {
       10: "Anthrazit",
       40: "Steingrau",
       70: "Silber",
-      100: "Weiß"
     }
   },
   25: {
+    hueName: `Rost (${getTranslation('colorBucketLabels', 'red')})`,
     90: {
       30: "Rost",
-      60: "Orange",
+      60: "Rostorange",
       90: "Apricot",
     },
   },
   350: {
+    hueName: `Rubin (${getTranslation('colorBucketLabels', 'red')})`,
     90: {
       30: "Rubinrot",
-      60: "Karmin",
+      60: "Rubinrot hell",
       90: "Rosé",
     },
   },
   60: {
+    hueName: `Gelb (${getTranslation('colorBucketLabels', 'yellowgreen')})`,
     90: {
       30: "Senf",
-      60: "Gelb",
-      90: "Vanille",
+      60: "Goldgelb",
+      90: "Vanillegelb",
     },
   },
   160: {
+    hueName: `Smaragd (${getTranslation('colorBucketLabels', 'yellowgreen')})`,
     90: {
       30: "Smaragd",
-      60: "Jade",
+      60: "Jadegrün",
       90: "Mintgrün",
     },
   },
   180: {
+    hueName: `Türkis (${getTranslation('colorBucketLabels', 'yellowgreen')})`,
     90: {
-      30: "Tiefsee",
+      30: "Tiefseetürkis",
       60: "Türkis",
       90: "Eisblau",
     },
   },
   200: {
+    hueName: `Azur (${getTranslation('colorBucketLabels', 'blue')})`,
     90: {
       30: "Petrol",
       60: "Himmelblau",
-      90: "Azur",
+      90: "Azurblau",
     },
   },
   230: {
+    hueName: `Marine (${getTranslation('colorBucketLabels', 'blue')})`,
     90: {
       30: "Marineblau",
       60: "Königsblau",
@@ -159,6 +190,7 @@ const colorLabel = {
     },
   },
   250: {
+    hueName: `Grauviolett (${getTranslation('colorBucketLabels', 'purple')})`,
     90: {
       30: "Indigo",
       60: "Dämmerlila",
@@ -166,13 +198,15 @@ const colorLabel = {
     },
   },
   270: {
+    hueName: `Amethyst (${getTranslation('colorBucketLabels', 'purple')})`,
     90: {
       30: "Amethyst",
-      60: "Lila",
-      90: "Malve",
+      60: "Amethystlila",
+      90: "Kunzit",
     },
   },
   290: {
+    hueName: `Magenta (${getTranslation('colorBucketLabels', 'pink')})`,
     90: {
       30: "Purpur",
       60: "Magenta",
@@ -180,6 +214,7 @@ const colorLabel = {
     },
   },
   310: {
+    hueName: `Fuchsia (${getTranslation('colorBucketLabels', 'pink')})`,
     90: {
       30: "Pflaume",
       60: "Fuchsia",
@@ -187,22 +222,37 @@ const colorLabel = {
     },
   },
   330: {
+    hueName: `Burgund (${getTranslation('colorBucketLabels', 'pink')})`,
     90: {
       30: "Burgund",
-      60: "Purpur",
+      60: "Burgundrot",
       90: "Altrosa",
     },
   },
-}  
+},
+}
+
+
+function getTranslation(objName, key) {
+  const colorBucketLabels = {
+    white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Pink',
+    purple: 'Lila', blue: 'Blau', green: 'Grün', gray: 'Grau',
+  }
+  return colorBucketLabels[key] ?? ''
+}
+ 
         const swatches = generateHSLSwatches();
         const container = document.getElementById('swatches');
 
         let previousSwatch;
         let swatchContainer = document.createElement('div');
+        
+
         swatches.forEach(swatch => {
-            if (!previousSwatch || previousSwatch.hue !== swatch.hue) {
+            if (previousSwatch && previousSwatch.hue !== swatch.hue) {
                 //const breakEl = document.createElement('div');
                 //breakEl.className = 'break';
+
                 if (swatchContainer) {
                     container.appendChild(swatchContainer);
                 }
@@ -211,6 +261,13 @@ const colorLabel = {
                 header.className = 'hue-heading'
                 header.textContent = swatch.hue;
                 swatchContainer.appendChild(header);
+
+            const info = document.createElement('div');
+            info.className = 'color-info';
+            info.innerHTML = `
+                ${translations.colorLabel[swatch.hue]?.hueName}
+            `;
+            swatchContainer.appendChild(info);
                 
             }
             previousSwatch = swatch;
@@ -224,7 +281,7 @@ const colorLabel = {
             const info = document.createElement('div');
             info.className = 'color-info';
             info.innerHTML = `
-                ${colorLabel[swatch.hue]?.[swatch.saturation]?.[swatch.lightness]}<br/>
+                ${translations.colorLabel[swatch.hue]?.[swatch.saturation]?.[swatch.lightness]}<br/>
                 S: ${swatch.saturation}% / 
                 L: ${swatch.lightness}%
             `;
