@@ -1,12 +1,12 @@
 import { CENTER_COLORS } from '../../model/genetic_model';
+import { ChromaticL } from '../../model/plant';
 import { expressedCenter } from '../genetic/genetic_utils';
 import { hsl, clamp } from './renderer_utils';
-
 // ─── Center renderer (shared logic) ──────────────────────────────────────────
 
 export function renderCenter(
   centerType: ReturnType<typeof expressedCenter>,
-  petalLightness: number,
+  petalLightness: ChromaticL,
   cx: number,
   cy: number
 ): string {

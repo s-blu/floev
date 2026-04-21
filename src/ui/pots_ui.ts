@@ -3,7 +3,7 @@ import { getPhaseProgress, RARITY_COLORS, RARITY_LABELS, PHASE_DURATION_MS } fro
 import { isHomozygous } from '../engine/genetic/genetic_utils';
 import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
 import { t } from '../model/i18n';
-import type { Pot } from '../model/plant';
+import type { Pot, Rarity } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
 import { attachPotDesignRing, showAlleleOverlay, showPotDesignRing } from './pots_overlay_ui';
 import { getCatalogEntryForPlant } from '../engine/catalog';
@@ -23,7 +23,7 @@ const PHASE_LABEL = (pot: Pot): string => {
   }
 };
 
-function rarity(pot: Pot): number {
+function rarity(pot: Pot): Rarity {
   if (!pot.plant) return 0;
   const entry = getCatalogEntryForPlant(state, pot.plant)
   return entry?.rarity ?? 0;

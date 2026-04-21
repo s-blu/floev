@@ -43,7 +43,7 @@ export function addToCatalog(state: GameState, plant: Plant): boolean {
 }
 
 function getPlantName(plant: Plant) {
-  const count = Math.round(expressedNumber(plant.petalCount));
+  const count = Math.round(expressedNumber(plant.petalCount))  as 3 | 4 | 5 | 6 | 7 | 8;
   const shape = expressedShape(plant.petalShape);
 
   return t.petalNames[shape]?.[count]

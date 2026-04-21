@@ -1,4 +1,4 @@
-import type { Plant } from '../../model/plant';
+import type { ChromaticL, Plant } from '../../model/plant';
 import { expressedColor, expressedShape, expressedNumber, expressedCenter, expressedEffect } from '../genetic/genetic_utils';
 import { renderCenter } from './center_renderer';
 import { buildPetalPath, petalToSVG } from './petal_renderer';
@@ -27,7 +27,7 @@ export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: 
   defs += fills.defs;
 
   const centerType = expressedCenter(plant.centerType);
-  body += renderCenter(centerType, effectPc.l, cx, bloomY);
+  body += renderCenter(centerType, effectPc.l as ChromaticL, cx, bloomY);
 
   return { defs, body };
 }

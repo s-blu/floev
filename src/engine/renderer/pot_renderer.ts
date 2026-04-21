@@ -14,7 +14,7 @@ export function renderPotShopPreview(shape: string, colorId: string): string {
     potPath = `<path d="M${topX},${potTop} L${topX + topW},${potTop} L${botX + botW},${potTop + potH} L${botX},${potTop + potH} Z" fill="${c.body}"/>`
   } else if (shape === 'belly') {
     // Echter Bauch mit Bézier
-    const bx = w / 2, by = potTop + potH * 0.55
+    const by = potTop + potH * 0.55
     const bulge = 7
     potPath = `<path d="
       M${w/2 - 10},${potTop}

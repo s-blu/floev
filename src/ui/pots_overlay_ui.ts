@@ -50,12 +50,6 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     ? effectLabel(effectA)
     : `${effectLabel(domEff)} · ${effectLabel(recEff)}`;
 
-  // Gradient alleles
-  // FIXME this is using the old "hasGradient", needs to be replaced with a effect information
-  // const gA = plant.hasGradient.a;
-  // const gB = plant.hasGradient.b;
-  // const gradientValue = renderGradientChipPair(gA, gB);
-
   // Petal count alleles (rounded)
   const pcA = Math.round(plant.petalCount.a);
   const pcB = Math.round(plant.petalCount.b);
@@ -127,35 +121,6 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
 
   openAlleleIds.add(potId);
   card.appendChild(overlay);
-}
-
-function renderGradientChipPair(a: boolean, b: boolean): string {
-  const chip = (val: boolean, isDom: boolean) => {
-    const bg = val ? 'linear-gradient(135deg, hsl(50,90%,88%), hsl(50,90%,40%))' : 'var(--bg3)';
-    const label = val ? '✦ aktiv' : '○ inaktiv';
-    const domLabel = isDom ? t.estAlleleDominant : t.estAlleleRecessive;
-    // Gradient is expressed only when BOTH are true — no dominance, both matter equally
-    return `<span
-      class="allele-chip allele-chip--dom"
-      style="background:${bg};border:0.5px solid var(--border2)"
-      title="${label} — ${domLabel}"
-    ></span>`;
-  };
-
-  if (a === b) {
-    const bg = a
-      ? 'linear-gradient(135deg, hsl(50,90%,88%), hsl(50,90%,40%))'
-      : 'var(--bg3)';
-    const expressed = a ? '✦ beide aktiv → Verlauf' : '○ beide inaktiv';
-    return `<span
-      class="allele-chip allele-chip--dom"
-      style="background:${bg};border:0.5px solid var(--border2)"
-      title="${expressed}"
-    ></span>`;
-  }
-
-  // a ≠ b: one true, one false → not expressed (recessive-recessive rule)
-  return chip(a, true) + chip(b, false);
 }
 
 // ─── Pot design overlay (new mockup design) ───────────────────────────────────
@@ -257,7 +222,7 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
 
   // Position color swatches in a half-ring after mount
   requestAnimationFrame(() => {
-    positionColorSwatches(overlay, card, unlockedColors)
+    positionColorSwatches(overlay, card)
   })
 
   if (!silent) {
@@ -272,7 +237,7 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   }
 }
 
-function positionColorSwatches(overlay: HTMLElement, card: HTMLElement, colors: typeof POT_COLORS): void {
+function positionColorSwatches(overlay: HTMLElement, card: HTMLElement): void {
   const swatches = overlay.querySelectorAll<HTMLElement>('[data-pdo-color]')
   const cardW = card.offsetWidth
   const cardH = card.offsetHeight
