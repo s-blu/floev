@@ -178,54 +178,43 @@ export function buildAchievements(): Achievement[] {
     })
   }
 
-  // ── 6. Effect milestones — gradient (stacked, hidden) ────────────────────────
-  // Kept as 'gradient' specifically for backwards compat with existing save data.
-  // New effect achievements below cover shimmer / iridescent.
-  const gradStack = [1, 5, 15]
-  for (let i = 0; i < gradStack.length; i++) {
-    const n = gradStack[i]
-    list.push({
-      id: `gradient_${n}`,
-      groupKey: 'gradient',
-      stackIndex: i,
-      hidden: i !== 0,
-      title: t.achGradientTitle(n),
-      desc: t.achGradientDesc(n),
-      reward: [20, 45, 100][i],
-      progress: cat => {
-        const count = cat.filter(e => expressedEffect(e.plant.petalEffect) === 'gradient').length
-        return { current: Math.min(count, n), total: n }
-      },
-    })
-  }
-
-  // ── 6b. Effect milestones — rarer effects (each hidden) ──────────────────────
-  const rareEffects = [
-    { effect: 'bicolor'     as const, reward: 15, groupKey: 'effect_bicolor'     },
-    { effect: 'shimmer'     as const, reward: 30, groupKey: 'effect_shimmer'     },
-    { effect: 'iridescent'  as const, reward: 250, groupKey: 'effect_iridescent'  },
+  // ── 6. Effect milestones (alle Effekte vereinheitlicht: 1 / 3 / 5, alle hidden) ─
+  const allEffects: Array<{
+    effect: 'gradient' | 'bicolor' | 'shimmer' | 'iridescent'
+    rewards: [number, number, number]
+  }> = [
+    { effect: 'gradient',   rewards: [20, 35, 55]    },
+    { effect: 'bicolor',    rewards: [15, 25, 40]    },
+    { effect: 'shimmer',    rewards: [30, 50, 80]    },
+    { effect: 'iridescent', rewards: [200, 300, 400] },
   ]
-  for (const { effect, reward, groupKey } of rareEffects) {
-    list.push({
-      id: `effect_first_${effect}`,
-      groupKey,
-      stackIndex: 0,
-      hidden: true,
-      title: effect.charAt(0).toUpperCase() + effect.slice(1),
-      desc: `Entdecke deine erste Blüte mit dem Effekt „${effect}".`,
-      reward,
-      progress: cat => ({
-        current: cat.some(e => expressedEffect(e.plant.petalEffect) === effect) ? 1 : 0,
-        total: 1,
-      }),
-    })
+  const effectMilestones = [1, 3, 5]
+  for (const { effect, rewards } of allEffects) {
+    const label      = t.effectLabels[effect]      ?? effect
+    const firstTitle = t.effectFirstTitles[effect] ?? effect
+    for (let i = 0; i < effectMilestones.length; i++) {
+      const n = effectMilestones[i]
+      list.push({
+        id: `effect_${effect}_${n}`,
+        groupKey: `effect_${effect}`,
+        stackIndex: i,
+        hidden: true,
+        title: t.achEffectTitle(label, firstTitle, n),
+        desc:  t.achEffectDesc(label, n),
+        reward: rewards[i],
+        progress: cat => {
+          const count = cat.filter(e => expressedEffect(e.plant.petalEffect) === effect).length
+          return { current: Math.min(count, n), total: n }
+        },
+      })
+    }
   }
 
 
   // ── 7. Self-pollination — homozygous (visible) ────────────────────────────────
   list.push({
     id: 'first_homo',
-    groupKey: 'homozygous',
+    groupKey: 'all_shapes_homo',
     stackIndex: 0,
     hidden: false,
     title: t.achHomoTitle,
@@ -234,22 +223,19 @@ export function buildAchievements(): Achievement[] {
     progress: cat => ({ current: cat.some(e => isHomozygous(e.plant)) ? 1 : 0, total: 1 }),
   })
 
-  // ── 8. High petal counts (6, 7, 8) for a specific shape (hidden, stacked per shape) ──────
+  // ── 8. 7-Blätter-Achievements pro Form (hidden) — 8-Blätter wird durch section 10 abgedeckt ──
   for (const shape of PETAL_SHAPES) {
     const shapeLabel = t.shapeLabels[shape] ?? shape
-    for (let stackI = 0; stackI < 2; stackI++) {
-      const count = stackI + 7   // 6..8
-      list.push({
-        id: `petals_${shape}_${count}`,
-        groupKey: `petals_shape_${shape}`,
-        stackIndex: stackI,
-        hidden: true,
-        title: t.achPetalsTitle(shapeLabel, count),
-        desc: t.achPetalsDesc(shapeLabel, count),
-        reward: [5, 10][stackI],
-        progress: cat => ({ current: hasShapeWithCount(cat, shape, count) ? 1 : 0, total: 1 }),
-      })
-    }
+    list.push({
+      id: `petals_${shape}_7`,
+      groupKey: `petals_shape_${shape}`,
+      stackIndex: 0,
+      hidden: true,
+      title: t.achPetalsTitle(shapeLabel, 7),
+      desc: t.achPetalsDesc(shapeLabel, 7),
+      reward: 5,
+      progress: cat => ({ current: hasShapeWithCount(cat, shape, 7) ? 1 : 0, total: 1 }),
+    })
   }
 
   // ── 9. All hues in each chromatic bucket (hidden, stacked: tones then shades) ─
@@ -377,14 +363,14 @@ export function buildAchievements(): Achievement[] {
     }),
   })
 
-  // ── 14. Alle Formen reinerbig (gestapelt: 3 / alle 5) ────────────────────────
+  // ── 14. Alle Formen reinerbig (gestapelt mit first_homo: 3 / alle 5) ─────────
   for (let i = 0; i < 2; i++) {
     const n = i === 0 ? 3 : 5
     list.push({
       id: `all_shapes_homo_${n}`,
       groupKey: 'all_shapes_homo',
-      stackIndex: i,
-      hidden: i > 0,
+      stackIndex: i + 1,
+      hidden: true,
       title: t.achAllShapesHomoTitle(n),
       desc: t.achAllShapesHomoDesc(n),
       reward: i === 0 ? 40 : 120,
@@ -433,7 +419,7 @@ export function buildAchievements(): Achievement[] {
     desc: t.achMonochromeDesc,
     reward: 50,
     progress: cat => {
-      const TARGET_LIGHTNESSES = new Set([100, 70, 40, 0])
+      const TARGET_LIGHTNESSES = new Set([100, 70, 40, 10])
       const found = new Set<number>()
       for (const e of cat) {
         const color = expressedColor(e.plant.petalHue, e.plant.petalLightness)

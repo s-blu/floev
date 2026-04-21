@@ -234,11 +234,23 @@ export const de = {
   achGenTitle: (g: number) => `Generation ${g}`,
   achGenDesc: (g: number) => `Züchte eine Blüte der Generation ${g} oder höher.`,
 
-  // Gradient milestones
-  achGradientTitle: (n: number) => n === 1 ? 'Erstes Schimmern' : `${n}× Farbverlauf`,
-  achGradientDesc: (n: number) => n === 1
-    ? 'Entdecke deine erste Blüte mit Farbverlauf.'
-    : `Entdecke ${n} Blüten mit Farbverlauf.`,
+  // Effect milestones (unified: gradient, bicolor, shimmer, iridescent)
+  effectLabels: {
+    gradient:   'Farbverlauf',
+    bicolor:    'Zweifarbig',
+    shimmer:    'Schimmer',
+    iridescent: 'Irisierend',
+  } as Record<string, string>,
+  effectFirstTitles: {
+    gradient:   'Erstes Schimmern',
+    bicolor:    'Zweifarbig',
+    shimmer:    'Schimmer',
+    iridescent: 'Irisierend',
+  } as Record<string, string>,
+  achEffectTitle: (label: string, firstTitle: string, n: number) =>
+    n === 1 ? firstTitle : `${n}× ${label}`,
+  achEffectDesc: (label: string, n: number) =>
+    n === 1 ? `Entdecke deine erste Blüte mit dem Effekt ${label}.` : `Entdecke ${n} Blüten mit dem Effekt ${label}.`,
 
   // Homozygous
   achHomoTitle: 'Reinerbig',
