@@ -2,6 +2,14 @@
 
 Ein entspanntes Pflanzenzucht-Spiel. Züchte, kreuze und entdecke neue Blumenarten — dynamisch gerendert aus Pflanzeneigenschaften.
 
+## KI Nutzung 
+
+Dieses Spiel wurde großteils mithilfe von Claude Sonnet 4.6 geschrieben, als Experiment, wozu KI Stand April 2026 in der Lage ist und wo ihre Grenzen liegen. Der Code wurde anschließend von mir überprüft. Mein aktuelles Urteil: KI kann erschreckend viel, wiederholt aber auch immer die selben Fehler (hardcoded Übersetzungen, Magic Numbers noch und nöcher, Codeduplikationen). Ich war zu Anfang überzeugt, das es schnell am Hinzufügen und Verändern von Features scheitern würde, nachdem der One-Shot-Prototype generiert war, aber das funktionierte erstaunlich wie erschreckend selbst bei wachsender Codebase noch ganz gut.
+
+---
+
+AI Usage: This game was made as an experiment of what AI is capable of in web development in april 2026 and where their limitations are. The code was reviewed by me. My current verdict: It can do scaringly much, but also repeats the same errors (doesn't extract to translation file; magic numbers EVERYWHERE; loves to duplicate code). Still, I was convinced it would fail at some point, latest when I start adding features to the code base, but it worked okayish.
+
 ## Setup
 
 ```bash
@@ -60,19 +68,6 @@ src/
 
 ## Erweiterungspunkte
 
-### Neue Pflanzeneigenschaft hinzufügen
-1. `types/plant.ts` — Interface `Plant` erweitern
-2. `engine/genetics.ts` — `randomPlant()` und `breedPlants()` anpassen
-3. `engine/renderer.ts` — `renderPlantSVG()` nutzt die neue Eigenschaft
-
-### Wachstumszeiten anpassen
-`engine/game.ts` → `PHASE_DURATION_MS`
-
-### Weitere Töpfe
-`engine/game.ts` → `POT_COUNT`
-
-### Seltenheits-Kriterien ändern
-`engine/genetics.ts` → `calcRarity()`
 
 ## Für v2 vorgemerkt
 - Shop & Währung (Blumen verkaufen, Samen kaufen)
