@@ -290,9 +290,9 @@ export const de = {
   achAllShapesHomoTitle: (n: number) => `${n} Formen reinerbig`,
   achAllShapesHomoDesc: (n: number) => `Züchte reinerbige Blüten in ${n} verschiedenen Blütenformen.`,
 
-  // Volle Helligkeit
-  achFullLightnessTitle: (colorLabel: string) => `${colorLabel} — alle Helligkeiten`,
-  achFullLightnessDesc: (colorLabel: string) => `Entdecke dunkle, mittlere und helle Blüten im ${colorLabel}-Farbbereich.`,
+  // Volle Helligkeit (alle Farbton-Helligkeitskombinationen)
+  achFullLightnessTitle: (colorLabel: string) => `${colorLabel} — alle Kombinationen`,
+  achFullLightnessDesc: (colorLabel: string) => `Entdecke alle Farbton-Helligkeitskombinationen im ${colorLabel}-Farbbereich.`,
 
   // Monochromes Set
   achMonochromeTitle: 'Monochrom',
@@ -301,6 +301,12 @@ export const de = {
   // Alle Blütenblatt-Anzahlen
   achAllCountsTitle: 'Vollständige Zählung',
   achAllCountsDesc: 'Entdecke Blüten mit 3, 4, 5, 6, 7 und 8 Blütenblättern.',
+  achAllCountsShapeTitle: (shapeLabel: string) => `Vollständige Zählung: ${shapeLabel}`,
+  achAllCountsShapeDesc: (shapeLabel: string) => `Entdecke ${shapeLabel}-Blüten mit 3, 4, 5, 6, 7 und 8 Blütenblättern.`,
+
+  // Alle Blütenformen in einem Farbbucket
+  achShapesInBucketTitle: (colorLabel: string) => `Alle Formen in ${colorLabel}`,
+  achShapesInBucketDesc: (colorLabel: string) => `Entdecke alle 5 Blütenformen im ${colorLabel}-Farbbereich.`,
 
   // Reiche Ernte
   achRichHarvestTitle: (coins: number) => `${coins} Münzen wert`,

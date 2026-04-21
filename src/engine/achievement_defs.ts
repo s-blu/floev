@@ -32,12 +32,13 @@ function countUniqueShapes(catalog: CatalogEntry[]): number {
   return seen.size
 }
 
-//FIXME implement a achievement for that
-function hasShapeInBucket(catalog: CatalogEntry[], shape: PetalShape, bucket: ColorBucket): boolean {
-  return catalog.some(e =>
-    expressedShape(e.plant.petalShape) === shape &&
-    colorBucket(expressedColor(e.plant.petalHue, e.plant.petalLightness)) === bucket
-  )
+function countShapesInBucket(catalog: CatalogEntry[], bucket: ColorBucket): { current: number; total: number } {
+  const seen = new Set<string>()
+  for (const e of catalog) {
+    if (colorBucket(expressedColor(e.plant.petalHue, e.plant.petalLightness)) === bucket)
+      seen.add(expressedShape(e.plant.petalShape))
+  }
+  return { current: seen.size, total: PETAL_SHAPES.length }
 }
 
 function hasShapeWithCount(catalog: CatalogEntry[], shape: PetalShape, count: number): boolean {
@@ -223,21 +224,6 @@ export function buildAchievements(): Achievement[] {
     progress: cat => ({ current: cat.some(e => isHomozygous(e.plant)) ? 1 : 0, total: 1 }),
   })
 
-  // ── 8. 7-Blätter-Achievements pro Form (hidden) — 8-Blätter wird durch section 10 abgedeckt ──
-  for (const shape of PETAL_SHAPES) {
-    const shapeLabel = t.shapeLabels[shape] ?? shape
-    list.push({
-      id: `petals_${shape}_7`,
-      groupKey: `petals_shape_${shape}`,
-      stackIndex: 0,
-      hidden: true,
-      title: t.achPetalsTitle(shapeLabel, 7),
-      desc: t.achPetalsDesc(shapeLabel, 7),
-      reward: 5,
-      progress: cat => ({ current: hasShapeWithCount(cat, shape, 7) ? 1 : 0, total: 1 }),
-    })
-  }
-
   // ── 9. All hues in each chromatic bucket (hidden, stacked: tones then shades) ─
   // For the first achievement, only take into account rare colors
     for (const bucket of CHROMATIC_RARE_BUCKETS) {
@@ -346,23 +332,6 @@ export function buildAchievements(): Achievement[] {
     })
   }
 
-    // ── 13. Farbverlauf fixiert ───────────────────────────────────────────────────
-  list.push({
-    id: 'gradient_fixed',
-    groupKey: 'gradient_fixed',
-    stackIndex: 0,
-    hidden: true,
-    title: t.achGradFixedTitle,
-    desc: t.achGradFixedDesc,
-    reward: 60,
-    progress: cat => ({
-      current: cat.some(e =>
-        expressedGradient(e.plant.hasGradient) && isHomozygous(e.plant)
-      ) ? 1 : 0,
-      total: 1,
-    }),
-  })
-
   // ── 14. Alle Formen reinerbig (gestapelt mit first_homo: 3 / alle 5) ─────────
   for (let i = 0; i < 2; i++) {
     const n = i === 0 ? 3 : 5
@@ -384,8 +353,7 @@ export function buildAchievements(): Achievement[] {
     })
   }
 
-  // ── 15. Volle Helligkeit — pro chromatischem Bucket ──────────────────────────
-  //TODO rework torequireALL huesinalllightnesses
+  // ── 15. Volle Helligkeit — alle Farbton-Helligkeitskombinationen pro Bucket ───
   for (const bucket of CHROMATIC_BUCKETS) {
     const colorLabel = t.colorBucketLabels[bucket] ?? bucket
     list.push({
@@ -396,14 +364,7 @@ export function buildAchievements(): Achievement[] {
       title: t.achFullLightnessTitle(colorLabel),
       desc: t.achFullLightnessDesc(colorLabel),
       reward: 35,
-      progress: cat => {
-        const lightnessLevels = new Set<number>()
-        for (const e of cat) {
-          const color = expressedColor(e.plant.petalHue, e.plant.petalLightness)
-          if (colorBucket(color) === bucket) lightnessLevels.add(color.l)
-        }
-        return { current: Math.min(lightnessLevels.size, 3), total: 3 }
-      },
+      progress: cat => countShadesInBucket(cat, bucket),
     })
   }
 
@@ -429,7 +390,7 @@ export function buildAchievements(): Achievement[] {
     },
   })
 
-  // ── 17. Alle Blütenblatt-Anzahlen ─────────────────────────────────────────────
+  // ── 17. Alle Blütenblatt-Anzahlen (gestapelt: erst formlos, dann pro Form) ─────
   list.push({
     id: 'all_petal_counts',
     groupKey: 'all_petal_counts',
@@ -442,10 +403,47 @@ export function buildAchievements(): Achievement[] {
       const counts = new Set<number>()
       for (const e of cat) counts.add(Math.round(expressedNumber(e.plant.petalCount)))
       const TARGET = new Set([3, 4, 5, 6, 7, 8])
-      const found = [...TARGET].filter(n => counts.has(n)).length
-      return { current: found, total: 6 }
+      return { current: [...TARGET].filter(n => counts.has(n)).length, total: 6 }
     },
   })
+  for (let i = 0; i < PETAL_SHAPES.length; i++) {
+    const shape = PETAL_SHAPES[i]
+    const shapeLabel = t.shapeLabels[shape] ?? shape
+    list.push({
+      id: `all_counts_${shape}`,
+      groupKey: 'all_petal_counts',
+      stackIndex: i + 1,
+      hidden: true,
+      title: t.achAllCountsShapeTitle(shapeLabel),
+      desc: t.achAllCountsShapeDesc(shapeLabel),
+      reward: [15, 20, 30, 40, 60][i],
+      progress: cat => {
+        const TARGET = new Set([3, 4, 5, 6, 7, 8])
+        const found = [...TARGET].filter(n =>
+          cat.some(e =>
+            expressedShape(e.plant.petalShape) === shape &&
+            Math.round(expressedNumber(e.plant.petalCount)) === n
+          )
+        ).length
+        return { current: found, total: 6 }
+      },
+    })
+  }
+
+  // ── 19. Alle Blütenformen in einem Farbbucket (hidden) ───────────────────────
+  for (const bucket of CHROMATIC_BUCKETS) {
+    const colorLabel = t.colorBucketLabels[bucket] ?? bucket
+    list.push({
+      id: `shapes_in_bucket_${bucket}`,
+      groupKey: `shapes_in_bucket_${bucket}`,
+      stackIndex: 0,
+      hidden: true,
+      title: t.achShapesInBucketTitle(colorLabel),
+      desc: t.achShapesInBucketDesc(colorLabel),
+      reward: 40,
+      progress: cat => countShapesInBucket(cat, bucket),
+    })
+  }
 
   // ── 18. Reiche Ernte (gestapelt: 20 / 50 / 100 Münzen) ───────────────────────
   // Proxy: schaut ob irgendeine Katalog-Blüte den entsprechenden coinValue erreicht
