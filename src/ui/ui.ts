@@ -231,17 +231,10 @@ function executeSelfPollinate(potId: number): void {
   if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
   if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
 
-  // Remove parent plant (it is consumed)
+  // Remove parent plant (it is consumed) and place child in the same pot
   removePlant(state, potId)
-
-  // Place child seed
-  const placed = placeSeedInEmptyPot(state, child)
-  if (placed === null) {
-    showMsg(t.breedNoSpace)
-    checkAchAndSave(state)
-    render()
-    return
-  }
+  pot.plant      = child
+  pot.phaseStart = Date.now()
 
   showMsg(t.selfPollinateSuccess(child.generation))
   checkAchAndSave(state)
