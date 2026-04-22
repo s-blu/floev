@@ -4,6 +4,7 @@ import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import type { Rarity, CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
 import { openAncestryIds, state } from './ui';
 import { t } from '../model/i18n';
+import { renderDiscoveryIndex } from './discovery_index_ui';
 
 // ─── Catalog helpers ──────────────────────────────────────────────────────────
 const SHAPE_LABELS: Record<string, string> = {
@@ -61,7 +62,9 @@ export function renderCatalog(): void {
   entryIndex = new Map<string, number>();
   allSorted.forEach((e, i) => entryIndex.set(e.plant.id, i + 1));
 
+  const discoveryIndexOpen = (document.getElementById('discovery-index') as HTMLDetailsElement | null)?.open ?? false;
   container.innerHTML = '';
+  container.appendChild(renderDiscoveryIndex(state.catalog, discoveryIndexOpen));
 
   for (const rarity of [4, 3, 2, 1, 0] as Rarity[]) {
     const entries = groups[rarity];

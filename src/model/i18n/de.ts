@@ -481,6 +481,12 @@ export const de = {
   },
 },
 
+discoveryIndexTitle: 'Entdeckungs-Index',
+  discoveryIndexSectionShapes: 'Blütenformen & Anzahlen',
+  discoveryIndexSectionColors: 'Farben',
+  discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
+    `${shapes}/${totalShapes} Formen · ${colors}/${totalColors} Farben`,
+
 petalNames: {
   round: {
     3: 'Karge Orbella',

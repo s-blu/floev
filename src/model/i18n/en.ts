@@ -481,6 +481,12 @@ export const en = {
   },
 },
 
+discoveryIndexTitle: 'Discovery Index',
+  discoveryIndexSectionShapes: 'Petal shapes & counts',
+  discoveryIndexSectionColors: 'Colours',
+  discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
+    `${shapes}/${totalShapes} forms · ${colors}/${totalColors} colours`,
+
 petalNames: {
   round: {
     3: 'Sparse Orbella',
