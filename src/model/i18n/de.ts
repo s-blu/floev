@@ -70,8 +70,8 @@ export const de = {
   alleleOverlayStemHeight: 'Stängelhöhe',
 
   // Breeding panel
-  breedParent1: 'Elter 1',
-  breedParent2: 'Elter 2',
+  breedParent1: 'Elternteil 1',
+  breedParent2: 'Elternteil 2',
   breedPrompt: 'Wähle zwei blühende Pflanzen aus.',
   breedBtn: 'Züchten',
   breedHint: 'Ergebnis landet in einem leeren Topf',
