@@ -1,8 +1,9 @@
 # v1.0.2
 
+- Reduce grow time 
 - Fix some mobile styles & (hopefully) fix stuck plants on mobile devices
 - Add a dev mode for better development
-- Fine-tune help modal 
+- Improve help modal 
 
 # v1.0.1
 

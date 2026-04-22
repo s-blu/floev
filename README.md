@@ -8,7 +8,7 @@ Dieses Spiel wurde großteils mithilfe von Claude Sonnet 4.6 geschrieben, als Ex
 
 - Kann Features einigermaßen zuverlässig hinzufügen, erzeugt selten offensichtliche Bugs
 - Code ist durchgängig ausführbar
-- Wiederholt selbe Bad Practices: Hardcoded Übersetzungen, Magic Numbers, Code repetition
+- Wiederholt selbe Bad Practices: Hardcoded Übersetzungen, Magic Numbers, Code repetition, !important im css
 - Ist schlecht im refactoring, insb. beim Lösen von Typescript-Errors (Nutzt unsinnige Quick Fixes, statt dem Kern des Problems nachzugehen; castet Variablennutzungen mehrfach statt der Variable)
 
 
