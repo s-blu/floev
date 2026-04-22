@@ -28,6 +28,7 @@ export function showHelp(): void {
 
   modal.querySelector('#help-close')?.addEventListener('click', () => closeHelp(modal));
   modal.querySelector('#help-start-game')?.addEventListener('click', () => closeHelp(modal));
+  modal.querySelector('#help-start-game-qs')?.addEventListener('click', () => closeHelp(modal));
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeHelp(modal);
   });
@@ -65,7 +66,26 @@ function buildHelpContent(): string {
           <p class="help-body">${t.helpIntro2}</p>
         </section>
 
+        <!-- Quick Start -->
+        <div class="help-quickstart">
+          <span class="help-quickstart-title">🌱 ${t.helpQuickStartTitle}</span>
+          <div class="help-qs-row">
+            <span class="help-qs-btn help-qs-btn--plant">${t.btnPlant}</span>
+            <span class="help-qs-text">${t.helpQuickStartItem1}</span>
+          </div>
+          <div class="help-qs-row">
+            <span class="help-qs-btn help-qs-btn--shop">${t.shopOpenBtnLabel}</span>
+            <span class="help-qs-text">${t.helpQuickStartItem2}</span>
+          </div>
+          <div class="help-qs-row">
+            <span class="help-qs-btn help-qs-btn--breed">${t.breedBtn}</span>
+            <span class="help-qs-text">${t.helpQuickStartItem3}</span>
+          </div>
+          <button class="help-start-btn help-qs-start-btn" id="help-start-game-qs">${t.helpStartBtn}</button>
+        </div>
+
         <div class="help-disclaimer">
+          <strong class="help-disclaimer-title">${t.helpDisclaimerTitle}</strong>
           <p class="help-disclaimer-text">${t.helpDisclaimerText}</p>
         </div>
 

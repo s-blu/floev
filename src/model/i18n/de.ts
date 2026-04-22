@@ -214,7 +214,15 @@ export const de = {
 
   // Help button tooltip
   helpBtnTitle: 'Hilfe & Spielregeln',
-  helpDisclaimerText: 'KI Nutzung. Dieses Spiel ist ein KI-Experiment, um herauszufinden, wie leistungsstark KI in der Webentwicklung ist und wo die Grenzen liegen. Der Großteil des Spiels ist durch Claude Sonnet 4.6 geschrieben und von einem menschlichen Entwickler überprüft.',
+  helpDisclaimerTitle: 'KI-Nutzungshinweis',
+  helpDisclaimerText: 'Dieses Spiel ist ein KI-Experiment, um herauszufinden, wie leistungsstark KI in der Webentwicklung ist und wo die Grenzen liegen. Der Großteil des Spiels ist durch Claude Sonnet 4.6 geschrieben und von einem menschlichen Entwickler überprüft.',
+
+  shopOpenBtnLabel: '🛒 Shop',
+
+  helpQuickStartTitle: 'Quick Start',
+  helpQuickStartItem1: 'zufällige Samen pflanzen — und schauen, was blüht',
+  helpQuickStartItem2: 'neue Sorten entdecken',
+  helpQuickStartItem3: 'deine erste Kreuzung ausprobieren',
 
   // Achievement panel
   achPanelTitle: 'Erfolge',

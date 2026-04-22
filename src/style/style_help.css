@@ -366,6 +366,71 @@
   border: 0.5px solid rgba(0,0,0,0.12);
 }
 
+/* ── Quick Start box ─────────────────────────────────────────────────────────── */
+.help-quickstart {
+  margin-bottom: 1rem;
+  padding: 12px 14px;
+  background: hsl(145, 55%, 94%);
+  border: 1px solid hsl(145, 45%, 72%);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.help-quickstart-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: hsl(145, 45%, 28%);
+}
+
+.help-qs-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.help-qs-btn {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-family: inherit;
+  padding: 3px 10px;
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--border2);
+  background: var(--bg);
+  color: var(--text2);
+  pointer-events: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+  opacity: 0.85;
+}
+
+.help-qs-btn--shop {
+  gap: 4px;
+}
+
+.help-qs-btn--breed {
+  border-color: var(--green);
+  color: #fff;
+  background: var(--green);
+  opacity: 1;
+}
+
+.help-qs-text {
+  font-size: 12px;
+  color: hsl(145, 35%, 30%);
+  line-height: 1.5;
+}
+
+.help-qs-start-btn {
+  align-self: center;
+  margin-top: 2px;
+  font-size: 13px;
+  padding: 7px 20px;
+}
+
 /* ── AI Disclaimer ───────────────────────────────────────────────────────────── */
 .help-disclaimer {
   margin-bottom: 1.25rem;
@@ -373,6 +438,17 @@
   background: hsl(50, 85%, 95%);
   border: 1.5px dotted hsl(45, 60%, 65%);
   border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.help-disclaimer-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: hsl(40, 40%, 35%);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .help-disclaimer-text {
@@ -466,9 +542,22 @@
   .help-hue-swatch {
     border-color: rgba(255,255,255,0.12);
   }
+  .help-quickstart {
+    background: hsl(145, 25%, 13%);
+    border-color: hsl(145, 30%, 28%);
+  }
+  .help-quickstart-title {
+    color: hsl(145, 45%, 65%);
+  }
+  .help-qs-text {
+    color: hsl(145, 25%, 60%);
+  }
   .help-disclaimer {
     background: hsl(50, 30%, 15%);
     border-color: hsl(45, 35%, 35%);
+  }
+  .help-disclaimer-title {
+    color: hsl(50, 30%, 65%);
   }
   .help-disclaimer-text {
     color: hsl(50, 30%, 65%);

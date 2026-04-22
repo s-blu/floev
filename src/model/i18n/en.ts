@@ -214,7 +214,15 @@ export const en = {
 
   // Help button tooltip
   helpBtnTitle: 'Help & rules',
-  helpDisclaimerText: 'AI usage. This game is an AI experiment to find out how capable AI is in web development and where the limits lie. The majority of the game is written by Claude Sonnet 4.6 and reviewed by a human developer.',
+  helpDisclaimerTitle: 'AI Usage Notice',
+  helpDisclaimerText: 'This game is an AI experiment to find out how capable AI is in web development and where the limits lie. The majority of the game is written by Claude Sonnet 4.6 and reviewed by a human developer.',
+
+  shopOpenBtnLabel: '🛒 Shop',
+
+  helpQuickStartTitle: 'Quick Start',
+  helpQuickStartItem1: 'plant random seeds and see what blooms',
+  helpQuickStartItem2: 'discover new varieties',
+  helpQuickStartItem3: 'try your first crossbreeding',
 
   // Achievement panel
   achPanelTitle: 'Achievements',
