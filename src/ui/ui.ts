@@ -44,6 +44,9 @@ export function initUI(gameState: GameState): void {
   render()
   checkAndInformAch(gameState)
   setInterval(tick, 2000)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') tick()
+  })
 }
 
 function tick(): void {
