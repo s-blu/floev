@@ -159,6 +159,7 @@ export const en = {
   // Header
   helpTitle: 'Welcome to Floev',
   helpSubtitle: 'A botanical breeding game',
+  helpChangelogBtn: "What's new?",
 
   // Intro
   helpIntro1: 'Floev is a relaxed offline game — plant seeds, check back later, and marvel at what has bloomed. Each flower is calculated from genetic traits. Color, shape, center, and petal effects combine to create thousands of unique bloom combinations.',

@@ -460,10 +460,49 @@
   gap: 8px;
 }
 
+.help-version-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .help-version {
   font-size: 11px;
   color: var(--text3);
-  margin: 0;
+}
+
+.help-changelog-btn {
+  font-size: 11px;
+  color: var(--text3);
+  background: none;
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  padding: 3px 10px;
+  font-family: inherit;
+  transition: color 0.12s, background 0.12s;
+}
+
+.help-changelog-btn:hover {
+  color: var(--text);
+  background: var(--bg3);
+}
+
+.help-changelog-btn--active {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.help-changelog {
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin: 0 0 0.5rem;
+  padding: 10px 14px;
+  background: var(--bg2);
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--border);
 }
 
 .help-start-btn {

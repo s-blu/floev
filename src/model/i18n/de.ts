@@ -159,6 +159,7 @@ export const de = {
   // Header
   helpTitle: 'Willkommen bei Floev',
   helpSubtitle: 'Ein botanisches Züchtungsspiel',
+  helpChangelogBtn: 'Was ist neu?',
 
   // Intro
   helpIntro1: 'Floev ist ein entspanntes Offline-Spiel — pflanze Samen, schau später wieder rein und staune, was erblüht ist.',

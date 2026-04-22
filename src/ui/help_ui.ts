@@ -5,6 +5,7 @@ import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import { plannedPlant } from '../engine/genetic/genetic';
 import type { Rarity } from '../model/plant';
 import { version } from '../../package.json';
+import changelog from '../../CHANGELOG.md?raw';
 
 // ─── Help modal ───────────────────────────────────────────────────────────────
 
@@ -29,6 +30,14 @@ export function showHelp(): void {
   modal.querySelector('#help-close')?.addEventListener('click', () => closeHelp(modal));
   modal.querySelector('#help-start-game')?.addEventListener('click', () => closeHelp(modal));
   modal.querySelector('#help-start-game-qs')?.addEventListener('click', () => closeHelp(modal));
+  const changelogToggle = modal.querySelector<HTMLElement>('#help-changelog-toggle');
+  changelogToggle?.addEventListener('click', () => {
+    const el = modal.querySelector<HTMLElement>('#help-changelog');
+    if (el) {
+      el.hidden = !el.hidden;
+      changelogToggle.classList.toggle('help-changelog-btn--active', !el.hidden);
+    }
+  });
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeHelp(modal);
   });
@@ -58,7 +67,12 @@ function buildHelpContent(): string {
           <div class="help-flower-deco" aria-hidden="true">${buildDecoFlower()}</div>
           <h2 class="help-title">${t.helpTitle}</h2>
           <p class="help-subtitle">${t.helpSubtitle}</p>
+          <div class="help-version-row">
+            <span class="help-version">v${version}</span>
+            <button class="help-changelog-btn" id="help-changelog-toggle">${t.helpChangelogBtn}</button>
+          </div>
         </div>
+        <pre class="help-changelog" id="help-changelog" hidden>${changelog}</pre>
 
         <!-- Intro -->
         <section class="help-section">
@@ -141,7 +155,6 @@ function buildHelpContent(): string {
 
         <div class="help-footer">
           <button class="help-start-btn" id="help-start-game">${t.helpStartBtn}</button>
-          <p class="help-version">v${version}</p>
         </div>
 
       </div>
