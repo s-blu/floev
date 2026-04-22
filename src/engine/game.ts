@@ -1,6 +1,7 @@
 import type { GameState, Pot, Plant, Rarity, PetalEffect, PlantPhase } from '../model/plant'
 import { plannedPlant, randomPlant } from './genetic/genetic'
 import { addToCatalog, getCatalogEntryForPlant } from './catalog'
+import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS } from './devConfig'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -8,11 +9,9 @@ const STORAGE_KEY   = 'bloom_v1'
 const POT_COUNT     = 9
 const STARTER_PLANTS = 4;
 
-export const PHASE_DURATION_MS: Record<number, number> = {
-  1: 360_000,  // 6 min
-  2: 480_000,  // 8 min
-  3: 600_000,  // 10 min 
-}
+export const PHASE_DURATION_MS: Record<number, number> = import.meta.env.DEV
+  ? DEV_PHASE_DURATION_MS
+  : { 1: 360_000, 2: 480_000, 3: 600_000 }
 
 export const RARITY_LABELS: Record<Rarity, string> = {
   0: 'gewöhnlich',
@@ -35,7 +34,7 @@ export function coinValueForScore(score: number): number {
   return Math.max(3, Math.round(Math.pow(score / 10, 1.8)))
 }
 
-const useDebugPlants = false;
+const useDebugPlants = import.meta.env.DEV && USE_FIXED_PLANTS;
 const sharedDebugConfig = {
       hue: 200,
       petalCount: 5,
@@ -99,7 +98,7 @@ function createInitialState(): GameState {
       return { id: i, plant, phaseStart: Date.now() - (phase3Dur - starterOffsets[i]) };
     });
   }
-  return { pots, catalog: [], coins: 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], lastSave: Date.now() }
+  return { pots, catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], lastSave: Date.now() }
 }
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
