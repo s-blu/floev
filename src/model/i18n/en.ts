@@ -206,7 +206,7 @@ export const en = {
   helpHomoBody: 'Homozygous plants (◈) carry the same value on both alleles — their offspring are considerably more predictable.',
 
   // Other heritable traits
-  helpOtherTraitsTitle: 'More heritable traits',
+  helpOtherTraitsTitle: 'More traits',
   helpOtherTraitsBody: 'The genetic information also determines your plant\'s flower center, stem height, petal effects, and petal count. Discover their inheritance order and breed for them deliberately.',
 
   // Start button
@@ -221,7 +221,7 @@ export const en = {
 
   helpQuickStartTitle: 'Quick Start',
   helpQuickStartItem1: 'plant random seeds',
-  helpQuickStartItem2: 'discover new varieties',
+  helpQuickStartItem2: 'unlock new features',
   helpQuickStartItem3: 'try your first crossbreeding',
 
   // Achievement panel

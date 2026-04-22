@@ -121,15 +121,6 @@ function buildHelpContent(): string {
 
         <hr class="help-divider" />
 
-        <!-- Rarity -->
-        <section class="help-section">
-          <h3 class="help-section-title">${t.helpRarityTitle}</h3>
-          <p class="help-body">${t.helpRarityBody}</p>
-          <div class="help-rarity-list">${buildRarityList()}</div>
-        </section>
-
-        <hr class="help-divider" />
-
         <!-- Breeding -->
         <section class="help-section">
           <h3 class="help-section-title">${t.helpBreedTitle}</h3>
@@ -137,6 +128,15 @@ function buildHelpContent(): string {
           <div class="help-breed-steps">${buildBreedSteps()}</div>
           <p class="help-body">${t.helpSelfBody}</p>
           <p class="help-body">${t.helpHomoBody}</p>
+        </section>
+
+        <hr class="help-divider" />
+
+        <!-- Rarity -->
+        <section class="help-section">
+          <h3 class="help-section-title">${t.helpRarityTitle}</h3>
+          <p class="help-body">${t.helpRarityBody}</p>
+          <div class="help-rarity-list">${buildRarityList()}</div>
         </section>
 
         <div class="help-footer">

@@ -206,7 +206,7 @@ export const de = {
   helpHomoBody: 'Reinerbige Pflanzen (◈) tragen auf beiden Allelen denselben Wert — ihre Nachkommen sind deutlich berechenbarer.',
 
   // Other heritable traits
-  helpOtherTraitsTitle: 'Weitere vererbbare Eigenschaften',
+  helpOtherTraitsTitle: 'Weitere Eigenschaften',
   helpOtherTraitsBody: 'Zusätzlich bestimmen die Erbinformationen die Blütenmitte, Stängelhöhe, Blüteneffekte und Blattanzahl deiner Pflanze. Finde ihre Erbreihenfolge heraus und züchte sie gezielt.',
 
   // Start button
@@ -221,7 +221,7 @@ export const de = {
 
   helpQuickStartTitle: 'Schnellstart',
   helpQuickStartItem1: 'zufällige Samen pflanzen',
-  helpQuickStartItem2: 'neue Sorten entdecken',
+  helpQuickStartItem2: 'neue Funktionen freischalten',
   helpQuickStartItem3: 'deine erste Kreuzung ausprobieren',
 
   // Achievement panel
