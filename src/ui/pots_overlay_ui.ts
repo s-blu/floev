@@ -2,7 +2,7 @@ import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominant
 import { isHomozygous } from '../engine/genetic/genetic_utils';
 import { hasPotColor, hasPotShape } from '../engine/shop_engine';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../model/genetic_model';
-import { de as t } from '../model/i18n/de';
+import { t } from '../model/i18n';
 import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
 import { openAlleleIds, state, handleSetPotDesign, openPotDesignIds } from './ui';
