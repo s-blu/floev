@@ -492,6 +492,15 @@
 .pot-card:hover .pot-design-btn { opacity: 1; }
 .pot-design-btn:hover { opacity: 1 !important; background: var(--bg3); }
 
+@media (max-width: 480px) {
+  .pot-design-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 15px;
+    top: -6px;
+  }
+}
+
 /* ── Pot design overlay (per-pot picker) ─────────────────────────────────────── */
 
 .pot-design-overlay {

@@ -264,6 +264,14 @@
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .pots-row { gap: 8px; }
+
+  .plant-magnifier {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+    bottom: 2px;
+    right: 2px;
+  }
 }
 
 /* ── Pot design ring ──────────────────────────────────────────────────────── */
