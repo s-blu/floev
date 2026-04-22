@@ -11,7 +11,7 @@ const STARTER_PLANTS = 4;
 
 export const PHASE_DURATION_MS: Record<number, number> = import.meta.env.DEV
   ? DEV_PHASE_DURATION_MS
-  : { 1: 360_000, 2: 480_000, 3: 600_000 }
+  : { 1: 2 * 60_000, 2: 4 * 60_000, 3: 6 * 60_000 }
 
 export const RARITY_COLORS: Record<Rarity, string> = {
   0: '#888780',
