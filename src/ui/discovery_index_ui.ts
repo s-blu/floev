@@ -96,8 +96,18 @@ function renderShapeSection(catalog: CatalogEntry[]): string {
 
   // Row 2: column headers
   const countHeaders  = PETAL_COUNTS.map((c, i)  => cell('di-col-header', COUNT_START  + i, HEADER_ROW, '', String(c))).join('');
-  const centerHeaders = CENTER_TYPES.map((ct, i) => cell('di-col-header', CENTER_START + i, HEADER_ROW, t.centerTypeLabels[ct] ?? ct, t.centerTypeLabelsShort[ct] ?? ct)).join('');
-  const effectHeaders = DISPLAY_EFFECTS.map((ef, i) => cell('di-col-header', EFFECT_START + i, HEADER_ROW, t.effectLabels[ef] ?? ef, t.effectLabelsShort[ef] ?? ef)).join('');
+  const centerHeaders = CENTER_TYPES.map((ct, i) => {
+    const discovered = PETAL_SHAPES.some(s => discoveredCenters.has(`${s}_${ct}`));
+    const label = discovered ? (t.centerTypeLabelsShort[ct] ?? ct) : '?';
+    const title = discovered ? (t.centerTypeLabels[ct] ?? ct) : '';
+    return cell('di-col-header', CENTER_START + i, HEADER_ROW, title, label);
+  }).join('');
+  const effectHeaders = DISPLAY_EFFECTS.map((ef, i) => {
+    const discovered = PETAL_SHAPES.some(s => discoveredEffects.has(`${s}_${ef}`));
+    const label = discovered ? (t.effectLabelsShort[ef] ?? ef) : '?';
+    const title = discovered ? (t.effectLabels[ef] ?? ef) : '';
+    return cell('di-col-header', EFFECT_START + i, HEADER_ROW, title, label);
+  }).join('');
 
   // Rows 3+: data
   const dataRows = PETAL_SHAPES.map((shape, si) => {
@@ -106,17 +116,10 @@ function renderShapeSection(catalog: CatalogEntry[]): string {
     const name  = known ? (t.shapeLabels[shape] ?? shape) : '?';
     const labelCls = known ? 'di-shape-label' : 'di-shape-label di-shape-label--secret';
 
-    const hasAnyCenter = known && CENTER_TYPES.some(ct => discoveredCenters.has(`${shape}_${ct}`));
-    const hasAnyEffect = known && DISPLAY_EFFECTS.some(ef => discoveredEffects.has(`${shape}_${ef}`));
-
     const label   = cell(labelCls, 1, row, '', name);
     const counts  = PETAL_COUNTS.map((c, i)  => dot(known, discoveredCounts.has(`${shape}_${c}`),   COUNT_START  + i, row, `${name}, ${c}`)).join('');
-    const centers = hasAnyCenter
-      ? CENTER_TYPES.map((ct, i) => dot(known, discoveredCenters.has(`${shape}_${ct}`), CENTER_START + i, row, `${name} · ${t.centerTypeLabels[ct] ?? ct}`)).join('')
-      : `<span class="di-group-unknown" style="grid-column:${CENTER_START}/${CENTER_START + CENTER_TYPES.length};grid-row:${row}">?</span>`;
-    const effects = hasAnyEffect
-      ? DISPLAY_EFFECTS.map((ef, i) => dot(known, discoveredEffects.has(`${shape}_${ef}`), EFFECT_START + i, row, `${name} · ${t.effectLabels[ef] ?? ef}`)).join('')
-      : `<span class="di-group-unknown" style="grid-column:${EFFECT_START}/${EFFECT_START + DISPLAY_EFFECTS.length};grid-row:${row}">?</span>`;
+    const centers = CENTER_TYPES.map((ct, i) => dot(known, discoveredCenters.has(`${shape}_${ct}`), CENTER_START + i, row, `${name} · ${t.centerTypeLabels[ct] ?? ct}`)).join('');
+    const effects = DISPLAY_EFFECTS.map((ef, i) => dot(known, discoveredEffects.has(`${shape}_${ef}`), EFFECT_START + i, row, `${name} · ${t.effectLabels[ef] ?? ef}`)).join('');
 
     return label + counts + centers + effects;
   }).join('');

@@ -444,12 +444,6 @@
   color: var(--text3);
 }
 
-.di-group-unknown {
-  font-size: 11px;
-  color: var(--text3);
-  text-align: center;
-}
-
 .di-count-dot {
   width: 12px;
   height: 12px;
