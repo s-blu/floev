@@ -86,6 +86,7 @@ export const de = {
   estGroupLightness: 'Helligkeit',
   estGroupShape: 'Blütenform',
   estGroupCenter: 'Blütenmitte',
+  estGroupEffect: 'Blüteneffekt',
   estGradient: (pct: number) => `✦ Farbverlauf: ~${pct}%`,
   estNoMutNote: 'Ohne seltene Mutationen.',
   estAlleleDominant: 'exprimiert',

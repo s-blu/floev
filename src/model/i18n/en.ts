@@ -86,6 +86,7 @@ export const en = {
   estGroupLightness: 'Lightness',
   estGroupShape: 'Shape',
   estGroupCenter: 'Center',
+  estGroupEffect: 'Petal effect',
   estGradient: (pct: number) => `✦ Gradient: ~${pct}%`,
   estNoMutNote: 'Excluding rare mutations.',
   estAlleleDominant: 'expressed',

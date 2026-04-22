@@ -1,6 +1,6 @@
 import { dominantHue } from '../engine/genetic/dominance_utils';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../model/genetic_model';
-import { de as t } from '../model/i18n/de';
+import { t } from '../model/i18n';
 import type { Plant, BreedEstimate } from '../model/plant';
 
 
@@ -96,14 +96,6 @@ function renderBar(label: string, pct: number, swatchCss?: string, swatchTitle?:
   </div>`;
 }
 
-// ─── Gradient swatch: L90 → L30 of the expected hue ─────────────────────────
-function gradientSwatchCSS(avgH: number, avgS: number): string {
-  if (avgS === 0) {
-    return `linear-gradient(to right, hsl(0,0%,90%), hsl(0,0%,18%))`;
-  }
-  return `linear-gradient(to right, hsl(${Math.round(avgH)},${Math.round(avgS)}%,90%), hsl(${Math.round(avgH)},${Math.round(avgS)}%,30%))`;
-}
-
 // ─── Estimate formatter ───────────────────────────────────────────────────────
 export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): string {
   const colorBars = hueProbs(plantA, plantB, e.avgS, e.avgL)
@@ -125,7 +117,10 @@ export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): 
     .map(x => renderBar(CENTER_DE[x.center] ?? x.center, x.pct))
     .join('');
 
-  const gradSwatch = gradientSwatchCSS(e.midH, e.avgS);
+  const nonNoneEffects = e.effectProbs.filter(x => x.effect !== 'none');
+  const effectBars = nonNoneEffects
+    .map(x => renderBar(t.effectLabels[x.effect] ?? x.effect, x.pct))
+    .join('');
 
   return `
     <div class="est-row" style="margin-bottom:4px">${t.estPetals(e.minP, e.maxP)}</div>
@@ -145,11 +140,9 @@ export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): 
       <div class="prob-group-label">${t.estGroupCenter}</div>
       ${centerBars}
     </div>
-    ${e.gradPct > 0
-      ? `<div class="est-grad">
-           <span class="prob-swatch" style="background:${gradSwatch};width:36px"></span>
-           ${t.estGradient(e.gradPct)}
-         </div>`
-      : ''}
+    ${nonNoneEffects.length > 0 ? `<div class="prob-group">
+      <div class="prob-group-label">${t.estGroupEffect}</div>
+      ${effectBars}
+    </div>` : ''}
     <div class="est-note">${t.estNoMutNote}</div>`;
 }
