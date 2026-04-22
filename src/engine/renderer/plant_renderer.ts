@@ -10,7 +10,7 @@ export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: 
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
   const shape = expressedShape(plant.petalShape);
   const n = Math.round(expressedNumber(plant.petalCount));
-  const pr = 12 + (8 - n) * 1.4;
+  const pr = 14 + (8 - n) * 0.8;
 
   const effect = expressedEffect(plant.petalEffect);
   // Effects always render at L=60 regardless of allele lightness
