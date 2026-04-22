@@ -1,7 +1,7 @@
 import type { GameState, Pot, Plant, Rarity, PetalEffect, PlantPhase } from '../model/plant'
 import { plannedPlant, randomPlant } from './genetic/genetic'
 import { addToCatalog, getCatalogEntryForPlant } from './catalog'
-import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS } from './devConfig'
+import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS } from '../dev.config'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -88,7 +88,7 @@ function createInitialState(): GameState {
       phaseStart: i < DEBUG_PLANTS.length ? Date.now() - 5000 : null,
     }))
   } else {
-    // Starter plants: all in phase 3 (Bud), finishing at 6s / 30s / 60s / 3min
+    // Starter plants: all in phase 3 (Bud), finishing at 12s / 30s / 60s / 3min
     const phase3Dur = PHASE_DURATION_MS[3];
     const starterOffsets = [12_000, 30_000, 60_000, 180_000];
     pots = Array.from({ length: POT_COUNT }, (_, i) => {
