@@ -4,11 +4,13 @@ Ein entspanntes Pflanzenzucht-Spiel. Züchte, kreuze und entdecke neue Blumenart
 
 ## KI Nutzung 
 
-Dieses Spiel wurde großteils mithilfe von Claude Sonnet 4.6 geschrieben, als Experiment, wozu KI Stand April 2026 in der Lage ist und wo ihre Grenzen liegen. Der Code wurde anschließend von mir überprüft. Mein aktuelles Urteil: KI kann erschreckend viel, wiederholt aber auch immer die selben Fehler (hardcoded Übersetzungen, Magic Numbers noch und nöcher, Codeduplikationen). Ich war zu Anfang überzeugt, das es schnell am Hinzufügen und Verändern von Features scheitern würde, nachdem der One-Shot-Prototype generiert war, aber das funktionierte erstaunlich wie erschreckend selbst bei wachsender Codebase noch ganz gut.
+Dieses Spiel wurde großteils mithilfe von Claude Sonnet 4.6 geschrieben, als Experiment, wozu KI Stand April 2026 in der Lage ist und wo ihre Grenzen liegen. Der Code wurde anschließend von mir überprüft. Mein Eindruck: KI kann erschreckend viel, wiederholt aber auch immer die selben Fehler.
 
----
+- Kann Features einigermaßen zuverlässig hinzufügen, erzeugt selten offensichtliche Bugs
+- Code ist durchgängig ausführbar
+- Wiederholt selbe Bad Practices: Hardcoded Übersetzungen, Magic Numbers, Code repetition
+- Ist schlecht im refactoring, insb. beim Lösen von Typescript-Errors (Nutzt unsinnige Quick Fixes, statt dem Kern des Problems nachzugehen; castet Variablennutzungen mehrfach statt der Variable)
 
-AI Usage: This game was made as an experiment of what AI is capable of in web development in april 2026 and where their limitations are. The code was reviewed by me. My current verdict: It can do scaringly much, but also repeats the same errors (doesn't extract to translation file; magic numbers EVERYWHERE; loves to duplicate code). Still, I was convinced it would fail at some point, latest when I start adding features to the code base, but it worked okayish.
 
 ## Setup
 

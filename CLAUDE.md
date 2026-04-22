@@ -1,2 +1,3 @@
 - Always write UI texts to the i18n/ files. 
-- Avoid magic numbers - if you need to use a literal with the same meaning on more than one place, use an exported, well-named constant for it. 
+- Avoid magic numbers. If you need to use a literal with the same meaning on more than one place, use an exported, well-named constant for it. 
+- If you do not find a specific implementation with low effort, ask the human first if they can point you to the right place before you excess a significant amount of work to find it yourself
