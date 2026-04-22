@@ -65,12 +65,16 @@ function countShadesInBucket(catalog: CatalogEntry[], bucket: ColorBucket): { cu
     if (bucket === 'white' || bucket === 'gray') return false
     return ranges[bucket]?.(h) ?? false
   })
-  const total = bucketHues.length * (PALETTE_L as readonly number[]).length
+  
+  let total = bucketHues.length * (PALETTE_L as readonly number[]).length
+  if (bucket === 'gray') total = 4;
+  if (bucket === 'white') total = 1;
   const seen = new Set<string>()
   for (const e of catalog) {
     const color = expressedColor(e.plant.petalHue, e.plant.petalLightness)
     if (colorBucket(color) === bucket) seen.add(`${color.h}-${color.l}`)
   }
+console.log('countShadesInBucket', bucket, { current: seen.size, total: Math.max(1, total) })
   return { current: seen.size, total: Math.max(1, total) }
 }
 
@@ -233,6 +237,7 @@ export function buildAchievements(): Achievement[] {
 
   for (const bucket of CHROMATIC_BUCKETS) {
     const colorLabel = t.colorBucketLabels[bucket] ?? bucket
+    if (bucket === 'gray') continue;
 
     list.push({
       id: `bucket_hues_${bucket}`,

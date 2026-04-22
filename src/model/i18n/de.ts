@@ -301,7 +301,7 @@ export const de = {
   achBucketFirstTitle: (colorLabel: string) => `Im ${colorLabel}-Bereich`,
   achBucketFirstDesc: (colorLabel: string) => `Entdecke deine erste Blüte im ${colorLabel}-Bereich.`,
   achBucketHuesTitle: (colorLabel: string) => `Alle ${colorLabel}-Gruppen`,
-  achBucketHuesDesc: (colorLabel: string) => `Entdecke jeweils mindestens eine Blüte aus allen Gruppen des ${colorLabel}-Bereichs.`,
+  achBucketHuesDesc: (colorLabel: string) => `Entdecke jeweils einen Farbton aus allen Gruppen des ${colorLabel}-Bereichs.`,
   achBucketShadesTitle: (colorLabel: string) => `Alle ${colorLabel}-Farbtöne`,
   achBucketShadesDesc: (colorLabel: string) => `Entdecke alle Farbton-Helligkeits-Kombinationen im ${colorLabel}-Bereich.`,
 
