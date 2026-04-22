@@ -5,6 +5,7 @@ import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID
 import { t } from '../model/i18n';
 import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
+import { buildFamilySwatchStyle } from './swatch_utils';
 import { openAlleleIds, state, handleSetPotDesign, openPotDesignIds } from './ui';
 
 
@@ -285,9 +286,8 @@ function groupHueBg(h: number, isDom: boolean): string {
       h === ACHROMATIC_HUE_GRAY_MID || h === ACHROMATIC_HUE_GRAY_LIGHT) {
     return hueToCSS(h, 60);
   }
-  const c = (l: number) => `hsl(${Math.round(h)},${PALETTE_S}%,${l}%)`;
   const dir = isDom ? 'to right' : 'to bottom';
-  return `linear-gradient(${dir}, ${c(30)} 33%, ${c(60)} 33%, ${c(60)} 66%, ${c(90)} 66%)`;
+  return buildFamilySwatchStyle({h, s: PALETTE_S, l: 0}, dir)
 }
 function hueLabel(h: number): string {
   if (h === ACHROMATIC_HUE_WHITE) return t.alleleHueWhite;

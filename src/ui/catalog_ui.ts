@@ -111,7 +111,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const hasEffect = effect !== 'none' && pc.s > 0;
   const pcForEffect = hasEffect ? { ...pc, l: 60 as const } : pc;
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`;
-  const swatchStyle = hasEffect ? buildFamilySwatchStyle(pc) : `background: ${hslMain}`;
+  const swatchStyle = `background: ${hasEffect ? buildFamilySwatchStyle(pc) : hslMain}`;
   const swatchLabel = hasEffect
     ? (t.colorLabel as any)[pc.h]?.hueName ?? ''
     : (t.colorLabel as any)[pc.h]?.[pc.s]?.[pc.l] ?? '';

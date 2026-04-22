@@ -41,7 +41,7 @@ function hueProbs(
     result.push({
       h,
       pct: Math.round((count / 4) * 100),
-      css: achromaticCSS(h) ?? buildFamilySwatchStyle({ h, s: avgS, l: 60 }),
+      css: achromaticCSS(h) ?? `backgroudn: buildFamilySwatchStyle({ h, s: avgS, l: 60 })`,
       label: (t.colorLabel as any)[h]?.hueName ?? '',
     });
   }
