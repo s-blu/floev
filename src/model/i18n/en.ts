@@ -205,9 +205,9 @@ export const en = {
   helpSelfBody: 'With ↺ (self-pollination) a plant crosses with itself — this consumes the mother plant but produces more homozygous offspring.',
   helpHomoBody: 'Homozygous plants (◈) carry the same value on both alleles — their offspring are considerably more predictable.',
 
-  // Gradient
-  helpGradientTitle: '✦ Petal effect',
-  helpGradientBody: 'Some plants carry a hidden petal effect gene. It only shows when both alleles are active — a recessive trait that can be fixed through crossbreeding and self-pollination.',
+  // Other heritable traits
+  helpOtherTraitsTitle: 'More heritable traits',
+  helpOtherTraitsBody: 'The genetic information also determines your plant\'s flower center, stem height, petal effects, and petal count. Discover their inheritance order and breed for them deliberately.',
 
   // Start button
   helpStartBtn: 'Let\'s go 🌱',

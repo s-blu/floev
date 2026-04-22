@@ -113,6 +113,14 @@ function buildHelpContent(): string {
 
         <hr class="help-divider" />
 
+        <!-- Other heritable traits -->
+        <section class="help-section">
+          <h3 class="help-section-title">${t.helpOtherTraitsTitle}</h3>
+          <p class="help-body">${t.helpOtherTraitsBody}</p>
+        </section>
+
+        <hr class="help-divider" />
+
         <!-- Rarity -->
         <section class="help-section">
           <h3 class="help-section-title">${t.helpRarityTitle}</h3>
@@ -129,14 +137,6 @@ function buildHelpContent(): string {
           <div class="help-breed-steps">${buildBreedSteps()}</div>
           <p class="help-body">${t.helpSelfBody}</p>
           <p class="help-body">${t.helpHomoBody}</p>
-        </section>
-
-        <hr class="help-divider" />
-
-        <!-- Gradient -->
-        <section class="help-section">
-          <h3 class="help-section-title">${t.helpGradientTitle}</h3>
-          <p class="help-body">${t.helpGradientBody}</p>
         </section>
 
         <div class="help-footer">

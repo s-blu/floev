@@ -205,9 +205,9 @@ export const de = {
   helpSelfBody: 'Mit ↺ (Selbstbestäubung) kreuzt sich eine Pflanze mit sich selbst — das verbraucht die Mutterpflanze, erzeugt aber reinerbigere Nachkommen.',
   helpHomoBody: 'Reinerbige Pflanzen (◈) tragen auf beiden Allelen denselben Wert — ihre Nachkommen sind deutlich berechenbarer.',
 
-  // Gradient
-  helpGradientTitle: '✦ Blüteneffekt',
-  helpGradientBody: 'Manche Pflanzen tragen ein verborgenes Blüteneffekt-Gen. Es zeigt sich nur, wenn beide Allele aktiv sind — ein rezessives Merkmal, das sich durch Kreuzen und Selbstbestäuben fixieren lässt.',
+  // Other heritable traits
+  helpOtherTraitsTitle: 'Weitere vererbbare Eigenschaften',
+  helpOtherTraitsBody: 'Zusätzlich bestimmen die Erbinformationen die Blütenmitte, Stängelhöhe, Blüteneffekte und Blattanzahl deiner Pflanze. Finde ihre Erbreihenfolge heraus und züchte sie gezielt.',
 
   // Start button
   helpStartBtn: 'Los geht\'s 🌱',
