@@ -75,7 +75,7 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayHue}</span>
-      <span class="allele-chips-row">${renderChipPair(hA, hB, true, lA, lB)}</span>
+      <span class="allele-chips-row">${renderChipPair(hA, hB, true, lA, lB, true)}</span>
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayLight}</span>
@@ -280,6 +280,15 @@ function hueToCSS(h: number, l: ChromaticL): string {
   if (h === ACHROMATIC_HUE_GRAY_LIGHT) return 'hsl(0,0%,72%)';
   return `hsl(${Math.round(h)},${PALETTE_S}%,${l}%)`;
 }
+function groupHueBg(h: number, isDom: boolean): string {
+  if (h === ACHROMATIC_HUE_WHITE || h === ACHROMATIC_HUE_GRAY_DARK ||
+      h === ACHROMATIC_HUE_GRAY_MID || h === ACHROMATIC_HUE_GRAY_LIGHT) {
+    return hueToCSS(h, 60);
+  }
+  const c = (l: number) => `hsl(${Math.round(h)},${PALETTE_S}%,${l}%)`;
+  const dir = isDom ? 'to right' : 'to bottom';
+  return `linear-gradient(${dir}, ${c(30)} 33%, ${c(60)} 33%, ${c(60)} 66%, ${c(90)} 66%)`;
+}
 function hueLabel(h: number): string {
   if (h === ACHROMATIC_HUE_WHITE) return t.alleleHueWhite;
   if (h === ACHROMATIC_HUE_GRAY_DARK) return t.alleleHueGrayDark;
@@ -296,14 +305,19 @@ export function renderChipPair(
   bVal: number | ChromaticL,
   isHue: boolean,
   lA: ChromaticL,
-  lB: ChromaticL
+  lB: ChromaticL,
+  stacked = false
 ): string {
+  const chipBg = (val: number | ChromaticL, l: ChromaticL, isDom: boolean): string => {
+    if (isHue && stacked) return groupHueBg(val as number, isDom);
+    return isHue
+      ? hueToCSS(val as number, l)
+      : `hsl(0,0%,${(val as ChromaticL) === 30 ? 25 : (val as ChromaticL) === 60 ? 52 : 88}%)`;
+  };
+
   // Identical alleles → single chip, no dominance distinction needed
   if (aVal === bVal) {
-    const bg = isHue
-      ? hueToCSS(aVal as number, lA)
-      : `hsl(0,0%,${(aVal as ChromaticL) === 30 ? 25 : (aVal as ChromaticL) === 60 ? 52 : 88}%)`;
-    return `<span class="allele-chip allele-chip--dom" style="background:${bg}"></span>`;
+    return `<span class="allele-chip allele-chip--dom" style="background:${chipBg(aVal, lA, true)}"></span>`;
   }
 
   const isDomA = isHue
@@ -316,14 +330,11 @@ export function renderChipPair(
     : [{ val: bVal, l: lB, isDom: true }, { val: aVal, l: lA, isDom: false }];
 
   return chips.map(chip => {
-    const bg = isHue
-      ? hueToCSS(chip.val as number, chip.l)
-      : `hsl(0,0%,${(chip.val as ChromaticL) === 30 ? 25 : (chip.val as ChromaticL) === 60 ? 52 : 88}%)`;
     const label = isHue ? hueLabel(chip.val as number) : lightnessLabel(chip.val as ChromaticL);
     const domLabel = chip.isDom ? t.estAlleleDominant : t.estAlleleRecessive;
     return `<span
       class="allele-chip ${chip.isDom ? 'allele-chip--dom' : 'allele-chip--rec'}"
-      style="background:${bg}"
+      style="background:${chipBg(chip.val, chip.l, chip.isDom)}"
       title="${label} — ${domLabel}"
     ></span>`;
   }).join('');
