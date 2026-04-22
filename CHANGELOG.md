@@ -1,3 +1,12 @@
+
+# v1.1.0
+
+- Add discovery index to encyclopedia
+- Improve genetic overlay (magnifier)
+- Add effects info to breedestimate & improve color display
+- Fix/enhance rendering of two effects
+- Enhance rendering of petal sizes (to not have huge 3/4 petal blooms)
+
 # v1.0.2
 
 - Reduce grow time 
