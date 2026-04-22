@@ -132,6 +132,10 @@ export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): 
       <div class="prob-group-label">${t.estGroupLightness}</div>
       ${lightBars}
     </div>
+    ${nonNoneEffects.length > 0 ? `<div class="prob-group">
+      <div class="prob-group-label">${t.estGroupEffect}</div>
+      ${effectBars}
+    </div>` : ''}
     <div class="prob-group">
       <div class="prob-group-label">${t.estGroupShape}</div>
       ${shapeBars}
@@ -140,9 +144,6 @@ export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): 
       <div class="prob-group-label">${t.estGroupCenter}</div>
       ${centerBars}
     </div>
-    ${nonNoneEffects.length > 0 ? `<div class="prob-group">
-      <div class="prob-group-label">${t.estGroupEffect}</div>
-      ${effectBars}
-    </div>` : ''}
+
     <div class="est-note">${t.estNoMutNote}</div>`;
 }
