@@ -405,26 +405,32 @@
   margin-bottom: 8px;
 }
 
-/* ── Shape × Count table ─────────────────────────────────────────────────── */
+/* ── Unified shape × trait grid ──────────────────────────────────────────── */
 
-.di-shape-table {
+.di-shape-grid {
   display: inline-grid;
-  grid-template-columns: auto repeat(6, 17px);
   column-gap: 4px;
-  row-gap: 4px;
+  row-gap: 5px;
   align-items: center;
 }
 
-.di-shape-row {
-  display: contents;
+.di-matrix-subtitle {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text3);
+  align-self: end;
+  padding-bottom: 2px;
 }
 
-.di-count-header {
+.di-col-header {
   font-size: 10px;
   color: var(--text3);
   text-align: center;
   line-height: 1;
 }
+
 
 .di-shape-label {
   font-size: 11px;
@@ -436,6 +442,12 @@
 
 .di-shape-label--secret {
   color: var(--text3);
+}
+
+.di-group-unknown {
+  font-size: 11px;
+  color: var(--text3);
+  text-align: center;
 }
 
 .di-count-dot {

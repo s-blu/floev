@@ -358,6 +358,12 @@ export const en = {
   centerTypeLabels: {
     dot: 'Dot', disc: 'Disc', stamen: 'Stamens',
   } as Record<string, string>,
+  centerTypeLabelsShort: {
+    dot: 'Dt', disc: 'Di', stamen: 'St',
+  } as Record<string, string>,
+  effectLabelsShort: {
+    bicolor: 'Bi', gradient: 'Gr', shimmer: 'Sh', iridescent: 'Ir',
+  } as Record<string, string>,
 
   colorLabelGradient: " gradient",
 
@@ -483,7 +489,10 @@ export const en = {
 },
 
 discoveryIndexTitle: 'Discovery Index',
-  discoveryIndexSectionShapes: 'Petal shapes & counts',
+  discoveryIndexSectionShapes: 'Petal shapes',
+  discoveryIndexMatrixCount: 'Count',
+  discoveryIndexMatrixCenter: 'Center',
+  discoveryIndexMatrixEffect: 'Effect',
   discoveryIndexSectionColors: 'Colours',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
     `${shapes}/${totalShapes} forms · ${colors}/${totalColors} colours`,

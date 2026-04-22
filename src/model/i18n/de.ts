@@ -358,6 +358,12 @@ export const de = {
   centerTypeLabels: {
     dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
   } as Record<string, string>,
+  centerTypeLabelsShort: {
+    dot: 'Pt', disc: 'Di', stamen: 'St',
+  } as Record<string, string>,
+  effectLabelsShort: {
+    bicolor: 'Bi', gradient: 'FV', shimmer: 'Sh', iridescent: 'Ir',
+  } as Record<string, string>,
 
   colorLabelGradient: "-Verlauf",
 
@@ -483,7 +489,10 @@ export const de = {
 },
 
 discoveryIndexTitle: 'Entdeckungs-Index',
-  discoveryIndexSectionShapes: 'Blütenformen & Anzahlen',
+  discoveryIndexSectionShapes: 'Blütenformen',
+  discoveryIndexMatrixCount: 'Anzahl',
+  discoveryIndexMatrixCenter: 'Zentrum',
+  discoveryIndexMatrixEffect: 'Effekt',
   discoveryIndexSectionColors: 'Farben',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
     `${shapes}/${totalShapes} Formen · ${colors}/${totalColors} Farben`,
