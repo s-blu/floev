@@ -13,14 +13,6 @@ export const PHASE_DURATION_MS: Record<number, number> = import.meta.env.DEV
   ? DEV_PHASE_DURATION_MS
   : { 1: 360_000, 2: 480_000, 3: 600_000 }
 
-export const RARITY_LABELS: Record<Rarity, string> = {
-  0: 'gewöhnlich',
-  1: 'ungewöhnlich',
-  2: 'selten',
-  3: 'episch',
-  4: 'legendär',
-}
-
 export const RARITY_COLORS: Record<Rarity, string> = {
   0: '#888780',
   1: '#1D9E75',

@@ -265,11 +265,11 @@ function buildShapeSVG(shape: 'round' | 'lanzett' | 'tropfen'): string {
 // ─── Rarity list ──────────────────────────────────────────────────────────────
 
 const RARITY_META: { rarity: Rarity; icon: string; label: string; desc: string }[] = [
-  { rarity: 0, icon: '▪', label: t.rarityCommon,    desc: t.helpRarityDesc(0) },
-  { rarity: 1, icon: '●', label: t.rarityUncommon,  desc: t.helpRarityDesc(1) },
-  { rarity: 2, icon: '♦', label: t.rarityRare,      desc: t.helpRarityDesc(2) },
-  { rarity: 3, icon: '★', label: t.rarityEpic,      desc: t.helpRarityDesc(3) },
-  { rarity: 4, icon: '👑', label: t.rarityLegendary, desc: t.helpRarityDesc(4) },
+  { rarity: 0, icon: '▪', label: t.rarity.common,    desc: t.helpRarityDesc(0) },
+  { rarity: 1, icon: '●', label: t.rarity.uncommon,  desc: t.helpRarityDesc(1) },
+  { rarity: 2, icon: '♦', label: t.rarity.rare,      desc: t.helpRarityDesc(2) },
+  { rarity: 3, icon: '★', label: t.rarity.epic,      desc: t.helpRarityDesc(3) },
+  { rarity: 4, icon: '👑', label: t.rarity.legendary, desc: t.helpRarityDesc(4) },
 ];
 
 function buildRarityList(): string {

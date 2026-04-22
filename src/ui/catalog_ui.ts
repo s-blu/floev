@@ -1,4 +1,4 @@
-import { RARITY_COLORS, RARITY_LABELS } from '../engine/game';
+import { RARITY_COLORS } from '../engine/game';
 import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedEffect, isHomozygous } from '../engine/genetic/genetic_utils';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import type { Rarity, CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
@@ -72,7 +72,7 @@ export function renderCatalog(): void {
     heading.innerHTML = `
       <span class="rarity-dot" style="color:${RARITY_COLORS[rarity]}">${RARITY_ICON[rarity]}</span>
       <span class="rarity-line"></span>
-      <span class="rarity-name" style="color:${RARITY_COLORS[rarity]}">${RARITY_LABELS[rarity]}</span>
+      <span class="rarity-name" style="color:${RARITY_COLORS[rarity]}">${t.rarity[rarity]}</span>
       <span class="rarity-line"></span>
       <span class="catalog-section-count">${entries.length}</span>`;
     container.appendChild(heading);
@@ -175,7 +175,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
       <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
       <div class="enc-info">
         <div class="enc-badges-row">
-          <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${RARITY_LABELS[entry.rarity]}</span>
+          <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${t.rarity[entry.rarity]}</span>
           ${homozygBadge}
         </div>
         <div class="enc-meta">

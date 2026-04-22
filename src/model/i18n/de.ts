@@ -25,11 +25,18 @@ export const de = {
   phaseAlmostDone: 'gleich fertig',
 
   // Rarity labels
-  rarityCommon: 'gewöhnlich',
-  rarityUncommon: 'ungewöhnlich',
-  rarityRare: 'selten',
-  rarityEpic: 'episch',
-  rarityLegendary: 'legendär',
+  rarity: {
+    common: 'gewöhnlich',
+    0: 'gewöhnlich',
+    uncommon: 'ungewöhnlich',
+    1: 'ungewöhnlich',
+    rare: 'selten',
+    2: 'selten',
+    epic: 'episch',
+    3: 'episch',
+    legendary: 'legendär',
+    4: 'legendär',
+  },
 
   // Pot buttons
   potDesignBtnTitle: 'Topf-Design ändern',

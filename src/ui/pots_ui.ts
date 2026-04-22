@@ -1,5 +1,5 @@
 import { renderPlantSVG } from '../engine/renderer/renderer';
-import { getPhaseProgress, RARITY_COLORS, RARITY_LABELS, PHASE_DURATION_MS } from '../engine/game';
+import { getPhaseProgress, RARITY_COLORS, PHASE_DURATION_MS } from '../engine/game';
 import { isHomozygous } from '../engine/genetic/genetic_utils';
 import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
 import { t } from '../model/i18n';
@@ -18,7 +18,7 @@ const PHASE_LABEL = (pot: Pot): string => {
     case 1: return t.phaseSeed;
     case 2: return t.phaseSprout;
     case 3: return t.phaseBud;
-    case 4: return t.phaseBloom(`${RARITY_LABELS[rarity(pot)]} · Gen. ${pot.plant.generation}`);
+    case 4: return t.phaseBloom(`${t.rarity[rarity(pot)]} · Gen. ${pot.plant.generation}`);
     default: return '';
   }
 };
@@ -65,7 +65,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     if (homozyg) {
       headerHtml += `<span class="pot-homozygous-badge" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
     }
-    headerHtml += `<span class="pot-rarity-dot" style="color:${RARITY_COLORS[r]}" title="${RARITY_LABELS[r]}">${RARITY_ICON[r]}</span>`;
+    headerHtml += `<span class="pot-rarity-dot" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span>`;
   }
   if (hasCosmetics) {
     headerHtml += `<button class="pot-design-btn" data-action="pot-design" data-pot="${pot.id}" title="${t.potDesignBtnTitle}">🎨</button>`;
