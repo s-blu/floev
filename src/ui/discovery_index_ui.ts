@@ -8,7 +8,7 @@ import type { ColorBucket } from '../model/genetic_model';
 
 const SECRET_BUCKETS = new Set<ColorBucket>(['purple', 'blue', 'gray']);
 const PETAL_COUNTS = [3, 4, 5, 6, 7, 8] as const;
-const BUCKET_ORDER: ColorBucket[] = ['white', 'red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray'];
+const BUCKET_ORDER: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray', 'white'];
 
 // ─── Discovery set builders ───────────────────────────────────────────────────
 
@@ -72,18 +72,18 @@ function renderShapeSection(catalog: CatalogEntry[]): string {
 
 // ─── Color bucket section ─────────────────────────────────────────────────────
 
-function colorDotHtml(cssColor: string, name: string, found: boolean): string {
+function colorSwatchHtml(cssColor: string, name: string, found: boolean): string {
   if (found) {
-    return `<span class="di-color-dot di-color-dot--found" style="background:${cssColor}" title="${name}"></span>`;
+    return `<span class="di-swatch" style="background:${cssColor}" title="${name}"></span>`;
   }
-  return `<span class="di-color-dot di-color-dot--missing" style="background:${cssColor}" title="?"></span>`;
+  return `<span class="di-swatch di-swatch--missing" title="?"></span>`;
 }
 
 function renderBucketHueGroups(bucket: ColorBucket, discoveredColors: Set<string>): string {
   if (bucket === 'white') {
     const css = 'hsl(0,0%,97%)';
     const name = (t.colorLabel as any)[1]?.['0']?.[100] ?? (t.colorBucketLabels['white'] ?? '');
-    return colorDotHtml(css, name, discoveredColors.has('1_100'));
+    return `<div class="di-hue-group-row"><div class="di-swatches">${colorSwatchHtml(css, name, discoveredColors.has('1_100'))}</div></div>`;
   }
 
   if (bucket === 'gray') {
@@ -92,54 +92,76 @@ function renderBucketHueGroups(bucket: ColorBucket, discoveredColors: Set<string
       { key: '2_40',  css: 'hsl(0,0%,40%)', name: (t.colorLabel as any)[2]?.[0]?.[40] ?? '' },
       { key: '2_70',  css: 'hsl(0,0%,70%)', name: (t.colorLabel as any)[2]?.[0]?.[70] ?? '' },
     ];
-    return grayShades.map(s => colorDotHtml(s.css, s.name, discoveredColors.has(s.key))).join('');
+    const swatches = grayShades.map(s => colorSwatchHtml(s.css, s.name, discoveredColors.has(s.key))).join('');
+    return `<div class="di-hue-group-row"><div class="di-swatches">${swatches}</div></div>`;
   }
 
   const hues = (PALETTE_HUES_BUCKETS as Record<string, readonly number[]>)[bucket] ?? [];
   return hues.map(hue => {
-    const groupName = (t.colorLabel as any)[hue]?.hueName ?? '';
-    const dots = (PALETTE_L as readonly number[]).map(l => {
+    const groupKnown = (PALETTE_L as readonly number[]).some(l => discoveredColors.has(`${hue}_${l}`));
+    const groupName = groupKnown ? ((t.colorLabel as any)[hue]?.hueName ?? '') : '?';
+    const swatches = (PALETTE_L as readonly number[]).map(l => {
       const css = `hsl(${hue},${PALETTE_S}%,${l}%)`;
       const name = (t.colorLabel as any)[hue]?.[PALETTE_S]?.[l] ?? '';
-      return colorDotHtml(css, name, discoveredColors.has(`${hue}_${l}`));
+      return colorSwatchHtml(css, name, discoveredColors.has(`${hue}_${l}`));
     }).join('');
-    return `<div class="di-hue-group" title="${groupName}">${dots}</div>`;
+    return `<div class="di-hue-group-row">
+      <span class="di-hue-name">${groupName}</span>
+      <div class="di-swatches">${swatches}</div>
+    </div>`;
   }).join('');
 }
 
-function getBucketSlotCount(bucket: ColorBucket): number {
-  if (bucket === 'white') return 1;
-  if (bucket === 'gray') return 3;
+function renderSecretBucketGroups(bucket: ColorBucket): string {
+  if (bucket === 'white') {
+    return `<div class="di-hue-group-row"><div class="di-swatches"><span class="di-swatch di-swatch--secret"></span></div></div>`;
+  }
+  if (bucket === 'gray') {
+    const swatches = Array(3).fill(`<span class="di-swatch di-swatch--secret"></span>`).join('');
+    return `<div class="di-hue-group-row"><div class="di-swatches">${swatches}</div></div>`;
+  }
   const hues = (PALETTE_HUES_BUCKETS as Record<string, readonly number[]>)[bucket] ?? [];
-  return hues.length * PALETTE_L.length;
+  return hues.map(() => {
+    const swatches = (PALETTE_L as readonly number[]).map(() => `<span class="di-swatch di-swatch--secret"></span>`).join('');
+    return `<div class="di-hue-group-row"><div class="di-swatches">${swatches}</div></div>`;
+  }).join('');
+}
+
+function getBucketKeys(bucket: ColorBucket): string[] {
+  if (bucket === 'white') return ['1_100'];
+  if (bucket === 'gray') return ['2_10', '2_40', '2_70'];
+  const hues = (PALETTE_HUES_BUCKETS as Record<string, readonly number[]>)[bucket] ?? [];
+  return hues.flatMap(hue => (PALETTE_L as readonly number[]).map(l => `${hue}_${l}`));
 }
 
 function renderColorSection(catalog: CatalogEntry[]): string {
   const discoveredColors = buildDiscoveredColors(catalog);
 
-  const bucketRows = BUCKET_ORDER.map(bucket => {
+  const buckets = BUCKET_ORDER.map(bucket => {
     const label = t.colorBucketLabels[bucket] ?? bucket;
     const isSecret = SECRET_BUCKETS.has(bucket);
     const bucketKnown = catalog.some(e => colorBucket(expressedColor(e.plant.petalHue, e.plant.petalLightness)) === bucket);
+    const keys = getBucketKeys(bucket);
+    const foundCount = keys.filter(k => discoveredColors.has(k)).length;
+    const counter = `<span class="di-bucket-counter">${foundCount}/${keys.length}</span>`;
 
     if (isSecret && !bucketKnown) {
-      const slotCount = getBucketSlotCount(bucket);
-      const dots = Array(slotCount).fill(`<span class="di-color-dot di-color-dot--secret">?</span>`).join('');
-      return `<div class="di-bucket-row">
-        <span class="di-bucket-label di-bucket-label--secret">?</span>
-        <div class="di-hue-groups">${dots}</div>
+      const groups = renderSecretBucketGroups(bucket);
+      return `<div class="di-bucket">
+        <div class="di-bucket-heading di-bucket-heading--secret">?${counter}</div>
+        ${groups}
       </div>`;
     }
 
-    return `<div class="di-bucket-row">
-      <span class="di-bucket-label">${label}</span>
-      <div class="di-hue-groups">${renderBucketHueGroups(bucket, discoveredColors)}</div>
+    return `<div class="di-bucket">
+      <div class="di-bucket-heading">${label}${counter}</div>
+      ${renderBucketHueGroups(bucket, discoveredColors)}
     </div>`;
   }).join('');
 
   return `<div class="di-block">
     <div class="di-block-title">${t.discoveryIndexSectionColors}</div>
-    <div class="di-color-buckets">${bucketRows}</div>
+    <div class="di-color-buckets">${buckets}</div>
   </div>`;
 }
 
