@@ -359,10 +359,10 @@ export const de = {
     dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
   } as Record<string, string>,
   centerTypeLabelsShort: {
-    dot: 'Pt', disc: 'Di', stamen: 'St',
+    dot: 'Pt', disc: 'Sch', stamen: 'St',
   } as Record<string, string>,
   effectLabelsShort: {
-    bicolor: 'Bi', gradient: 'FV', shimmer: 'Sh', iridescent: 'Ir',
+    bicolor: 'Zw', gradient: 'FV', shimmer: 'Si', iridescent: 'Ir',
   } as Record<string, string>,
 
   colorLabelGradient: "-Verlauf",
