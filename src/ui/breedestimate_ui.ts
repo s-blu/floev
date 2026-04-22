@@ -2,15 +2,16 @@ import { dominantHue } from '../engine/genetic/dominance_utils';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../model/genetic_model';
 import { t } from '../model/i18n';
 import type { Plant, BreedEstimate } from '../model/plant';
+import { buildFamilySwatchStyle } from './swatch_utils';
 
 
 // ─── Hue helpers ─────────────────────────────────────────────────────────────
-function hueToCSS(h: number, s: number, l: number): string {
-  if (h === ACHROMATIC_HUE_WHITE) return 'hsl(0,0%,97%)';
-  if (h === ACHROMATIC_HUE_GRAY_DARK) return 'hsl(0,0%,15%)';
-  if (h === ACHROMATIC_HUE_GRAY_MID) return 'hsl(0,0%,45%)';
-  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return 'hsl(0,0%,72%)';
-  return `hsl(${Math.round(h)},${Math.round(s)}%,${Math.round(l)}%)`;
+function achromaticCSS(h: number): string | null {
+  if (h === ACHROMATIC_HUE_WHITE) return 'background:hsl(0,0%,97%)';
+  if (h === ACHROMATIC_HUE_GRAY_DARK) return 'background:hsl(0,0%,15%)';
+  if (h === ACHROMATIC_HUE_GRAY_MID) return 'background:hsl(0,0%,45%)';
+  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return 'background:hsl(0,0%,72%)';
+  return null;
 }
 
 // ─── Colour probability bars ──────────────────────────────────────────────────
@@ -20,7 +21,7 @@ function hueToCSS(h: number, s: number, l: number): string {
  * Returns entries sorted by descending probability, showing only hues > 0%.
  */
 function hueProbs(
-  plantA: Plant, plantB: Plant, avgS: number, avgL: number
+  plantA: Plant, plantB: Plant, avgS: number
 ): { h: number; pct: number; css: string; label: string; }[] {
   const alleles = [
     [plantA.petalHue.a, plantB.petalHue.a],
@@ -40,7 +41,7 @@ function hueProbs(
     result.push({
       h,
       pct: Math.round((count / 4) * 100),
-      css: hueToCSS(h, avgS, avgL),
+      css: achromaticCSS(h) ?? buildFamilySwatchStyle({ h, s: avgS, l: 60 }),
       label: (t.colorLabel as any)[h]?.hueName ?? '',
     });
   }
@@ -83,10 +84,10 @@ const SHAPE_DE: Record<string, string> = {
 const CENTER_DE: Record<string, string> = {
   dot: t.centerDot, disc: t.centerDisc, stamen: t.centerStamen,
 };
-function renderBar(label: string, pct: number, swatchCss?: string, swatchTitle?: string): string {
+function renderBar(label: string, pct: number, swatchStyle?: string, swatchTitle?: string): string {
   const barClass = pct > 49 ? 'high' : pct > 29 ? 'middle' : 'low';
-  const swatch = swatchCss
-    ? `<span class="prob-swatch" style="background:${swatchCss}"${swatchTitle ? ` title="${swatchTitle}"` : ''}></span>`
+  const swatch = swatchStyle
+    ? `<span class="prob-swatch" style="${swatchStyle}"${swatchTitle ? ` title="${swatchTitle}"` : ''}></span>`
     : '';
   return `<div class="prob-entry">
     ${swatch}
@@ -98,13 +99,13 @@ function renderBar(label: string, pct: number, swatchCss?: string, swatchTitle?:
 
 // ─── Estimate formatter ───────────────────────────────────────────────────────
 export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): string {
-  const colorBars = hueProbs(plantA, plantB, e.avgS, e.avgL)
+  const colorBars = hueProbs(plantA, plantB, e.avgS)
     .map(x => renderBar('', x.pct, x.css, x.label))
     .join('');
 
   const lightBars = lightnessProbs(plantA, plantB)
     .map(x => {
-      const lCss = `hsl(0,0%,${x.l === 30 ? 25 : x.l === 60 ? 52 : 88}%)`;
+      const lCss = `background:hsl(0,0%,${x.l === 30 ? 25 : x.l === 60 ? 52 : 88}%)`;
       return renderBar(x.label, x.pct, lCss);
     })
     .join('');

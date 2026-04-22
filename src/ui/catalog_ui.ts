@@ -5,6 +5,7 @@ import type { Rarity, CatalogEntry, HSLColor, PetalEffect } from '../model/plant
 import { openAncestryIds, state } from './ui';
 import { t } from '../model/i18n';
 import { renderDiscoveryIndex } from './discovery_index_ui';
+import { buildFamilySwatchStyle } from './swatch_utils';
 
 // ─── Catalog helpers ──────────────────────────────────────────────────────────
 const SHAPE_LABELS: Record<string, string> = {
@@ -203,11 +204,6 @@ function renderMetaRow(label: string, value: string): string {
   </div>`;
 }
 
-function buildFamilySwatchStyle(pc: HSLColor): string {
-  const { h, s } = pc;
-  const c = (l: number) => `hsl(${Math.round(h)},${Math.round(s)}%,${l}%)`;
-  return `background: linear-gradient(to right, ${c(30)} 33%, ${c(60)} 33%, ${c(60)} 66%, ${c(90)} 66%)`;
-}
 
 function buildEffectSwatchStyle(effect: PetalEffect, pc: HSLColor): string {
   const { h, s, l } = pc;
