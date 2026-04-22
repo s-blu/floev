@@ -68,7 +68,7 @@ function buildHelpContent(): string {
 
         <!-- Quick Start -->
         <div class="help-quickstart">
-          <span class="help-quickstart-title">🌱 ${t.helpQuickStartTitle}</span>
+          <span class="help-quickstart-title">${t.helpQuickStartTitle}</span>
           <div class="help-qs-row">
             <span class="help-qs-btn help-qs-btn--plant">${t.btnPlant}</span>
             <span class="help-qs-text">${t.helpQuickStartItem1}</span>

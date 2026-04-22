@@ -161,8 +161,8 @@ export const de = {
   helpSubtitle: 'Ein botanisches Züchtungsspiel',
 
   // Intro
-  helpIntro1: 'Floev ist ein entspanntes Offline-Spiel — pflanze Samen, schau später wieder rein und staune, was erblüht ist. Jede Blüte wird aus genetischen Eigenschaften berechnet. Farbe, Form, Blütenmitte und Blüteneffekte ergeben zusammen tausende einzigartige Blütenkombinationen.',
-  helpIntro2: 'Jede ausgewachsene Pflanze trägt zwei Erbgutinformationen in sich und gibt eine durch Kreuzung weiter - lerne die Mechanismen dahinter kennen und entdecke selbst die seltensten Blüten!',
+  helpIntro1: 'Floev ist ein entspanntes Offline-Spiel — pflanze Samen, schau später wieder rein und staune, was erblüht ist.',
+  helpIntro2: 'Jede Blüte wird aus genetischen Eigenschaften berechnet. Farbe, Form, Blütenmitte und Blüteneffekte ergeben zusammen tausende einzigartige Blütenkombinationen. Die Blumen tragen je zwei Erbgutinformationen in sich und geben eine durch Kreuzung weiter - lerne die Mechanismen dahinter kennen und entdecke selbst die seltensten Blüten!',
 
   // Colors
   helpColorsTitle: 'Farbe & Helligkeit',
@@ -219,8 +219,8 @@ export const de = {
 
   shopOpenBtnLabel: '🛒 Shop',
 
-  helpQuickStartTitle: 'Quick Start',
-  helpQuickStartItem1: 'zufällige Samen pflanzen — und schauen, was blüht',
+  helpQuickStartTitle: 'Schnellstart',
+  helpQuickStartItem1: 'zufällige Samen pflanzen',
   helpQuickStartItem2: 'neue Sorten entdecken',
   helpQuickStartItem3: 'deine erste Kreuzung ausprobieren',
 

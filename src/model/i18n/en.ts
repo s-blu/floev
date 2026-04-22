@@ -220,7 +220,7 @@ export const en = {
   shopOpenBtnLabel: '🛒 Shop',
 
   helpQuickStartTitle: 'Quick Start',
-  helpQuickStartItem1: 'plant random seeds and see what blooms',
+  helpQuickStartItem1: 'plant random seeds',
   helpQuickStartItem2: 'discover new varieties',
   helpQuickStartItem3: 'try your first crossbreeding',
 
