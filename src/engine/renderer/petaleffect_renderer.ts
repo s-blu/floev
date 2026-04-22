@@ -45,9 +45,10 @@ export function resolvePetalEffect(
       // tropfen/wavy/zickzack tips reach pr*2.2–2.3, keep larger TIP_DIST.
       const TIP_DIST = shape === 'round' ? pr * 2.0 : (shape === 'lanzett' ? pr * 1.6 : pr * 2.2);
 
+      const ctxKey = `${Math.round(cx)}_${Math.round(cy)}`;
       const defsMap: string[] = [];
       const buildGrad = (i: number, angle: number) => {
-        const id = `bc_${plantId.replace(/[^a-z0-9]/gi, '')}_${i}`;
+        const id = `bc_${plantId.replace(/[^a-z0-9]/gi, '')}_${ctxKey}_${i}`;
         if (defsMap[i] !== undefined) return id;
         let x1: number, y1: number, x2: number, y2: number;
         if (shape === 'round') {
