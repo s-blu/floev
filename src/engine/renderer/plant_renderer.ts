@@ -15,7 +15,7 @@ export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: 
   const effect = expressedEffect(plant.petalEffect);
   // Effects always render at L=60 regardless of allele lightness
   const effectPc = (effect !== 'none' && pc.s > 0) ? { ...pc, l: 60 as const } : pc;
-  const fills = resolvePetalEffect(effect, effectPc, shape, plant.id, cx, bloomY);
+  const fills = resolvePetalEffect(effect, effectPc, shape, plant.id, pr, cx, bloomY);
   // defs wird erst nach allen getFill-Calls gezogen (lazy getter für bicolor)
   for (let i = 0; i < n; i++) {
     const angle = (i / n) * Math.PI * 2 - Math.PI / 2;

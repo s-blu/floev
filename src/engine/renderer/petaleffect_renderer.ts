@@ -15,6 +15,7 @@ export function resolvePetalEffect(
   pc: HSLColor,
   shape: PetalShape,
   plantId: string,
+  pr: number,
   cx: number = 0,
   cy: number = 0
 ): EffectFills {
@@ -38,20 +39,32 @@ export function resolvePetalEffect(
     // Light near center, hard-edged dark tips.
     case 'bicolor': {
       const { h, s } = pc;
-      const isAchromatic = s === 0;
-      const lLight = isAchromatic ? 92 : 88;
-      const lDark = isAchromatic ? 20 : 28;
-      // World-space distance from bloom center to beyond any petal tip
-      const TIP_DIST = 42;
+      const lLight = 90, lMid = 60, lDark = 30;
+      // round/lanzett tips sit at pr*1.8 — smaller TIP_DIST moves tip beyond 100% (clamped dark).
+      // round uses pr*2.0 so only the outer ~15% shows dark; lanzett pr*1.6 for a sharper tip.
+      // tropfen/wavy/zickzack tips reach pr*2.2–2.3, keep larger TIP_DIST.
+      const TIP_DIST = shape === 'round' ? pr * 2.0 : (shape === 'lanzett' ? pr * 1.6 : pr * 2.2);
 
       const defsMap: string[] = [];
       const buildGrad = (i: number, angle: number) => {
         const id = `bc_${plantId.replace(/[^a-z0-9]/gi, '')}_${i}`;
         if (defsMap[i] !== undefined) return id;
-        const x2 = cx + Math.cos(angle) * TIP_DIST;
-        const y2 = cy + Math.sin(angle) * TIP_DIST;
-        const lMid = Math.round(lLight * 0.55 + lDark * 0.45);
-        defsMap[i] = `<linearGradient id="${id}" x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" gradientUnits="userSpaceOnUse">
+        let x1: number, y1: number, x2: number, y2: number;
+        if (shape === 'round') {
+          // <ellipse> uses transform="rotate(θ, ecx, ecy)" which causes SVG to interpret
+          // userSpaceOnUse gradient coords in the rotated local frame, doubling the rotation.
+          // Fix: express the gradient horizontally in local space (along the ellipse major axis).
+          const ca = Math.cos(angle), sa = Math.sin(angle);
+          const ecx = cx + ca * (pr - 1);
+          const ecy = cy + sa * pr;
+          x1 = ecx - pr;  y1 = ecy;
+          x2 = ecx - pr + TIP_DIST;  y2 = ecy;
+        } else {
+          x1 = cx;  y1 = cy;
+          x2 = cx + Math.cos(angle) * TIP_DIST;
+          y2 = cy + Math.sin(angle) * TIP_DIST;
+        }
+        defsMap[i] = `<linearGradient id="${id}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" gradientUnits="userSpaceOnUse">
           <stop offset="0%"   stop-color="hsl(${h},${s}%,${lLight}%)"/>
           <stop offset="54%"  stop-color="hsl(${h},${s}%,${lLight}%)"/>
           <stop offset="66%"  stop-color="hsl(${h},${s}%,${lMid}%)"/>
@@ -63,7 +76,7 @@ export function resolvePetalEffect(
       return {
         get defs() { return defsMap.join(''); },
         getFill: (i, _n, angle) => `url(#${buildGrad(i, angle)})`,
-        getStroke: () => `hsl(${h},${s}%,${Math.max(lDark - 5, 10)}%)`,
+        getStroke: () => `hsl(${h},${s}%,${lDark - 5}%)`,
         getOverlay: noOverlay,
       };
     }
