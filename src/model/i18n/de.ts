@@ -46,16 +46,13 @@ export const de = {
   btnRemove: '✕',
   btnRemoveTitle: 'Pflanze entfernen',
 
-  // Trait labels (pot card)
-  traitGradient: '〜',
-
   // Homozygous / pure-line badge
   homozygousBadge: '◈',
   homozygousTitle: 'Reinerbig — Nachkommen sind berechenbarer',
 
   // Rare recessive carrier badge
   rareCarrierBadge: '✦',
-  rareCarrierTitle: 'Trägt ein seltenes rezessives Merkmal (wellenförmig/Zickzack, Stamen, graue Farbe oder Schimmer/Irisierend)',
+  rareCarrierTitle: 'Trägt ein seltenes rezessives Merkmal',
 
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Allele anzeigen',

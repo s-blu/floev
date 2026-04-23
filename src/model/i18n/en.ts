@@ -46,16 +46,13 @@ export const en = {
   btnRemove: '✕',
   btnRemoveTitle: 'Remove plant',
 
-  // Trait labels (pot card)
-  traitGradient: '〜',
-
   // Homozygous / pure-line badge
   homozygousBadge: '◈',
   homozygousTitle: 'Homozygous — offspring are more predictable',
 
   // Rare recessive carrier badge
   rareCarrierBadge: '✦',
-  rareCarrierTitle: 'Carries a rare hidden trait (wavy/zickzack shape, stamen, gray color, or shimmer/iridescent)',
+  rareCarrierTitle: 'Carries a rare hidden trait',
 
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Show alleles',
