@@ -1,5 +1,6 @@
 import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from '../engine/genetic/dominance_utils';
-import { isHomozygous, RARE_SHAPES, RARE_EFFECTS } from '../engine/genetic/genetic_utils';
+import { isHomozygous } from '../engine/genetic/genetic_utils';
+import { RARE_SHAPES, RARE_EFFECTS } from "../model/genetic_model";
 import { hasPotColor, hasPotShape, hasUpgrade } from '../engine/shop_engine';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../model/genetic_model';
 import { t } from '../model/i18n';

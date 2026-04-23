@@ -129,3 +129,5 @@ function buildLightnessAllelePool(): ChromaticL[] {
 }
 export const HUE_ALLELE_POOL       = buildHueAllelePool();
 export const LIGHTNESS_ALLELE_POOL = buildLightnessAllelePool();
+export const RARE_SHAPES: PetalShape[] = ['wavy', 'zickzack'];
+export const RARE_EFFECTS: PetalEffect[] = ['shimmer', 'iridescent'];
