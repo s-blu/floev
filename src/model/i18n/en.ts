@@ -53,6 +53,10 @@ export const en = {
   homozygousBadge: '◈',
   homozygousTitle: 'Homozygous — offspring are more predictable',
 
+  // Rare recessive carrier badge
+  rareCarrierBadge: '✦',
+  rareCarrierTitle: 'Carries a rare hidden trait (wavy/zickzack shape, stamen, gray color, or shimmer/iridescent)',
+
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Show alleles',
   alleleHueWhite: 'white',

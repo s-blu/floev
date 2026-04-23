@@ -1,6 +1,6 @@
 import { renderPlantSVG } from '../engine/renderer/renderer';
 import { getPhaseProgress, RARITY_COLORS, PHASE_DURATION_MS } from '../engine/game';
-import { isHomozygous } from '../engine/genetic/genetic_utils';
+import { isHomozygous, hasHiddenRareTrait } from '../engine/genetic/genetic_utils';
 import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
 import { t } from '../model/i18n';
 import type { Pot, Rarity } from '../model/plant';
@@ -95,6 +95,9 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
       headerHtml += `<span class="pot-homozygous-badge" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
     }
     headerHtml += `<span class="pot-rarity-dot" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span>`;
+    if (hasHiddenRareTrait(pot.plant)) {
+      headerHtml += `<span class="pot-rare-carrier-badge" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`;
+    }
   }
   if (hasCosmetics) {
     headerHtml += `<button class="pot-design-btn" data-action="pot-design" data-pot="${pot.id}" title="${t.potDesignBtnTitle}">🎨</button>`;

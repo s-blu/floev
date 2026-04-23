@@ -53,6 +53,10 @@ export const de = {
   homozygousBadge: '◈',
   homozygousTitle: 'Reinerbig — Nachkommen sind berechenbarer',
 
+  // Rare recessive carrier badge
+  rareCarrierBadge: '✦',
+  rareCarrierTitle: 'Trägt ein seltenes rezessives Merkmal (wellenförmig/Zickzack, Stamen, graue Farbe oder Schimmer/Irisierend)',
+
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Allele anzeigen',
   alleleHueWhite: 'weiß',
