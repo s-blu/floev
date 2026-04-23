@@ -4,8 +4,8 @@ import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominant
 import { PALETTE_S } from '../../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../../model/genetic_model';
 
-const RARE_SHAPES: PetalShape[] = ['wavy', 'zickzack'];
-const RARE_EFFECTS: PetalEffect[] = ['shimmer', 'iridescent'];
+export const RARE_SHAPES: PetalShape[] = ['wavy', 'zickzack'];
+export const RARE_EFFECTS: PetalEffect[] = ['shimmer', 'iridescent'];
 const GRAY_HUES = [ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT];
 
 

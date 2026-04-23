@@ -224,9 +224,16 @@
 }
 
 .phase-rare-carrier {
+  font-size: 11px;
+  color: #d4a200;
+  vertical-align: -0.1em;
+}
+
+.allele-rare-indicator {
   font-size: 9px;
   color: #d4a200;
   vertical-align: middle;
+  margin-left: 2px;
 }
 
 /* ── Button row ───────────────────────────────────────────────────────────── */

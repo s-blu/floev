@@ -1,6 +1,6 @@
 import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from '../engine/genetic/dominance_utils';
-import { isHomozygous } from '../engine/genetic/genetic_utils';
-import { hasPotColor, hasPotShape } from '../engine/shop_engine';
+import { isHomozygous, RARE_SHAPES, RARE_EFFECTS } from '../engine/genetic/genetic_utils';
+import { hasPotColor, hasPotShape, hasUpgrade } from '../engine/shop_engine';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../model/genetic_model';
 import { t } from '../model/i18n';
 import type { ChromaticL } from '../model/plant';
@@ -30,26 +30,41 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   const [hA, hB] = [plant.petalHue.a, plant.petalHue.b];
   const [lA, lB] = [plant.petalLightness.a, plant.petalLightness.b];
 
+  const showRareRadar = hasUpgrade(state, 'unlock_rare_radar');
+  const GRAY_HUES = [ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT];
+  const rareMarker = `<span class="allele-rare-indicator" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`;
+
   const shapeA = plant.petalShape.a;
   const shapeB = plant.petalShape.b;
+  const domShape = dominantShape(shapeA, shapeB);
+  const recShape = shapeA === domShape ? shapeB : shapeA;
+  const shapeRareMarker = showRareRadar && shapeA !== shapeB && RARE_SHAPES.includes(recShape) ? rareMarker : '';
   const shapeValue = shapeA === shapeB
     ? shapeA
-    : `${dominantShape(shapeA, shapeB)} · ${shapeA === dominantShape(shapeA, shapeB) ? shapeB : shapeA}`;
+    : `${domShape} · ${recShape}${shapeRareMarker}`;
 
   const centerA = plant.centerType.a;
   const centerB = plant.centerType.b;
+  const domCenter = dominantCenter(centerA, centerB);
+  const recCenter = centerA === domCenter ? centerB : centerA;
+  const centerRareMarker = showRareRadar && centerA !== centerB && recCenter === 'stamen' ? rareMarker : '';
   const centerValue = centerA === centerB
     ? centerA
-    : `${dominantCenter(centerA, centerB)} · ${centerA === dominantCenter(centerA, centerB) ? centerB : centerA}`;
+    : `${domCenter} · ${recCenter}${centerRareMarker}`;
 
   const effectA = plant.petalEffect.a;
   const effectB = plant.petalEffect.b;
   const effectLabel = (e: string) => e === 'none' ? '–' : ((t.effectLabels as Record<string, string>)[e] ?? e);
   const domEff = dominantEffect(effectA, effectB);
   const recEff = effectA === domEff ? effectB : effectA;
+  const effRareMarker = showRareRadar && effectA !== effectB && RARE_EFFECTS.includes(recEff) ? rareMarker : '';
   const effectValue = effectA === effectB
     ? effectLabel(effectA)
-    : `${effectLabel(domEff)} · ${effectLabel(recEff)}`;
+    : `${effectLabel(domEff)} · ${effectLabel(recEff)}${effRareMarker}`;
+
+  const domHue = dominantHue(hA, hB);
+  const recHue = hA === domHue ? hB : hA;
+  const hueRareMarker = showRareRadar && hA !== hB && GRAY_HUES.includes(recHue) ? rareMarker : '';
 
   // Petal count alleles (rounded)
   const pcA = Math.round(plant.petalCount.a);
@@ -76,7 +91,7 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayHue}</span>
-      <span class="allele-chips-row">${renderChipPair(hA, hB, true, lA, lB, true)}</span>
+      <span class="allele-chips-row">${renderChipPair(hA, hB, true, lA, lB, true)}</span>${hueRareMarker}
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayLight}</span>
