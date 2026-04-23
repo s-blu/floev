@@ -133,7 +133,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const rareCarrier = hasUpgrade(state, 'unlock_rare_radar') && hasHiddenRareTrait(pot.plant)
       ? ` <span class="phase-rare-carrier" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`
       : '';
-    labelHtml = `<p class="phase-label">${t.rarity[r]}${rareCarrier} · Gen. ${pot.plant.generation}</p>`;
+    labelHtml = `<p class="phase-label">${rareCarrier} ${t.rarity[r]} · Gen. ${pot.plant.generation}</p>`;
   } else {
     labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)}</p>`;
   }
