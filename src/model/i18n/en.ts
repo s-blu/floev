@@ -316,6 +316,10 @@ export const en = {
   // Center type collection
   achCenterTitle: (centerLabel: string) => `Center: ${centerLabel}`,
   achCenterDesc: (centerLabel: string) => `Discover a bloom with the center "${centerLabel}".`,
+  achAllShapesCenterTitle: (centerLabel: string) => `All shapes: ${centerLabel}`,
+  achAllShapesCenterDesc: (centerLabel: string) => `Breed at least one bloom of each petal shape with the ${centerLabel} center.`,
+  achAllShapesEffectTitle: (effectLabel: string) => `All shapes: ${effectLabel}`,
+  achAllShapesEffectDesc: (effectLabel: string) => `Breed at least one bloom of each petal shape with the ${effectLabel} effect.`,
 
   // ─── New achievements ────────────────────────────────────────────────────────
 

@@ -316,6 +316,10 @@ export const de = {
   // Center type collection
   achCenterTitle: (centerLabel: string) => `Blütenmitte: ${centerLabel}`,
   achCenterDesc: (centerLabel: string) => `Entdecke eine Blüte mit der Blütenmitte „${centerLabel}".`,
+  achAllShapesCenterTitle: (centerLabel: string) => `Alle Formen: ${centerLabel}`,
+  achAllShapesCenterDesc: (centerLabel: string) => `Züchte mindestens eine Blüte jeder Blütenform mit der Blütenmitte „${centerLabel}".`,
+  achAllShapesEffectTitle: (effectLabel: string) => `Alle Formen: ${effectLabel}`,
+  achAllShapesEffectDesc: (effectLabel: string) => `Züchte mindestens eine Blüte jeder Blütenform mit dem Effekt „${effectLabel}".`,
 
   // ─── New achievements ────────────────────────────────────────────────────────
 

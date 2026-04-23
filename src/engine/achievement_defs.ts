@@ -6,7 +6,7 @@ import {
   isHomozygous,
   expressedEffect,
 } from './genetic/genetic_utils'
-import { PALETTE_HUE_RANGES, PALETTE_HUES, PALETTE_L, PETAL_SHAPES } from '../model/genetic_model'
+import { PALETTE_HUE_RANGES, PALETTE_HUES, PALETTE_L, PETAL_SHAPES, CENTER_TYPES, PETAL_EFFECTS } from '../model/genetic_model'
 import type { ColorBucket } from '../model/genetic_model'
 import type { Rarity } from '../model/plant'
 import { t } from '../model/i18n'
@@ -458,6 +458,49 @@ export function buildAchievements(): Achievement[] {
         current: cat.some(e => coinValueForScore(e.rarityScore) >= coins) ? 1 : 0,
         total: 1,
       }),
+    })
+  }
+
+  // ── 20. Alle Formen mit jedem Zentrumstyp (hidden) ──────────────────────────
+  for (let i = 0; i < CENTER_TYPES.length; i++) {
+    const ct = CENTER_TYPES[i]
+    const centerLabel = t.centerTypeLabels[ct] ?? ct
+    list.push({
+      id: `all_shapes_center_${ct}`,
+      groupKey: 'all_shapes_center',
+      stackIndex: i,
+      hidden: true,
+      title: t.achAllShapesCenterTitle(centerLabel),
+      desc: t.achAllShapesCenterDesc(centerLabel),
+      reward: [40, 60, 100][i],
+      progress: cat => {
+        const seen = new Set<string>()
+        for (const e of cat)
+          if (expressedCenter(e.plant.centerType) === ct) seen.add(expressedShape(e.plant.petalShape))
+        return { current: Math.min(seen.size, PETAL_SHAPES.length), total: PETAL_SHAPES.length }
+      },
+    })
+  }
+
+  // ── 21. Alle Formen mit jedem Effekt (hidden) ────────────────────────────────
+  const displayEffects = PETAL_EFFECTS.filter(e => e !== 'none')
+  for (let i = 0; i < displayEffects.length; i++) {
+    const effect = displayEffects[i]
+    const effectLabel = t.effectLabels[effect] ?? effect
+    list.push({
+      id: `all_shapes_effect_${effect}`,
+      groupKey: 'all_shapes_effect',
+      stackIndex: i,
+      hidden: true,
+      title: t.achAllShapesEffectTitle(effectLabel),
+      desc: t.achAllShapesEffectDesc(effectLabel),
+      reward: [50, 80, 120, 250][i],
+      progress: cat => {
+        const seen = new Set<string>()
+        for (const e of cat)
+          if (expressedEffect(e.plant.petalEffect) === effect) seen.add(expressedShape(e.plant.petalShape))
+        return { current: Math.min(seen.size, PETAL_SHAPES.length), total: PETAL_SHAPES.length }
+      },
     })
   }
 
