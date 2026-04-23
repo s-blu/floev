@@ -118,7 +118,13 @@ function buildCollapsedPreview(v: ReturnType<typeof getVisibleAchievements>[0]):
 }
 
 function renderAchievementBody(body: HTMLElement, visible: ReturnType<typeof getVisibleAchievements>): void {
-  const inProgress = visible.filter(v => !v.unlocked)
+  const inProgress = visible
+    .filter(v => !v.unlocked)
+    .sort((a, b) => {
+      const pctA = a.progress.total > 0 ? a.progress.current / a.progress.total : 0
+      const pctB = b.progress.total > 0 ? b.progress.current / b.progress.total : 0
+      return pctB - pctA
+    })
   const done = visible.filter(v => v.unlocked)
 
   body.innerHTML = ''
