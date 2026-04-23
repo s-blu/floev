@@ -45,7 +45,12 @@ export function calcRarityScore(plant: Plant): number {
 
 export function calcCoinScore(plant: Plant): number {
   const stem = expressedNumber(plant.stemHeight)
-  const bonus = stem > 0.85 ? 5 : 0
+  let bonus = 0;
+
+  if (stem > 0.85) bonus = 5;
+  else if (stem > 0.7) bonus = 3
+  else if (stem > 0.5) bonus = 1
+
   return Math.min(100, calcRarityScore(plant) + bonus)
 }
 
