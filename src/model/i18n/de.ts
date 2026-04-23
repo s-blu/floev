@@ -154,7 +154,7 @@ export const de = {
   upgradeTitle: {
     unlock_lupe:          'Genetik-Lupe',
     unlock_selfpollinate: 'Selbstbestäubung',
-    unlock_rare_radar:    'Seltenes Radar',
+    unlock_rare_radar:    'Seltenheits-Radar',
     unlock_pot_10:        'Topf 10',
     unlock_pot_11:        'Topf 11',
     unlock_pot_12:        'Topf 12',
