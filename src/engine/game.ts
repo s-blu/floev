@@ -37,28 +37,28 @@ const DEBUG_PLANTS = [
     plannedPlant(
     {
       ...sharedDebugConfig,
-      petalShape: 'round',
+      petalShape: 'zickzack',
       petalEffect: 'shimmer' as PetalEffect,
     }
   ),
   plannedPlant(
     {
       ...sharedDebugConfig,
-      petalShape: 'lanzett',
+      petalShape: 'zickzack',
       petalEffect: 'bicolor' as PetalEffect,
     }
   ),
     plannedPlant(
     {
       ...sharedDebugConfig,
-      petalShape: 'tropfen',
+      petalShape: 'zickzack',
       petalEffect: 'iridescent' as PetalEffect,
     }
   ),
     plannedPlant(
     {
       ...sharedDebugConfig,
-      petalShape: 'wavy',
+      petalShape: 'zickzack',
       petalEffect: 'gradient' as PetalEffect,
     }
   ),

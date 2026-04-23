@@ -95,9 +95,6 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
       headerHtml += `<span class="pot-homozygous-badge" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
     }
     headerHtml += `<span class="pot-rarity-dot" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span>`;
-    if (hasHiddenRareTrait(pot.plant)) {
-      headerHtml += `<span class="pot-rare-carrier-badge" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`;
-    }
   }
   if (hasCosmetics) {
     headerHtml += `<button class="pot-design-btn" data-action="pot-design" data-pot="${pot.id}" title="${t.potDesignBtnTitle}">🎨</button>`;
@@ -132,6 +129,11 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const timeLabel = remainingMin < 1 ? t.phaseAlmostDone : t.phaseTimeLeft(remainingMin);
     labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)} · <span class="phase-pct">${timeLabel}</span></p>`;
     progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
+  } else if (isBlooming && pot.plant) {
+    const rareCarrier = hasUpgrade(state, 'unlock_rare_radar') && hasHiddenRareTrait(pot.plant)
+      ? ` <span class="phase-rare-carrier" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`
+      : '';
+    labelHtml = `<p class="phase-label">${t.rarity[r]}${rareCarrier} · Gen. ${pot.plant.generation}</p>`;
   } else {
     labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)}</p>`;
   }

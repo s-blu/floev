@@ -3,6 +3,7 @@
 export type UpgradeId =
   | 'unlock_lupe'
   | 'unlock_selfpollinate'
+  | 'unlock_rare_radar'
   | 'unlock_pot_10'
   | 'unlock_pot_11'
   | 'unlock_pot_12'
@@ -30,6 +31,13 @@ export const UPGRADES: Upgrade[] = [
     desc: 'Pflanzen können sich selbst bestäuben, um reinerbigere Nachkommen zu erzeugen.',
     price: 60,
     icon: '↺',
+  },
+  {
+    id: 'unlock_rare_radar',
+    title: 'Seltenes Radar',
+    desc: 'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein seltenes rezessives Allel trägt.',
+    price: 50,
+    icon: '✦',
   },
   {
     id: 'unlock_pot_10',

@@ -223,16 +223,10 @@
   user-select: none;
 }
 
-.pot-rare-carrier-badge {
-  position: absolute;
-  top: 13px;
-  right: -4px;
+.phase-rare-carrier {
   font-size: 9px;
-  line-height: 1;
   color: #d4a200;
-  filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
-  pointer-events: none;
-  user-select: none;
+  vertical-align: middle;
 }
 
 /* ── Button row ───────────────────────────────────────────────────────────── */
