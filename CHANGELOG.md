@@ -6,6 +6,9 @@
 - Add effects info to breedestimate & improve color display
 - Fix/enhance rendering of two effects
 - Enhance rendering of petal sizes (to not have huge 3/4 petal blooms)
+- Sort achievements to have the most advanved one at top
+- Add a double tap to sell to prevent accidental sells
+- Properly translate some ui texts to english
 
 # v1.0.2
 
