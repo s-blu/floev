@@ -472,7 +472,7 @@ export function buildAchievements(): Achievement[] {
       hidden: true,
       title: t.achAllShapesCenterTitle(centerLabel),
       desc: t.achAllShapesCenterDesc(centerLabel),
-      reward: [40, 60, 100][i],
+      reward: [40, 70, 120][i],
       progress: cat => {
         const seen = new Set<string>()
         for (const e of cat)
