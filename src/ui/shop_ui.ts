@@ -66,8 +66,8 @@ function renderUpgradesSection(): string {
       <div class="shop-item ${owned ? 'shop-item--owned' : ''} ${!owned && !canAfford ? 'shop-item--locked' : ''}">
         <span class="shop-item-icon">${owned ? '✓' : u.icon}</span>
         <div class="shop-item-info">
-          <span class="shop-item-title">${u.title}</span>
-          <span class="shop-item-desc">${u.desc}</span>
+          <span class="shop-item-title">${t.upgradeTitle[u.id]}</span>
+          <span class="shop-item-desc">${t.upgradeDesc[u.id]}</span>
         </div>
         <div class="shop-item-action">
           ${owned
@@ -100,7 +100,7 @@ function renderDecoSection(): string {
         class="pot-swatch ${owned ? 'pot-swatch--owned' : ''} ${!owned && !canAfford ? 'pot-swatch--cant-afford' : ''}"
         data-action="${owned ? '' : 'buy-color'}"
         data-id="${c.id}"
-        title="${c.label}${owned ? t.shopOwnedSuffix : ` — 🪙 ${c.price}`}"
+        title="${t.potColorLabels[c.id]}${owned ? t.shopOwnedSuffix : ` — 🪙 ${c.price}`}"
         ${owned ? 'disabled' : (!canAfford ? 'disabled' : '')}
       >
         <span class="pot-swatch-dot" style="background:${c.body};border-color:${c.rim}"></span>
@@ -122,7 +122,7 @@ function renderDecoSection(): string {
         ${owned ? 'disabled' : (!canAfford ? 'disabled' : '')}
       >
         <span class="pot-shape-preview">${renderPotShopPreview(s.id, 'terracotta')}</span>
-        <span class="pot-shape-label">${s.label}</span>
+        <span class="pot-shape-label">${t.potShapeLabels[s.id]}</span>
         ${owned
           ? `<span class="pot-shape-price" style="color:var(--green)">✓</span>`
           : `<span class="pot-shape-price">🪙 ${s.price}</span>`}

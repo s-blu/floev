@@ -150,6 +150,41 @@ export const en = {
   shopDecoHint: 'Switch purchased designs via the 🎨 button on each pot.',
   shopSubsectionShapes: 'Unlock shapes',
 
+  // Shop — upgrade labels
+  upgradeTitle: {
+    unlock_lupe:          'Genetics Loupe',
+    unlock_selfpollinate: 'Self-pollination',
+    unlock_rare_radar:    'Rare Radar',
+    unlock_pot_10:        'Pot 10',
+    unlock_pot_11:        'Pot 11',
+    unlock_pot_12:        'Pot 12',
+  } as Record<string, string>,
+  upgradeDesc: {
+    unlock_lupe:          'Shows you the hidden alleles of every blooming plant.',
+    unlock_selfpollinate: 'Plants can self-pollinate to produce more homozygous offspring.',
+    unlock_rare_radar:    'Shows a ✦ symbol next to the rarity badge when a plant carries a rare recessive allele.',
+    unlock_pot_10:        'Another planting pot — more space in the garden.',
+    unlock_pot_11:        'Even more space — ideal for long breeding lines.',
+    unlock_pot_12:        'The largest garden. For true botany enthusiasts.',
+  } as Record<string, string>,
+
+  // Shop — pot cosmetic labels
+  potColorLabels: {
+    terracotta: 'Terracotta',
+    cream:      'Cream',
+    slate:      'Slate',
+    sage:       'Sage',
+    blush:      'Blush',
+    cobalt:     'Cobalt',
+    obsidian:   'Obsidian',
+    gold:       'Gold',
+  } as Record<string, string>,
+  potShapeLabels: {
+    standard: 'Classic',
+    conic:    'Conical',
+    belly:    'Bulbous',
+  } as Record<string, string>,
+
   // Messages
   msgSeedPlanted: 'Seed planted!',
   msgPotCleared: 'Pot cleared.',

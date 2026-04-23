@@ -176,7 +176,7 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
     return `<button
       class="pdo-shape-btn${isActive ? ' pdo-shape-btn--active' : ''}"
       data-pdo-shape="${s.id}"
-    >${s.label}</button>`
+    >${t.potShapeLabels[s.id]}</button>`
   }).join('')
 
   const overlay = document.createElement('div')
@@ -197,7 +197,7 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
     const btn = document.createElement('button')
     btn.className = `pdo-color-swatch${c.id === activeColor ? ' pdo-color-swatch--active' : ''}`
     btn.dataset.pdoColor = c.id
-    btn.title = c.label
+    btn.title = t.potColorLabels[c.id]
     btn.style.setProperty('--swatch-bg', c.body)
     btn.style.setProperty('--swatch-rim', c.rim)
     btn.dataset.index = String(i)

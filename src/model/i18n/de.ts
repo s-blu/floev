@@ -150,6 +150,41 @@ export const de = {
   shopDecoHint: 'Gekaufte Designs per 🎨-Button an jedem Topf wechseln.',
   shopSubsectionShapes: 'Formen freischalten',
 
+  // Shop — Upgrade-Beschriftungen
+  upgradeTitle: {
+    unlock_lupe:          'Genetik-Lupe',
+    unlock_selfpollinate: 'Selbstbestäubung',
+    unlock_rare_radar:    'Seltenes Radar',
+    unlock_pot_10:        'Topf 10',
+    unlock_pot_11:        'Topf 11',
+    unlock_pot_12:        'Topf 12',
+  } as Record<string, string>,
+  upgradeDesc: {
+    unlock_lupe:          'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
+    unlock_selfpollinate: 'Pflanzen können sich selbst bestäuben, um reinerbigere Nachkommen zu erzeugen.',
+    unlock_rare_radar:    'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein seltenes rezessives Allel trägt.',
+    unlock_pot_10:        'Ein weiterer Pflanztopf — mehr Platz im Garten.',
+    unlock_pot_11:        'Noch mehr Platz — ideal für lange Züchtungslinien.',
+    unlock_pot_12:        'Der größte Garten. Für wahre Botanik-Enthusiasten.',
+  } as Record<string, string>,
+
+  // Shop — Topf-Kosmetik-Bezeichnungen
+  potColorLabels: {
+    terracotta: 'Terrakotta',
+    cream:      'Crème',
+    slate:      'Schiefer',
+    sage:       'Salbei',
+    blush:      'Altrosa',
+    cobalt:     'Kobalt',
+    obsidian:   'Obsidian',
+    gold:       'Gold',
+  } as Record<string, string>,
+  potShapeLabels: {
+    standard: 'Klassisch',
+    conic:    'Konisch',
+    belly:    'Bauchig',
+  } as Record<string, string>,
+
   // Messages
   msgSeedPlanted: 'Samen gepflanzt!',
   msgPotCleared: 'Topf geleert.',
