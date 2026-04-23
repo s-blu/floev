@@ -1,5 +1,5 @@
 import { RARITY_COLORS } from '../engine/game';
-import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedEffect, isHomozygous } from '../engine/genetic/genetic_utils';
+import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedEffect } from '../engine/genetic/genetic_utils';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import type { Rarity, CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
 import { openAncestryIds, state } from './ui';
@@ -106,8 +106,6 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const center = expressedCenter(plant.centerType);
   const count = Math.round(expressedNumber(plant.petalCount));
   const effect = expressedEffect(plant.petalEffect);
-  const homozyg = isHomozygous(plant);
-
   const hasEffect = effect !== 'none' && pc.s > 0;
   const pcForEffect = hasEffect ? { ...pc, l: 60 as const } : pc;
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`;
@@ -166,9 +164,6 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
     }
   }
 
-  const homozygBadge = homozyg
-    ? `<span class="enc-homozygous-badge" title="${t.homozygousTitle}">${t.catalogHomozygousBadge}</span>`
-    : '';
 
   el.innerHTML = `
     <div class="enc-title">
@@ -180,7 +175,6 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
       <div class="enc-info">
         <div class="enc-badges-row">
           <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${t.rarity[entry.rarity]}</span>
-          ${homozygBadge}
         </div>
         <div class="enc-meta">
           ${renderMetaRow(t.catalogMetaPetals, `${count} · ${SHAPE_LABELS[shape] ?? shape}`)}

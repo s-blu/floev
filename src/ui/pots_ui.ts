@@ -5,6 +5,7 @@ import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, ha
 import { t } from '../model/i18n';
 import type { Pot, Rarity } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
+import { calcCoinScore } from '../engine/rarity';
 import { attachPotDesignRing, showAlleleOverlay, showPotDesignRing } from './pots_overlay_ui';
 import { getCatalogEntryForPlant } from '../engine/catalog';
 
@@ -113,8 +114,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
       </div>`;
   } else if (isBlooming) {
     const isBreedSelected = pot.id === selA || pot.id === selB;
-    const entry = getCatalogEntryForPlant(state, pot.plant)
-    const coinVal = coinValueForScore(entry?.rarityScore ?? 1);
+    const coinVal = coinValueForScore(calcCoinScore(pot.plant));
     const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
     buttonsHtml = `
       <div class="btn-row">

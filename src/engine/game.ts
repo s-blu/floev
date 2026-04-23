@@ -1,6 +1,7 @@
 import type { GameState, Pot, Plant, Rarity, PetalEffect, PlantPhase } from '../model/plant'
 import { plannedPlant, randomPlant } from './genetic/genetic'
-import { addToCatalog, getCatalogEntryForPlant } from './catalog'
+import { addToCatalog } from './catalog'
+import { calcCoinScore } from './rarity'
 import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS } from '../dev.config'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -180,8 +181,7 @@ export function removePlant(state: GameState, potId: number): boolean {
 export function sellPlant(state: GameState, potId: number): number {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot?.plant || pot.plant.phase < 4) return -1
-  const entry  = getCatalogEntryForPlant(state, pot.plant)
-  const reward = coinValueForScore(entry?.rarityScore ?? 1)
+  const reward = coinValueForScore(calcCoinScore(pot.plant))
   state.coins += reward
   pot.plant      = null
   pot.phaseStart = null

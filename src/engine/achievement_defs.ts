@@ -11,6 +11,7 @@ import type { ColorBucket } from '../model/genetic_model'
 import type { Rarity } from '../model/plant'
 import { t } from '../model/i18n'
 import { coinValueForScore } from './game'
+import { calcCoinScore } from './rarity'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -455,7 +456,7 @@ export function buildAchievements(): Achievement[] {
       desc: t.achRichHarvestDesc(coins),
       reward: [15, 40, 100][i],
       progress: cat => ({
-        current: cat.some(e => coinValueForScore(e.rarityScore) >= coins) ? 1 : 0,
+        current: cat.some(e => coinValueForScore(calcCoinScore(e.plant)) >= coins) ? 1 : 0,
         total: 1,
       }),
     })

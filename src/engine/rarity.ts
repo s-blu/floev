@@ -32,7 +32,6 @@ export function calcRarityScore(plant: Plant): number {
   const center = expressedCenter(plant.centerType)
   const effect = expressedEffect(plant.petalEffect)
   const count  = Math.round(expressedNumber(plant.petalCount))
-  const stem   = expressedNumber(plant.stemHeight)
 
   let score = 0
   score += SHAPE_SCORE[shape]
@@ -40,9 +39,14 @@ export function calcRarityScore(plant: Plant): number {
   score += CENTER_SCORE[center]
   score += EFFECT_SCORE[effect]
   if (count >= 7) score += 5
-  if (stem > 0.85) score += 5
 
   return Math.min(100, Math.max(1, score))
+}
+
+export function calcCoinScore(plant: Plant): number {
+  const stem = expressedNumber(plant.stemHeight)
+  const bonus = stem > 0.85 ? 5 : 0
+  return Math.min(100, calcRarityScore(plant) + bonus)
 }
 
 export function calcRarity(plant: Plant): Rarity {
