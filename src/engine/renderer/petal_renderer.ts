@@ -94,7 +94,7 @@ export function buildPetalPath(
     };
   }
 
-  // ── zickzack — fransige Zacken, Federform (seltenste) ───────────────────────
+  // ── zickzack — glatte Lappen, Federform (seltenste) ────────────────────────
   const tipR = pr * 2.3;
   const baseW = pr * 0.42;
   const b1x = cx + ca * pr * 0.15 + cp * baseW;
@@ -103,26 +103,21 @@ export function buildPetalPath(
   const b2y = bloomY + sa * pr * 0.15 - sp * baseW;
   const tx = cx + ca * tipR;
   const ty = bloomY + sa * tipR;
-  const zag = (r: number, side: number) => ({
-    x: cx + ca * r + cp * side,
-    y: bloomY + sa * r + sp * side,
-  });
-  const pts: string[] = [
+  // Q(ctrl, end): ctrl zieht die Kurve zum Lappen-Höhepunkt, end ist das Tal
+  const pt = (r: number, s: number) => `${cx + ca * r + cp * s},${bloomY + sa * r + sp * s}`;
+  const d = [
     `M${b1x},${b1y}`,
-    ...([
-      [pr * 0.5, baseW * 1.6], [pr * 0.7, baseW * 0.5],
-      [pr * 1.0, baseW * 1.8], [pr * 1.3, baseW * 0.3],
-      [pr * 1.7, baseW * 1.2],
-    ] as [number, number][]).map(([r, s]) => { const p = zag(r, s); return `L${p.x},${p.y}`; }),
-    `L${tx},${ty}`,
-    ...([
-      [pr * 1.7, -baseW * 0.4], [pr * 1.3, -baseW * 1.5],
-      [pr * 1.0, -baseW * 0.2], [pr * 0.7, -baseW * 1.6],
-      [pr * 0.5, -baseW * 0.8],
-    ] as [number, number][]).map(([r, s]) => { const p = zag(r, s); return `L${p.x},${p.y}`; }),
-    `L${b2x},${b2y} Z`,
-  ];
-  return { type: 'path', d: pts.join(' ') };
+    // Seite 1 – zwei glatte Lappen nach außen
+    `Q${pt(pr * 0.55, baseW * 2.6)} ${pt(pr * 0.82, baseW * 0.2)}`,
+    `Q${pt(pr * 1.1, baseW * 2.4)} ${pt(pr * 1.38, baseW * 0.1)}`,
+    `Q${pt(pr * 1.7, baseW * 1.3)} ${tx},${ty}`,
+    // Seite 2 – zwei versetzt glatte Lappen (Zickzack-Silhouette)
+    `Q${pt(pr * 1.7, -baseW * 0.8)} ${pt(pr * 1.38, -baseW * 2.2)}`,
+    `Q${pt(pr * 1.1, -baseW * 0.3)} ${pt(pr * 0.82, -baseW * 2.4)}`,
+    `Q${pt(pr * 0.55, -baseW * 0.6)} ${b2x},${b2y}`,
+    'Z',
+  ].join(' ');
+  return { type: 'path', d };
 }
 
 // ─── SVG string builders ──────────────────────────────────────────────────────
