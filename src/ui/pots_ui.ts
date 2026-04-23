@@ -9,6 +9,34 @@ import { calcCoinScore } from '../engine/rarity';
 import { attachPotDesignRing, showAlleleOverlay, showPotDesignRing } from './pots_overlay_ui';
 import { getCatalogEntryForPlant } from '../engine/catalog';
 
+const SELL_CONFIRM_TIMEOUT_MS = 2500;
+const sellPendingPots = new Set<number>();
+const sellPendingTimers = new Map<number, ReturnType<typeof setTimeout>>();
+
+function armSellButton(potId: number, btn: HTMLElement): void {
+  cancelSellPending(potId);
+  sellPendingPots.add(potId);
+  btn.classList.add('sell-pending');
+  btn.title = t.btnSellConfirmTitle;
+  const timer = setTimeout(() => {
+    sellPendingPots.delete(potId);
+    sellPendingTimers.delete(potId);
+    const el = document.querySelector<HTMLElement>(`[data-action="sell"][data-pot="${potId}"]`);
+    if (el) {
+      el.classList.remove('sell-pending');
+      el.title = t.btnSellTitle;
+    }
+  }, SELL_CONFIRM_TIMEOUT_MS);
+  sellPendingTimers.set(potId, timer);
+}
+
+function cancelSellPending(potId: number): void {
+  const timer = sellPendingTimers.get(potId);
+  if (timer !== undefined) clearTimeout(timer);
+  sellPendingTimers.delete(potId);
+  sellPendingPots.delete(potId);
+}
+
 const RARITY_ICON: Record<number, string> = {
   0: '▪', 1: '●', 2: '♦', 3: '★', 4: '👑',
 };
@@ -122,7 +150,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
           ${isBreedSelected ? t.btnBreedDeselect : t.btnBreedSelect}
         </button>
         ${selfPurchased ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>` : ''}
-        <button class="btn-sm btn-icon btn-sell" data-action="sell" data-pot="${pot.id}" title="${t.btnSellTitle}">🪙${coinVal}</button>
+        <button class="btn-sm btn-icon btn-sell${sellPendingPots.has(pot.id) ? ' sell-pending' : ''}" data-action="sell" data-pot="${pot.id}" title="${sellPendingPots.has(pot.id) ? t.btnSellConfirmTitle : t.btnSellTitle}">🪙${coinVal}</button>
       </div>`;
   } else {
     buttonsHtml = `
@@ -141,7 +169,14 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const potId = Number(btn.dataset.pot);
     if      (action === 'plant')          handlePlantSeed(potId);
     else if (action === 'remove')         handleRemove(potId);
-    else if (action === 'sell')           handleSell(potId);
+    else if (action === 'sell') {
+      if (sellPendingPots.has(potId)) {
+        cancelSellPending(potId);
+        handleSell(potId);
+      } else {
+        armSellButton(potId, btn);
+      }
+    }
     else if (action === 'breed-select')   handleBreedSelect(potId);
     else if (action === 'selfpollinate')  handleSelfPollinate(potId);
     else if (action === 'allele-inspect') showAlleleOverlay(potId, card);

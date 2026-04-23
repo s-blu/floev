@@ -251,6 +251,16 @@
   background: #FFF3D0;
 }
 
+.btn-sm.btn-sell.sell-pending {
+  background: #f0c040;
+  border-color: #c89a00;
+  color: #3a2a00;
+}
+
+.btn-sm.btn-sell.sell-pending:hover {
+  background: #e6b800;
+}
+
 @media (prefers-color-scheme: dark) {
   .btn-sm.btn-sell {
     border-color: rgba(240,192,64,0.35);
@@ -258,6 +268,14 @@
   }
   .btn-sm.btn-sell:hover {
     background: rgba(240,192,64,0.10);
+  }
+  .btn-sm.btn-sell.sell-pending {
+    background: rgba(240,192,64,0.75);
+    border-color: #f0c040;
+    color: #1a1000;
+  }
+  .btn-sm.btn-sell.sell-pending:hover {
+    background: rgba(240,192,64,0.90);
   }
 }
 

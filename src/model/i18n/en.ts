@@ -133,6 +133,7 @@ export const en = {
   // Sell
   btnSell: 'Sell',
   btnSellTitle: 'Sell plant — earns coins',
+  btnSellConfirmTitle: 'Press again to confirm sale',
   msgSold: (coins: number) => `Bloom sold! +${coins} 🪙`,
 
   // Shop (placeholder)
