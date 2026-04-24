@@ -484,7 +484,7 @@
 }
 
 .di-dot--secret {
-  border: 1.5px dashed var(--border);
+  border: 1.5px solid var(--border);
 }
 
 /* ── Color bucket grid ───────────────────────────────────────────────────── */
