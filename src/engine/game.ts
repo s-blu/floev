@@ -141,9 +141,11 @@ export function advancePhases(
   let changed = false
   for (const pot of state.pots) {
     if (!pot.plant || pot.plant.phase >= 4) continue
-    if (getPhaseProgress(pot) >= 1) {
+    while (pot.plant.phase < 4 && getPhaseProgress(pot) >= 1) {
+      const dur = PHASE_DURATION_MS[pot.plant.phase]
+      const phaseEnd = (pot.phaseStart ?? Date.now()) + dur
       pot.plant.phase = (pot.plant.phase + 1) as Plant['phase']
-      pot.phaseStart  = Date.now()
+      pot.phaseStart  = phaseEnd
       if (pot.plant.phase === 4) {
         addToCatalog(state, pot.plant)
         onBloom?.(pot.plant)
