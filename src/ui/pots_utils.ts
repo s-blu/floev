@@ -33,10 +33,10 @@ export function buildSideInfo(pot: Pot, state: GameState): string {
     const rareCarrier = hasUpgrade(state, 'unlock_rare_radar') && hasHiddenRareTrait(pot.plant)
         ? `<span class="phase-rare-carrier" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`
         : '';
-    let content = `<span class="pot-side-rarity" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span>`;
+    let content = '';
     if (homozyg) content += `<span class="pot-side-homo" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
     if (rareCarrier) content += rareCarrier;
-    content += `<span class="pot-side-gen">Gen. ${pot.plant.generation}</span>`;
+    content += `<span class="pot-side-gen"><span class="pot-side-rarity" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span> Gen. ${pot.plant.generation}</span>`;
     return `<div class="pot-side-info">${content}</div>`;
 }
 

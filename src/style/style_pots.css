@@ -34,7 +34,7 @@
 /* ── Left actions (cosmetic + allele buttons, stacked) ───────────────────────── */
 .pot-left-actions {
   position: absolute;
-  left: 0.5rem;
+  right: calc(50% + 54px);
   bottom: 6px;
   display: flex;
   flex-direction: column;
@@ -45,11 +45,11 @@
 /* ── Side info (rarity icon + gen label, right of plant) ────────────────────── */
 .pot-side-info {
   position: absolute;
-  right: 0.5rem;
+  left: calc(50% + 54px);
   bottom: 6px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 4px;
 }
 
