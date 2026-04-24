@@ -1,6 +1,12 @@
+# v1.2.0
+
+Improvements:
+
+- Rework pot selling & allow more pots (up to 40)
+
+Bugs:
 
 # v1.1.0
-
 
 Improvements:
 
