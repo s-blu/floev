@@ -248,11 +248,38 @@
   flex: 2;
 }
 
-/* ── Icon buttons (selfpollinate, sell, remove) each take ~25% */
+/* ── Icon buttons (sell, overflow) each take ~25% */
 .btn-sm.btn-icon {
   flex: 1;
   padding: 5px 2px;
   font-size: 13px;
+}
+
+/* ── Overflow wrap & menu ────────────────────────────────────────────────── */
+.overflow-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+
+.overflow-wrap > .btn-sm {
+  width: 100%;
+}
+
+.overflow-menu {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 20;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  padding: 4px;
 }
 
 .btn-sm.btn-sell {

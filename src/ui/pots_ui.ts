@@ -10,6 +10,7 @@ import { buildPlantViewForPot, buildPotHeader, getBloomingLabel } from './pots_u
 const SELL_CONFIRM_TIMEOUT_MS = 2500;
 const sellPendingPots = new Set<number>();
 const sellPendingTimers = new Map<number, ReturnType<typeof setTimeout>>();
+const overflowOpenPots = new Set<number>();
 
 function armSellButton(potId: number, btn: HTMLElement): void {
   cancelSellPending(potId);
@@ -35,6 +36,38 @@ function cancelSellPending(potId: number): void {
   sellPendingPots.delete(potId);
 }
 
+function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boolean, showcaseAvail: boolean): void {
+  const wrap = card.querySelector('.overflow-wrap') as HTMLElement | null;
+  if (!wrap) return;
+  const menu = document.createElement('div');
+  menu.className = 'overflow-menu';
+  if (selfPollinate) {
+    const b = document.createElement('button');
+    b.className = 'btn-sm btn-icon';
+    b.dataset.action = 'selfpollinate';
+    b.dataset.pot = String(potId);
+    b.title = t.selfPollinateTitle;
+    b.textContent = '↺';
+    menu.appendChild(b);
+  }
+  if (showcaseAvail) {
+    const b = document.createElement('button');
+    b.className = 'btn-sm btn-icon';
+    b.dataset.action = 'showcase';
+    b.dataset.pot = String(potId);
+    b.title = t.btnMoveToShowcaseTitle;
+    b.textContent = t.btnMoveToShowcase;
+    menu.appendChild(b);
+  }
+  wrap.appendChild(menu);
+  overflowOpenPots.add(potId);
+}
+
+function closeAllOverflowMenus(): void {
+  document.querySelectorAll('.overflow-menu').forEach(m => m.remove());
+  overflowOpenPots.clear();
+}
+
 const PHASE_LABEL = (pot: Pot): string => {
   if (!pot.plant) return t.phaseEmpty;
   switch (pot.plant.phase) {
@@ -54,9 +87,18 @@ export function renderPots(selA: number | null, selB: number | null): void {
   for (const pot of state.pots) {
     const card = buildPotCard(pot, selA, selB);
     container.appendChild(card);
-    // Restore overlay if it was open before this re-render
     if (openAlleleIds.has(pot.id) && pot.plant?.phase === 4) {
       showAlleleOverlay(pot.id, card, /* silent */ true);
+    }
+    if (overflowOpenPots.has(pot.id) && pot.plant?.phase === 4) {
+      const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
+      const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
+      const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
+      if (selfPurchased || showcaseHasSpace) {
+        showOverflowMenu(pot.id, card, selfPurchased, showcaseHasSpace);
+      } else {
+        overflowOpenPots.delete(pot.id);
+      }
     }
   }
 }
@@ -111,13 +153,13 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
     const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
     const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
+    const hasSecondary = selfPurchased || showcaseHasSpace;
     buttonsHtml = `
       <div class="btn-row">
         <button class="btn-sm btn-breed${isBreedSelected ? ' selected' : ''}" data-action="breed-select" data-pot="${pot.id}">
           ${isBreedSelected ? t.btnBreedDeselect : t.btnBreedSelect}
         </button>
-        ${selfPurchased ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>` : ''}
-        ${showcaseHasSpace ? `<button class="btn-sm btn-icon" data-action="showcase" data-pot="${pot.id}" title="${t.btnMoveToShowcaseTitle}">${t.btnMoveToShowcase}</button>` : ''}
+        ${hasSecondary ? `<div class="overflow-wrap"><button class="btn-sm btn-icon" data-action="overflow-toggle" data-pot="${pot.id}" data-selfpollinate="${selfPurchased ? '1' : ''}" data-showcase="${showcaseHasSpace ? '1' : ''}" title="${t.btnOverflowTitle}">···</button></div>` : ''}
         <button class="btn-sm btn-icon btn-sell${sellPendingPots.has(pot.id) ? ' sell-pending' : ''}" data-action="sell" data-pot="${pot.id}" title="${sellPendingPots.has(pot.id) ? t.btnSellConfirmTitle : t.btnSellTitle}">🪙${coinVal}</button>
       </div>`;
   } else {
@@ -135,6 +177,9 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     if (!btn) return;
     const action = btn.dataset.action;
     const potId = Number(btn.dataset.pot);
+
+    if (action !== 'overflow-toggle') closeAllOverflowMenus();
+
     if      (action === 'plant')          handlePlantSeed(potId);
     else if (action === 'remove')         handleRemove(potId);
     else if (action === 'sell') {
@@ -148,6 +193,14 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     else if (action === 'breed-select')   handleBreedSelect(potId);
     else if (action === 'selfpollinate')  handleSelfPollinate(potId);
     else if (action === 'showcase')       handleMoveToShowcase(potId);
+    else if (action === 'overflow-toggle') {
+      if (overflowOpenPots.has(potId)) {
+        closeAllOverflowMenus();
+      } else {
+        closeAllOverflowMenus();
+        showOverflowMenu(potId, card, !!btn.dataset.selfpollinate, !!btn.dataset.showcase);
+      }
+    }
     else if (action === 'allele-inspect') showAlleleOverlay(potId, card);
     else if (action === 'pot-design')     showPotDesignRing(potId, card);
   });
@@ -159,5 +212,3 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
 
   return card;
 }
-
-
