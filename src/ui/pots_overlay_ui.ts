@@ -299,7 +299,7 @@ function positionShapesRow(overlay: HTMLElement, card: HTMLElement): void {
   const visualArea = card.querySelector<HTMLElement>('.pot-visual-area')
   if (!visualArea) return
   shapesRow.style.position = 'absolute'
-  shapesRow.style.top = `${visualArea.offsetHeight - shapesRow.offsetHeight - 6}px`
+  shapesRow.style.top = `${visualArea.offsetHeight + 6}px`
   shapesRow.style.left = '0'
   shapesRow.style.right = '0'
 }
