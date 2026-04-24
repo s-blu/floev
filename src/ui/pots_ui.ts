@@ -133,9 +133,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const remainingMin = Math.ceil(remainingMs / 60_000);
     const timeLabel = remainingMin < 1 ? t.phaseAlmostDone : t.phaseTimeLeft(remainingMin);
     belowSillContent = `<p class="phase-label">${PHASE_LABEL(pot)} · <span class="phase-pct">${timeLabel}</span></p>`;
-    progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
-  } else if (!pot.plant) {
-    belowSillContent = `<p class="phase-label">${PHASE_LABEL(pot)}</p>`;
+    progressHtml = `<div class="progress-row"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><button class="btn-sm btn-cancel-grow danger" data-action="remove" data-pot="${pot.id}" title="${t.btnRemove}">${t.btnRemove}</button></div>`;
   }
 
   // ── Action buttons — single row ──
@@ -166,11 +164,6 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
         </button>
         ${secondaryHtml}
         <button class="btn-sm btn-icon btn-sell${sellPendingPots.has(pot.id) ? ' sell-pending' : ''}" data-action="sell" data-pot="${pot.id}" title="${sellPendingPots.has(pot.id) ? t.btnSellConfirmTitle : t.btnSellTitle}">🪙${coinVal}</button>
-      </div>`;
-  } else {
-    buttonsHtml = `
-      <div class="btn-row">
-        <button class="btn-sm danger" data-action="remove" data-pot="${pot.id}">${t.btnRemove}</button>
       </div>`;
   }
 
