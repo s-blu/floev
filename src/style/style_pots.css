@@ -27,7 +27,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  padding: 0.75rem 0 0;
+  padding: 0.75rem 0 3px;
   min-height: 150px;
 }
 
@@ -56,6 +56,9 @@
 .pot-side-rarity {
   font-size: 15px;
   line-height: 1;
+  min-width: 9px;
+  display: inline-block;
+  text-align: center;
   filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
 }
 
@@ -72,9 +75,9 @@
 
 /* ── Windowsill ──────────────────────────────────────────────────────────────── */
 .pot-sill {
-  height: 11px;
+  height: 8px;
   flex-shrink: 0;
-  background: linear-gradient(to bottom, #cb9464 0%, #b07848 55%, #9a6435 100%);
+  background: linear-gradient(to bottom, #7c6149 0%, #634d39 55%, #553c27 100%);
   box-shadow: 0 3px 6px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 
