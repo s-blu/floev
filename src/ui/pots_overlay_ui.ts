@@ -243,6 +243,7 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   // Position color swatches in a half-ring after mount
   requestAnimationFrame(() => {
     positionColorSwatches(overlay, card)
+    positionShapesRow(overlay, card)
   })
 
   if (!silent) {
@@ -260,19 +261,20 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
 function positionColorSwatches(overlay: HTMLElement, card: HTMLElement): void {
   const swatches = overlay.querySelectorAll<HTMLElement>('[data-pdo-color]')
   const cardW = card.offsetWidth
-  const cardH = card.offsetHeight
 
-  // Center of card (origin for the ring)
+  const visualArea = card.querySelector<HTMLElement>('.pot-visual-area')
+  const visualAreaH = visualArea?.offsetHeight ?? card.offsetHeight * 0.72
+
+  // Center ring on plant center (plant is bottom-aligned in visual area)
   const cx = cardW / 2
-  const cy = cardH / 2
+  const cy = visualAreaH * 0.55
 
-  // Radius of the ring — just large enough to arc around the flower
-  const radius = Math.min(cardW * 0.54, cardH * 0.48)
+  // Compact radius — stays close to the plant
+  const radius = Math.min(cardW * 0.42, visualAreaH * 0.38)
 
   const n = swatches.length
-  // Spread across the top half: from 200° to 340° (bottom-left to bottom-right via top)
-  // i.e. the swatches arc over the top of the card
-  const startAngle = 200  // degrees, measured from right (CSS convention)
+  // Arc from 200° to 340° over the top of the plant
+  const startAngle = 200
   const endAngle = 340
   const swatchSize = 22
 
@@ -289,6 +291,17 @@ function positionColorSwatches(overlay: HTMLElement, card: HTMLElement): void {
     btn.style.width = `${swatchSize}px`
     btn.style.height = `${swatchSize}px`
   })
+}
+
+function positionShapesRow(overlay: HTMLElement, card: HTMLElement): void {
+  const shapesRow = overlay.querySelector<HTMLElement>('.pdo-shapes-row')
+  if (!shapesRow) return
+  const visualArea = card.querySelector<HTMLElement>('.pot-visual-area')
+  if (!visualArea) return
+  shapesRow.style.position = 'absolute'
+  shapesRow.style.top = `${visualArea.offsetHeight - shapesRow.offsetHeight - 6}px`
+  shapesRow.style.left = '0'
+  shapesRow.style.right = '0'
 }
 
 
