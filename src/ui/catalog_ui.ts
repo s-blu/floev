@@ -4,6 +4,7 @@ import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import type { Rarity, CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
 import { openAncestryIds, state } from './ui';
 import { t } from '../model/i18n';
+import { hasUpgrade } from '../engine/shop_engine';
 import { renderDiscoveryIndex } from './discovery_index_ui';
 import { buildFamilySwatchStyle } from './swatch_utils';
 
@@ -65,7 +66,9 @@ export function renderCatalog(): void {
 
   const discoveryIndexOpen = (document.getElementById('discovery-index') as HTMLDetailsElement | null)?.open ?? false;
   container.innerHTML = '';
-  container.appendChild(renderDiscoveryIndex(state.catalog, discoveryIndexOpen));
+  if (hasUpgrade(state, 'unlock_discovery_index')) {
+    container.appendChild(renderDiscoveryIndex(state.catalog, discoveryIndexOpen));
+  }
 
   for (const rarity of [4, 3, 2, 1, 0] as Rarity[]) {
     const entries = groups[rarity];
