@@ -1,15 +1,11 @@
-import { renderPlantSVG } from '../engine/renderer/renderer'
-import { isHomozygous } from '../engine/genetic/genetic_utils'
 import { state, handleMoveFromShowcase, hasUpgrade, openAlleleIds, openPotDesignIds } from './ui'
 import { t } from '../model/i18n'
 import type { Pot } from '../model/plant'
-import { RARITY_COLORS, type Rarity } from "../model/rarity_model"
+import { type Rarity } from "../model/rarity_model"
 import { getCatalogEntryForPlant } from '../engine/catalog'
 import { showAlleleOverlay, showPotDesignRing, attachPotDesignRing } from './pots_overlay_ui'
+import { buildPlantViewForPot, buildPotHeader, getBloomingLabel } from './pots_utils'
 
-const RARITY_ICON: Record<number, string> = {
-  0: '▪', 1: '●', 2: '♦', 3: '★', 4: '👑',
-}
 
 function rarity(pot: Pot): Rarity {
   if (!pot.plant) return 0
@@ -49,36 +45,12 @@ function buildShowcasePotCard(pot: Pot): HTMLElement {
     isBlooming ? `rarity-${r}` : '',
   ].filter(Boolean).join(' ')
 
-  // ── Header ──
-  const hasCosmetics = (state.unlockedPotColors?.length ?? 0) > 0 || (state.unlockedPotShapes?.length ?? 0) > 0
-  let headerHtml = '<div class="pot-card-header">'
-  if (isBlooming && pot.plant) {
-    if (isHomozygous(pot.plant)) {
-      headerHtml += `<span class="pot-homozygous-badge" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`
-    }
-    headerHtml += `<span class="pot-rarity-dot" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span>`
-  }
-  if (hasCosmetics) {
-    headerHtml += `<button class="pot-design-btn" data-action="pot-design" data-pot="${pot.id}" title="${t.potDesignBtnTitle}">🎨</button>`
-  }
-  headerHtml += '</div>'
-
-  // ── Plant view ──
-  const lupePurchased = hasUpgrade(state, 'unlock_lupe')
-  let plantHtml: string
-  if (isBlooming && pot.plant) {
-    plantHtml = `
-      <div class="plant-view plant-view--interactive">
-        ${renderPlantSVG(pot.plant, 100, 130, pot.design)}
-        ${lupePurchased ? `<button class="plant-magnifier" data-action="allele-inspect" data-pot="${pot.id}" title="${t.alleleInspectTitle}">🔍</button>` : ''}
-      </div>`
-  } else {
-    plantHtml = `<div class="plant-view">${renderPlantSVG(null, 100, 130, pot.design)}</div>`
-  }
+  const headerHtml = buildPotHeader(pot, state)
+  const plantHtml = buildPlantViewForPot(pot, state)
 
   // ── Label ──
   const labelHtml = isBlooming && pot.plant
-    ? `<p class="phase-label">${t.rarity[r]} · Gen. ${pot.plant.generation}</p>`
+    ? getBloomingLabel(pot, state)
     : `<p class="phase-label">${t.phaseEmpty}</p>`
 
   // ── Buttons ──
