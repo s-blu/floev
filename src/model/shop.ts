@@ -5,9 +5,6 @@ export type UpgradeId =
   | 'unlock_selfpollinate'
   | 'unlock_rare_radar'
   | 'unlock_discovery_index'
-  | 'unlock_pot_10'
-  | 'unlock_pot_11'
-  | 'unlock_pot_12'
 
 export interface Upgrade {
   id: UpgradeId
@@ -16,14 +13,17 @@ export interface Upgrade {
 }
 
 export const UPGRADES: Upgrade[] = [
-  { id: 'unlock_lupe',          price:  40, icon: '🔍' },
-  { id: 'unlock_selfpollinate', price:  60, icon: '↺'  },
+  { id: 'unlock_lupe',             price:  40, icon: '🔍' },
+  { id: 'unlock_selfpollinate',    price:  60, icon: '↺'  },
   { id: 'unlock_rare_radar',       price:  50, icon: '✦'  },
-  { id: 'unlock_discovery_index', price:  80, icon: '📊' },
-  { id: 'unlock_pot_10',          price:  50, icon: '🪴' },
-  { id: 'unlock_pot_11',        price: 120, icon: '🪴' },
-  { id: 'unlock_pot_12',        price: 250, icon: '🪴' },
+  { id: 'unlock_discovery_index',  price:  80, icon: '📊' },
 ]
+
+// ─── Extra pot purchasing ─────────────────────────────────────────────────────
+
+export const MAX_POT_COUNT          = 40
+export const EXTRA_POT_BASE_PRICE   = 50
+export const EXTRA_POT_PRICE_STEP   = 50
 
 // ─── Pot cosmetics ────────────────────────────────────────────────────────────
 

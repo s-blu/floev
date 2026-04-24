@@ -1,6 +1,7 @@
 import type { GameState } from '../model/plant'
 import type { UpgradeId, PotDesign } from '../model/shop'
-import { UPGRADES, POT_COLORS, POT_SHAPES } from '../model/shop'
+import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP } from '../model/shop'
+import { INITIAL_POT_COUNT } from './game'
 
 // ─── Upgrade helpers ──────────────────────────────────────────────────────────
 
@@ -16,13 +17,6 @@ export function buyUpgrade(state: GameState, id: UpgradeId): boolean {
 
   state.coins -= upgrade.price
   state.upgrades = [...(state.upgrades ?? []), id]
-
-  // If buying a pot upgrade, add a new pot to the garden
-  if (id === 'unlock_pot_10' || id === 'unlock_pot_11' || id === 'unlock_pot_12') {
-    const newId = state.pots.length
-    state.pots.push({ id: newId, plant: null, phaseStart: null })
-  }
-
   return true
 }
 
@@ -61,6 +55,29 @@ export function buyPotShape(state: GameState, shape: string): boolean {
   state.unlockedPotShapes = [...(state.unlockedPotShapes ?? []), shape]
   return true
 }
+
+// ─── Extra pot purchasing ─────────────────────────────────────────────────────
+
+export function getExtraPotPrice(state: GameState): number {
+  const bought = Math.max(0, state.pots.length - INITIAL_POT_COUNT)
+  return EXTRA_POT_BASE_PRICE + bought * EXTRA_POT_PRICE_STEP
+}
+
+export function canBuyExtraPot(state: GameState): boolean {
+  return state.pots.length < MAX_POT_COUNT
+}
+
+export function buyExtraPot(state: GameState): boolean {
+  if (!canBuyExtraPot(state)) return false
+  const price = getExtraPotPrice(state)
+  if (state.coins < price) return false
+
+  state.coins -= price
+  state.pots.push({ id: state.pots.length, plant: null, phaseStart: null })
+  return true
+}
+
+// ─── Pot design ───────────────────────────────────────────────────────────────
 
 export function setPotDesign(state: GameState, potId: number, design: Partial<PotDesign>): void {
   const pot = state.pots.find(p => p.id === potId)

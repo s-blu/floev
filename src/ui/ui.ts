@@ -8,7 +8,7 @@ import {
   saveState,
 } from '../engine/game'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
-import { buyUpgrade, buyPotColor, buyPotShape, setPotDesign, hasUpgrade } from '../engine/shop_engine'
+import { buyUpgrade, buyPotColor, buyPotShape, setPotDesign, hasUpgrade, buyExtraPot } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
 import { renderBreedPanel } from './breedpanel_ui'
 import { renderCatalog } from './catalog_ui'
@@ -85,6 +85,13 @@ export function handleBuyPotColor(colorId: string): void {
 
 export function handleBuyPotShape(shape: string): void {
   if (buyPotShape(state, shape)) {
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleBuyExtraPot(): void {
+  if (buyExtraPot(state)) {
     checkAchAndSave(state)
     render()
   }

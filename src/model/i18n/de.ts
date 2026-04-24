@@ -145,6 +145,10 @@ export const de = {
   shopSectionUpgrades: 'Upgrades',
   shopItemOwned: 'Gekauft',
   shopOwnedSuffix: ' (gekauft)',
+  shopSectionPots: 'Töpfe',
+  shopPotsTitle: 'Nächsten Topf kaufen',
+  shopPotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Töpfen. Jeder weitere Topf kostet +50 🪙 mehr.`,
+  shopPotsMax: 'Maximum erreicht',
   shopSectionDeco: 'Topf-Design',
   shopSubsectionColors: 'Farben freischalten',
   shopDecoHint: 'Gekaufte Designs per 🎨-Button an jedem Topf wechseln.',
@@ -152,22 +156,16 @@ export const de = {
 
   // Shop — Upgrade-Beschriftungen
   upgradeTitle: {
-    unlock_lupe:          'Genetik-Lupe',
-    unlock_selfpollinate: 'Selbstbestäubung',
+    unlock_lupe:             'Genetik-Lupe',
+    unlock_selfpollinate:    'Selbstbestäubung',
     unlock_rare_radar:       'Seltenheits-Radar',
-    unlock_discovery_index: 'Entdeckungs-Index',
-    unlock_pot_10:           'Topf 10',
-    unlock_pot_11:        'Topf 11',
-    unlock_pot_12:        'Topf 12',
+    unlock_discovery_index:  'Entdeckungs-Index',
   } as Record<string, string>,
   upgradeDesc: {
-    unlock_lupe:          'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
-    unlock_selfpollinate: 'Pflanzen können sich selbst bestäuben, um reinerbigere Nachkommen zu erzeugen.',
+    unlock_lupe:             'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
+    unlock_selfpollinate:    'Pflanzen können sich selbst bestäuben, um reinerbigere Nachkommen zu erzeugen.',
     unlock_rare_radar:       'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein seltenes rezessives Allel trägt.',
-    unlock_discovery_index: 'Zeigt im Katalog eine Übersicht aller entdeckten und noch unbekannten Formen und Farben.',
-    unlock_pot_10:           'Ein weiterer Pflanztopf — mehr Platz im Garten.',
-    unlock_pot_11:        'Noch mehr Platz — ideal für lange Züchtungslinien.',
-    unlock_pot_12:        'Der größte Garten. Für wahre Botanik-Enthusiasten.',
+    unlock_discovery_index:  'Zeigt im Katalog eine Übersicht aller entdeckten und noch unbekannten Formen und Farben.',
   } as Record<string, string>,
 
   // Shop — Topf-Kosmetik-Bezeichnungen

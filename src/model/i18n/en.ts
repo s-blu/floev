@@ -145,6 +145,10 @@ export const en = {
   shopSectionUpgrades: 'Upgrades',
   shopItemOwned: 'Purchased',
   shopOwnedSuffix: ' (owned)',
+  shopSectionPots: 'Pots',
+  shopPotsTitle: 'Buy next pot',
+  shopPotsDesc: (current: number, max: number) => `Currently ${current} of ${max} pots. Each additional pot costs +50 🪙 more.`,
+  shopPotsMax: 'Maximum reached',
   shopSectionDeco: 'Pot Design',
   shopSubsectionColors: 'Unlock colors',
   shopDecoHint: 'Switch purchased designs via the 🎨 button on each pot.',
@@ -152,22 +156,16 @@ export const en = {
 
   // Shop — upgrade labels
   upgradeTitle: {
-    unlock_lupe:          'Genetics Loupe',
-    unlock_selfpollinate: 'Self-pollination',
+    unlock_lupe:             'Genetics Loupe',
+    unlock_selfpollinate:    'Self-pollination',
     unlock_rare_radar:       'Rarity Radar',
-    unlock_discovery_index: 'Discovery Index',
-    unlock_pot_10:           'Pot 10',
-    unlock_pot_11:        'Pot 11',
-    unlock_pot_12:        'Pot 12',
+    unlock_discovery_index:  'Discovery Index',
   } as Record<string, string>,
   upgradeDesc: {
-    unlock_lupe:          'Shows you the hidden alleles of every blooming plant.',
-    unlock_selfpollinate: 'Plants can self-pollinate to produce more homozygous offspring.',
+    unlock_lupe:             'Shows you the hidden alleles of every blooming plant.',
+    unlock_selfpollinate:    'Plants can self-pollinate to produce more homozygous offspring.',
     unlock_rare_radar:       'Shows a ✦ symbol next to the rarity badge when a plant carries a rare recessive allele.',
-    unlock_discovery_index: 'Shows an overview of all discovered and undiscovered shapes and colors in the catalog.',
-    unlock_pot_10:           'Another planting pot — more space in the garden.',
-    unlock_pot_11:        'Even more space — ideal for long breeding lines.',
-    unlock_pot_12:        'The largest garden. For true botany enthusiasts.',
+    unlock_discovery_index:  'Shows an overview of all discovered and undiscovered shapes and colors in the catalog.',
   } as Record<string, string>,
 
   // Shop — pot cosmetic labels

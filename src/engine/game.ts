@@ -7,7 +7,7 @@ import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS } from '../
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const STORAGE_KEY   = 'bloom_v1'
-const POT_COUNT     = 9
+export const INITIAL_POT_COUNT = 9
 const STARTER_PLANTS = 4;
 
 export const PHASE_DURATION_MS: Record<number, number> = import.meta.env.DEV
@@ -75,7 +75,7 @@ const DEBUG_PLANTS = [
 function createInitialState(): GameState {
   let pots: Pot[];
   if (useDebugPlants) {
-    pots = Array.from({ length: POT_COUNT }, (_, i) => ({
+    pots = Array.from({ length: INITIAL_POT_COUNT }, (_, i) => ({
       id: i,
       plant: i < DEBUG_PLANTS.length ? DEBUG_PLANTS[i] : null,
       phaseStart: i < DEBUG_PLANTS.length ? Date.now() - 5000 : null,
@@ -84,7 +84,7 @@ function createInitialState(): GameState {
     // Starter plants: all in phase 3 (Bud), finishing at 12s / 30s / 60s / 3min
     const phase3Dur = PHASE_DURATION_MS[3];
     const starterOffsets = [12_000, 30_000, 60_000, 180_000];
-    pots = Array.from({ length: POT_COUNT }, (_, i) => {
+    pots = Array.from({ length: INITIAL_POT_COUNT }, (_, i) => {
       if (i >= STARTER_PLANTS) return { id: i, plant: null, phaseStart: null };
       const plant = randomPlant();
       plant.phase = 3 as PlantPhase;
