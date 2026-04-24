@@ -102,6 +102,9 @@
   #showcase-section .pot-sill {
     background: linear-gradient(to bottom, #5c4020 0%, #4a3010 55%, #3a2208 100%);
   }
+  #showcase-section .pot-visual-area {
+    background: linear-gradient(rgba(15, 25, 50, 0.55) 60%, rgba(30, 42, 65, 0.5) 90%, rgba(50, 35, 30, 0.4), rgba(65, 45, 15, 0.35));
+  }
 }
 
 /* ── Below-sill area (phase label, progress, buttons) ───────────────────────── */
@@ -387,7 +390,10 @@
 @media (max-width: 480px) {
   .pots-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-  .plant-magnifier {
+  .pot-left-actions { gap: 8px; }
+
+  .plant-magnifier,
+  .pot-design-btn {
     width: 28px;
     height: 28px;
     font-size: 14px;
