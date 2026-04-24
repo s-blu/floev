@@ -154,7 +154,7 @@ export const en = {
   upgradeTitle: {
     unlock_lupe:          'Genetics Loupe',
     unlock_selfpollinate: 'Self-pollination',
-    unlock_rare_radar:       'Rare Radar',
+    unlock_rare_radar:       'Rarity Radar',
     unlock_discovery_index: 'Discovery Index',
     unlock_pot_10:           'Pot 10',
     unlock_pot_11:        'Pot 11',

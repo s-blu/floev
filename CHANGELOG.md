@@ -1,13 +1,20 @@
 
 # v1.1.0
 
-- Add discovery index to encyclopedia
+
+Improvements:
+
+- New purchasable feature: discovery index in encyclopedia
+- New purchasable feature: rarity radar
 - Improve genetic overlay (magnifier)
 - Add effects info to breedestimate & improve color display
-- Fix/enhance rendering of two effects
-- Enhance rendering of petal sizes (to not have huge 3/4 petal blooms)
 - Sort achievements to have the most advanved one at top
 - Add a double tap to sell to prevent accidental sells
+
+Bugs:
+
+- Fix/enhance rendering of two effects
+- Enhance rendering of petal sizes (to not have huge 3/4 petal blooms)
 - Properly translate some ui texts to english
 
 # v1.0.2
