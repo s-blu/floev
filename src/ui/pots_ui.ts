@@ -1,7 +1,7 @@
 import { renderPlantSVG } from '../engine/renderer/renderer';
 import { getPhaseProgress, RARITY_COLORS, PHASE_DURATION_MS } from '../engine/game';
 import { isHomozygous, hasHiddenRareTrait } from '../engine/genetic/genetic_utils';
-import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
 import { t } from '../model/i18n';
 import type { Pot, Rarity } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
@@ -149,12 +149,15 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const isBreedSelected = pot.id === selA || pot.id === selB;
     const coinVal = coinValueForScore(calcCoinScore(pot.plant));
     const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
+    const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
+    const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
     buttonsHtml = `
       <div class="btn-row">
         <button class="btn-sm btn-breed${isBreedSelected ? ' selected' : ''}" data-action="breed-select" data-pot="${pot.id}">
           ${isBreedSelected ? t.btnBreedDeselect : t.btnBreedSelect}
         </button>
         ${selfPurchased ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>` : ''}
+        ${showcaseHasSpace ? `<button class="btn-sm btn-icon" data-action="showcase" data-pot="${pot.id}" title="${t.btnMoveToShowcaseTitle}">${t.btnMoveToShowcase}</button>` : ''}
         <button class="btn-sm btn-icon btn-sell${sellPendingPots.has(pot.id) ? ' sell-pending' : ''}" data-action="sell" data-pot="${pot.id}" title="${sellPendingPots.has(pot.id) ? t.btnSellConfirmTitle : t.btnSellTitle}">🪙${coinVal}</button>
       </div>`;
   } else {
@@ -184,6 +187,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     }
     else if (action === 'breed-select')   handleBreedSelect(potId);
     else if (action === 'selfpollinate')  handleSelfPollinate(potId);
+    else if (action === 'showcase')       handleMoveToShowcase(potId);
     else if (action === 'allele-inspect') showAlleleOverlay(potId, card);
     else if (action === 'pot-design')     showPotDesignRing(potId, card);
   });

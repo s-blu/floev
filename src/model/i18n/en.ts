@@ -14,6 +14,7 @@ export const en = {
   sectionGarden: 'Your Garden',
   sectionBreeding: 'Breeding',
   sectionDiscoveries: 'Discoveries',
+  sectionShowcase: 'Showcase',
 
   // Phase labels
   phaseEmpty: 'Empty',
@@ -131,6 +132,15 @@ export const en = {
   catalogParentGenTitle: (gen: number) => `Gen. ${gen}`,
   catalogHomozygousBadge: '◈ homozygous',
 
+  // Showcase
+  btnMoveToShowcase: '🪟',
+  btnMoveToShowcaseTitle: 'Display in showcase',
+  btnMoveFromShowcase: 'Back to garden',
+  btnMoveFromShowcaseTitle: 'Move plant back to a free pot',
+  showcaseNoFreePot: 'No free pot in the garden.',
+  msgMovedToShowcase: 'Plant displayed in showcase!',
+  msgMovedFromShowcase: 'Plant moved back to the garden.',
+
   // Sell
   btnSell: 'Sell',
   btnSellTitle: 'Sell plant — earns coins',
@@ -160,13 +170,20 @@ export const en = {
     unlock_selfpollinate:    'Self-pollination',
     unlock_rare_radar:       'Rarity Radar',
     unlock_discovery_index:  'Discovery Index',
+    unlock_showcase:         'Showcase',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Shows you the hidden alleles of every blooming plant.',
     unlock_selfpollinate:    'Plants can self-pollinate to produce more homozygous offspring.',
     unlock_rare_radar:       'Shows a ✦ symbol next to the rarity badge when a plant carries a rare recessive allele.',
     unlock_discovery_index:  'Shows an overview of all discovered and undiscovered shapes and colors in the catalog.',
+    unlock_showcase:         'A showcase with 3 display slots for your most beautiful blooms. Displayed plants cannot be sold or used for breeding.',
   } as Record<string, string>,
+
+  // Shop — Showcase
+  shopSectionShowcase: 'Expand showcase',
+  shopShowcaseSlotsDesc: (current: number, max: number) => `Currently ${current} of ${max} display slots.`,
+  shopShowcaseSlotsMax: 'Maximum display slots reached',
 
   // Shop — pot cosmetic labels
   potColorLabels: {

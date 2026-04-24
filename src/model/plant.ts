@@ -74,6 +74,7 @@ export interface PotDesign {
 
 export interface GameState {
   pots:     Pot[]
+  showcase: Pot[]
   catalog:  CatalogEntry[]
   coins:    number
   achievements: {

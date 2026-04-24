@@ -7,7 +7,8 @@ import { t } from '../model/i18n';
 import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
 import { buildFamilySwatchStyle } from './swatch_utils';
-import { openAlleleIds, state, handleSetPotDesign, openPotDesignIds } from './ui';
+import { openAlleleIds, state, handleSetPotDesign, handleSetShowcasePotDesign, openPotDesignIds } from './ui'
+import { SHOWCASE_POT_BASE_ID } from '../model/shop';
 
 
 // FIXME make overlay transparent not blurred
@@ -24,7 +25,7 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     }
   }
 
-  const pot = state.pots.find(p => p.id === potId);
+  const pot = state.pots.find(p => p.id === potId) ?? state.showcase.find(p => p.id === potId);
   if (!pot?.plant) return;
   const plant = pot.plant;
 
@@ -160,8 +161,10 @@ export function showPotDesignRing(potId: number, card: HTMLElement): void {
 }
 
 export function attachPotDesignRing(potId: number, card: HTMLElement, silent: boolean): void {
-  const pot = state.pots.find(p => p.id === potId)
+  const pot = state.pots.find(p => p.id === potId) ?? state.showcase.find(p => p.id === potId)
   if (!pot) return
+  const isShowcasePot = potId >= SHOWCASE_POT_BASE_ID
+  const setDesign = isShowcasePot ? handleSetShowcasePotDesign : handleSetPotDesign
 
   const activeColor = pot.design?.colorId ?? 'terracotta'
   const activeShape = pot.design?.shape ?? 'standard'
@@ -219,14 +222,14 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
       return
     }
     if (color) {
-      handleSetPotDesign(potId, { colorId: color })
+      setDesign(potId, { colorId: color })
       // Update active state visually
       overlay.querySelectorAll('[data-pdo-color]').forEach(b => b.classList.remove('pdo-color-swatch--active'))
       el.classList.add('pdo-color-swatch--active')
       return
     }
     if (shape) {
-      handleSetPotDesign(potId, { shape: shape as 'standard' | 'conic' | 'belly' })
+      setDesign(potId, { shape: shape as 'standard' | 'conic' | 'belly' })
       overlay.querySelectorAll('[data-pdo-shape]').forEach(b => b.classList.remove('pdo-shape-btn--active'))
       el.classList.add('pdo-shape-btn--active')
       return

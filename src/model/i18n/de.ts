@@ -14,6 +14,7 @@ export const de = {
   sectionGarden: 'Dein Garten',
   sectionBreeding: 'Züchtung',
   sectionDiscoveries: 'Entdeckungen',
+  sectionShowcase: 'Schaukasten',
 
   // Phase labels
   phaseEmpty: 'Leer',
@@ -131,6 +132,15 @@ export const de = {
   catalogParentGenTitle: (gen: number) => `Gen. ${gen}`,
   catalogHomozygousBadge: '◈ reinerbig',
 
+  // Showcase
+  btnMoveToShowcase: '🪟',
+  btnMoveToShowcaseTitle: 'Im Schaukasten ausstellen',
+  btnMoveFromShowcase: 'Zurück in den Garten',
+  btnMoveFromShowcaseTitle: 'Pflanze in einen freien Topf zurücksetzen',
+  showcaseNoFreePot: 'Kein freier Topf im Garten.',
+  msgMovedToShowcase: 'Pflanze ausgestellt!',
+  msgMovedFromShowcase: 'Pflanze zurück in den Garten.',
+
   // Sell
   btnSell: 'Verkaufen',
   btnSellTitle: 'Pflanze verkaufen — erhält Münzen',
@@ -160,13 +170,20 @@ export const de = {
     unlock_selfpollinate:    'Selbstbestäubung',
     unlock_rare_radar:       'Seltenheits-Radar',
     unlock_discovery_index:  'Entdeckungs-Index',
+    unlock_showcase:         'Schaukasten',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
     unlock_selfpollinate:    'Pflanzen können sich selbst bestäuben, um reinerbigere Nachkommen zu erzeugen.',
     unlock_rare_radar:       'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein seltenes rezessives Allel trägt.',
     unlock_discovery_index:  'Zeigt im Katalog eine Übersicht aller entdeckten und noch unbekannten Formen und Farben.',
+    unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
   } as Record<string, string>,
+
+  // Shop — Showcase
+  shopSectionShowcase: 'Schaukasten erweitern',
+  shopShowcaseSlotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Stellplätzen.`,
+  shopShowcaseSlotsMax: 'Maximale Stellplätze erreicht',
 
   // Shop — Topf-Kosmetik-Bezeichnungen
   potColorLabels: {

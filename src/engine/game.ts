@@ -91,7 +91,7 @@ function createInitialState(): GameState {
       return { id: i, plant, phaseStart: Date.now() - (phase3Dur - starterOffsets[i]) };
     });
   }
-  return { pots, catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], lastSave: Date.now() }
+  return { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], lastSave: Date.now() }
 }
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
@@ -108,6 +108,7 @@ export function loadState(): GameState {
       if (!parsed.upgrades) parsed.upgrades = []
       if (!parsed.unlockedPotColors) parsed.unlockedPotColors = []
       if (!parsed.unlockedPotShapes) parsed.unlockedPotShapes = []
+      if (!parsed.showcase) parsed.showcase = []
 
       return parsed
     }
@@ -194,4 +195,30 @@ export function placeSeedInEmptyPot(state: GameState, plant: Plant): number | nu
   pot.plant      = plant
   pot.phaseStart = Date.now()
   return pot.id
+}
+
+// ─── Showcase actions ────────────────────────────────────────────────────────
+
+export function moveToShowcase(state: GameState, potId: number): boolean {
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot?.plant || pot.plant.phase < 4) return false
+  const freePot = state.showcase.find(p => !p.plant)
+  if (!freePot) return false
+  freePot.plant      = pot.plant
+  freePot.phaseStart = null
+  pot.plant          = null
+  pot.phaseStart     = null
+  return true
+}
+
+export function moveFromShowcase(state: GameState, showcasePotId: number): boolean {
+  const showcasePot = state.showcase.find(p => p.id === showcasePotId)
+  if (!showcasePot?.plant) return false
+  const freePot = state.pots.find(p => !p.plant)
+  if (!freePot) return false
+  freePot.plant      = showcasePot.plant
+  freePot.phaseStart = Date.now()
+  showcasePot.plant      = null
+  showcasePot.phaseStart = null
+  return true
 }

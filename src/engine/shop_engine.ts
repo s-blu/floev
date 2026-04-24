@@ -1,6 +1,6 @@
 import type { GameState } from '../model/plant'
 import type { UpgradeId, PotDesign } from '../model/shop'
-import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP } from '../model/shop'
+import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID, SHOWCASE_EXTRA_SLOT_PRICE } from '../model/shop'
 import { INITIAL_POT_COUNT } from './game'
 
 // ─── Upgrade helpers ──────────────────────────────────────────────────────────
@@ -17,6 +17,13 @@ export function buyUpgrade(state: GameState, id: UpgradeId): boolean {
 
   state.coins -= upgrade.price
   state.upgrades = [...(state.upgrades ?? []), id]
+
+  if (id === 'unlock_showcase') {
+    for (let i = 0; i < SHOWCASE_INITIAL_SLOTS; i++) {
+      state.showcase.push({ id: SHOWCASE_POT_BASE_ID + i, plant: null, phaseStart: null })
+    }
+  }
+
   return true
 }
 
@@ -84,4 +91,25 @@ export function setPotDesign(state: GameState, potId: number, design: Partial<Po
   if (!pot) return
   const current = pot.design ?? { colorId: 'terracotta', shape: 'standard' }
   pot.design = { ...current, ...design }
+}
+
+export function setShowcasePotDesign(state: GameState, potId: number, design: Partial<PotDesign>): void {
+  const pot = state.showcase.find(p => p.id === potId)
+  if (!pot) return
+  const current = pot.design ?? { colorId: 'terracotta', shape: 'standard' }
+  pot.design = { ...current, ...design }
+}
+
+// ─── Extra showcase slot purchasing ──────────────────────────────────────────
+
+export function canBuyExtraShowcaseSlot(state: GameState): boolean {
+  return state.showcase.length < SHOWCASE_MAX_SLOTS
+}
+
+export function buyExtraShowcaseSlot(state: GameState): boolean {
+  if (!canBuyExtraShowcaseSlot(state)) return false
+  if (state.coins < SHOWCASE_EXTRA_SLOT_PRICE) return false
+  state.coins -= SHOWCASE_EXTRA_SLOT_PRICE
+  state.showcase.push({ id: SHOWCASE_POT_BASE_ID + state.showcase.length, plant: null, phaseStart: null })
+  return true
 }
