@@ -53,7 +53,7 @@ function buildDiscoveredColors(catalog: CatalogEntry[]): Set<string> {
   return set;
 }
 
-// ─── Shape section (count × center × effect) — single unified grid ───────────
+// ─── Shape section (count / center / effect) — three responsive sub-grids ────
 
 function renderShapeSection(catalog: CatalogEntry[]): string {
   const discoveredCounts  = buildDiscoveredShapeCounts(catalog);
@@ -68,68 +68,85 @@ function renderShapeSection(catalog: CatalogEntry[]): string {
     )
   );
 
-  // Column layout (1-based): label | count×6 | gap | center×3 | gap | effect×4
-  const COUNT_START  = 2
-  const CENTER_START = COUNT_START  + PETAL_COUNTS.length  + 1   // 9
-  const EFFECT_START = CENTER_START + CENTER_TYPES.length  + 1   // 13
-  const SUBTITLE_ROW = 1
-  const HEADER_ROW   = 2
-  const DATA_ROW     = 3
-
-  const gridTemplate = `auto repeat(${PETAL_COUNTS.length}, 17px) 16px repeat(${CENTER_TYPES.length}, 17px) 16px repeat(${DISPLAY_EFFECTS.length}, 17px)`;
+  const SUBTITLE_ROW = 1;
+  const HEADER_ROW   = 2;
+  const DATA_ROW     = 3;
 
   function cell(cls: string, col: number, row: number, title = '', content = ''): string {
-    const t = title ? ` title="${title}"` : '';
-    return `<span class="${cls}"${t} style="grid-column:${col};grid-row:${row}">${content}</span>`;
+    const titleAttr = title ? ` title="${title}"` : '';
+    return `<span class="${cls}"${titleAttr} style="grid-column:${col};grid-row:${row}">${content}</span>`;
   }
   function dot(known: boolean, found: boolean, col: number, row: number, title: string): string {
     const cls = !known ? 'di-count-dot di-dot--secret' : found ? 'di-count-dot di-dot--found' : 'di-count-dot di-dot--missing';
     return cell(cls, col, row, known ? title : '');
   }
+  function shapeLabels(): string {
+    return PETAL_SHAPES.map((shape, si) => {
+      const known = discoveredShapes.has(shape);
+      const name  = known ? (t.shapeLabels[shape] ?? shape) : '?';
+      const cls   = known ? 'di-shape-label' : 'di-shape-label di-shape-label--secret';
+      return cell(cls, 1, DATA_ROW + si, '', name);
+    }).join('');
+  }
 
-  // Row 1: subtitles
-  const subtitles = [
-    `<span class="di-matrix-subtitle" style="grid-column:${COUNT_START}/${COUNT_START + PETAL_COUNTS.length};grid-row:${SUBTITLE_ROW}">${t.discoveryIndexMatrixCount}</span>`,
-    `<span class="di-matrix-subtitle" style="grid-column:${CENTER_START}/${CENTER_START + CENTER_TYPES.length};grid-row:${SUBTITLE_ROW}">${t.discoveryIndexMatrixCenter}</span>`,
-    `<span class="di-matrix-subtitle" style="grid-column:${EFFECT_START}/${EFFECT_START + DISPLAY_EFFECTS.length};grid-row:${SUBTITLE_ROW}">${t.discoveryIndexMatrixEffect}</span>`,
-  ].join('');
+  // ── Count sub-grid ────────────────────────────────────────────────────────
+  const nCounts = PETAL_COUNTS.length;
+  const countGrid = `<div class="di-shape-grid" style="grid-template-columns:auto repeat(${nCounts}, 17px)">
+    <span class="di-matrix-subtitle" style="grid-column:2/${2 + nCounts};grid-row:${SUBTITLE_ROW}">${t.discoveryIndexMatrixCount}</span>
+    ${PETAL_COUNTS.map((c, i) => cell('di-col-header', 2 + i, HEADER_ROW, '', String(c))).join('')}
+    ${shapeLabels()}
+    ${PETAL_SHAPES.map((shape, si) => {
+      const row   = DATA_ROW + si;
+      const known = discoveredShapes.has(shape);
+      const name  = known ? (t.shapeLabels[shape] ?? shape) : '?';
+      return PETAL_COUNTS.map((c, i) => dot(known, discoveredCounts.has(`${shape}_${c}`), 2 + i, row, `${name}, ${c}`)).join('');
+    }).join('')}
+  </div>`;
 
-  // Row 2: column headers
-  const countHeaders  = PETAL_COUNTS.map((c, i)  => cell('di-col-header', COUNT_START  + i, HEADER_ROW, '', String(c))).join('');
-  const centerHeaders = CENTER_TYPES.map((ct, i) => {
-    const discovered = PETAL_SHAPES.some(s => discoveredCenters.has(`${s}_${ct}`));
-    const label = discovered ? (t.centerTypeLabelsShort[ct] ?? ct) : '?';
-    const title = discovered ? (t.centerTypeLabels[ct] ?? ct) : '';
-    return cell('di-col-header', CENTER_START + i, HEADER_ROW, title, label);
-  }).join('');
-  const effectHeaders = DISPLAY_EFFECTS.map((ef, i) => {
-    const discovered = PETAL_SHAPES.some(s => discoveredEffects.has(`${s}_${ef}`));
-    const label = discovered ? (t.effectLabelsShort[ef] ?? ef) : '?';
-    const title = discovered ? (t.effectLabels[ef] ?? ef) : '';
-    return cell('di-col-header', EFFECT_START + i, HEADER_ROW, title, label);
-  }).join('');
+  // ── Center sub-grid ───────────────────────────────────────────────────────
+  const nCenters = CENTER_TYPES.length;
+  const centerGrid = `<div class="di-shape-grid" style="grid-template-columns:auto repeat(${nCenters}, 17px)">
+    <span class="di-matrix-subtitle" style="grid-column:2/${2 + nCenters};grid-row:${SUBTITLE_ROW}">${t.discoveryIndexMatrixCenter}</span>
+    ${CENTER_TYPES.map((ct, i) => {
+      const discovered = PETAL_SHAPES.some(s => discoveredCenters.has(`${s}_${ct}`));
+      const label = discovered ? (t.centerTypeLabelsShort[ct] ?? ct) : '?';
+      const title = discovered ? (t.centerTypeLabels[ct] ?? ct) : '';
+      return cell('di-col-header', 2 + i, HEADER_ROW, title, label);
+    }).join('')}
+    ${shapeLabels()}
+    ${PETAL_SHAPES.map((shape, si) => {
+      const row   = DATA_ROW + si;
+      const known = discoveredShapes.has(shape);
+      const name  = known ? (t.shapeLabels[shape] ?? shape) : '?';
+      return CENTER_TYPES.map((ct, i) => dot(known, discoveredCenters.has(`${shape}_${ct}`), 2 + i, row, `${name} · ${t.centerTypeLabels[ct] ?? ct}`)).join('');
+    }).join('')}
+  </div>`;
 
-  // Rows 3+: data
-  const dataRows = PETAL_SHAPES.map((shape, si) => {
-    const row   = DATA_ROW + si;
-    const known = discoveredShapes.has(shape);
-    const name  = known ? (t.shapeLabels[shape] ?? shape) : '?';
-    const labelCls = known ? 'di-shape-label' : 'di-shape-label di-shape-label--secret';
-
-    const label   = cell(labelCls, 1, row, '', name);
-    const counts  = PETAL_COUNTS.map((c, i)  => dot(known, discoveredCounts.has(`${shape}_${c}`),   COUNT_START  + i, row, `${name}, ${c}`)).join('');
-    const centers = CENTER_TYPES.map((ct, i) => dot(known, discoveredCenters.has(`${shape}_${ct}`), CENTER_START + i, row, `${name} · ${t.centerTypeLabels[ct] ?? ct}`)).join('');
-    const effects = DISPLAY_EFFECTS.map((ef, i) => dot(known, discoveredEffects.has(`${shape}_${ef}`), EFFECT_START + i, row, `${name} · ${t.effectLabels[ef] ?? ef}`)).join('');
-
-    return label + counts + centers + effects;
-  }).join('');
+  // ── Effect sub-grid ───────────────────────────────────────────────────────
+  const nEffects = DISPLAY_EFFECTS.length;
+  const effectGrid = `<div class="di-shape-grid" style="grid-template-columns:auto repeat(${nEffects}, 17px)">
+    <span class="di-matrix-subtitle" style="grid-column:2/${2 + nEffects};grid-row:${SUBTITLE_ROW}">${t.discoveryIndexMatrixEffect}</span>
+    ${DISPLAY_EFFECTS.map((ef, i) => {
+      const discovered = PETAL_SHAPES.some(s => discoveredEffects.has(`${s}_${ef}`));
+      const label = discovered ? (t.effectLabelsShort[ef] ?? ef) : '?';
+      const title = discovered ? (t.effectLabels[ef] ?? ef) : '';
+      return cell('di-col-header', 2 + i, HEADER_ROW, title, label);
+    }).join('')}
+    ${shapeLabels()}
+    ${PETAL_SHAPES.map((shape, si) => {
+      const row   = DATA_ROW + si;
+      const known = discoveredShapes.has(shape);
+      const name  = known ? (t.shapeLabels[shape] ?? shape) : '?';
+      return DISPLAY_EFFECTS.map((ef, i) => dot(known, discoveredEffects.has(`${shape}_${ef}`), 2 + i, row, `${name} · ${t.effectLabels[ef] ?? ef}`)).join('');
+    }).join('')}
+  </div>`;
 
   return `<div class="di-block">
     <div class="di-block-title">${t.discoveryIndexSectionShapes}</div>
-    <div class="di-shape-grid" style="grid-template-columns:${gridTemplate}">
-      ${subtitles}
-      ${countHeaders}${centerHeaders}${effectHeaders}
-      ${dataRows}
+    <div class="di-shape-groups">
+      ${countGrid}
+      ${centerGrid}
+      ${effectGrid}
     </div>
   </div>`;
 }

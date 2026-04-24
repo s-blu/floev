@@ -405,10 +405,31 @@
   margin-bottom: 8px;
 }
 
-/* ── Unified shape × trait grid ──────────────────────────────────────────── */
+/* ── Shape sub-grid group (flex row → column on small screens) ───────────── */
+
+.di-shape-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: start;
+}
+
+@media (max-width: 480px) {
+  .di-shape-groups {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 481px) {
+  .di-shape-groups .di-shape-grid:nth-child(n+2) .di-shape-label {
+    display: none;
+  }
+}
+
+/* ── Individual shape × trait grid ──────────────────────────────────────── */
 
 .di-shape-grid {
-  display: inline-grid;
+  display: grid;
   column-gap: 4px;
   row-gap: 5px;
   align-items: center;
