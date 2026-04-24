@@ -696,6 +696,9 @@
 }
 
 @media (prefers-color-scheme: dark) {
+  .pot-design-overlay-new {
+    background: radial-gradient(circle at center, transparent, transparent 35%, rgba(26, 25, 22, 0.75) 50%, rgb(26, 25, 22));
+  }
   .pdo-shape-btn--active {
     background: rgba(29, 158, 117, 0.15);
   }
