@@ -1,6 +1,6 @@
 # General advice
 
-- If you do not find an information with low effort, ask the human first if they can point you to the right place before you excess a significant amount of work to find it yourself
+- Ask questions if a prompt is unclear before you try to figure out what the prompt might mean on your own
 
 # Implementation advice
 
