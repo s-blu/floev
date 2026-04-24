@@ -75,7 +75,6 @@ function countShadesInBucket(catalog: CatalogEntry[], bucket: ColorBucket): { cu
     const color = expressedColor(e.plant.petalHue, e.plant.petalLightness)
     if (colorBucket(color) === bucket) seen.add(`${color.h}-${color.l}`)
   }
-console.log('countShadesInBucket', bucket, { current: seen.size, total: Math.max(1, total) })
   return { current: seen.size, total: Math.max(1, total) }
 }
 
