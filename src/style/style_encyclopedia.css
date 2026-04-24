@@ -479,7 +479,7 @@
 }
 
 .di-dot--missing {
-  border: 1.5px dashed var(--border2);
+  border: 1.5px solid var(--border2);
 }
 
 .di-dot--secret {
@@ -551,10 +551,10 @@
 
 .di-swatch--missing {
   outline: none;
-  border: 1.5px dashed var(--border2);
+  border: 1.5px solid var(--border2);
 }
 
 .di-swatch--secret {
   outline: none;
-  border: 1.5px dashed var(--border);
+  border: 1.5px solid var(--border);
 }
