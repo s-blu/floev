@@ -422,7 +422,8 @@
 
 @media (min-width: 481px) {
   .di-shape-groups .di-shape-grid:nth-child(n+2) .di-shape-label {
-    display: none;
+    visibility: hidden;
+    max-width: 0;
   }
 }
 
