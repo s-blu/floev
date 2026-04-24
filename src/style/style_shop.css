@@ -439,7 +439,7 @@
   .pot-color-grid {
     grid-template-columns: repeat(4, 1fr);
   }
-  .pot-design-btn {
+  .pot-left-actions .pot-design-btn {
     width: 28px;
     height: 28px;
     font-size: 14px;
