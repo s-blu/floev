@@ -4,7 +4,7 @@ import type { Pot } from '../model/plant'
 import { type Rarity } from "../model/rarity_model"
 import { getCatalogEntryForPlant } from '../engine/catalog'
 import { showAlleleOverlay, showPotDesignRing, attachPotDesignRing } from './pots_overlay_ui'
-import { buildPlantViewForPot, buildPotHeader, getBloomingLabel } from './pots_utils'
+import { buildPotVisualArea, buildPotSill } from './pots_utils'
 
 
 function rarity(pot: Pot): Rarity {
@@ -45,13 +45,8 @@ function buildShowcasePotCard(pot: Pot): HTMLElement {
     isBlooming ? `rarity-${r}` : '',
   ].filter(Boolean).join(' ')
 
-  const headerHtml = buildPotHeader(pot, state)
-  const plantHtml = buildPlantViewForPot(pot, state)
-
-  // ── Label ──
-  const labelHtml = isBlooming && pot.plant
-    ? getBloomingLabel(pot, state)
-    : `<p class="phase-label">${t.phaseEmpty}</p>`
+  const visualAreaHtml = buildPotVisualArea(pot, state)
+  const sillHtml = buildPotSill()
 
   // ── Buttons ──
   let buttonsHtml = ''
@@ -67,7 +62,7 @@ function buildShowcasePotCard(pot: Pot): HTMLElement {
       </div>`
   }
 
-  card.innerHTML = headerHtml + plantHtml + labelHtml + buttonsHtml
+  card.innerHTML = visualAreaHtml + sillHtml + `<div class="pot-below-sill">${buttonsHtml}</div>`
 
   card.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null

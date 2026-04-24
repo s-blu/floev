@@ -467,10 +467,6 @@
 /* ── 🎨 Design button on pot card ────────────────────────────────────────────── */
 
 .pot-design-btn {
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  transform: translateX(-50%);
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -485,21 +481,12 @@
   padding: 0;
   opacity: 0;
   transition: opacity 0.15s;
-  z-index: 2;
   box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  flex-shrink: 0;
 }
 
 .pot-card:hover .pot-design-btn { opacity: 1; }
 .pot-design-btn:hover { opacity: 1 !important; background: var(--bg3); }
-
-@media (max-width: 480px) {
-  .pot-design-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 15px;
-    top: -6px;
-  }
-}
 
 /* ── Pot design overlay (per-pot picker) ─────────────────────────────────────── */
 

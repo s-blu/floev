@@ -2,38 +2,89 @@
 .pots-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 0;
 }
 
 .pot-card {
-  background: var(--bg2);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  transition: border-color 0.2s;
+  align-items: stretch;
   position: relative;
 }
 
-.pot-card.selected  { 
-  border: 1px dashed #6c6c6c; 
+.pot-card.selected .pot-visual-area {
+  background: rgba(108, 108, 108, 0.07);
 }
-.pot-card.blooming  { border-color: var(--rarity-0); }
 
-.pot-card.blooming.rarity-1 {
-  border-color: var(--rarity-1);
+/* ── Visual area (plant SVG + side info) ─────────────────────────────────────── */
+.pot-visual-area {
+  display: flex;
+  align-items: flex-end;
+  padding: 0.75rem 0.5rem 0;
+  gap: 8px;
 }
-.pot-card.blooming.rarity-2 {
-  border-color: var(--rarity-2);
+
+/* ── Side info (rarity icon + gen label beside the plant) ───────────────────── */
+.pot-side-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  flex: 1;
+  padding-bottom: 6px;
+  min-width: 0;
 }
-.pot-card.blooming.rarity-3 {
-  border-color: var(--rarity-3);
+
+.pot-side-rarity {
+  font-size: 16px;
+  line-height: 1;
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
 }
-.pot-card.blooming.rarity-4 {
-  border-color: var(--rarity-4);
+
+.pot-side-homo {
+  font-size: 13px;
+  color: var(--green);
+  line-height: 1;
+}
+
+.pot-side-gen {
+  font-size: 11px;
+  color: var(--text2);
+}
+
+/* ── Windowsill ──────────────────────────────────────────────────────────────── */
+.pot-sill {
+  height: 16px;
+  flex-shrink: 0;
+  background: linear-gradient(to bottom, #cb9464 0%, #b07848 55%, #9a6435 100%);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.20);
+}
+
+#showcase-section .pot-sill {
+  background: linear-gradient(to bottom, #bfa070 0%, #a08450 55%, #89683a 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .pot-sill {
+    background: linear-gradient(to bottom, #6b4a2c 0%, #593c20 55%, #482e14 100%);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  #showcase-section .pot-sill {
+    background: linear-gradient(to bottom, #5c4020 0%, #4a3010 55%, #3a2208 100%);
+  }
+}
+
+/* ── Below-sill area (phase label, progress, buttons) ───────────────────────── */
+.pot-below-sill {
+  padding: 0.5rem 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .plant-view { width: 100px; height: 130px; flex-shrink: 0; }
@@ -193,35 +244,7 @@
   transition: width 1.8s linear;
 }
 
-/* ── Header row ───────────────────────────────────────────────────────────── */
-.pot-card-header {
-  width: 100%;
-  height: 0;
-  position: relative;
-}
-
-.pot-rarity-dot {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  font-size: 13px;
-  line-height: 1;
-  filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
-  pointer-events: none;
-  user-select: none;
-}
-
-.pot-homozygous-badge {
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  font-size: 13px;
-  line-height: 1;
-  color: var(--green);
-  filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
-  pointer-events: none;
-  user-select: none;
-}
+/* ── Phase rare carrier (shown in side info) ─────────────────────────────────── */
 
 .phase-rare-carrier {
   font-size: 11px;
@@ -325,7 +348,7 @@
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .pots-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .pots-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   .plant-magnifier {
     width: 30px;

@@ -5,7 +5,7 @@ import type { Pot } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
 import { calcCoinScore, getRarityForPot } from '../engine/rarity';
 import { attachPotDesignRing, showAlleleOverlay, showPotDesignRing } from './pots_overlay_ui';
-import { buildPlantViewForPot, buildPotHeader, getBloomingLabel } from './pots_utils';
+import { buildPotVisualArea, buildPotSill } from './pots_utils';
 
 const SELL_CONFIRM_TIMEOUT_MS = 2500;
 const sellPendingPots = new Set<number>();
@@ -116,12 +116,12 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     isBlooming ? `rarity-${r}` : ''
   ].filter(Boolean).join(' ');
 
-  let headerHtml = buildPotHeader(pot, state)
-  let plantHtml = buildPlantViewForPot(pot, state)
+  const visualAreaHtml = buildPotVisualArea(pot, state);
+  const sillHtml = buildPotSill();
 
-  // ── Phase label + progress ──
+  // ── Phase label + progress (growing plants only; blooming info is in side panel) ──
   let progressHtml = '';
-  let labelHtml: string;
+  let belowSillContent = '';
   if (pot.plant && pot.plant.phase < 4) {
     const progress = getPhaseProgress(pot);
     const pct = (progress * 100).toFixed(2);
@@ -132,12 +132,10 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const remainingMs = currentPhaseRemainingMs + laterPhasesMs;
     const remainingMin = Math.ceil(remainingMs / 60_000);
     const timeLabel = remainingMin < 1 ? t.phaseAlmostDone : t.phaseTimeLeft(remainingMin);
-    labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)} · <span class="phase-pct">${timeLabel}</span></p>`;
+    belowSillContent = `<p class="phase-label">${PHASE_LABEL(pot)} · <span class="phase-pct">${timeLabel}</span></p>`;
     progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
-  } else if (isBlooming && pot.plant) {
-    labelHtml = getBloomingLabel(pot, state)
-  } else {
-    labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)}</p>`;
+  } else if (!pot.plant) {
+    belowSillContent = `<p class="phase-label">${PHASE_LABEL(pot)}</p>`;
   }
 
   // ── Action buttons — single row ──
@@ -176,7 +174,8 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
       </div>`;
   }
 
-  card.innerHTML = headerHtml + plantHtml + labelHtml + progressHtml + buttonsHtml;
+  const belowSillHtml = `<div class="pot-below-sill">${belowSillContent}${progressHtml}${buttonsHtml}</div>`;
+  card.innerHTML = visualAreaHtml + sillHtml + belowSillHtml;
 
   // ── Event delegation ──
   card.addEventListener('click', (e) => {
