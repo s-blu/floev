@@ -21,33 +21,46 @@
   background: rgba(108, 108, 108, 0.07);
 }
 
-/* ── Visual area (plant SVG + side info) ─────────────────────────────────────── */
+/* ── Visual area (plant SVG centered, buttons/info positioned around it) ────────── */
 .pot-visual-area {
+  position: relative;
   display: flex;
+  justify-content: center;
   align-items: flex-end;
-  padding: 0.75rem 0.5rem 0;
-  gap: 8px;
+  padding: 0.75rem 0 0;
+  min-height: 150px;
 }
 
-/* ── Side info (rarity icon + gen label beside the plant) ───────────────────── */
-.pot-side-info {
+/* ── Left actions (cosmetic + allele buttons, stacked) ───────────────────────── */
+.pot-left-actions {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 6px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 5px;
-  flex: 1;
-  padding-bottom: 6px;
-  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Side info (rarity icon + gen label, right of plant) ────────────────────── */
+.pot-side-info {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
 
 .pot-side-rarity {
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1;
   filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
 }
 
 .pot-side-homo {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--green);
   line-height: 1;
 }
@@ -59,10 +72,10 @@
 
 /* ── Windowsill ──────────────────────────────────────────────────────────────── */
 .pot-sill {
-  height: 16px;
+  height: 11px;
   flex-shrink: 0;
   background: linear-gradient(to bottom, #cb9464 0%, #b07848 55%, #9a6435 100%);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.20);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 
 #showcase-section .pot-sill {
@@ -72,7 +85,7 @@
 @media (prefers-color-scheme: dark) {
   .pot-sill {
     background: linear-gradient(to bottom, #6b4a2c 0%, #593c20 55%, #482e14 100%);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.05);
   }
   #showcase-section .pot-sill {
     background: linear-gradient(to bottom, #5c4020 0%, #4a3010 55%, #3a2208 100%);
@@ -90,16 +103,8 @@
 .plant-view { width: 100px; height: 130px; flex-shrink: 0; }
 .plant-view svg { display: block; overflow: visible; }
 
-/* Interactive wrapper needed for the magnifier button positioning */
-.plant-view--interactive {
-  position: relative;
-}
-
-/* ── Magnifier button ─────────────────────────────────────────────────────── */
+/* ── Magnifier button (now lives in .pot-left-actions) ───────────────────── */
 .plant-magnifier {
-  position: absolute;
-  bottom: 4px;
-  right: 0px;
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -114,11 +119,11 @@
   padding: 0;
   opacity: 0;
   transition: opacity 0.15s;
-  z-index: 2;
   box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  flex-shrink: 0;
 }
 
-.plant-view--interactive:hover .plant-magnifier { opacity: 1; }
+.pot-card:hover .plant-magnifier { opacity: 1; }
 .plant-magnifier:hover { opacity: 1 !important; background: var(--bg3); }
 
 /* ── Allele overlay ──────────────────────────────────────────────────────── */
@@ -351,11 +356,9 @@
   .pots-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   .plant-magnifier {
-    width: 30px;
-    height: 30px;
-    font-size: 15px;
-    bottom: 2px;
-    right: 2px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
   }
 }
 
