@@ -21,14 +21,14 @@ app.innerHTML = `
     <p class="msg-bar" id="msg">${t.welcomeMsg}</p>
   </header>
 
-  <section>
-    <p class="section-title">${t.sectionGarden}</p>
-    <div class="pots-row" id="pots-row"></div>
-  </section>
-
   <section id="showcase-section" style="display:none">
     <p class="section-title">${t.sectionShowcase}</p>
     <div class="pots-row" id="showcase-row"></div>
+  </section>
+
+  <section>
+    <p class="section-title">${t.sectionGarden}</p>
+    <div class="pots-row" id="pots-row"></div>
   </section>
 
   <section>
