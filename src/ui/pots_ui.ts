@@ -41,7 +41,7 @@ const PHASE_LABEL = (pot: Pot): string => {
     case 1: return t.phaseSeed;
     case 2: return t.phaseSprout;
     case 3: return t.phaseBud;
-    case 4: return t.phaseBloom(`${t.rarity[rarity(pot)]} · Gen. ${pot.plant.generation}`);
+    case 4: return t.phaseBloom(`${t.rarity[getRarityForPot(state, pot)]} · Gen. ${pot.plant.generation}`);
     default: return '';
   }
 };
