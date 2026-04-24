@@ -75,7 +75,7 @@ function buildShowcasePotCard(pot: Pot): HTMLElement {
   })
 
   if (openPotDesignIds.has(pot.id)) {
-    attachPotDesignRing(pot.id, card, true)
+    attachPotDesignRing(pot.id, card, false)
   }
 
   return card

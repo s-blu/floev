@@ -141,6 +141,8 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   card.appendChild(overlay);
 }
 
+const potDesignCloseHandlers = new Map<number, (e: MouseEvent) => void>()
+
 // ─── Pot design overlay (new mockup design) ───────────────────────────────────
 //
 // Layout:
@@ -150,13 +152,7 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
 //   • Transparent full-card backdrop to catch mis-clicks
 
 export function showPotDesignRing(potId: number, card: HTMLElement): void {
-  // Toggle
-  const existing = card.querySelector('.pot-design-overlay-new')
-  if (existing) {
-    existing.remove()
-    openPotDesignIds.delete(potId)
-    return
-  }
+  if (card.querySelector('.pot-design-overlay-new')) return
   attachPotDesignRing(potId, card, false)
 }
 
@@ -246,14 +242,21 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
     positionShapesRow(overlay, card)
   })
 
-  if (!silent) {
-    const closeOnOutside = (e: MouseEvent) => {
-      if (!card.contains(e.target as Node)) {
-        const o = card.querySelector('.pot-design-overlay-new')
-        if (o) { o.remove(); openPotDesignIds.delete(potId) }
-        document.removeEventListener('click', closeOnOutside)
-      }
+  const prevHandler = potDesignCloseHandlers.get(potId)
+  if (prevHandler) document.removeEventListener('click', prevHandler)
+
+  const closeOnOutside = (e: MouseEvent) => {
+    if (!card.contains(e.target as Node)) {
+      const o = card.querySelector('.pot-design-overlay-new')
+      if (o) { o.remove(); openPotDesignIds.delete(potId) }
+      document.removeEventListener('click', closeOnOutside)
+      potDesignCloseHandlers.delete(potId)
     }
+  }
+  potDesignCloseHandlers.set(potId, closeOnOutside)
+  if (silent) {
+    document.addEventListener('click', closeOnOutside)
+  } else {
     setTimeout(() => document.addEventListener('click', closeOnOutside), 0)
   }
 }

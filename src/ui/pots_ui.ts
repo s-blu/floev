@@ -213,7 +213,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
 
   // Restore design ring if it was open before this re-render
   if (openPotDesignIds.has(pot.id)) {
-    attachPotDesignRing(pot.id, card, true);
+    attachPotDesignRing(pot.id, card, false);
   }
 
   return card;
