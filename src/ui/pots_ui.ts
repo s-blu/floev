@@ -94,8 +94,8 @@ export function renderPots(selA: number | null, selB: number | null): void {
       const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
       const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
       const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
-      if (selfPurchased || showcaseHasSpace) {
-        showOverflowMenu(pot.id, card, selfPurchased, showcaseHasSpace);
+      if (selfPurchased && showcaseHasSpace) {
+        showOverflowMenu(pot.id, card, true, true);
       } else {
         overflowOpenPots.delete(pot.id);
       }
@@ -153,13 +153,20 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
     const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
     const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
-    const hasSecondary = selfPurchased || showcaseHasSpace;
+    const hasBothSecondary = selfPurchased && showcaseHasSpace;
+    const secondaryHtml = hasBothSecondary
+      ? `<div class="overflow-wrap"><button class="btn-sm btn-icon" data-action="overflow-toggle" data-pot="${pot.id}" data-selfpollinate="1" data-showcase="1" title="${t.btnOverflowTitle}">···</button></div>`
+      : selfPurchased
+        ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>`
+        : showcaseHasSpace
+          ? `<button class="btn-sm btn-icon" data-action="showcase" data-pot="${pot.id}" title="${t.btnMoveToShowcaseTitle}">${t.btnMoveToShowcase}</button>`
+          : '';
     buttonsHtml = `
       <div class="btn-row">
         <button class="btn-sm btn-breed${isBreedSelected ? ' selected' : ''}" data-action="breed-select" data-pot="${pot.id}">
           ${isBreedSelected ? t.btnBreedDeselect : t.btnBreedSelect}
         </button>
-        ${hasSecondary ? `<div class="overflow-wrap"><button class="btn-sm btn-icon" data-action="overflow-toggle" data-pot="${pot.id}" data-selfpollinate="${selfPurchased ? '1' : ''}" data-showcase="${showcaseHasSpace ? '1' : ''}" title="${t.btnOverflowTitle}">···</button></div>` : ''}
+        ${secondaryHtml}
         <button class="btn-sm btn-icon btn-sell${sellPendingPots.has(pot.id) ? ' sell-pending' : ''}" data-action="sell" data-pot="${pot.id}" title="${sellPendingPots.has(pot.id) ? t.btnSellConfirmTitle : t.btnSellTitle}">🪙${coinVal}</button>
       </div>`;
   } else {
