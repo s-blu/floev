@@ -47,7 +47,6 @@ export const de = {
   btnRemove: '✕',
   btnRemoveTitle: 'Pflanze entfernen',
   btnOverflowTitle: 'Weitere Aktionen',
-  btnSelfPollinate: 'Selbstbestäuben',
 
   // Homozygous / pure-line badge
   homozygousBadge: '◈',

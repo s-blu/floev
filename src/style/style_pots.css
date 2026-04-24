@@ -282,6 +282,10 @@
   padding: 4px;
 }
 
+.overflow-menu .btn-sm {
+  min-width: 45px;
+}
+
 .btn-sm.btn-sell {
   border-color: #f0c040;
   color: #8a5e00;
