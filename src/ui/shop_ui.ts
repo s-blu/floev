@@ -1,6 +1,6 @@
-import { UPGRADES, POT_COLORS, POT_SHAPES } from '../model/shop'
-import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape } from './ui'
-import { hasUpgrade, hasPotColor, hasPotShape } from '../engine/shop_engine'
+import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, SHOWCASE_MAX_SLOTS, SHOWCASE_EXTRA_SLOT_PRICE } from '../model/shop'
+import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleBuyExtraPot, handleBuyExtraShowcaseSlot } from './ui'
+import { hasUpgrade, hasPotColor, hasPotShape, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot } from '../engine/shop_engine'
 import { renderPotShopPreview } from '../engine/renderer/pot_renderer'
 import { t } from '../model/i18n'
 
@@ -22,9 +22,11 @@ export function initShop(): void {
       if (!el) return
       const action = el.dataset.action
       const id = el.dataset.id ?? ''
-      if      (action === 'buy-upgrade') handleBuyUpgrade(id)
-      else if (action === 'buy-color')   handleBuyPotColor(id)
-      else if (action === 'buy-shape')   handleBuyPotShape(id)
+      if      (action === 'buy-upgrade')   handleBuyUpgrade(id)
+      else if (action === 'buy-color')     handleBuyPotColor(id)
+      else if (action === 'buy-shape')     handleBuyPotShape(id)
+      else if (action === 'buy-extra-pot')          handleBuyExtraPot()
+      else if (action === 'buy-extra-showcase-slot') handleBuyExtraShowcaseSlot()
     })
     _eventsInitialized = true
   }
@@ -52,7 +54,7 @@ export function renderShopSidebar(): void {
   if (!sidebarOpen) return
   const body = document.getElementById('shop-sidebar-body')
   if (!body) return
-  body.innerHTML = renderUpgradesSection() + renderDecoSection()
+  body.innerHTML = renderUpgradesSection() + renderExtraPotsSection() + renderDecoSection() + renderShowcaseSection()
 }
 
 // ─── Upgrades section ─────────────────────────────────────────────────────────
@@ -85,6 +87,69 @@ function renderUpgradesSection(): string {
     <div class="shop-section">
       <p class="shop-section-label">${t.shopSectionUpgrades}</p>
       <div class="shop-items-list">${items}</div>
+    </div>`
+}
+
+// ─── Extra pots section ───────────────────────────────────────────────────────
+
+function renderExtraPotsSection(): string {
+  const potCount   = state.pots.length
+  const atMax      = !canBuyExtraPot(state)
+  const price      = getExtraPotPrice(state)
+  const canAfford  = state.coins >= price
+
+  const actionArea = atMax
+    ? `<span class="shop-item-owned-badge">${t.shopPotsMax}</span>`
+    : `<button
+         class="shop-buy-btn ${!canAfford ? 'shop-buy-btn--locked' : ''}"
+         data-action="buy-extra-pot"
+         ${!canAfford ? 'disabled' : ''}>
+         🪙 ${price}
+       </button>`
+
+  return `
+    <div class="shop-section">
+      <p class="shop-section-label">${t.shopSectionPots}</p>
+      <div class="shop-item">
+        <span class="shop-item-icon">🪴</span>
+        <div class="shop-item-info">
+          <span class="shop-item-title">${t.shopPotsTitle}</span>
+          <span class="shop-item-desc">${t.shopPotsDesc(potCount, MAX_POT_COUNT)}</span>
+        </div>
+        <div class="shop-item-action">${actionArea}</div>
+      </div>
+    </div>`
+}
+
+// ─── Showcase section ─────────────────────────────────────────────────────────
+
+function renderShowcaseSection(): string {
+  if (!hasUpgrade(state, 'unlock_showcase')) return ''
+
+  const slotCount  = state.showcase.length
+  const atMax      = !canBuyExtraShowcaseSlot(state)
+  const canAfford  = state.coins >= SHOWCASE_EXTRA_SLOT_PRICE
+
+  const actionArea = atMax
+    ? `<span class="shop-item-owned-badge">${t.shopShowcaseSlotsMax}</span>`
+    : `<button
+         class="shop-buy-btn ${!canAfford ? 'shop-buy-btn--locked' : ''}"
+         data-action="buy-extra-showcase-slot"
+         ${!canAfford ? 'disabled' : ''}>
+         🪙 ${SHOWCASE_EXTRA_SLOT_PRICE}
+       </button>`
+
+  return `
+    <div class="shop-section">
+      <p class="shop-section-label">${t.shopSectionShowcase}</p>
+      <div class="shop-item">
+        <span class="shop-item-icon">🪟</span>
+        <div class="shop-item-info">
+          <span class="shop-item-title">${t.upgradeTitle['unlock_showcase']}</span>
+          <span class="shop-item-desc">${t.shopShowcaseSlotsDesc(slotCount, SHOWCASE_MAX_SLOTS)}</span>
+        </div>
+        <div class="shop-item-action">${actionArea}</div>
+      </div>
     </div>`
 }
 

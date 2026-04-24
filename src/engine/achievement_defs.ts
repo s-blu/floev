@@ -8,7 +8,7 @@ import {
 } from './genetic/genetic_utils'
 import { PALETTE_HUE_RANGES, PALETTE_HUES, PALETTE_L, PETAL_SHAPES, CENTER_TYPES, PETAL_EFFECTS } from '../model/genetic_model'
 import type { ColorBucket } from '../model/genetic_model'
-import type { Rarity } from '../model/plant'
+import type { Rarity } from "../model/rarity_model"
 import { t } from '../model/i18n'
 import { coinValueForScore } from './game'
 import { calcCoinScore } from './rarity'
@@ -75,7 +75,6 @@ function countShadesInBucket(catalog: CatalogEntry[], bucket: ColorBucket): { cu
     const color = expressedColor(e.plant.petalHue, e.plant.petalLightness)
     if (colorBucket(color) === bucket) seen.add(`${color.h}-${color.l}`)
   }
-console.log('countShadesInBucket', bucket, { current: seen.size, total: Math.max(1, total) })
   return { current: seen.size, total: Math.max(1, total) }
 }
 

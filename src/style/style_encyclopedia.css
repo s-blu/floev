@@ -405,10 +405,32 @@
   margin-bottom: 8px;
 }
 
-/* ── Unified shape × trait grid ──────────────────────────────────────────── */
+/* ── Shape sub-grid group (flex row → column on small screens) ───────────── */
+
+.di-shape-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: start;
+}
+
+@media (max-width: 480px) {
+  .di-shape-groups {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 481px) {
+  .di-shape-groups .di-shape-grid:nth-child(n+2) .di-shape-label {
+    visibility: hidden;
+    max-width: 0;
+  }
+}
+
+/* ── Individual shape × trait grid ──────────────────────────────────────── */
 
 .di-shape-grid {
-  display: inline-grid;
+  display: grid;
   column-gap: 4px;
   row-gap: 5px;
   align-items: center;
@@ -458,11 +480,11 @@
 }
 
 .di-dot--missing {
-  border: 1.5px dashed var(--border2);
+  border: 1.5px solid var(--border2);
 }
 
 .di-dot--secret {
-  border: 1.5px dashed var(--border);
+  border: 1.5px solid var(--border);
 }
 
 /* ── Color bucket grid ───────────────────────────────────────────────────── */
@@ -530,10 +552,10 @@
 
 .di-swatch--missing {
   outline: none;
-  border: 1.5px dashed var(--border2);
+  border: 1.5px solid var(--border2);
 }
 
 .di-swatch--secret {
   outline: none;
-  border: 1.5px dashed var(--border);
+  border: 1.5px solid var(--border);
 }

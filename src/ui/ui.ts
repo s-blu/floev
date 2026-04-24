@@ -5,11 +5,14 @@ import {
   removePlant,
   sellPlant,
   placeSeedInEmptyPot,
+  moveToShowcase,
+  moveFromShowcase,
   saveState,
 } from '../engine/game'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
-import { buyUpgrade, buyPotColor, buyPotShape, setPotDesign, hasUpgrade } from '../engine/shop_engine'
+import { buyUpgrade, buyPotColor, buyPotShape, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
+import { renderShowcase } from './showcase_ui'
 import { renderBreedPanel } from './breedpanel_ui'
 import { renderCatalog } from './catalog_ui'
 import { renderShopSidebar } from '../ui/shop_ui'
@@ -61,6 +64,7 @@ function tick(): void {
 
 export function render(): void {
   renderPots(breedState.breedSelA, breedState.breedSelB)
+  renderShowcase()
   renderBreedPanel()
   renderCatalog()
   renderCoins()
@@ -90,10 +94,30 @@ export function handleBuyPotShape(shape: string): void {
   }
 }
 
+export function handleBuyExtraPot(): void {
+  if (buyExtraPot(state)) {
+    checkAchAndSave(state)
+    render()
+  }
+}
+
 export function handleSetPotDesign(potId: number, partial: { colorId?: string; shape?: 'standard' | 'conic' | 'belly' }): void {
   setPotDesign(state, potId, partial)
   saveState(state)
   render()
+}
+
+export function handleSetShowcasePotDesign(potId: number, partial: { colorId?: string; shape?: 'standard' | 'conic' | 'belly' }): void {
+  setShowcasePotDesign(state, potId, partial)
+  saveState(state)
+  render()
+}
+
+export function handleBuyExtraShowcaseSlot(): void {
+  if (buyExtraShowcaseSlot(state)) {
+    checkAchAndSave(state)
+    render()
+  }
 }
 
 export { hasUpgrade }
@@ -134,6 +158,24 @@ export function handleRemove(potId: number): void {
   if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
   if (removePlant(state, potId)) {
     showMsg(t.msgPotCleared)
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleMoveToShowcase(potId: number): void {
+  if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
+  if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
+  if (moveToShowcase(state, potId)) {
+    showMsg(t.msgMovedToShowcase)
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleMoveFromShowcase(showcasePotId: number): void {
+  if (moveFromShowcase(state, showcasePotId)) {
+    showMsg(t.msgMovedFromShowcase)
     checkAchAndSave(state)
     render()
   }

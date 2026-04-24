@@ -1,5 +1,7 @@
 // ─── Core value types ─────────────────────────────────────────────────────────
 
+import { Rarity } from "./rarity_model"
+
 export interface HSLColor {
   h: number
   s: number
@@ -18,7 +20,6 @@ export type StemTypes = "two-leaved-stem"
 export type PetalShape  = 'round' | 'lanzett' | 'tropfen' | 'wavy' | 'zickzack'
 export type CenterType  = 'dot' | 'disc' | 'stamen'
 export type PlantPhase  = 1 | 2 | 3 | 4
-export type Rarity      = 0 | 1 | 2 | 3 | 4
 export type PetalEffect = 'none' | 'bicolor' | 'gradient' | 'shimmer' | 'iridescent'
 
 // ─── Plant ────────────────────────────────────────────────────────────────────
@@ -74,6 +75,7 @@ export interface PotDesign {
 
 export interface GameState {
   pots:     Pot[]
+  showcase: Pot[]
   catalog:  CatalogEntry[]
   coins:    number
   achievements: {

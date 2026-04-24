@@ -1,4 +1,4 @@
-import type { GameState, Pot, Plant, Rarity, PetalEffect, PlantPhase } from '../model/plant'
+import type { GameState, Pot, Plant, PetalEffect, PlantPhase } from '../model/plant'
 import { plannedPlant, randomPlant } from './genetic/genetic'
 import { addToCatalog } from './catalog'
 import { calcCoinScore } from './rarity'
@@ -7,20 +7,13 @@ import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS } from '../
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const STORAGE_KEY   = 'bloom_v1'
-const POT_COUNT     = 9
+export const INITIAL_POT_COUNT = 9
 const STARTER_PLANTS = 4;
 
 export const PHASE_DURATION_MS: Record<number, number> = import.meta.env.DEV
   ? DEV_PHASE_DURATION_MS
   : { 1: 2 * 60_000, 2: 4 * 60_000, 3: 6 * 60_000 }
 
-export const RARITY_COLORS: Record<Rarity, string> = {
-  0: '#888780',
-  1: '#1D9E75',
-  2: '#4655e0',
-  3: '#b437ee',
-  4: '#f08000',
-}
 
 /** Maps a 1–100 rarity score to coins. Roughly exponential. */
 export function coinValueForScore(score: number): number {
@@ -75,7 +68,7 @@ const DEBUG_PLANTS = [
 function createInitialState(): GameState {
   let pots: Pot[];
   if (useDebugPlants) {
-    pots = Array.from({ length: POT_COUNT }, (_, i) => ({
+    pots = Array.from({ length: INITIAL_POT_COUNT }, (_, i) => ({
       id: i,
       plant: i < DEBUG_PLANTS.length ? DEBUG_PLANTS[i] : null,
       phaseStart: i < DEBUG_PLANTS.length ? Date.now() - 5000 : null,
@@ -84,14 +77,14 @@ function createInitialState(): GameState {
     // Starter plants: all in phase 3 (Bud), finishing at 12s / 30s / 60s / 3min
     const phase3Dur = PHASE_DURATION_MS[3];
     const starterOffsets = [12_000, 30_000, 60_000, 180_000];
-    pots = Array.from({ length: POT_COUNT }, (_, i) => {
+    pots = Array.from({ length: INITIAL_POT_COUNT }, (_, i) => {
       if (i >= STARTER_PLANTS) return { id: i, plant: null, phaseStart: null };
       const plant = randomPlant();
       plant.phase = 3 as PlantPhase;
       return { id: i, plant, phaseStart: Date.now() - (phase3Dur - starterOffsets[i]) };
     });
   }
-  return { pots, catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], lastSave: Date.now() }
+  return { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], lastSave: Date.now() }
 }
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
@@ -108,6 +101,7 @@ export function loadState(): GameState {
       if (!parsed.upgrades) parsed.upgrades = []
       if (!parsed.unlockedPotColors) parsed.unlockedPotColors = []
       if (!parsed.unlockedPotShapes) parsed.unlockedPotShapes = []
+      if (!parsed.showcase) parsed.showcase = []
 
       return parsed
     }
@@ -147,9 +141,11 @@ export function advancePhases(
   let changed = false
   for (const pot of state.pots) {
     if (!pot.plant || pot.plant.phase >= 4) continue
-    if (getPhaseProgress(pot) >= 1) {
+    while (pot.plant.phase < 4 && getPhaseProgress(pot) >= 1) {
+      const dur = PHASE_DURATION_MS[pot.plant.phase]
+      const phaseEnd = (pot.phaseStart ?? Date.now()) + dur
       pot.plant.phase = (pot.plant.phase + 1) as Plant['phase']
-      pot.phaseStart  = Date.now()
+      pot.phaseStart  = phaseEnd
       if (pot.plant.phase === 4) {
         addToCatalog(state, pot.plant)
         onBloom?.(pot.plant)
@@ -194,4 +190,26 @@ export function placeSeedInEmptyPot(state: GameState, plant: Plant): number | nu
   pot.plant      = plant
   pot.phaseStart = Date.now()
   return pot.id
+}
+
+// ─── Showcase actions ────────────────────────────────────────────────────────
+
+export function moveToShowcase(state: GameState, potId: number): boolean {
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot?.plant || pot.plant.phase < 4) return false
+  const freePot = state.showcase.find(p => !p.plant)
+  if (!freePot) return false
+  freePot.plant = pot.plant
+  pot.plant     = null
+  return true
+}
+
+export function moveFromShowcase(state: GameState, showcasePotId: number): boolean {
+  const showcasePot = state.showcase.find(p => p.id === showcasePotId)
+  if (!showcasePot?.plant) return false
+  const freePot = state.pots.find(p => !p.plant)
+  if (!freePot) return false
+  freePot.plant      = showcasePot.plant
+  showcasePot.plant  = null
+  return true
 }

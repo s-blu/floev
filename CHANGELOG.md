@@ -1,6 +1,19 @@
+# v1.2.0
+
+Improvements:
+
+- New purchasable feature: Showcase 
+- Rework style of the garden to have a more natural look
+- Rework pot selling & allow more pots (up to 40)
+- Rework pot design overlay a bit
+
+Bugs:
+
+- Fix hue swatch not displaying in breed estimate (oopsie)
+- Fix discovery index flowing out of browser size on mobile
+- Balance rarity system a bit
 
 # v1.1.0
-
 
 Improvements:
 

@@ -7,7 +7,8 @@ import { t } from '../model/i18n';
 import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
 import { buildFamilySwatchStyle } from './swatch_utils';
-import { openAlleleIds, state, handleSetPotDesign, openPotDesignIds } from './ui';
+import { openAlleleIds, state, handleSetPotDesign, handleSetShowcasePotDesign, openPotDesignIds } from './ui'
+import { SHOWCASE_POT_BASE_ID } from '../model/shop';
 
 
 // FIXME make overlay transparent not blurred
@@ -24,7 +25,7 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     }
   }
 
-  const pot = state.pots.find(p => p.id === potId);
+  const pot = state.pots.find(p => p.id === potId) ?? state.showcase.find(p => p.id === potId);
   if (!pot?.plant) return;
   const plant = pot.plant;
 
@@ -140,6 +141,8 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   card.appendChild(overlay);
 }
 
+const potDesignCloseHandlers = new Map<number, (e: MouseEvent) => void>()
+
 // ─── Pot design overlay (new mockup design) ───────────────────────────────────
 //
 // Layout:
@@ -149,19 +152,15 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
 //   • Transparent full-card backdrop to catch mis-clicks
 
 export function showPotDesignRing(potId: number, card: HTMLElement): void {
-  // Toggle
-  const existing = card.querySelector('.pot-design-overlay-new')
-  if (existing) {
-    existing.remove()
-    openPotDesignIds.delete(potId)
-    return
-  }
+  if (card.querySelector('.pot-design-overlay-new')) return
   attachPotDesignRing(potId, card, false)
 }
 
 export function attachPotDesignRing(potId: number, card: HTMLElement, silent: boolean): void {
-  const pot = state.pots.find(p => p.id === potId)
+  const pot = state.pots.find(p => p.id === potId) ?? state.showcase.find(p => p.id === potId)
   if (!pot) return
+  const isShowcasePot = potId >= SHOWCASE_POT_BASE_ID
+  const setDesign = isShowcasePot ? handleSetShowcasePotDesign : handleSetPotDesign
 
   const activeColor = pot.design?.colorId ?? 'terracotta'
   const activeShape = pot.design?.shape ?? 'standard'
@@ -219,14 +218,14 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
       return
     }
     if (color) {
-      handleSetPotDesign(potId, { colorId: color })
+      setDesign(potId, { colorId: color })
       // Update active state visually
       overlay.querySelectorAll('[data-pdo-color]').forEach(b => b.classList.remove('pdo-color-swatch--active'))
       el.classList.add('pdo-color-swatch--active')
       return
     }
     if (shape) {
-      handleSetPotDesign(potId, { shape: shape as 'standard' | 'conic' | 'belly' })
+      setDesign(potId, { shape: shape as 'standard' | 'conic' | 'belly' })
       overlay.querySelectorAll('[data-pdo-shape]').forEach(b => b.classList.remove('pdo-shape-btn--active'))
       el.classList.add('pdo-shape-btn--active')
       return
@@ -240,16 +239,24 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   // Position color swatches in a half-ring after mount
   requestAnimationFrame(() => {
     positionColorSwatches(overlay, card)
+    positionShapesRow(overlay, card)
   })
 
-  if (!silent) {
-    const closeOnOutside = (e: MouseEvent) => {
-      if (!card.contains(e.target as Node)) {
-        const o = card.querySelector('.pot-design-overlay-new')
-        if (o) { o.remove(); openPotDesignIds.delete(potId) }
-        document.removeEventListener('click', closeOnOutside)
-      }
+  const prevHandler = potDesignCloseHandlers.get(potId)
+  if (prevHandler) document.removeEventListener('click', prevHandler)
+
+  const closeOnOutside = (e: MouseEvent) => {
+    if (!card.contains(e.target as Node)) {
+      const o = card.querySelector('.pot-design-overlay-new')
+      if (o) { o.remove(); openPotDesignIds.delete(potId) }
+      document.removeEventListener('click', closeOnOutside)
+      potDesignCloseHandlers.delete(potId)
     }
+  }
+  potDesignCloseHandlers.set(potId, closeOnOutside)
+  if (silent) {
+    document.addEventListener('click', closeOnOutside)
+  } else {
     setTimeout(() => document.addEventListener('click', closeOnOutside), 0)
   }
 }
@@ -257,19 +264,20 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
 function positionColorSwatches(overlay: HTMLElement, card: HTMLElement): void {
   const swatches = overlay.querySelectorAll<HTMLElement>('[data-pdo-color]')
   const cardW = card.offsetWidth
-  const cardH = card.offsetHeight
 
-  // Center of card (origin for the ring)
+  const visualArea = card.querySelector<HTMLElement>('.pot-visual-area')
+  const visualAreaH = visualArea?.offsetHeight ?? card.offsetHeight * 0.72
+
+  // Center ring on plant center (plant is bottom-aligned in visual area)
   const cx = cardW / 2
-  const cy = cardH / 2
+  const cy = visualAreaH * 0.55
 
-  // Radius of the ring — just large enough to arc around the flower
-  const radius = Math.min(cardW * 0.54, cardH * 0.48)
+  // Compact radius — stays close to the plant
+  const radius = Math.min(cardW * 0.42, visualAreaH * 0.38)
 
   const n = swatches.length
-  // Spread across the top half: from 200° to 340° (bottom-left to bottom-right via top)
-  // i.e. the swatches arc over the top of the card
-  const startAngle = 200  // degrees, measured from right (CSS convention)
+  // Arc from 200° to 340° over the top of the plant
+  const startAngle = 200
   const endAngle = 340
   const swatchSize = 22
 
@@ -286,6 +294,17 @@ function positionColorSwatches(overlay: HTMLElement, card: HTMLElement): void {
     btn.style.width = `${swatchSize}px`
     btn.style.height = `${swatchSize}px`
   })
+}
+
+function positionShapesRow(overlay: HTMLElement, card: HTMLElement): void {
+  const shapesRow = overlay.querySelector<HTMLElement>('.pdo-shapes-row')
+  if (!shapesRow) return
+  const visualArea = card.querySelector<HTMLElement>('.pot-visual-area')
+  if (!visualArea) return
+  shapesRow.style.position = 'absolute'
+  shapesRow.style.top = `${visualArea.offsetHeight + 6}px`
+  shapesRow.style.left = '0'
+  shapesRow.style.right = '0'
 }
 
 

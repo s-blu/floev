@@ -14,6 +14,7 @@ export const de = {
   sectionGarden: 'Dein Garten',
   sectionBreeding: 'Züchtung',
   sectionDiscoveries: 'Entdeckungen',
+  sectionShowcase: 'Schaukasten',
 
   // Phase labels
   phaseEmpty: 'Leer',
@@ -45,6 +46,7 @@ export const de = {
   btnBreedDeselect: 'Abwählen',
   btnRemove: '✕',
   btnRemoveTitle: 'Pflanze entfernen',
+  btnOverflowTitle: 'Weitere Aktionen',
 
   // Homozygous / pure-line badge
   homozygousBadge: '◈',
@@ -109,7 +111,7 @@ export const de = {
   selfPollinateTitle: 'Selbstbestäuben — verbraucht die Pflanze, erzeugt reinerbigeren Samen',
   selfPollinateConfirmTitle: 'Selbstbestäubung',
   selfPollinateConfirmText: 'Die Blüte bestäubt sich selbst. Der entstandene Samen ist reinerbiger als die Elternpflanze.',
-  selfPollinateWarning: 'Die Pflanze wird danach entfernt.',
+  selfPollinateWarning: 'Die Pflanze wird dabei entfernt.',
   selfPollinateConfirm: 'Bestäuben',
   selfPollinateCancel: 'Abbrechen',
   selfPollinateSuccess: (gen: number) => `Selbstbestäubt! Samen der Generation ${gen} gepflanzt.`,
@@ -131,6 +133,15 @@ export const de = {
   catalogParentGenTitle: (gen: number) => `Gen. ${gen}`,
   catalogHomozygousBadge: '◈ reinerbig',
 
+  // Showcase
+  btnMoveToShowcase: '🪟',
+  btnMoveToShowcaseTitle: 'Im Schaukasten ausstellen',
+  btnMoveFromShowcase: 'Zurück in den Garten',
+  btnMoveFromShowcaseTitle: 'Pflanze in einen freien Topf zurücksetzen',
+  showcaseNoFreePot: 'Kein freier Topf im Garten.',
+  msgMovedToShowcase: 'Pflanze ausgestellt!',
+  msgMovedFromShowcase: 'Pflanze zurück in den Garten.',
+
   // Sell
   btnSell: 'Verkaufen',
   btnSellTitle: 'Pflanze verkaufen — erhält Münzen',
@@ -145,6 +156,10 @@ export const de = {
   shopSectionUpgrades: 'Upgrades',
   shopItemOwned: 'Gekauft',
   shopOwnedSuffix: ' (gekauft)',
+  shopSectionPots: 'Töpfe',
+  shopPotsTitle: 'Neuen Topf kaufen',
+  shopPotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Töpfen. Jeder weitere Topf kostet +50 🪙.`,
+  shopPotsMax: 'Maximum erreicht',
   shopSectionDeco: 'Topf-Design',
   shopSubsectionColors: 'Farben freischalten',
   shopDecoHint: 'Gekaufte Designs per 🎨-Button an jedem Topf wechseln.',
@@ -152,23 +167,24 @@ export const de = {
 
   // Shop — Upgrade-Beschriftungen
   upgradeTitle: {
-    unlock_lupe:          'Genetik-Lupe',
-    unlock_selfpollinate: 'Selbstbestäubung',
+    unlock_lupe:             'Genetik-Lupe',
+    unlock_selfpollinate:    'Selbstbestäubung',
     unlock_rare_radar:       'Seltenheits-Radar',
-    unlock_discovery_index: 'Entdeckungs-Index',
-    unlock_pot_10:           'Topf 10',
-    unlock_pot_11:        'Topf 11',
-    unlock_pot_12:        'Topf 12',
+    unlock_discovery_index:  'Entdeckungs-Index',
+    unlock_showcase:         'Schaukasten',
   } as Record<string, string>,
   upgradeDesc: {
-    unlock_lupe:          'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
-    unlock_selfpollinate: 'Pflanzen können sich selbst bestäuben, um reinerbigere Nachkommen zu erzeugen.',
+    unlock_lupe:             'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
+    unlock_selfpollinate:    'Pflanzen können sich selbst bestäuben, um reinerbigere Nachkommen zu erzeugen.',
     unlock_rare_radar:       'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein seltenes rezessives Allel trägt.',
-    unlock_discovery_index: 'Zeigt im Katalog eine Übersicht aller entdeckten und noch unbekannten Formen und Farben.',
-    unlock_pot_10:           'Ein weiterer Pflanztopf — mehr Platz im Garten.',
-    unlock_pot_11:        'Noch mehr Platz — ideal für lange Züchtungslinien.',
-    unlock_pot_12:        'Der größte Garten. Für wahre Botanik-Enthusiasten.',
+    unlock_discovery_index:  'Zeigt im Katalog eine Übersicht aller entdeckten und noch unbekannten Formen und Farben.',
+    unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
   } as Record<string, string>,
+
+  // Shop — Showcase
+  shopSectionShowcase: 'Schaukasten erweitern',
+  shopShowcaseSlotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Stellplätzen.`,
+  shopShowcaseSlotsMax: 'Maximale Stellplätze erreicht',
 
   // Shop — Topf-Kosmetik-Bezeichnungen
   potColorLabels: {

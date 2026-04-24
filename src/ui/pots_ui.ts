@@ -1,17 +1,16 @@
-import { renderPlantSVG } from '../engine/renderer/renderer';
-import { getPhaseProgress, RARITY_COLORS, PHASE_DURATION_MS } from '../engine/game';
-import { isHomozygous, hasHiddenRareTrait } from '../engine/genetic/genetic_utils';
-import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
+import { getPhaseProgress, PHASE_DURATION_MS } from '../engine/game';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
 import { t } from '../model/i18n';
-import type { Pot, Rarity } from '../model/plant';
+import type { Pot } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
-import { calcCoinScore } from '../engine/rarity';
+import { calcCoinScore, getRarityForPot } from '../engine/rarity';
 import { attachPotDesignRing, showAlleleOverlay, showPotDesignRing } from './pots_overlay_ui';
-import { getCatalogEntryForPlant } from '../engine/catalog';
+import { buildPotVisualArea, buildPotSill } from './pots_utils';
 
 const SELL_CONFIRM_TIMEOUT_MS = 2500;
 const sellPendingPots = new Set<number>();
 const sellPendingTimers = new Map<number, ReturnType<typeof setTimeout>>();
+const overflowOpenPots = new Set<number>();
 
 function armSellButton(potId: number, btn: HTMLElement): void {
   cancelSellPending(potId);
@@ -37,9 +36,37 @@ function cancelSellPending(potId: number): void {
   sellPendingPots.delete(potId);
 }
 
-const RARITY_ICON: Record<number, string> = {
-  0: '▪', 1: '●', 2: '♦', 3: '★', 4: '👑',
-};
+function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boolean, showcaseAvail: boolean): void {
+  const wrap = card.querySelector('.overflow-wrap') as HTMLElement | null;
+  if (!wrap) return;
+  const menu = document.createElement('div');
+  menu.className = 'overflow-menu';
+  if (selfPollinate) {
+    const b = document.createElement('button');
+    b.className = 'btn-sm btn-icon';
+    b.dataset.action = 'selfpollinate';
+    b.dataset.pot = String(potId);
+    b.title = t.selfPollinateTitle;
+    b.textContent = '↺';
+    menu.appendChild(b);
+  }
+  if (showcaseAvail) {
+    const b = document.createElement('button');
+    b.className = 'btn-sm btn-icon';
+    b.dataset.action = 'showcase';
+    b.dataset.pot = String(potId);
+    b.title = t.btnMoveToShowcaseTitle;
+    b.textContent = t.btnMoveToShowcase;
+    menu.appendChild(b);
+  }
+  wrap.appendChild(menu);
+  overflowOpenPots.add(potId);
+}
+
+function closeAllOverflowMenus(): void {
+  document.querySelectorAll('.overflow-menu').forEach(m => m.remove());
+  overflowOpenPots.clear();
+}
 
 const PHASE_LABEL = (pot: Pot): string => {
   if (!pot.plant) return t.phaseEmpty;
@@ -47,16 +74,10 @@ const PHASE_LABEL = (pot: Pot): string => {
     case 1: return t.phaseSeed;
     case 2: return t.phaseSprout;
     case 3: return t.phaseBud;
-    case 4: return t.phaseBloom(`${t.rarity[rarity(pot)]} · Gen. ${pot.plant.generation}`);
+    case 4: return t.phaseBloom(`${t.rarity[getRarityForPot(state, pot)]} · Gen. ${pot.plant.generation}`);
     default: return '';
   }
 };
-
-function rarity(pot: Pot): Rarity {
-  if (!pot.plant) return 0;
-  const entry = getCatalogEntryForPlant(state, pot.plant)
-  return entry?.rarity ?? 0;
-}
 
 export function renderPots(selA: number | null, selB: number | null): void {
   const container = document.getElementById('pots-row');
@@ -66,9 +87,18 @@ export function renderPots(selA: number | null, selB: number | null): void {
   for (const pot of state.pots) {
     const card = buildPotCard(pot, selA, selB);
     container.appendChild(card);
-    // Restore overlay if it was open before this re-render
     if (openAlleleIds.has(pot.id) && pot.plant?.phase === 4) {
       showAlleleOverlay(pot.id, card, /* silent */ true);
+    }
+    if (overflowOpenPots.has(pot.id) && pot.plant?.phase === 4) {
+      const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
+      const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
+      const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
+      if (selfPurchased && showcaseHasSpace) {
+        showOverflowMenu(pot.id, card, true, true);
+      } else {
+        overflowOpenPots.delete(pot.id);
+      }
     }
   }
 }
@@ -77,7 +107,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   const card = document.createElement('div');
   const isSelected = pot.id === selA || pot.id === selB;
   const isBlooming = pot.plant?.phase === 4;
-  const r = rarity(pot);
+  const r = getRarityForPot(state, pot);
 
   card.className = [
     'pot-card',
@@ -86,37 +116,12 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     isBlooming ? `rarity-${r}` : ''
   ].filter(Boolean).join(' ');
 
-  // ── Header: badges anchored top-left / top-right ──
-  const hasCosmetics = (state.unlockedPotColors?.length ?? 0) > 0 || (state.unlockedPotShapes?.length ?? 0) > 0
-  let headerHtml = '<div class="pot-card-header">';
-  if (isBlooming && pot.plant) {
-    const homozyg = isHomozygous(pot.plant);
-    if (homozyg) {
-      headerHtml += `<span class="pot-homozygous-badge" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
-    }
-    headerHtml += `<span class="pot-rarity-dot" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span>`;
-  }
-  if (hasCosmetics) {
-    headerHtml += `<button class="pot-design-btn" data-action="pot-design" data-pot="${pot.id}" title="${t.potDesignBtnTitle}">🎨</button>`;
-  }
-  headerHtml += '</div>';
+  const visualAreaHtml = buildPotVisualArea(pot, state);
+  const sillHtml = buildPotSill();
 
-  // ── Plant view — magnifier button only for blooming plants with lupe upgrade ──
-  let plantHtml: string;
-  const lupePurchased = hasUpgrade(state, 'unlock_lupe');
-  if (isBlooming && pot.plant) {
-    plantHtml = `
-      <div class="plant-view plant-view--interactive">
-        ${renderPlantSVG(pot.plant, 100, 130, pot.design)}
-        ${lupePurchased ? `<button class="plant-magnifier" data-action="allele-inspect" data-pot="${pot.id}" title="${t.alleleInspectTitle}">🔍</button>` : ''}
-      </div>`;
-  } else {
-    plantHtml = `<div class="plant-view">${renderPlantSVG(pot.plant ?? null, 100, 130, pot.design)}</div>`;
-  }
-
-  // ── Phase label + progress ──
+  // ── Phase label + progress (growing plants only; blooming info is in side panel) ──
   let progressHtml = '';
-  let labelHtml: string;
+  let belowSillContent = '';
   if (pot.plant && pot.plant.phase < 4) {
     const progress = getPhaseProgress(pot);
     const pct = (progress * 100).toFixed(2);
@@ -127,15 +132,8 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const remainingMs = currentPhaseRemainingMs + laterPhasesMs;
     const remainingMin = Math.ceil(remainingMs / 60_000);
     const timeLabel = remainingMin < 1 ? t.phaseAlmostDone : t.phaseTimeLeft(remainingMin);
-    labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)} · <span class="phase-pct">${timeLabel}</span></p>`;
-    progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
-  } else if (isBlooming && pot.plant) {
-    const rareCarrier = hasUpgrade(state, 'unlock_rare_radar') && hasHiddenRareTrait(pot.plant)
-      ? ` <span class="phase-rare-carrier" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`
-      : '';
-    labelHtml = `<p class="phase-label">${rareCarrier} ${t.rarity[r]} · Gen. ${pot.plant.generation}</p>`;
-  } else {
-    labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)}</p>`;
+    belowSillContent = `<p class="phase-label">${PHASE_LABEL(pot)} · <span class="phase-pct">${timeLabel}</span></p>`;
+    progressHtml = `<div class="progress-row"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><button class="btn-sm btn-cancel-grow danger" data-action="remove" data-pot="${pot.id}" title="${t.btnRemove}">${t.btnRemove}</button></div>`;
   }
 
   // ── Action buttons — single row ──
@@ -149,22 +147,28 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const isBreedSelected = pot.id === selA || pot.id === selB;
     const coinVal = coinValueForScore(calcCoinScore(pot.plant));
     const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
+    const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
+    const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
+    const hasBothSecondary = selfPurchased && showcaseHasSpace;
+    const secondaryHtml = hasBothSecondary
+      ? `<div class="overflow-wrap"><button class="btn-sm btn-icon" data-action="overflow-toggle" data-pot="${pot.id}" data-selfpollinate="1" data-showcase="1" title="${t.btnOverflowTitle}">···</button></div>`
+      : selfPurchased
+        ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>`
+        : showcaseHasSpace
+          ? `<button class="btn-sm btn-icon" data-action="showcase" data-pot="${pot.id}" title="${t.btnMoveToShowcaseTitle}">${t.btnMoveToShowcase}</button>`
+          : '';
     buttonsHtml = `
       <div class="btn-row">
         <button class="btn-sm btn-breed${isBreedSelected ? ' selected' : ''}" data-action="breed-select" data-pot="${pot.id}">
           ${isBreedSelected ? t.btnBreedDeselect : t.btnBreedSelect}
         </button>
-        ${selfPurchased ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>` : ''}
+        ${secondaryHtml}
         <button class="btn-sm btn-icon btn-sell${sellPendingPots.has(pot.id) ? ' sell-pending' : ''}" data-action="sell" data-pot="${pot.id}" title="${sellPendingPots.has(pot.id) ? t.btnSellConfirmTitle : t.btnSellTitle}">🪙${coinVal}</button>
-      </div>`;
-  } else {
-    buttonsHtml = `
-      <div class="btn-row">
-        <button class="btn-sm danger" data-action="remove" data-pot="${pot.id}">${t.btnRemove}</button>
       </div>`;
   }
 
-  card.innerHTML = headerHtml + plantHtml + labelHtml + progressHtml + buttonsHtml;
+  const belowSillHtml = `<div class="pot-below-sill">${belowSillContent}${progressHtml}${buttonsHtml}</div>`;
+  card.innerHTML = visualAreaHtml + sillHtml + belowSillHtml;
 
   // ── Event delegation ──
   card.addEventListener('click', (e) => {
@@ -172,6 +176,9 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     if (!btn) return;
     const action = btn.dataset.action;
     const potId = Number(btn.dataset.pot);
+
+    if (action !== 'overflow-toggle') closeAllOverflowMenus();
+
     if      (action === 'plant')          handlePlantSeed(potId);
     else if (action === 'remove')         handleRemove(potId);
     else if (action === 'sell') {
@@ -184,16 +191,23 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     }
     else if (action === 'breed-select')   handleBreedSelect(potId);
     else if (action === 'selfpollinate')  handleSelfPollinate(potId);
+    else if (action === 'showcase')       handleMoveToShowcase(potId);
+    else if (action === 'overflow-toggle') {
+      if (overflowOpenPots.has(potId)) {
+        closeAllOverflowMenus();
+      } else {
+        closeAllOverflowMenus();
+        showOverflowMenu(potId, card, !!btn.dataset.selfpollinate, !!btn.dataset.showcase);
+      }
+    }
     else if (action === 'allele-inspect') showAlleleOverlay(potId, card);
     else if (action === 'pot-design')     showPotDesignRing(potId, card);
   });
 
   // Restore design ring if it was open before this re-render
   if (openPotDesignIds.has(pot.id)) {
-    attachPotDesignRing(pot.id, card, true);
+    attachPotDesignRing(pot.id, card, false);
   }
 
   return card;
 }
-
-

@@ -2,53 +2,121 @@
 .pots-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 0;
 }
 
 .pot-card {
-  background: var(--bg2);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  transition: border-color 0.2s;
+  align-items: stretch;
   position: relative;
 }
 
-.pot-card.selected  { 
-  border: 1px dashed #6c6c6c; 
+.pot-card.selected .pot-visual-area {
+  background: rgba(108, 108, 108, 0.07);
+  border: 1px dashed var(--border2);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: none;
 }
-.pot-card.blooming  { border-color: var(--rarity-0); }
 
-.pot-card.blooming.rarity-1 {
-  border-color: var(--rarity-1);
+/* ── Visual area (plant SVG centered, buttons/info positioned around it) ────────── */
+.pot-visual-area {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 0.75rem 0 3px;
+  min-height: 150px;
 }
-.pot-card.blooming.rarity-2 {
-  border-color: var(--rarity-2);
+
+/* ── Left actions (cosmetic + allele buttons, stacked) ───────────────────────── */
+.pot-left-actions {
+  position: absolute;
+  right: calc(50% + 54px);
+  bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
-.pot-card.blooming.rarity-3 {
-  border-color: var(--rarity-3);
+
+/* ── Side info (rarity icon + gen label, right of plant) ────────────────────── */
+.pot-side-info {
+  position: absolute;
+  left: calc(50% + 54px);
+  bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
-.pot-card.blooming.rarity-4 {
-  border-color: var(--rarity-4);
+
+.pot-side-rarity {
+  font-size: 15px;
+  line-height: 1;
+  min-width: 9px;
+  display: inline-block;
+  text-align: center;
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
+}
+
+.pot-side-homo {
+  font-size: 12px;
+  color: var(--green);
+  line-height: 1;
+}
+
+.pot-side-gen {
+  font-size: 11px;
+  color: var(--text2);
+}
+
+/* ── Windowsill ──────────────────────────────────────────────────────────────── */
+.pot-sill {
+  height: 8px;
+  flex-shrink: 0;
+  background: linear-gradient(to bottom, #7c6149 0%, #634d39 55%, #553c27 100%);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
+#showcase-section .pot-sill {
+  background: linear-gradient(to bottom, #f5f5f5 0%, #dadada 55%, #b9c6db 100%);
+}
+
+#showcase-section .pot-visual-area {
+	background: linear-gradient(rgba(240, 248, 255, 0.5) 60%,rgba(219, 235, 248, 0.5) 90%, rgba(245, 235, 224,0.5), rgba(255, 228, 196, 0.5));
+}
+
+
+
+@media (prefers-color-scheme: dark) {
+  .pot-sill {
+    background: linear-gradient(to bottom, #6b4a2c 0%, #593c20 55%, #482e14 100%);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  #showcase-section .pot-sill {
+    background: linear-gradient(to bottom, #5c4020 0%, #4a3010 55%, #3a2208 100%);
+  }
+}
+
+/* ── Below-sill area (phase label, progress, buttons) ───────────────────────── */
+.pot-below-sill {
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .plant-view { width: 100px; height: 130px; flex-shrink: 0; }
 .plant-view svg { display: block; overflow: visible; }
 
-/* Interactive wrapper needed for the magnifier button positioning */
-.plant-view--interactive {
-  position: relative;
-}
-
-/* ── Magnifier button ─────────────────────────────────────────────────────── */
+/* ── Magnifier button (now lives in .pot-left-actions) ───────────────────── */
 .plant-magnifier {
-  position: absolute;
-  bottom: 4px;
-  right: 0px;
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -63,11 +131,11 @@
   padding: 0;
   opacity: 0;
   transition: opacity 0.15s;
-  z-index: 2;
   box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  flex-shrink: 0;
 }
 
-.plant-view--interactive:hover .plant-magnifier { opacity: 1; }
+.pot-card:hover .plant-magnifier { opacity: 1; }
 .plant-magnifier:hover { opacity: 1 !important; background: var(--bg3); }
 
 /* ── Allele overlay ──────────────────────────────────────────────────────── */
@@ -178,6 +246,26 @@
 }
 
 /* ── Progress bar ─────────────────────────────────────────────────────────── */
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.progress-row .progress-bar {
+  flex: 1;
+}
+
+.btn-cancel-grow {
+  flex: 0 0 auto;
+  font-size: 10px;
+  padding: 2px 5px;
+  line-height: 1;
+  min-width: 30px;
+  min-height: 20px;
+}
+
 .progress-bar {
   width: 100%;
   height: 3px;
@@ -193,35 +281,7 @@
   transition: width 1.8s linear;
 }
 
-/* ── Header row ───────────────────────────────────────────────────────────── */
-.pot-card-header {
-  width: 100%;
-  height: 0;
-  position: relative;
-}
-
-.pot-rarity-dot {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  font-size: 13px;
-  line-height: 1;
-  filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
-  pointer-events: none;
-  user-select: none;
-}
-
-.pot-homozygous-badge {
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  font-size: 13px;
-  line-height: 1;
-  color: var(--green);
-  filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));
-  pointer-events: none;
-  user-select: none;
-}
+/* ── Phase rare carrier (shown in side info) ─────────────────────────────────── */
 
 .phase-rare-carrier {
   font-size: 11px;
@@ -248,11 +308,42 @@
   flex: 2;
 }
 
-/* ── Icon buttons (selfpollinate, sell, remove) each take ~25% */
+/* ── Icon buttons (sell, overflow) each take ~25% */
 .btn-sm.btn-icon {
   flex: 1;
   padding: 5px 2px;
   font-size: 13px;
+}
+
+/* ── Overflow wrap & menu ────────────────────────────────────────────────── */
+.overflow-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+
+.overflow-wrap > .btn-sm {
+  width: 100%;
+}
+
+.overflow-menu {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 20;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  padding: 4px;
+}
+
+.overflow-menu .btn-sm {
+  min-width: 45px;
 }
 
 .btn-sm.btn-sell {
@@ -294,14 +385,12 @@
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .pots-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .pots-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   .plant-magnifier {
-    width: 30px;
-    height: 30px;
-    font-size: 15px;
-    bottom: 2px;
-    right: 2px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
   }
 }
 
