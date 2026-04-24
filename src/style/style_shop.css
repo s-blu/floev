@@ -595,7 +595,7 @@
   position: absolute;
   inset: 0;
   z-index: 20;
-  background: radial-gradient(circle at center, transparent, transparent 35%, rgb(250, 249, 246, 0.75) 50%, rgb(250, 249, 246)) ;
+  background: radial-gradient(circle at center, transparent, transparent 35%, rgb(250, 249, 246, 0.75) 50%, rgb(250, 249, 246));
   /* Prevent click-through */
   pointer-events: auto;
 }
