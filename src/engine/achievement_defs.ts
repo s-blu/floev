@@ -8,7 +8,7 @@ import {
 } from './genetic/genetic_utils'
 import { PALETTE_HUE_RANGES, PALETTE_HUES, PALETTE_L, PETAL_SHAPES, CENTER_TYPES, PETAL_EFFECTS } from '../model/genetic_model'
 import type { ColorBucket } from '../model/genetic_model'
-import type { Rarity } from '../model/plant'
+import type { Rarity } from "../model/rarity_model"
 import { t } from '../model/i18n'
 import { coinValueForScore } from './game'
 import { calcCoinScore } from './rarity'

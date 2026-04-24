@@ -1,4 +1,4 @@
-import type { GameState, Pot, Plant, Rarity, PetalEffect, PlantPhase } from '../model/plant'
+import type { GameState, Pot, Plant, PetalEffect, PlantPhase } from '../model/plant'
 import { plannedPlant, randomPlant } from './genetic/genetic'
 import { addToCatalog } from './catalog'
 import { calcCoinScore } from './rarity'
@@ -14,13 +14,6 @@ export const PHASE_DURATION_MS: Record<number, number> = import.meta.env.DEV
   ? DEV_PHASE_DURATION_MS
   : { 1: 2 * 60_000, 2: 4 * 60_000, 3: 6 * 60_000 }
 
-export const RARITY_COLORS: Record<Rarity, string> = {
-  0: '#888780',
-  1: '#1D9E75',
-  2: '#4655e0',
-  3: '#b437ee',
-  4: '#f08000',
-}
 
 /** Maps a 1–100 rarity score to coins. Roughly exponential. */
 export function coinValueForScore(score: number): number {

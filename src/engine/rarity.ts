@@ -1,4 +1,6 @@
-import { Plant, CenterType, PetalShape, PetalEffect, Rarity } from "../model/plant"
+import { Plant, CenterType, PetalShape, PetalEffect, GameState, Pot } from "../model/plant"
+import { Rarity } from "../model/rarity_model"
+import { getCatalogEntryForPlant } from "./catalog"
 import { expressedCenter, expressedColor, expressedEffect, expressedNumber, expressedShape, colorBucket } from "./genetic/genetic_utils"
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
@@ -61,4 +63,10 @@ export function calcRarity(plant: Plant): Rarity {
   if (score >= 50) return 2  // rare
   if (score >= 22) return 1  // uncommon
   return 0                   // common
+}
+
+export function getRarityForPot(state: GameState, pot: Pot): Rarity {
+  if (!pot.plant) return 0;
+  const entry = getCatalogEntryForPlant(state, pot.plant)
+  return entry?.rarity ?? 0;
 }

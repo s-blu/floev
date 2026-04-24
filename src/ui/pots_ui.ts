@@ -1,13 +1,11 @@
-import { renderPlantSVG } from '../engine/renderer/renderer';
-import { getPhaseProgress, RARITY_COLORS, PHASE_DURATION_MS } from '../engine/game';
-import { isHomozygous, hasHiddenRareTrait } from '../engine/genetic/genetic_utils';
+import { getPhaseProgress, PHASE_DURATION_MS } from '../engine/game';
 import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
 import { t } from '../model/i18n';
-import type { Pot, Rarity } from '../model/plant';
+import type { Pot } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
-import { calcCoinScore } from '../engine/rarity';
+import { calcCoinScore, getRarityForPot } from '../engine/rarity';
 import { attachPotDesignRing, showAlleleOverlay, showPotDesignRing } from './pots_overlay_ui';
-import { getCatalogEntryForPlant } from '../engine/catalog';
+import { buildPlantViewForPot, buildPotHeader, getBloomingLabel } from './pots_utils';
 
 const SELL_CONFIRM_TIMEOUT_MS = 2500;
 const sellPendingPots = new Set<number>();
@@ -37,10 +35,6 @@ function cancelSellPending(potId: number): void {
   sellPendingPots.delete(potId);
 }
 
-const RARITY_ICON: Record<number, string> = {
-  0: '▪', 1: '●', 2: '♦', 3: '★', 4: '👑',
-};
-
 const PHASE_LABEL = (pot: Pot): string => {
   if (!pot.plant) return t.phaseEmpty;
   switch (pot.plant.phase) {
@@ -51,12 +45,6 @@ const PHASE_LABEL = (pot: Pot): string => {
     default: return '';
   }
 };
-
-function rarity(pot: Pot): Rarity {
-  if (!pot.plant) return 0;
-  const entry = getCatalogEntryForPlant(state, pot.plant)
-  return entry?.rarity ?? 0;
-}
 
 export function renderPots(selA: number | null, selB: number | null): void {
   const container = document.getElementById('pots-row');
@@ -77,7 +65,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   const card = document.createElement('div');
   const isSelected = pot.id === selA || pot.id === selB;
   const isBlooming = pot.plant?.phase === 4;
-  const r = rarity(pot);
+  const r = getRarityForPot(state, pot);
 
   card.className = [
     'pot-card',
@@ -86,33 +74,8 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     isBlooming ? `rarity-${r}` : ''
   ].filter(Boolean).join(' ');
 
-  // ── Header: badges anchored top-left / top-right ──
-  const hasCosmetics = (state.unlockedPotColors?.length ?? 0) > 0 || (state.unlockedPotShapes?.length ?? 0) > 0
-  let headerHtml = '<div class="pot-card-header">';
-  if (isBlooming && pot.plant) {
-    const homozyg = isHomozygous(pot.plant);
-    if (homozyg) {
-      headerHtml += `<span class="pot-homozygous-badge" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
-    }
-    headerHtml += `<span class="pot-rarity-dot" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span>`;
-  }
-  if (hasCosmetics) {
-    headerHtml += `<button class="pot-design-btn" data-action="pot-design" data-pot="${pot.id}" title="${t.potDesignBtnTitle}">🎨</button>`;
-  }
-  headerHtml += '</div>';
-
-  // ── Plant view — magnifier button only for blooming plants with lupe upgrade ──
-  let plantHtml: string;
-  const lupePurchased = hasUpgrade(state, 'unlock_lupe');
-  if (isBlooming && pot.plant) {
-    plantHtml = `
-      <div class="plant-view plant-view--interactive">
-        ${renderPlantSVG(pot.plant, 100, 130, pot.design)}
-        ${lupePurchased ? `<button class="plant-magnifier" data-action="allele-inspect" data-pot="${pot.id}" title="${t.alleleInspectTitle}">🔍</button>` : ''}
-      </div>`;
-  } else {
-    plantHtml = `<div class="plant-view">${renderPlantSVG(pot.plant ?? null, 100, 130, pot.design)}</div>`;
-  }
+  let headerHtml = buildPotHeader(pot, state)
+  let plantHtml = buildPlantViewForPot(pot, state)
 
   // ── Phase label + progress ──
   let progressHtml = '';
@@ -130,10 +93,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)} · <span class="phase-pct">${timeLabel}</span></p>`;
     progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
   } else if (isBlooming && pot.plant) {
-    const rareCarrier = hasUpgrade(state, 'unlock_rare_radar') && hasHiddenRareTrait(pot.plant)
-      ? ` <span class="phase-rare-carrier" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`
-      : '';
-    labelHtml = `<p class="phase-label">${rareCarrier} ${t.rarity[r]} · Gen. ${pot.plant.generation}</p>`;
+    labelHtml = getBloomingLabel(pot, state)
   } else {
     labelHtml = `<p class="phase-label">${PHASE_LABEL(pot)}</p>`;
   }

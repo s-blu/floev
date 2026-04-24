@@ -1,9 +1,8 @@
 import { t } from '../model/i18n';
 import { PALETTE_HUES, PALETTE_S } from '../model/genetic_model';
-import { RARITY_COLORS } from '../engine/game';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import { plannedPlant } from '../engine/genetic/genetic';
-import type { Rarity } from '../model/plant';
+import { RARITY_COLORS, type Rarity } from "../model/rarity_model";
 import { version } from '../../package.json';
 import changelog from '../../CHANGELOG.md?raw';
 

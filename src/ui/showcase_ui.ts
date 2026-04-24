@@ -1,9 +1,9 @@
 import { renderPlantSVG } from '../engine/renderer/renderer'
-import { RARITY_COLORS } from '../engine/game'
 import { isHomozygous } from '../engine/genetic/genetic_utils'
 import { state, handleMoveFromShowcase, hasUpgrade, openAlleleIds, openPotDesignIds } from './ui'
 import { t } from '../model/i18n'
-import type { Pot, Rarity } from '../model/plant'
+import type { Pot } from '../model/plant'
+import { RARITY_COLORS, type Rarity } from "../model/rarity_model"
 import { getCatalogEntryForPlant } from '../engine/catalog'
 import { showAlleleOverlay, showPotDesignRing, attachPotDesignRing } from './pots_overlay_ui'
 

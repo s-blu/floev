@@ -1,7 +1,7 @@
-import { RARITY_COLORS } from '../engine/game';
 import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedEffect } from '../engine/genetic/genetic_utils';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
-import type { Rarity, CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
+import type { CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
+import { RARITY_BADGE_STYLES, RARITY_COLORS, RARITY_ICON, type Rarity } from "../model/rarity_model";
 import { openAncestryIds, state } from './ui';
 import { t } from '../model/i18n';
 import { hasUpgrade } from '../engine/shop_engine';
@@ -14,16 +14,6 @@ const SHAPE_LABELS: Record<string, string> = {
 };
 const CENTER_LABELS: Record<string, string> = {
   dot: t.centerDot, disc: t.centerDisc, stamen: t.centerTypeLabels.stamen,
-};
-const RARITY_BADGE_STYLES: Record<Rarity, { bg: string; color: string }> = {
-  0: { bg: '#F1EFE8', color: '#5F5E5A' },
-  1: { bg: '#E1F5EE', color: '#0F6E56' },
-  2: { bg: '#E6F1FB', color: '#185FA5' },
-  3: { bg: '#EEEDFE', color: '#3C3489' },
-  4: { bg: '#FAEEDA', color: '#854F0B' },
-};
-const RARITY_ICON: Record<Rarity, string> = {
-  0: '▪', 1: '●', 2: '♦', 3: '★', 4: '👑',
 };
 
 let entryIndex = new Map<string, number>();
