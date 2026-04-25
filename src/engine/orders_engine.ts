@@ -61,7 +61,6 @@ const HARD_POOL: OrderRequirement[] = [
   { trait: 'petalShape',  op: 'eq', value: 'wavy',        difficulty: 'hard' },
   { trait: 'petalShape',  op: 'eq', value: 'zickzack',    difficulty: 'hard' },
   { trait: 'petalEffect', op: 'eq', value: 'shimmer',     difficulty: 'hard' },
-  { trait: 'petalEffect', op: 'eq', value: 'iridescent',  difficulty: 'hard' },
   { trait: 'homozygous',  op: 'eq', value: true,          difficulty: 'hard' },
 ]
 
