@@ -192,6 +192,10 @@ export const en = {
     cobalt:     'Cobalt',
     obsidian:   'Obsidian',
     gold:       'Gold',
+    coral:      'Coral',
+    mint:       'Mint',
+    lavender:   'Lavender',
+    teal:       'Teal',
   } as Record<string, string>,
   potShapeLabels: {
     standard: 'Classic',

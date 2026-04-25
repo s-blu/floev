@@ -68,6 +68,10 @@ export const POT_COLORS: PotColorDef[] = [
   { id: 'cobalt',     body: '#3d5a8a', rim: '#4a6ea0', shadow: '#304870',             price: 50 },
   { id: 'obsidian',   body: '#2a2825', rim: '#3a3835', shadow: '#1e1c1a',             price: 50 },
   { id: 'gold',       body: '#c9963a', rim: '#dba84a', shadow: '#b07e28',             price: 80 },
+  { id: 'coral',      body: '#e05538', rim: '#f06848', shadow: '#c2432a',             price: 45 },
+  { id: 'mint',       body: '#3db88a', rim: '#4ecc9c', shadow: '#2d9e74',             price: 45 },
+  { id: 'lavender',   body: '#8878b8', rim: '#9a8acc', shadow: '#72649e',             price: 45 },
+  { id: 'teal',       body: '#268888', rim: '#2e9e9e', shadow: '#1a7070',             price: 55 },
 ]
 
 export const POT_SHAPES: PotShapeDef[] = [

@@ -268,17 +268,18 @@ function positionColorSwatches(overlay: HTMLElement, card: HTMLElement): void {
   const visualArea = card.querySelector<HTMLElement>('.pot-visual-area')
   const visualAreaH = visualArea?.offsetHeight ?? card.offsetHeight * 0.72
 
-  // Center ring on plant center (plant is bottom-aligned in visual area)
+  // Center ring on flower (upper portion of visual area, above pot)
   const cx = cardW / 2
-  const cy = visualAreaH * 0.55
+  const cy = visualAreaH * 0.45
 
-  // Compact radius — stays close to the plant
-  const radius = Math.min(cardW * 0.42, visualAreaH * 0.38)
+  // Radius sized so the arc extremes don't reach the pot at the bottom
+  const radius = Math.min(cardW * 0.42, visualAreaH * 0.36)
 
   const n = swatches.length
-  // Arc from 200° to 340° over the top of the plant
-  const startAngle = 200
-  const endAngle = 340
+  // Arc from 155° to 385° (=25°): left-down → left → top → right → right-down
+  // Spans 230°, avoids the bottom 90° sector where the pot sits
+  const startAngle = 155
+  const endAngle = 385
   const swatchSize = 22
 
   swatches.forEach((btn, i) => {
