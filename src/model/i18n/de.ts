@@ -409,10 +409,6 @@ export const de = {
   achAllShapesHomoTitle: (n: number) => `${n} Formen reinerbig`,
   achAllShapesHomoDesc: (n: number) => `Züchte reinerbige Blüten in ${n} verschiedenen Blütenformen.`,
 
-  // Volle Helligkeit (alle Farbton-Helligkeitskombinationen)
-  achFullLightnessTitle: (colorLabel: string) => `${colorLabel} — alle Kombinationen`,
-  achFullLightnessDesc: (colorLabel: string) => `Entdecke alle Farbton-Helligkeitskombinationen im ${colorLabel}-Farbbereich.`,
-
   // Monochromes Set
   achMonochromeTitle: 'Monochrom',
   achMonochromeDesc: `Entdecke Blüten in Weiß, Silber, Steingrau und Anthrazit.`,

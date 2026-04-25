@@ -409,10 +409,6 @@ export const en = {
   achAllShapesHomoTitle: (n: number) => `${n} shapes homozygous`,
   achAllShapesHomoDesc: (n: number) => `Breed homozygous blooms in ${n} different bloom shapes.`,
 
-  // Full lightness (all hue-lightness combinations)
-  achFullLightnessTitle: (colorLabel: string) => `${colorLabel} — all combinations`,
-  achFullLightnessDesc: (colorLabel: string) => `Discover all hue-lightness combinations in the ${colorLabel} color range.`,
-
   // Monochrome set
   achMonochromeTitle: 'Monochrome',
   achMonochromeDesc: `Discover blooms in white, silver, stone gray, and anthracite.`,

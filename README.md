@@ -2,6 +2,8 @@
 
 Ein entspanntes Pflanzenzucht-Spiel. Züchte, kreuze und entdecke neue Blumenarten — dynamisch gerendert aus Pflanzeneigenschaften.
 
+[Hier spielen!](https://s-blu.github.io/floev/)
+
 ## KI Nutzung 
 
 Dieses Spiel wurde großteils mithilfe von Claude Sonnet 4.6 geschrieben, als Experiment, wozu KI Stand April 2026 in der Lage ist und wo ihre Grenzen liegen. Der Code wurde anschließend von mir überprüft. Mein Eindruck: KI kann erschreckend viel, wiederholt aber auch immer die selben Fehler.

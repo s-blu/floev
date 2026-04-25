@@ -349,21 +349,6 @@ export function buildAchievements(): Achievement[] {
     })
   }
 
-  // ── 15. Volle Helligkeit — alle Farbton-Helligkeitskombinationen pro Bucket ───
-  for (const bucket of CHROMATIC_BUCKETS) {
-    const colorLabel = t.colorBucketLabels[bucket] ?? bucket
-    list.push({
-      id: `full_lightness_${bucket}`,
-      groupKey: `full_lightness_${bucket}`,
-      stackIndex: 0,
-      hidden: true,
-      title: t.achFullLightnessTitle(colorLabel),
-      desc: t.achFullLightnessDesc(colorLabel),
-      reward: 35,
-      progress: cat => countShadesInBucket(cat, bucket),
-    })
-  }
-
   // ── 16. Monochromes Set ───────────────────────────────────────────────────────
   // Ziel: alle 4 achromatischen Typen im Katalog (weiß, hellgrau, grau, dunkelgrau)
   // expressedColor gibt für achromatic: l=100 (weiß), l=70 (hellgrau), l=40 (grau), l=0 (dunkelgrau)
