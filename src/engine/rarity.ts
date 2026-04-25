@@ -29,7 +29,7 @@ const EFFECT_SCORE: Record<PetalEffect, number> = {
 }
 
 const PETAL_COUNT_SCORE: Record<number, number> = {
-  3: -5, 4: -3, 5: 0, 6: 0, 7: 3, 8: 5,
+  3: -5, 4: -3, 5: 0, 6: 0, 7: 2, 8: 4,
 }
 
 export function calcRarityScore(plant: Plant): number {
