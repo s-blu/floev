@@ -107,29 +107,53 @@ export function generateOrders(date: string): Order[] {
   const rng = seededRng(date)
 
   // Order 1: 1 easy requirement
-  const usedTraits1 = new Set<OrderTrait>()
-  const req1a = pickWithoutTraitConflict(EASY_POOL, usedTraits1, rng)!
-  usedTraits1.add(req1a.trait)
+  const req1a = pickWithoutTraitConflict(EASY_POOL, new Set<OrderTrait>(), rng)!
 
-  // Order 2: 1 easy + 1 medium
-  const usedTraits2 = new Set<OrderTrait>()
-  const req2a = pickWithoutTraitConflict(EASY_POOL, usedTraits2, rng)!
-  usedTraits2.add(req2a.trait)
-  const req2b = pickWithoutTraitConflict(MEDIUM_POOL, usedTraits2, rng) ?? pickWithoutTraitConflict(EASY_POOL, usedTraits2, rng)!
-  usedTraits2.add(req2b.trait)
+  // Order 2: one of —
+  //   a) 2 easy requirements
+  //   b) 1 easy + 1 medium requirement
+  //   c) 1 hard requirement
+  let reqs2: OrderRequirement[]
+  const order2Variant = Math.floor(rng() * 3)
+  if (order2Variant === 0) {
+    const used2 = new Set<OrderTrait>()
+    const req2a = pickWithoutTraitConflict(EASY_POOL, used2, rng)!
+    used2.add(req2a.trait)
+    const req2b = pickWithoutTraitConflict(EASY_POOL, used2, rng)!
+    reqs2 = [req2a, req2b]
+  } else if (order2Variant === 1) {
+    const used2 = new Set<OrderTrait>()
+    const req2a = pickWithoutTraitConflict(EASY_POOL, used2, rng)!
+    used2.add(req2a.trait)
+    const req2b = pickWithoutTraitConflict(MEDIUM_POOL, used2, rng) ?? pickWithoutTraitConflict(EASY_POOL, used2, rng)!
+    reqs2 = [req2a, req2b]
+  } else {
+    reqs2 = [pickRng(HARD_POOL, rng)]
+  }
 
-  // Order 3: 1 easy + 1 medium + 1 hard
-  const usedTraits3 = new Set<OrderTrait>()
-  const req3a = pickWithoutTraitConflict(EASY_POOL, usedTraits3, rng)!
-  usedTraits3.add(req3a.trait)
-  const req3b = pickWithoutTraitConflict(MEDIUM_POOL, usedTraits3, rng) ?? pickWithoutTraitConflict(EASY_POOL, usedTraits3, rng)!
-  usedTraits3.add(req3b.trait)
-  const req3c = pickWithoutTraitConflict(HARD_POOL, usedTraits3, rng) ?? pickWithoutTraitConflict(MEDIUM_POOL, usedTraits3, rng)!
+  // Order 3: one of —
+  //   a) 2 medium requirements
+  //   b) 1 easy + 1 hard requirement
+  let reqs3: OrderRequirement[]
+  const order3Variant = Math.floor(rng() * 2)
+  if (order3Variant === 0) {
+    const used3 = new Set<OrderTrait>()
+    const req3a = pickWithoutTraitConflict(MEDIUM_POOL, used3, rng)!
+    used3.add(req3a.trait)
+    const req3b = pickWithoutTraitConflict(MEDIUM_POOL, used3, rng) ?? pickWithoutTraitConflict(EASY_POOL, used3, rng)!
+    reqs3 = [req3a, req3b]
+  } else {
+    const used3 = new Set<OrderTrait>()
+    const req3a = pickWithoutTraitConflict(EASY_POOL, used3, rng)!
+    used3.add(req3a.trait)
+    const req3b = pickWithoutTraitConflict(HARD_POOL, used3, rng) ?? pickRng(HARD_POOL, rng)
+    reqs3 = [req3a, req3b]
+  }
 
   const orders: [OrderRequirement[], OrderRequirement[], OrderRequirement[]] = [
     [req1a],
-    [req2a, req2b],
-    [req3a, req3b, req3c],
+    reqs2,
+    reqs3,
   ]
 
   return orders.map(reqs => ({

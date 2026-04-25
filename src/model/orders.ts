@@ -39,6 +39,6 @@ export interface OrderBookState {
 
 // ─── Reward values per difficulty ────────────────────────────────────────────
 
-export const ORDER_REWARD_EASY   = 15
-export const ORDER_REWARD_MEDIUM = 25
-export const ORDER_REWARD_HARD   = 40
+export const ORDER_REWARD_EASY   = 10
+export const ORDER_REWARD_MEDIUM = 15
+export const ORDER_REWARD_HARD   = 30
