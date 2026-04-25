@@ -209,14 +209,14 @@ export const de = {
   // Order book panel
   orderBookTitle:       'Auftragsbuch',
   orderBookEmpty:       'Keine Aufträge verfügbar.',
-  orderBookRefreshBtn:  'Neu mischen',
-  orderBookRefreshUsed: 'Heute bereits neu gemischt',
+  orderBookRefreshBtn:  'Neue Aufträge anfordern',
+  orderBookRefreshUsed: 'Heute bereits neu angefordert',
   orderBookPinTitle:    'Auftrag anpinnen — bleibt beim Neu-Mischen erhalten',
   orderBookUnpinTitle:  'Auftrag lösen',
   orderBookOrderLabel:  (n: number) => `Auftrag ${n}`,
   orderBookReward:      (coins: number) => `+${coins} 🪙 Bonus`,
   orderBookDoneLabel:   'Erledigt',
-  orderBookBadgeTitle:  (n: number) => `Erfüllt Auftrag ${n}`,
+  orderBookBadgeTitle:  (n: number) => `Verkauf erfüllt Auftrag ${n}`,
   msgSoldWithBonus:     (total: number, bonus: number) => `Blüte verkauft! +${total} 🪙 (inkl. +${bonus} 🪙 Auftrag)`,
 
   // Order requirement labels

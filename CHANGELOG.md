@@ -1,7 +1,15 @@
-# v1.2.1
+# v1.3.0
+
+Improvements:
+
+- New purchasable feature: Order Book
+- New purchasable pot forms & pot colors
+- Enhance button size on mobile
+
+Bugs:
 
 - Fix some stylings to be compatible with dark theme
-- Enhance button size on mobile
+
 
 # v1.2.0
 

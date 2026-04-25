@@ -216,7 +216,7 @@ export const en = {
   orderBookOrderLabel:  (n: number) => `Order ${n}`,
   orderBookReward:      (coins: number) => `+${coins} 🪙 bonus`,
   orderBookDoneLabel:   'Done',
-  orderBookBadgeTitle:  (n: number) => `Fulfills order ${n}`,
+  orderBookBadgeTitle:  (n: number) => `Sell fulfills order ${n}`,
   msgSoldWithBonus:     (total: number, bonus: number) => `Bloom sold! +${total} 🪙 (incl. +${bonus} 🪙 order bonus)`,
 
   // Order requirement labels
