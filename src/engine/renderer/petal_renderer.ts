@@ -94,27 +94,30 @@ export function buildPetalPath(
     };
   }
 
-  // ── zickzack — glatte Lappen, Federform (seltenste) ────────────────────────
-  const tipR = pr * 2.3;
-  const baseW = pr * 0.42;
-  const b1x = cx + ca * pr * 0.15 + cp * baseW;
-  const b1y = bloomY + sa * pr * 0.15 + sp * baseW;
-  const b2x = cx + ca * pr * 0.15 - cp * baseW;
-  const b2y = bloomY + sa * pr * 0.15 - sp * baseW;
+  // ── zickzack — Federform, Lappen springen vorwärts und biegen zurück ───────
+  // Lappen-Spitze liegt jeweils näher zur Blüten-Spitze als der Hals (Cusp-Technik).
+  const tipR = pr * 2.2;
+  const pt = (r: number, s: number) => `${cx + ca * r + cp * s},${bloomY + sa * r + sp * s}`;
   const tx = cx + ca * tipR;
   const ty = bloomY + sa * tipR;
-  // Q(ctrl, end): ctrl zieht die Kurve zum Lappen-Höhepunkt, end ist das Tal
-  const pt = (r: number, s: number) => `${cx + ca * r + cp * s},${bloomY + sa * r + sp * s}`;
   const d = [
-    `M${b1x},${b1y}`,
-    // Seite 1 – zwei glatte Lappen nach außen
-    `Q${pt(pr * 0.55, baseW * 2.6)} ${pt(pr * 0.82, baseW * 0.2)}`,
-    `Q${pt(pr * 1.1, baseW * 2.4)} ${pt(pr * 1.38, baseW * 0.1)}`,
-    `Q${pt(pr * 1.7, baseW * 1.3)} ${tx},${ty}`,
-    // Seite 2 – zwei versetzt glatte Lappen (Zickzack-Silhouette)
-    `Q${pt(pr * 1.7, -baseW * 0.8)} ${pt(pr * 1.38, -baseW * 2.2)}`,
-    `Q${pt(pr * 1.1, -baseW * 0.3)} ${pt(pr * 0.82, -baseW * 2.4)}`,
-    `Q${pt(pr * 0.55, -baseW * 0.6)} ${b2x},${b2y}`,
+    `M${pt(pr * 0.05, pr * 0.13)}`,
+    // Seite 1 – drei Lappen (je 2 C-Kurven: vorwärts zur Spitze, Bogen zurück)
+    `C${pt(pr * 0.05, pr * 0.13)} ${pt(pr * 0.55, pr * 0.70)} ${pt(pr * 0.66, pr * 0.68)}`,
+    `C${pt(pr * 0.98, pr * 0.65)} ${pt(pr * 0.62, pr * 0.18)} ${pt(pr * 0.62, pr * 0.18)}`,
+    `C${pt(pr * 0.62, pr * 0.18)} ${pt(pr * 1.23, pr * 0.53)} ${pt(pr * 1.31, pr * 0.51)}`,
+    `C${pt(pr * 1.39, pr * 0.49)} ${pt(pr * 1.15, pr * 0.15)} ${pt(pr * 1.15, pr * 0.15)}`,
+    `C${pt(pr * 1.15, pr * 0.15)} ${pt(pr * 1.69, pr * 0.33)} ${pt(pr * 1.77, pr * 0.32)}`,
+    `C${pt(pr * 1.85, pr * 0.32)} ${pt(pr * 1.65, pr * 0.11)} ${pt(pr * 1.65, pr * 0.11)}`,
+    `C${pt(pr * 1.87, pr * 0.10)} ${pt(pr * 2.20, pr * 0.03)} ${tx},${ty}`,
+    // Seite 2 – exakte Spiegelung (Spitze → Basis)
+    `C${pt(pr * 2.20, -pr * 0.03)} ${pt(pr * 1.87, -pr * 0.10)} ${pt(pr * 1.65, -pr * 0.11)}`,
+    `C${pt(pr * 1.65, -pr * 0.11)} ${pt(pr * 1.85, -pr * 0.32)} ${pt(pr * 1.77, -pr * 0.32)}`,
+    `C${pt(pr * 1.69, -pr * 0.33)} ${pt(pr * 1.15, -pr * 0.15)} ${pt(pr * 1.15, -pr * 0.15)}`,
+    `C${pt(pr * 1.15, -pr * 0.15)} ${pt(pr * 1.39, -pr * 0.49)} ${pt(pr * 1.31, -pr * 0.51)}`,
+    `C${pt(pr * 1.23, -pr * 0.53)} ${pt(pr * 0.62, -pr * 0.18)} ${pt(pr * 0.62, -pr * 0.18)}`,
+    `C${pt(pr * 0.62, -pr * 0.18)} ${pt(pr * 0.98, -pr * 0.65)} ${pt(pr * 0.66, -pr * 0.68)}`,
+    `C${pt(pr * 0.55, -pr * 0.70)} ${pt(pr * 0.05, -pr * 0.13)} ${pt(pr * 0.05, -pr * 0.13)}`,
     'Z',
   ].join(' ');
   return { type: 'path', d };
