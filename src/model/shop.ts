@@ -15,12 +15,12 @@ export interface Upgrade {
 }
 
 export const UPGRADES: Upgrade[] = [
-  { id: 'unlock_lupe',             price:  40, icon: '🔍' },
+  { id: 'unlock_lupe',             price:  20, icon: '🔍' },
+  { id: 'unlock_order_book',       price: 40, icon: '📖' },
   { id: 'unlock_selfpollinate',    price:  60, icon: '↺'  },
   { id: 'unlock_rare_radar',       price:  50, icon: '✦'  },
   { id: 'unlock_discovery_index',  price:  80, icon: '📊' },
   { id: 'unlock_showcase',         price: 100, icon: '🪟' },
-  { id: 'unlock_order_book',       price: 120, icon: '📖' },
 ]
 
 // ─── Showcase ─────────────────────────────────────────────────────────────────
