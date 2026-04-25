@@ -1,0 +1,17 @@
+{
+  "name": "Floev",
+  "short_name": "Floev",
+  "description": "Ein Blumen-Züchtungsspiel",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#faf9f6",
+  "theme_color": "#faf9f6",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

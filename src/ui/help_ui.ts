@@ -16,6 +16,17 @@ export function initHelp(): void {
   }
 }
 
+export function initFavicon(): void {
+  const svg = buildDecoFlower();
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]') ?? document.createElement('link');
+  link.rel = 'icon';
+  link.type = 'image/svg+xml';
+  link.href = url;
+  if (!link.parentNode) document.head.appendChild(link);
+}
+
 export function showHelp(): void {
   document.getElementById('help-modal')?.remove();
 

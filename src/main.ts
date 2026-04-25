@@ -1,6 +1,6 @@
 import { loadState } from './engine/game'
 import { initUI, showMsg } from './ui/ui'
-import { initHelp, showHelp } from './ui/help_ui'
+import { initHelp, showHelp, initFavicon } from './ui/help_ui'
 import { initShop, closeShop } from './ui/shop_ui'
 import { initOrderBookPanel } from './ui/orders_ui'
 import { t } from './model/i18n'
@@ -102,6 +102,8 @@ document.body.insertAdjacentHTML('beforeend', `
 const state = loadState()
 initUI(state)
 initOrderBookPanel()
+
+initFavicon()
 
 // Help modal — show on first visit, bind ? button
 initHelp()
