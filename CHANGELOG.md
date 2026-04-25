@@ -1,3 +1,8 @@
+# v1.2.1
+
+- Fix some stylings to be compatible with dark theme
+- Enhance button size on mobile
+
 # v1.2.0
 
 Improvements:
