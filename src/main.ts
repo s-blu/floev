@@ -2,6 +2,7 @@ import { loadState } from './engine/game'
 import { initUI, showMsg } from './ui/ui'
 import { initHelp, showHelp } from './ui/help_ui'
 import { initShop, closeShop } from './ui/shop_ui'
+import { initOrderBookPanel } from './ui/orders_ui'
 import { t } from './model/i18n'
 
 // ─── Inject app shell ────────────────────────────────────────────────────────
@@ -48,6 +49,19 @@ app.innerHTML = `
     </div>
   </section>
 
+  <section class="order-section-wrapper" id="order-book-panel" style="display:none">
+    <div class="ach-section-header">
+      <p class="section-title" style="margin-bottom:0">
+        📖 ${t.orderBookTitle}
+        <span class="order-collapsed-summary"></span>
+      </p>
+      <button class="ach-toggle-btn order-toggle-btn" title="${t.orderBookTitle}">
+        <span class="order-chevron">▾</span>
+      </button>
+    </div>
+    <div class="order-body"></div>
+  </section>
+
   <section class="ach-section-wrapper" id="achievements-panel">
     <div class="ach-section-header">
       <p class="section-title" style="margin-bottom:0">
@@ -87,6 +101,7 @@ document.body.insertAdjacentHTML('beforeend', `
 
 const state = loadState()
 initUI(state)
+initOrderBookPanel()
 
 // Help modal — show on first visit, bind ? button
 initHelp()

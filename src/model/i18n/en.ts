@@ -166,6 +166,7 @@ export const en = {
     unlock_rare_radar:       'Rarity Radar',
     unlock_discovery_index:  'Discovery Index',
     unlock_showcase:         'Showcase',
+    unlock_order_book:       'Order Book',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Shows you the hidden alleles of every blooming plant.',
@@ -173,6 +174,7 @@ export const en = {
     unlock_rare_radar:       'Shows a ✦ symbol next to the rarity badge when a plant carries a rare recessive allele.',
     unlock_discovery_index:  'Shows an overview of all discovered and undiscovered shapes and colors in the catalog.',
     unlock_showcase:         'A showcase with 3 display slots for your most beautiful blooms. Displayed plants cannot be sold or used for breeding.',
+    unlock_order_book:       'Three daily orders: breed and sell blooms with specific traits for bonus coins.',
   } as Record<string, string>,
 
   // Shop — Showcase
@@ -196,6 +198,32 @@ export const en = {
     conic:    'Conical',
     belly:    'Bulbous',
   } as Record<string, string>,
+
+  // Order book panel
+  orderBookTitle:       'Order Book',
+  orderBookEmpty:       'No orders available.',
+  orderBookRefreshBtn:  'Reshuffle',
+  orderBookRefreshUsed: 'Already reshuffled today',
+  orderBookPinTitle:    'Pin order — keeps it when reshuffling',
+  orderBookUnpinTitle:  'Unpin order',
+  orderBookOrderLabel:  (n: number) => `Order ${n}`,
+  orderBookReward:      (coins: number) => `+${coins} 🪙 bonus`,
+  orderBookDoneLabel:   'Done',
+  orderBookBadgeTitle:  (n: number) => `Fulfills order ${n}`,
+  msgSoldWithBonus:     (total: number, bonus: number) => `Bloom sold! +${total} 🪙 (incl. +${bonus} 🪙 order bonus)`,
+
+  // Order requirement labels
+  orderReqShape:      (name: string) => `Shape: ${name}`,
+  orderReqColor:      (name: string) => `Color: ${name}`,
+  orderReqLightness:  (name: string) => `Lightness: ${name}`,
+  orderReqCountGte:   (n: number)    => `Min. ${n} petals`,
+  orderReqCountLte:   (n: number)    => `Max. ${n} petals`,
+  orderReqCenter:     (name: string) => `Center: ${name}`,
+  orderReqEffect:     (name: string) => `Effect: ${name}`,
+  orderReqHomozygous: 'Homozygous (◈)',
+
+  // Lightness labels
+  lightnessLabels: { 30: 'Dark', 60: 'Mid', 90: 'Light' } as Record<number, string>,
 
   // Messages
   msgSeedPlanted: 'Seed planted!',
@@ -322,6 +350,7 @@ export const en = {
 
   // Effect milestones (unified: gradient, bicolor, shimmer, iridescent)
   effectLabels: {
+    none:       'No effect',
     gradient:   'Gradient',
     bicolor:    'Bicolor',
     shimmer:    'Shimmer',

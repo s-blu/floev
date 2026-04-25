@@ -19,6 +19,8 @@ import { renderShopSidebar } from '../ui/shop_ui'
 import { t } from '../model/i18n/index'
 import { checkAchievements } from '../engine/achievements'
 import { renderAchievements, queueAchievementToast, initAchievementsPanel } from './achievements_ui'
+import { renderOrderBook } from './orders_ui'
+import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
 
 
 
@@ -41,6 +43,7 @@ export const breedState: BreedState = {
 
 export function initUI(gameState: GameState): void {
   state = gameState
+  initOrderBook(state)
   bindStaticEvents()
   initAchievementsPanel()
   render()
@@ -68,6 +71,7 @@ export function render(): void {
   renderCatalog()
   renderCoins()
   renderShopSidebar()
+  renderOrderBook()
 }
 
 // ─── Shop action handlers ─────────────────────────────────────────────────────
@@ -184,13 +188,19 @@ export function handleSell(potId: number): void {
   if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
   if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
 
-  // Find the sell button position before the plant is removed
-  const sellBtn = document.querySelector(`[data-action="sell"][data-pot="${potId}"]`) as HTMLElement | null;
+  const pot = state.pots.find(p => p.id === potId)
+  const sellBtn = document.querySelector(`[data-action="sell"][data-pot="${potId}"]`) as HTMLElement | null
+
+  // Capture plant before it is removed, then check orders
+  const plant = pot?.plant ?? null
+  const bonus = plant ? applyOrdersOnSell(state, plant) : 0
 
   const reward = sellPlant(state, potId)
   if (reward >= 0) {
-    showMsg(t.msgSold(reward))
-    if (sellBtn) spawnCoinFly(sellBtn, reward)
+    state.coins += bonus
+    const total = reward + bonus
+    showMsg(bonus > 0 ? t.msgSoldWithBonus(total, bonus) : t.msgSold(total))
+    if (sellBtn) spawnCoinFly(sellBtn, total)
     checkAchAndSave(state)
     render()
   }

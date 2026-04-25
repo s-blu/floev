@@ -166,6 +166,7 @@ export const de = {
     unlock_rare_radar:       'Seltenheits-Radar',
     unlock_discovery_index:  'Entdeckungs-Index',
     unlock_showcase:         'Schaukasten',
+    unlock_order_book:       'Auftragsbuch',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
@@ -173,6 +174,7 @@ export const de = {
     unlock_rare_radar:       'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein seltenes rezessives Allel trägt.',
     unlock_discovery_index:  'Zeigt im Katalog eine Übersicht aller entdeckten und noch unbekannten Formen und Farben.',
     unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
+    unlock_order_book:       'Täglich 3 Aufträge: Züchte und verkaufe Blüten mit bestimmten Merkmalen für Bonus-Münzen.',
   } as Record<string, string>,
 
   // Shop — Showcase
@@ -196,6 +198,32 @@ export const de = {
     conic:    'Konisch',
     belly:    'Bauchig',
   } as Record<string, string>,
+
+  // Order book panel
+  orderBookTitle:       'Auftragsbuch',
+  orderBookEmpty:       'Keine Aufträge verfügbar.',
+  orderBookRefreshBtn:  'Neu mischen',
+  orderBookRefreshUsed: 'Heute bereits neu gemischt',
+  orderBookPinTitle:    'Auftrag anpinnen — bleibt beim Neu-Mischen erhalten',
+  orderBookUnpinTitle:  'Auftrag lösen',
+  orderBookOrderLabel:  (n: number) => `Auftrag ${n}`,
+  orderBookReward:      (coins: number) => `+${coins} 🪙 Bonus`,
+  orderBookDoneLabel:   'Erledigt',
+  orderBookBadgeTitle:  (n: number) => `Erfüllt Auftrag ${n}`,
+  msgSoldWithBonus:     (total: number, bonus: number) => `Blüte verkauft! +${total} 🪙 (inkl. +${bonus} 🪙 Auftrag)`,
+
+  // Order requirement labels
+  orderReqShape:      (name: string) => `Form: ${name}`,
+  orderReqColor:      (name: string) => `Farbe: ${name}`,
+  orderReqLightness:  (name: string) => `Helligkeit: ${name}`,
+  orderReqCountGte:   (n: number)    => `Min. ${n} Blütenbl.`,
+  orderReqCountLte:   (n: number)    => `Max. ${n} Blütenbl.`,
+  orderReqCenter:     (name: string) => `Mitte: ${name}`,
+  orderReqEffect:     (name: string) => `Effekt: ${name}`,
+  orderReqHomozygous: 'Reinerbig (◈)',
+
+  // Lightness labels
+  lightnessLabels: { 30: 'Dunkel', 60: 'Mittel', 90: 'Hell' } as Record<number, string>,
 
   // Messages
   msgSeedPlanted: 'Samen gepflanzt!',
@@ -322,6 +350,7 @@ export const de = {
 
   // Effect milestones (unified: gradient, bicolor, shimmer, iridescent)
   effectLabels: {
+    none:       'Kein Effekt',
     gradient:   'Farbverlauf',
     bicolor:    'Zweifarbig',
     shimmer:    'Schimmer',

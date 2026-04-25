@@ -102,6 +102,7 @@ export function loadState(): GameState {
       if (!parsed.unlockedPotColors) parsed.unlockedPotColors = []
       if (!parsed.unlockedPotShapes) parsed.unlockedPotShapes = []
       if (!parsed.showcase) parsed.showcase = []
+      // orderBook is generated on first use — no migration needed
 
       return parsed
     }

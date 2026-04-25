@@ -1,0 +1,213 @@
+/* ── Order book section wrapper ──────────────────────────────────────────────── */
+
+.order-section-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Collapsed summary badge ─────────────────────────────────────────────────── */
+
+.order-collapsed-summary {
+  font-size: 11px;
+  color: var(--text3);
+  background: var(--bg3);
+  border-radius: 99px;
+  padding: 1px 7px;
+  margin-left: 4px;
+}
+
+/* ── Body ────────────────────────────────────────────────────────────────────── */
+
+.order-body {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.625rem 0.75rem 0.75rem;
+}
+
+.order-panel--open .order-body {
+  display: flex;
+}
+
+/* ── Refresh button ──────────────────────────────────────────────────────────── */
+
+.order-refresh-btn {
+  align-self: flex-end;
+  background: none;
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-md);
+  padding: 3px 10px;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text2);
+  transition: background 0.15s, color 0.15s;
+}
+
+.order-refresh-btn:hover:not(:disabled) {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+.order-refresh-btn--used,
+.order-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ── Order card ──────────────────────────────────────────────────────────────── */
+
+.order-card {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+
+.order-card--done {
+  border-color: rgba(29, 158, 117, 0.35);
+  background: color-mix(in srgb, var(--green) 4%, var(--bg));
+  opacity: 0.75;
+}
+
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .order-card--done { background: var(--bg); }
+}
+
+/* ── Card header ─────────────────────────────────────────────────────────────── */
+
+.order-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.order-card-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text3);
+}
+
+.order-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-reward {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a5e00;
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .order-reward { color: #f0c040; }
+}
+
+.order-done-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+/* ── Pin button ──────────────────────────────────────────────────────────────── */
+
+.order-pin-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 2px;
+  opacity: 0.3;
+  transition: opacity 0.15s, transform 0.15s;
+  line-height: 1;
+}
+
+.order-pin-btn:hover {
+  opacity: 0.7;
+}
+
+.order-pin-btn--active {
+  opacity: 1;
+  transform: rotate(-45deg);
+}
+
+/* ── Requirement tags ────────────────────────────────────────────────────────── */
+
+.order-req-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.order-req-tag {
+  font-size: 11px;
+  border-radius: 99px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  border: 0.5px solid transparent;
+}
+
+.order-req--easy {
+  background: color-mix(in srgb, var(--green) 10%, var(--bg2));
+  border-color: color-mix(in srgb, var(--green) 25%, transparent);
+  color: var(--text2);
+}
+
+.order-req--medium {
+  background: color-mix(in srgb, var(--blue) 10%, var(--bg2));
+  border-color: color-mix(in srgb, var(--blue) 25%, transparent);
+  color: var(--text2);
+}
+
+.order-req--hard {
+  background: color-mix(in srgb, #b437ee 10%, var(--bg2));
+  border-color: color-mix(in srgb, #b437ee 25%, transparent);
+  color: var(--text2);
+}
+
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .order-req--easy   { background: var(--bg2); border-color: var(--border); }
+  .order-req--medium { background: var(--bg2); border-color: var(--border); }
+  .order-req--hard   { background: var(--bg2); border-color: var(--border); }
+}
+
+/* ── Order badge on pots ─────────────────────────────────────────────────────── */
+
+.order-match-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 10px;
+  background: color-mix(in srgb, #f08000 15%, var(--bg));
+  border: 0.5px solid color-mix(in srgb, #f08000 35%, transparent);
+  border-radius: 99px;
+  padding: 1px 5px;
+  color: #b06000;
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+@media (prefers-color-scheme: dark) {
+  .order-match-badge {
+    background: color-mix(in srgb, #f08000 20%, var(--bg));
+    color: #f0a040;
+  }
+}
+
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .order-match-badge { background: var(--bg2); border-color: var(--border); color: var(--text2); }
+}

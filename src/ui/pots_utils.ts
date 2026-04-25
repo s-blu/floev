@@ -5,6 +5,7 @@ import { t } from '../model/i18n';
 import { GameState, Pot } from '../model/plant';
 import { RARITY_COLORS, RARITY_ICON } from '../model/rarity_model';
 import { hasUpgrade } from './ui';
+import { getMatchingOrderNumbers } from './orders_ui';
 
 export function buildPlantViewForPot(pot: Pot, _state: GameState): string {
     if (!pot) return '';
@@ -33,9 +34,14 @@ export function buildSideInfo(pot: Pot, state: GameState): string {
     const rareCarrier = hasUpgrade(state, 'unlock_rare_radar') && hasHiddenRareTrait(pot.plant)
         ? `<span class="phase-rare-carrier" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`
         : '';
+    const orderNums = getMatchingOrderNumbers(pot.plant)
+    const orderBadges = orderNums
+        .map(n => `<span class="order-match-badge" title="${t.orderBookBadgeTitle(n)}">📖${n}</span>`)
+        .join('')
     let content = '';
     if (homozyg) content += `<span class="pot-side-homo" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
     if (rareCarrier) content += rareCarrier;
+    if (orderBadges) content += orderBadges;
     content += `<span class="pot-side-gen"><span class="pot-side-rarity" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span> Gen. ${pot.plant.generation}</span>`;
     return `<div class="pot-side-info">${content}</div>`;
 }

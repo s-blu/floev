@@ -1,6 +1,7 @@
 // ─── Core value types ─────────────────────────────────────────────────────────
 
 import { Rarity } from "./rarity_model"
+import type { OrderBookState } from "./orders"
 
 export interface HSLColor {
   h: number
@@ -86,7 +87,8 @@ export interface GameState {
   upgrades:           string[]   // purchased upgrade ids
   unlockedPotColors:  string[]   // purchased pot color ids
   unlockedPotShapes:  string[]   // purchased pot shape ids
-  lastSave: number
+  lastSave:  number
+  orderBook?: OrderBookState
 }
 
 
