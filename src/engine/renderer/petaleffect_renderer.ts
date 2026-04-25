@@ -85,8 +85,24 @@ export function resolvePetalEffect(
     // ── gradient — radial, center light → tip dark ────────────────────────────
     case 'gradient': {
       const gradId = `g_${plantId.replace(/[^a-z0-9]/gi, '')}`;
+      if (shape === 'round') {
+        return {
+          defs: renderGradientDef(pc, shape, gradId),
+          getFill: () => `url(#${gradId})`,
+          getStroke: () => baseStroke,
+          getOverlay: noOverlay,
+        };
+      }
+      // Path-based shapes: bloom-centered radial gradient in userSpaceOnUse.
+      // objectBoundingBox fails for rotated paths — its bounding box is axis-aligned
+      // in SVG space, so cx/cy percentages don't track the petal direction.
+      // A gradient anchored at (cx, cy) naturally places light at the base for any angle.
+      const { h, s } = pc;
+      const gradR = pr * 2.6;
+      const stops: [number, number][] = [[0, 90], [20, 85], [35, 65], [50, 45], [65, 30]];
+      const stopMarkup = stops.map(([pct, l]) => `<stop offset="${pct}%" stop-color="hsl(${h},${s}%,${l}%)"/>`).join('');
       return {
-        defs: renderGradientDef(pc, shape, gradId),
+        defs: `<radialGradient id="${gradId}" cx="${cx}" cy="${cy}" r="${gradR}" gradientUnits="userSpaceOnUse">${stopMarkup}</radialGradient>`,
         getFill: () => `url(#${gradId})`,
         getStroke: () => baseStroke,
         getOverlay: noOverlay,
@@ -146,8 +162,6 @@ export function renderGradientDef(petalColor: HSLColor, petalShape: PetalShape, 
     .join('');
   const coords = { cx: 20, cy: 50, r: 75 };
   if (petalShape === 'wavy') { coords.cx = 50; coords.cy = 10; }
-  if (petalShape === 'tropfen') { coords.cx = 50; coords.r = 50; }
-  if (petalShape === 'zickzack') { coords.cx = 50; coords.r = 65; }
   return (
     `<radialGradient id="${gradId}" cx="${coords.cx}%" cy="${coords.cy}%" r="${coords.r}%">` +
     stopMarkup +
