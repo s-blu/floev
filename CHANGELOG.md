@@ -5,10 +5,13 @@ Improvements:
 - New purchasable feature: Order Book
 - New purchasable pot forms & pot colors
 - Enhance button size on mobile
+- Enhance effect/petal rendering
+- Make the page PWA ready (and finally add a favicon)
 
 Bugs:
 
 - Fix some stylings to be compatible with dark theme
+- Remove a duplicated achievement definition
 
 
 # v1.2.0
