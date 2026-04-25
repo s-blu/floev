@@ -40,7 +40,6 @@ const EASY_POOL: OrderRequirement[] = [
   { trait: 'colorBucket', op: 'eq',  value: 'blue',        difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'yellowgreen', difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'purple',      difficulty: 'easy' },
-  { trait: 'petalCount',  op: 'gte', value: 3,             difficulty: 'easy' },
   { trait: 'petalCount',  op: 'gte', value: 4,             difficulty: 'easy' },
   { trait: 'centerType',  op: 'eq',  value: 'dot',         difficulty: 'easy' },
   { trait: 'centerType',  op: 'eq',  value: 'disc',        difficulty: 'easy' },
@@ -53,12 +52,12 @@ const MEDIUM_POOL: OrderRequirement[] = [
   { trait: 'petalLightness', op: 'eq', value: 30,         difficulty: 'medium' },
   { trait: 'petalLightness', op: 'eq', value: 60,         difficulty: 'medium' },
   { trait: 'petalLightness', op: 'eq', value: 90,         difficulty: 'medium' },
-  { trait: 'centerType',    op: 'eq',  value: 'stamen',   difficulty: 'medium' },
   { trait: 'petalEffect',   op: 'eq',  value: 'bicolor',  difficulty: 'medium' },
   { trait: 'petalEffect',   op: 'eq',  value: 'gradient', difficulty: 'medium' },
 ]
 
 const HARD_POOL: OrderRequirement[] = [
+  { trait: 'centerType',    op: 'eq',  value: 'stamen',   difficulty: 'hard' },
   { trait: 'petalShape',  op: 'eq', value: 'wavy',        difficulty: 'hard' },
   { trait: 'petalShape',  op: 'eq', value: 'zickzack',    difficulty: 'hard' },
   { trait: 'petalEffect', op: 'eq', value: 'shimmer',     difficulty: 'hard' },
