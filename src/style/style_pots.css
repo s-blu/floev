@@ -100,7 +100,7 @@
     box-shadow: 0 3px 6px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.05);
   }
   #showcase-section .pot-sill {
-    background: linear-gradient(to bottom, #5c4020 0%, #4a3010 55%, #3a2208 100%);
+    background: linear-gradient(to bottom, #c0c0c0 0%, #8f8b8b 55%, #4c5158 100%);
   }
   #showcase-section .pot-visual-area {
     background: linear-gradient(rgba(15, 25, 50, 0.55) 60%, rgba(30, 42, 65, 0.5) 90%, rgba(50, 35, 30, 0.4), rgba(65, 45, 15, 0.35));
