@@ -227,11 +227,11 @@ export function initOrderBook(state: GameState): void {
     return
   }
   if (state.orderBook.lastEffectiveDate !== today) {
+    const wasCompleted = state.orderBook.orders.map(o => o.completedToday)
     resetDailyState(state.orderBook, today)
-    // Replace unpinned orders with fresh ones for the new day
     const freshOrders = generateOrders(today)
     for (let i = 0; i < state.orderBook.orders.length; i++) {
-      if (!state.orderBook.orders[i].pinned) {
+      if (!state.orderBook.orders[i].pinned || wasCompleted[i]) {
         state.orderBook.orders[i] = freshOrders[i]
       }
     }
