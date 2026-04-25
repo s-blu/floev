@@ -62,9 +62,12 @@ function buildOrderCard(order: Order, index: number): HTMLElement {
           ? `<span class="order-done-badge">${t.orderBookDoneLabel}</span>`
           : `<span class="order-reward">${t.orderBookReward(order.reward)}</span>`
         }
-        <button class="order-pin-btn${order.pinned ? ' order-pin-btn--active' : ''}"
+        ${!order.completedToday
+          ? `<button class="order-pin-btn${order.pinned ? ' order-pin-btn--active' : ''}"
           title="${order.pinned ? t.orderBookUnpinTitle : t.orderBookPinTitle}"
-          data-order-index="${index}">📌</button>
+          data-order-index="${index}">📌</button>`
+          : ''
+        }
       </div>
     </div>
     <div class="order-req-tags">${reqTags}</div>`

@@ -3,6 +3,7 @@
 import type { Plant, GameState } from '../model/plant'
 import type { Order, OrderRequirement, OrderTrait, OrderBookState } from '../model/orders'
 import { ORDER_REWARD_EASY, ORDER_REWARD_MEDIUM, ORDER_REWARD_HARD } from '../model/orders'
+import { hasUpgrade } from './shop_engine'
 import {
   expressedShape,
   expressedCenter,
@@ -39,7 +40,6 @@ const EASY_POOL: OrderRequirement[] = [
   { trait: 'colorBucket', op: 'eq',  value: 'blue',        difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'yellowgreen', difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'purple',      difficulty: 'easy' },
-  { trait: 'colorBucket', op: 'eq',  value: 'white',       difficulty: 'easy' },
   { trait: 'petalCount',  op: 'gte', value: 3,             difficulty: 'easy' },
   { trait: 'petalCount',  op: 'gte', value: 4,             difficulty: 'easy' },
   { trait: 'centerType',  op: 'eq',  value: 'dot',         difficulty: 'easy' },
@@ -54,7 +54,6 @@ const MEDIUM_POOL: OrderRequirement[] = [
   { trait: 'petalLightness', op: 'eq', value: 60,         difficulty: 'medium' },
   { trait: 'petalLightness', op: 'eq', value: 90,         difficulty: 'medium' },
   { trait: 'centerType',    op: 'eq',  value: 'stamen',   difficulty: 'medium' },
-  { trait: 'colorBucket',   op: 'eq',  value: 'gray',     difficulty: 'medium' },
   { trait: 'petalEffect',   op: 'eq',  value: 'bicolor',  difficulty: 'medium' },
   { trait: 'petalEffect',   op: 'eq',  value: 'gradient', difficulty: 'medium' },
 ]
@@ -240,7 +239,7 @@ export function refreshOrders(state: GameState): boolean {
 
 export function toggleOrderPin(state: GameState, orderIndex: number): void {
   const order = state.orderBook?.orders[orderIndex]
-  if (!order) return
+  if (!order || order.completedToday) return
   order.pinned = !order.pinned
 }
 
@@ -248,6 +247,7 @@ export function toggleOrderPin(state: GameState, orderIndex: number): void {
 
 /** Checks plant against active orders, marks matches as completed, returns bonus coins. */
 export function applyOrdersOnSell(state: GameState, plant: Plant): number {
+  if (!hasUpgrade(state, 'unlock_order_book')) return 0
   if (!state.orderBook) return 0
   initOrderBook(state)
 
@@ -256,6 +256,7 @@ export function applyOrdersOnSell(state: GameState, plant: Plant): number {
     if (order.completedToday) continue
     if (plantMatchesOrder(plant, order)) {
       order.completedToday = true
+      order.pinned = false
       bonus += order.reward
     }
   }
