@@ -2,7 +2,7 @@ import { expressedColor, expressedShape, expressedCenter, expressedNumber, expre
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import type { CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
 import { RARITY_BADGE_STYLES, RARITY_COLORS, RARITY_ICON, type Rarity } from "../model/rarity_model";
-import { openAncestryIds, state } from './ui';
+import { state } from './ui';
 import { t } from '../model/i18n';
 import { hasUpgrade } from '../engine/shop_engine';
 import { renderDiscoveryIndex } from './discovery_index_ui';
@@ -28,12 +28,6 @@ export function renderCatalog(): void {
   const container = document.getElementById('catalog-grid');
   const count = document.getElementById('catalog-count');
   if (!container || !count) return;
-
-  container.querySelectorAll<HTMLDetailsElement>('.enc-ancestry[data-id]').forEach(el => {
-    const id = el.dataset.id!;
-    if (el.open) openAncestryIds.add(id);
-    else openAncestryIds.delete(id);
-  });
 
   count.textContent = String(state.catalog.length);
 
@@ -83,13 +77,6 @@ export function renderCatalog(): void {
     container.appendChild(grid);
   }
 
-  container.querySelectorAll<HTMLDetailsElement>('.enc-ancestry[data-id]').forEach(el => {
-    el.addEventListener('toggle', () => {
-      const id = el.dataset.id!;
-      if (el.open) openAncestryIds.add(id);
-      else openAncestryIds.delete(id);
-    });
-  });
 }
 
 function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
@@ -110,53 +97,10 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const swatchTitle = hasEffect
     ? groupLabel
     : [swatchLabel, groupLabel].filter(Boolean).join(' · ');
-  const parentA = plant.parentIds
-    ? state.catalog.find(e => e.plant.id === plant.parentIds![0]) ?? null
-    : null;
-  const parentB = plant.parentIds
-    ? state.catalog.find(e => e.plant.id === plant.parentIds![1]) ?? null
-    : null;
-
   const badge = RARITY_BADGE_STYLES[entry.rarity];
 
   const el = document.createElement('div');
   el.className = `enc-entry rarity-${entry.rarity}`;
-
-  let ancestryHtml = '';
-  if (plant.parentIds) {
-    const isOpen = openAncestryIds.has(plant.id);
-    const isSelfed = plant.selfed === true;
-    const renderParentSlot = (e: CatalogEntry | null, id: string) => {
-      const n = e ? (entryIndex.get(e.plant.id) ?? '?') : '?';
-      const name = e ? t.catalogParentName(n) : t.catalogParentUnknown;
-      const thumb = e
-        ? `<div class="enc-parent-thumb" title="${t.catalogParentGenTitle(e.plant.generation)}">${renderBloomSVG(e.plant, 38, 38)}</div>`
-        : `<div class="enc-parent-thumb enc-parent-unknown" title="${t.catalogParentUnknownTitle(id)}"><span>?</span></div>`;
-      return `<div class="enc-parent-slot">${thumb}<span class="enc-parent-name">${name}</span></div>`;
-    };
-
-    if (isSelfed) {
-      ancestryHtml = `
-        <details class="enc-ancestry" data-id="${plant.id}"${isOpen ? ' open' : ''}>
-          <summary>${t.catalogAncestry}</summary>
-          <div class="enc-parents-row">
-            ${renderParentSlot(parentA, plant.parentIds[0])}
-            <span class="enc-parent-cross" title="${t.catalogSelfPollinatedTitle}">↺</span>
-          </div>
-        </details>`;
-    } else {
-      ancestryHtml = `
-        <details class="enc-ancestry" data-id="${plant.id}"${isOpen ? ' open' : ''}>
-          <summary>${t.catalogAncestry}</summary>
-          <div class="enc-parents-row">
-            ${renderParentSlot(parentA, plant.parentIds[0])}
-            <span class="enc-parent-cross">×</span>
-            ${renderParentSlot(parentB, plant.parentIds[1])}
-          </div>
-        </details>`;
-    }
-  }
-
 
   el.innerHTML = `
     <div class="enc-title">
@@ -177,7 +121,6 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
           ${renderMetaRow(t.catalogMetaGen, `${plant.generation}`)}
         </div>
         <div class="enc-discovered">${formatDate(entry.discovered)}</div>
-        ${ancestryHtml}
       </div>
     </div>`;
 
