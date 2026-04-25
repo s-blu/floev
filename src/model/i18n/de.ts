@@ -197,6 +197,9 @@ export const de = {
     standard: 'Klassisch',
     conic:    'Konisch',
     belly:    'Bauchig',
+    bowl:     'Schale',
+    urn:      'Vase',
+    tiny:     'Mini',
   } as Record<string, string>,
 
   // Order book panel

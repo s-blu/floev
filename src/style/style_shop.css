@@ -349,6 +349,7 @@
 
 .pot-shape-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -365,6 +366,7 @@
   background: var(--bg2);
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
+  max-width: 65px;
 }
 
 .pot-shape-card:hover:not(:disabled) {

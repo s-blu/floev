@@ -71,7 +71,7 @@ export interface CatalogEntry {
 
 export interface PotDesign {
   colorId: string
-  shape:   'standard' | 'conic' | 'belly'
+  shape:   'standard' | 'conic' | 'belly' | 'bowl' | 'urn' | 'tiny'
 }
 
 export interface GameState {
