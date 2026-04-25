@@ -123,14 +123,8 @@ export const de = {
   catalogMetaColor: 'Farbe',
   catalogMetaEffect: 'Effekt',
   catalogMetaGen: 'Gen.',
-  catalogAncestry: 'Stammbaum',
-  catalogSelfPollinatedTitle: 'Selbstbestäubt',
-  catalogParentUnknown: 'Unbekannt',
   catalogEntryNum: (n: number) => `Nr. ${n}`,
   catalogEntryName: (n: number) => `Blüte ${n}`,
-  catalogParentName: (n: number | string) => `Nr. ${n}`,
-  catalogParentUnknownTitle: (id: string) => `Elter unbekannt (${id})`,
-  catalogParentGenTitle: (gen: number) => `Gen. ${gen}`,
   catalogHomozygousBadge: '◈ reinerbig',
 
   // Showcase

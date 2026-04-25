@@ -93,7 +93,7 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayHue}</span>
-      <span class="allele-chips-row">${renderChipPair(hA, hB, true, lA, lB, true)}</span>${hueRareMarker}
+      <span class="allele-chips-row">${renderChipPair(hA, hB, true, lA, lB, true)}${hueRareMarker}</span>
     </div>
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayLight}</span>

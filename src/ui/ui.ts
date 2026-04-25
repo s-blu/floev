@@ -31,7 +31,6 @@ interface BreedState {
 // ─── State ────────────────────────────────────────────────────────────────────
 
 export let state: GameState
-export const openAncestryIds = new Set<string>()
 export const openAlleleIds = new Set<number>()
 export const openPotDesignIds = new Set<number>()  
 export const breedState: BreedState = {
