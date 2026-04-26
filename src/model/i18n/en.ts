@@ -187,6 +187,8 @@ export const en = {
   surplusSeedObtained: 'Got a surplus seed!',
   seedDrawerButton: (n: number) => `🌱 Seeds (${n})`,
   selectSeedToPlant: 'Select a seed to plant',
+  seedMoveHint: 'Click a compartment to move seed',
+  seedMoveCancel: 'Cancel',
   seedDrawerClose: 'Close',
 
   // Shop — Showcase

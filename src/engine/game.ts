@@ -3,8 +3,7 @@ import { randomPlant } from './genetic/genetic'
 import { addToCatalog } from './catalog'
 import { calcCoinScore } from './rarity'
 import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLANTS, DEBUG_SEEDS, USE_FIXED_SEEDS } from '../dev.config'
-import { MAX_SEED_STORAGE } from '../model/genetic_model'
-import { UPGRADES } from '../model/shop'
+import { MAX_SEED_STORAGE, SEEDS_PER_SLOT } from '../model/genetic_model'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -47,9 +46,10 @@ function createInitialState(): GameState {
   }
 
 
-  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], seeds: [], lastSave: Date.now() }
+  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], seeds: [], seedLayout: Array(MAX_SEED_STORAGE).fill(''), lastSave: Date.now() }
   if (useDebugSeeds) {
     gameState.seeds = DEBUG_SEEDS
+    DEBUG_SEEDS.forEach((s, i) => { gameState.seedLayout[i] = s.id })
     gameState.upgrades.push('unlock_seed_drawer')
   }
 
@@ -72,6 +72,10 @@ export function loadState(): GameState {
       if (!parsed.unlockedPotShapes) parsed.unlockedPotShapes = []
       if (!parsed.showcase) parsed.showcase = []
       if (!parsed.seeds) parsed.seeds = []
+      if (!parsed.seedLayout || parsed.seedLayout.length !== MAX_SEED_STORAGE) {
+        parsed.seedLayout = Array(MAX_SEED_STORAGE).fill('')
+        parsed.seeds.forEach((s, i) => { if (i < MAX_SEED_STORAGE) parsed.seedLayout[i] = s.id })
+      }
       // orderBook is generated on first use — no migration needed
 
       return parsed
@@ -176,13 +180,29 @@ export function placeSeedInSpecificPot(state: GameState, plant: Plant, potId: nu
 export function addSeedToStorage(state: GameState, plant: Plant): boolean {
   if (state.seeds.length >= MAX_SEED_STORAGE) return false
   state.seeds.push(plant)
+  const emptyPos = state.seedLayout.findIndex(id => id === '')
+  if (emptyPos !== -1) state.seedLayout[emptyPos] = plant.id
   return true
 }
 
 export function removeSeedFromStorage(state: GameState, seedId: string): Plant | null {
   const idx = state.seeds.findIndex(s => s.id === seedId)
   if (idx === -1) return null
+  const layoutPos = state.seedLayout.indexOf(seedId)
+  if (layoutPos !== -1) state.seedLayout[layoutPos] = ''
   return state.seeds.splice(idx, 1)[0]
+}
+
+export function moveSeedToSlot(state: GameState, seedId: string, targetSlotIdx: number): boolean {
+  const currentPos = state.seedLayout.indexOf(seedId)
+  if (currentPos === -1) return false
+  const slotStart = targetSlotIdx * SEEDS_PER_SLOT
+  const slotEnd = slotStart + SEEDS_PER_SLOT
+  const targetPos = state.seedLayout.slice(slotStart, slotEnd).indexOf('')
+  if (targetPos === -1) return false  // target slot is full
+  state.seedLayout[currentPos] = ''
+  state.seedLayout[slotStart + targetPos] = seedId
+  return true
 }
 
 // ─── Showcase actions ────────────────────────────────────────────────────────

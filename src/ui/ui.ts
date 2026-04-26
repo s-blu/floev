@@ -8,6 +8,7 @@ import {
   placeSeedInSpecificPot,
   addSeedToStorage,
   removeSeedFromStorage,
+  moveSeedToSlot,
   moveToShowcase,
   moveFromShowcase,
   saveState,
@@ -325,6 +326,11 @@ function handleBreed(): void {
 
   checkAchAndSave(state)
   render()
+}
+
+export function handleMoveSeedToSlot(seedId: string, targetSlotIdx: number): void {
+  moveSeedToSlot(state, seedId, targetSlotIdx)
+  saveState(state)
 }
 
 export function handlePlantSeedFromStorage(potId: number, seedId: string): void {

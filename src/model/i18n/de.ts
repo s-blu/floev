@@ -187,6 +187,8 @@ export const de = {
   surplusSeedObtained: 'Einen Überschuss-Samen erhalten!',
   seedDrawerButton: (n: number) => `🌱 Saaten (${n})`,
   selectSeedToPlant: 'Saaten zum Einpflanzen wählen',
+  seedMoveHint: 'Klick auf ein Fach zum Ablegen',
+  seedMoveCancel: 'Abbrechen',
   seedDrawerClose: 'Schließen',
 
   // Shop — Showcase
