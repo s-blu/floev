@@ -118,11 +118,9 @@ export function renderSeedDrawerBody(): void {
 
   const capacity = `<span class="seed-drawer-capacity">${t.seedDrawerCapacity(seeds.length, MAX_SEED_STORAGE)}</span>`
 
-  // Reserve fixed height for mode hint so the layout doesn't jump
-  let hintContent = '&nbsp;'
-  if (isSelectMode) hintContent = t.selectSeedToPlant
-  else if (isMoveMode) hintContent = t.seedMoveHint
-  const hint = `<p class="seed-drawer-mode-hint${isMoveMode ? ' seed-drawer-mode-hint--move' : ''}">${hintContent}</p>`
+  const hintText = isSelectMode ? t.selectSeedToPlant : isMoveMode ? t.seedMoveHint : ''
+  const hintCls = `seed-drawer-mode-hint${isMoveMode ? ' seed-drawer-mode-hint--move' : ''}${!hintText ? ' seed-drawer-mode-hint--hidden' : ''}`
+  const hint = `<p class="${hintCls}">${hintText || '&nbsp;'}</p>`
 
   const slots = Array.from({ length: SAATENSCHUBLADE_SLOTS }, (_, slotIdx) => {
     const slotStart = slotIdx * SEEDS_PER_SLOT
