@@ -238,9 +238,9 @@ function buildDominanceChain(items: string[]): string {
 function buildLightnessSwatches(): string {
   const hue = 310; // pink — clear example color
   const levels: [number, string][] = [
-    [30, t.helpLightnessDark],
-    [60, t.helpLightnessMid],
     [90, t.helpLightnessLight],
+    [60, t.helpLightnessMid],
+    [30, t.helpLightnessDark],
   ];
   return levels.map(([l, label]) =>
     `<div class="help-lightness-chip">

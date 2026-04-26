@@ -267,7 +267,7 @@ export const en = {
   helpColorsBody: 'Each plant carries two color alleles and two lightness alleles. The more dominant allele determines the visible color.',
   helpColorBucketsExplain: 'Colors are grouped into ranges — from common (left) to rare (right). Some ranges are still undiscovered:',
   helpColorsDominance: 'Color dominance — left dominates, right is recessive',
-  helpLightnessDominance: 'Lightness: Dark dominates Mid dominates Light',
+  helpLightnessDominance: 'Lightness: Light dominates Mid dominates Dark',
   helpLightnessDark: 'dark',
   helpLightnessMid: 'mid',
   helpLightnessLight: 'light',

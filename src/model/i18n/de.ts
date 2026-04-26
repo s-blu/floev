@@ -267,7 +267,7 @@ export const de = {
   helpColorsBody: 'Jede Pflanze trägt zwei Farb-Allele und zwei Helligkeits-Allele. Das dominantere Allel bestimmt die sichtbare Farbe.',
   helpColorBucketsExplain: 'Farben sind in Bereiche eingeteilt — von häufig (links) bis selten (rechts). Manche Bereiche sind noch unentdeckt:',
   helpColorsDominance: 'Farbdominanz — links dominiert, rechts ist rezessiv',
-  helpLightnessDominance: 'Helligkeit: Dunkel dominiert Mittel dominiert Hell',
+  helpLightnessDominance: 'Helligkeit: Hell dominiert Mittel dominiert Dunkel',
   helpLightnessDark: 'dunkel',
   helpLightnessMid: 'mittel',
   helpLightnessLight: 'hell',
