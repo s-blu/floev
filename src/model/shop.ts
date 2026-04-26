@@ -7,6 +7,7 @@ export type UpgradeId =
   | 'unlock_discovery_index'
   | 'unlock_showcase'
   | 'unlock_order_book'
+  | 'unlock_seed_drawer'
 
 export interface Upgrade {
   id: UpgradeId
@@ -21,6 +22,7 @@ export const UPGRADES: Upgrade[] = [
   { id: 'unlock_rare_radar',       price:  50, icon: '✦'  },
   { id: 'unlock_discovery_index',  price:  80, icon: '📊' },
   { id: 'unlock_showcase',         price: 100, icon: '🪟' },
+  { id: 'unlock_seed_drawer',      price:  75, icon: '🌱' },
 ]
 
 // ─── Showcase ─────────────────────────────────────────────────────────────────

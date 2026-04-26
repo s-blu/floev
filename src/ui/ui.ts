@@ -5,6 +5,9 @@ import {
   removePlant,
   sellPlant,
   placeSeedInEmptyPot,
+  placeSeedInSpecificPot,
+  addSeedToStorage,
+  removeSeedFromStorage,
   moveToShowcase,
   moveFromShowcase,
   saveState,
@@ -21,6 +24,8 @@ import { checkAchievements } from '../engine/achievements'
 import { renderAchievements, queueAchievementToast, initAchievementsPanel } from './achievements_ui'
 import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
+import { SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE } from '../model/genetic_model'
+import { renderSeedDrawer } from './seeds_ui'
 
 
 
@@ -72,6 +77,7 @@ export function render(): void {
   renderCoins()
   renderShopSidebar()
   renderOrderBook()
+  renderSeedDrawer()
 }
 
 // ─── Shop action handlers ─────────────────────────────────────────────────────
@@ -305,7 +311,29 @@ function handleBreed(): void {
     return
   }
 
-  showMsg(t.breedSuccess(child.generation))
+  if (
+    hasUpgrade(state, 'unlock_seed_drawer') &&
+    Math.random() < SURPLUS_SEED_CHANCE &&
+    state.seeds.length < MAX_SEED_STORAGE
+  ) {
+    const surplusSeed = breedPlants(potA.plant, potB.plant)
+    addSeedToStorage(state, surplusSeed)
+    showMsg(t.surplusSeedObtained)
+  } else {
+    showMsg(t.breedSuccess(child.generation))
+  }
+
+  checkAchAndSave(state)
+  render()
+}
+
+export function handlePlantSeedFromStorage(potId: number, seedId: string): void {
+  const seed = removeSeedFromStorage(state, seedId)
+  if (!seed) return
+  if (!placeSeedInSpecificPot(state, seed, potId)) {
+    state.seeds.push(seed)
+    return
+  }
   checkAchAndSave(state)
   render()
 }

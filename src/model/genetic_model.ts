@@ -131,3 +131,10 @@ export const HUE_ALLELE_POOL       = buildHueAllelePool();
 export const LIGHTNESS_ALLELE_POOL = buildLightnessAllelePool();
 export const RARE_SHAPES: PetalShape[] = ['wavy', 'zickzack'];
 export const RARE_EFFECTS: PetalEffect[] = ['shimmer', 'iridescent'];
+
+// ─── Saatenschublade ──────────────────────────────────────────────────────────
+
+export const SAATENSCHUBLADE_SLOTS = 20
+export const SEEDS_PER_SLOT = 5
+export const MAX_SEED_STORAGE = SAATENSCHUBLADE_SLOTS * SEEDS_PER_SLOT
+export const SURPLUS_SEED_CHANCE = 0.15

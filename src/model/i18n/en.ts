@@ -167,6 +167,7 @@ export const en = {
     unlock_discovery_index:  'Discovery Index',
     unlock_showcase:         'Showcase',
     unlock_order_book:       'Order Book',
+    unlock_seed_drawer:      'Seed Drawer',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Shows you the hidden alleles of every blooming plant.',
@@ -175,7 +176,18 @@ export const en = {
     unlock_discovery_index:  'Shows an overview of all discovered and undiscovered shapes and colors in the catalog.',
     unlock_showcase:         'A showcase with 3 display slots for your most beautiful blooms. Displayed plants cannot be sold or used for breeding.',
     unlock_order_book:       'Three daily orders: breed and sell blooms with specific traits for bonus coins.',
+    unlock_seed_drawer:      'A drawer with 20 compartments for up to 100 seeds. Crossing plants gives a chance to receive a surplus seed.',
   } as Record<string, string>,
+
+  // Seed drawer
+  seedDrawerTitle: 'Seed Drawer',
+  seedDrawerCapacity: (n: number, max: number) => `${n} / ${max}`,
+  seedDrawerEmpty: 'No seeds stored yet.',
+  plantFromStorage: 'From Collection',
+  surplusSeedObtained: 'Got a surplus seed!',
+  seedDrawerButton: (n: number) => `🌱 Seeds (${n})`,
+  selectSeedToPlant: 'Select a seed to plant',
+  seedDrawerClose: 'Close',
 
   // Shop — Showcase
   shopSectionShowcase: 'Expand showcase',

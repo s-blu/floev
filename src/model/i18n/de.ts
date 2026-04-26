@@ -167,6 +167,7 @@ export const de = {
     unlock_discovery_index:  'Entdeckungs-Index',
     unlock_showcase:         'Schaukasten',
     unlock_order_book:       'Auftragsbuch',
+    unlock_seed_drawer:      'Saatenschublade',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
@@ -175,7 +176,18 @@ export const de = {
     unlock_discovery_index:  'Zeigt im Katalog eine Übersicht aller entdeckten und noch unbekannten Formen und Farben.',
     unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
     unlock_order_book:       'Täglich 3 Aufträge: Züchte und verkaufe Blüten mit bestimmten Merkmalen für Bonus-Münzen.',
+    unlock_seed_drawer:      'Eine Schublade mit 20 Fächern für bis zu 100 Saaten. Beim Kreuzen besteht eine Chance auf einen Überschuss-Samen.',
   } as Record<string, string>,
+
+  // Saatenschublade
+  seedDrawerTitle: 'Saatenschublade',
+  seedDrawerCapacity: (n: number, max: number) => `${n} / ${max}`,
+  seedDrawerEmpty: 'Noch keine Saaten vorhanden.',
+  plantFromStorage: 'Aus Saatensammlung',
+  surplusSeedObtained: 'Einen Überschuss-Samen erhalten!',
+  seedDrawerButton: (n: number) => `🌱 Saaten (${n})`,
+  selectSeedToPlant: 'Saaten zum Einpflanzen wählen',
+  seedDrawerClose: 'Schließen',
 
   // Shop — Showcase
   shopSectionShowcase: 'Schaukasten erweitern',
