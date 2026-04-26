@@ -9,9 +9,9 @@ export const COLOR_BUCKET_DOMINANCE: ColorBucket[] = [
   'white', 'yellowgreen', 'red', 'pink', 'purple', 'blue', 'gray',
 ];
 
-// ─── Lightness dominance: 30 > 60 > 90 ───────────────────────────────────────
+// ─── Lightness dominance: 90 > 60 > 30 ───────────────────────────────────────
 /** The three discrete lightness levels, ordered most-dominant first. */
-export const LIGHTNESS_DOMINANCE: ChromaticL[] = [30, 60, 90];
+export const LIGHTNESS_DOMINANCE: ChromaticL[] = [90, 60, 30];
 
 // ─── Effect dominance ─────────────────────────────────────────────────────────
 // none (common) → bicolor → gradient → shimmer  → iridescent (rarest)
