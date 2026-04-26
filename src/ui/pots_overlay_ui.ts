@@ -354,7 +354,7 @@ function hueLabel(h: number): string {
   if (h === ACHROMATIC_HUE_GRAY_DARK) return t.alleleHueGrayDark;
   if (h === ACHROMATIC_HUE_GRAY_MID) return t.alleleHueGrayMid;
   if (h === ACHROMATIC_HUE_GRAY_LIGHT) return t.alleleHueGrayLight;
-  return `${Math.round(h)}°`;
+  return (t.colorLabel as any)[h]?.hueName ?? `${Math.round(h)}°`;
 }
 function lightnessLabel(l: ChromaticL): string {
   return l === 30 ? t.helpLightnessDark : l === 60 ? t.helpLightnessMid : t.helpLightnessLight;
