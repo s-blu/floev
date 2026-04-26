@@ -1,9 +1,10 @@
-import type { GameState, Pot, Plant, PetalEffect, PlantPhase } from '../model/plant'
-import { plannedPlant, randomPlant } from './genetic/genetic'
+import type { GameState, Pot, Plant, PlantPhase } from '../model/plant'
+import { randomPlant } from './genetic/genetic'
 import { addToCatalog } from './catalog'
 import { calcCoinScore } from './rarity'
-import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS } from '../dev.config'
+import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLANTS, DEBUG_SEEDS, USE_FIXED_SEEDS } from '../dev.config'
 import { MAX_SEED_STORAGE } from '../model/genetic_model'
+import { UPGRADES } from '../model/shop'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -22,48 +23,7 @@ export function coinValueForScore(score: number): number {
 }
 
 const useDebugPlants = import.meta.env.DEV && USE_FIXED_PLANTS;
-const sharedDebugConfig = {
-      hue: 200,
-      petalCount: 5,
-      plantPhase: 3 as PlantPhase,
-}
-const DEBUG_PLANTS = [
-    plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'shimmer' as PetalEffect,
-    }
-  ),
-  plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'bicolor' as PetalEffect,
-    }
-  ),
-    plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'iridescent' as PetalEffect,
-    }
-  ),
-    plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'gradient' as PetalEffect,
-    }
-  ),
-    plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-    }
-  ),
-]
-
+const useDebugSeeds = import.meta.env.DEV && USE_FIXED_SEEDS;
 // ─── Initial state ────────────────────────────────────────────────────────────
 
 function createInitialState(): GameState {
@@ -85,7 +45,15 @@ function createInitialState(): GameState {
       return { id: i, plant, phaseStart: Date.now() - (phase3Dur - starterOffsets[i]) };
     });
   }
-  return { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], seeds: [], lastSave: Date.now() }
+
+
+  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], seeds: [], lastSave: Date.now() }
+  if (useDebugSeeds) {
+    gameState.seeds = DEBUG_SEEDS
+    gameState.upgrades.push('unlock_seed_drawer')
+  }
+
+  return gameState
 }
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
