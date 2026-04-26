@@ -147,10 +147,19 @@ function buildEffectSwatchStyle(effect: PetalEffect, pc: HSLColor): string {
       return `background: linear-gradient(90deg, ${hsl(h, s, s === 0 ? 90 : 88)} 50%, ${hsl(h, s, s === 0 ? 20 : 28)} 50%)`;
     case 'gradient':
       return `background: linear-gradient(to right, ${hsl(h, s, 90)}, ${hsl(h, s, 30)})`;
-    case 'shimmer':
-      return diagonal4([-12, 0, 12, 0].map(o => hsl(h + o, s, l)));
-    case 'iridescent':
-      return diagonal4([0, 40, 80, 120].map(o => hsl(h + o, s, l)));
+    case 'shimmer': {
+      const isGray = s < 10;
+      return isGray
+        ? diagonal4([l - 20, l - 5, l + 15, l - 8].map(lv => hsl(h, s, lv)))
+        : diagonal4([-12, 0, 12, 0].map(o => hsl(h + o, s, l)));
+    }
+    case 'iridescent': {
+      const isGray = s < 10;
+      const rl = Math.min(Math.max(l, 45), 75);
+      return isGray
+        ? diagonal4([0, 90, 180, 270].map(o => hsl(o, 75, rl)))
+        : diagonal4([0, 40, 80, 120].map(o => hsl(h + o, s, l)));
+    }
     default:
       return `background: ${hsl(h, s, l)}`;
   }
