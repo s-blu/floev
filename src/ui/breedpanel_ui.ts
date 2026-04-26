@@ -21,7 +21,7 @@ export function renderBreedPanel(): void {
     const homoA = isHomozygous(potA.plant);
     slotA.innerHTML = `
       <div class="breed-slot-inner">
-        ${renderPlantSVG(potA.plant, 66, 86)}
+        ${renderPlantSVG(potA.plant, 66, 86, undefined, 'brd')}
         ${homoA ? `<span class="breed-slot-homo" title="${t.homozygousTitle}">${t.homozygousBadge}</span>` : ''}
         <button class="breed-slot-remove" data-remove="a" title="${t.breedSlotRemoveTitle}">×</button>
       </div>`;
@@ -33,7 +33,7 @@ export function renderBreedPanel(): void {
     const homoB = isHomozygous(potB.plant);
     slotB.innerHTML = `
       <div class="breed-slot-inner">
-        ${renderPlantSVG(potB.plant, 66, 86)}
+        ${renderPlantSVG(potB.plant, 66, 86, undefined, 'brd')}
         ${homoB ? `<span class="breed-slot-homo" title="${t.homozygousTitle}">${t.homozygousBadge}</span>` : ''}
         <button class="breed-slot-remove" data-remove="b" title="${t.breedSlotRemoveTitle}">×</button>
       </div>`;

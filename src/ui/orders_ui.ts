@@ -105,7 +105,7 @@ function buildOrderCard(order: Order, index: number): HTMLElement {
   const card = document.createElement('div')
   card.className = `order-card${order.completedToday ? ' order-card--done' : ''}`
 
-  const previewSvg = renderBloomSVG(previewPlantForOrder(order), PREVIEW_RENDER_SIZE, PREVIEW_RENDER_SIZE)
+  const previewSvg = renderBloomSVG(previewPlantForOrder(order), PREVIEW_RENDER_SIZE, PREVIEW_RENDER_SIZE, 'ord')
 
   const reqTags = order.requirements
     .map(r => `<span class="order-req-tag ${difficultyClass(r)}">${requirementLabel(r)}</span>`)

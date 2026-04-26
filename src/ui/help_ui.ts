@@ -170,7 +170,7 @@ function buildDecoFlower(): string {
     petalEffect: 'none',
     petalCount: 5,
   });
-  return renderBloomSVG(plant, 64, 64);
+  return renderBloomSVG(plant, 64, 64, 'hlp');
 }
 
 // ─── Hue strip ────────────────────────────────────────────────────────────────

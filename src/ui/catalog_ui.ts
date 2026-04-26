@@ -108,7 +108,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
       <div class="enc-entry-num">${t.catalogEntryNum(num)}</div>
     </div>
     <div class="enc-body">
-      <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
+      <div class="enc-bloom">${renderBloomSVG(plant, 80, 80, 'cat')}</div>
       <div class="enc-info">
         <div class="enc-badges-row">
           <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${t.rarity[entry.rarity]}</span>

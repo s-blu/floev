@@ -17,7 +17,8 @@ export function resolvePetalEffect(
   plantId: string,
   pr: number,
   cx: number = 0,
-  cy: number = 0
+  cy: number = 0,
+  context: string = ''
 ): EffectFills {
   const baseStroke = hsl(darken(pc));
   const noOverlay = () => '';
@@ -84,7 +85,7 @@ export function resolvePetalEffect(
 
     // ── gradient — radial, center light → tip dark ────────────────────────────
     case 'gradient': {
-      const gradId = `g_${plantId.replace(/[^a-z0-9]/gi, '')}`;
+      const gradId = `g_${plantId.replace(/[^a-z0-9]/gi, '')}${context ? `_${context}` : ''}`;
       if (shape === 'round') {
         return {
           defs: renderGradientDef(pc, shape, gradId),

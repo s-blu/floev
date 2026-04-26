@@ -15,7 +15,7 @@ export function renderStem(plant: Plant, cx: number, stemBase: number, bloomY: n
 
 // ─── Main render function ─────────────────────────────────────────────────────
 
-export function renderPlantSVG(plant: Plant | null, w: number, h: number, potDesign?: PotDesign): string {
+export function renderPlantSVG(plant: Plant | null, w: number, h: number, potDesign?: PotDesign, context: string = 'pot'): string {
   const cx = w / 2
   let defs = '';
   let body = '';
@@ -50,7 +50,7 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number, potDes
   }
 
   // Phase 4: full bloom
-  ({ defs, body } = renderFullBloom(plant, defs, cx, bloomY, body));
+  ({ defs, body } = renderFullBloom(plant, defs, cx, bloomY, body, context));
 
   return svg(defs, body, w, h)
 }
