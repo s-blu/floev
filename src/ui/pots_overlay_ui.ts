@@ -1,8 +1,14 @@
 import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from '../engine/genetic/dominance_utils';
-import { isHomozygous } from '../engine/genetic/genetic_utils';
+import { isHomozygous, hueBucket } from '../engine/genetic/genetic_utils';
 import { RARE_SHAPES, RARE_EFFECTS } from "../model/genetic_model";
 import { hasPotColor, hasPotShape, hasUpgrade } from '../engine/shop_engine';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../model/genetic_model';
+import {
+  buildDiscoveredShapeCounts, buildDiscoveredShapeCenters, buildDiscoveredShapeEffects,
+  buildDiscoveredColors, isShapeFullyDiscovered, isStamenFullyDiscovered,
+  isEffectFullyDiscovered, isBucketFullyDiscovered, RARE_BUCKETS,
+} from '../engine/discovery_utils';
+
 import { t } from '../model/i18n';
 import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
@@ -33,14 +39,22 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   const [lA, lB] = [plant.petalLightness.a, plant.petalLightness.b];
 
   const showRareRadar = hasUpgrade(state, 'unlock_rare_radar');
-  const GRAY_HUES = [ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT];
   const rareMarker = `<span class="allele-rare-indicator" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`;
+
+  // Precompute discovery sets once for all per-allele checks
+  const discoveredCounts  = showRareRadar ? buildDiscoveredShapeCounts(state.catalog)  : new Set<string>();
+  const discoveredCenters = showRareRadar ? buildDiscoveredShapeCenters(state.catalog) : new Set<string>();
+  const discoveredEffects = showRareRadar ? buildDiscoveredShapeEffects(state.catalog) : new Set<string>();
+  const discoveredColors  = showRareRadar ? buildDiscoveredColors(state.catalog)       : new Set<string>();
 
   const shapeA = plant.petalShape.a;
   const shapeB = plant.petalShape.b;
   const domShape = dominantShape(shapeA, shapeB);
   const recShape = shapeA === domShape ? shapeB : shapeA;
-  const shapeRareMarker = showRareRadar && shapeA !== shapeB && RARE_SHAPES.includes(recShape) ? rareMarker : '';
+  const shapeRareMarker = showRareRadar && shapeA !== shapeB
+    && RARE_SHAPES.includes(recShape)
+    && !isShapeFullyDiscovered(recShape, discoveredCounts, discoveredCenters, discoveredEffects)
+    ? rareMarker : '';
   const shapeValue = shapeA === shapeB
     ? shapeA
     : `${domShape} · ${recShape}${shapeRareMarker}`;
@@ -49,7 +63,10 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   const centerB = plant.centerType.b;
   const domCenter = dominantCenter(centerA, centerB);
   const recCenter = centerA === domCenter ? centerB : centerA;
-  const centerRareMarker = showRareRadar && centerA !== centerB && recCenter === 'stamen' ? rareMarker : '';
+  const centerRareMarker = showRareRadar && centerA !== centerB
+    && recCenter === 'stamen'
+    && !isStamenFullyDiscovered(discoveredCenters)
+    ? rareMarker : '';
   const centerValue = centerA === centerB
     ? centerA
     : `${domCenter} · ${recCenter}${centerRareMarker}`;
@@ -59,14 +76,21 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   const effectLabel = (e: string) => e === 'none' ? '–' : ((t.effectLabels as Record<string, string>)[e] ?? e);
   const domEff = dominantEffect(effectA, effectB);
   const recEff = effectA === domEff ? effectB : effectA;
-  const effRareMarker = showRareRadar && effectA !== effectB && RARE_EFFECTS.includes(recEff) ? rareMarker : '';
+  const effRareMarker = showRareRadar && effectA !== effectB
+    && RARE_EFFECTS.includes(recEff)
+    && !isEffectFullyDiscovered(recEff, discoveredEffects)
+    ? rareMarker : '';
   const effectValue = effectA === effectB
     ? effectLabel(effectA)
     : `${effectLabel(domEff)} · ${effectLabel(recEff)}${effRareMarker}`;
 
   const domHue = dominantHue(hA, hB);
   const recHue = hA === domHue ? hB : hA;
-  const hueRareMarker = showRareRadar && hA !== hB && GRAY_HUES.includes(recHue) ? rareMarker : '';
+  const recHueBucket = hueBucket(recHue);
+  const hueRareMarker = showRareRadar && hA !== hB
+    && RARE_BUCKETS.has(recHueBucket)
+    && !isBucketFullyDiscovered(recHueBucket, discoveredColors)
+    ? rareMarker : '';
 
   // Petal count alleles (rounded)
   const pcA = Math.round(plant.petalCount.a);

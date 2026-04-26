@@ -1,57 +1,17 @@
 import { t } from '../model/i18n';
-import { expressedColor, expressedShape, expressedNumber, colorBucket, expressedCenter, expressedEffect } from '../engine/genetic/genetic_utils';
+import { expressedColor, colorBucket } from '../engine/genetic/genetic_utils';
 import {
-  PETAL_SHAPES, PALETTE_HUES_BUCKETS, PALETTE_S, PALETTE_L, CENTER_TYPES, PETAL_EFFECTS,
+  PETAL_SHAPES, PALETTE_HUES_BUCKETS, PALETTE_S, PALETTE_L, CENTER_TYPES,
 } from '../model/genetic_model';
 import type { CatalogEntry } from '../model/plant';
 import type { ColorBucket } from '../model/genetic_model';
-import type { PetalEffect } from '../model/plant';
+import {
+  buildDiscoveredShapeCounts, buildDiscoveredShapeCenters, buildDiscoveredShapeEffects,
+  buildDiscoveredColors, getBucketKeys, PETAL_COUNTS, DISPLAY_EFFECTS,
+} from '../engine/discovery_utils';
 
 const SECRET_BUCKETS = new Set<ColorBucket>(['purple', 'blue', 'gray']);
-const PETAL_COUNTS = [3, 4, 5, 6, 7, 8] as const;
 const BUCKET_ORDER: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray', 'white'];
-const DISPLAY_EFFECTS = PETAL_EFFECTS.filter(e => e !== 'none') as PetalEffect[];
-
-// ─── Discovery set builders ───────────────────────────────────────────────────
-
-function buildDiscoveredShapeCounts(catalog: CatalogEntry[]): Set<string> {
-  const set = new Set<string>();
-  for (const e of catalog) {
-    const shape = expressedShape(e.plant.petalShape);
-    const count = Math.round(expressedNumber(e.plant.petalCount));
-    set.add(`${shape}_${count}`);
-  }
-  return set;
-}
-
-function buildDiscoveredShapeCenters(catalog: CatalogEntry[]): Set<string> {
-  const set = new Set<string>();
-  for (const e of catalog) {
-    const shape = expressedShape(e.plant.petalShape);
-    const center = expressedCenter(e.plant.centerType);
-    set.add(`${shape}_${center}`);
-  }
-  return set;
-}
-
-function buildDiscoveredShapeEffects(catalog: CatalogEntry[]): Set<string> {
-  const set = new Set<string>();
-  for (const e of catalog) {
-    const shape = expressedShape(e.plant.petalShape);
-    const effect = expressedEffect(e.plant.petalEffect);
-    if (effect !== 'none') set.add(`${shape}_${effect}`);
-  }
-  return set;
-}
-
-function buildDiscoveredColors(catalog: CatalogEntry[]): Set<string> {
-  const set = new Set<string>();
-  for (const e of catalog) {
-    const c = expressedColor(e.plant.petalHue, e.plant.petalLightness);
-    set.add(`${c.h}_${c.l}`);
-  }
-  return set;
-}
 
 // ─── Shape section (count / center / effect) — three responsive sub-grids ────
 
@@ -208,12 +168,6 @@ function renderSecretBucketGroups(bucket: ColorBucket): string {
   }).join('');
 }
 
-function getBucketKeys(bucket: ColorBucket): string[] {
-  if (bucket === 'white') return ['1_100'];
-  if (bucket === 'gray') return ['2_10', '2_40', '2_70'];
-  const hues = (PALETTE_HUES_BUCKETS as Record<string, readonly number[]>)[bucket] ?? [];
-  return hues.flatMap(hue => (PALETTE_L as readonly number[]).map(l => `${hue}_${l}`));
-}
 
 function renderColorSection(catalog: CatalogEntry[]): string {
   const discoveredColors = buildDiscoveredColors(catalog);

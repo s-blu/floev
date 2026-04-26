@@ -54,7 +54,7 @@ export const en = {
 
   // Rare recessive carrier badge
   rareCarrierBadge: '✦',
-  rareCarrierTitle: 'Carries a rare hidden trait',
+  rareCarrierTitle: 'Carries a hidden allele of a rare trait not yet fully discovered',
 
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Show alleles',
@@ -171,7 +171,7 @@ export const en = {
   upgradeDesc: {
     unlock_lupe:             'Shows you the hidden alleles of every blooming plant.',
     unlock_selfpollinate:    'Plants can self-pollinate to produce more homozygous offspring.',
-    unlock_rare_radar:       'Shows a ✦ symbol next to the rarity badge when a plant carries a rare recessive allele.',
+    unlock_rare_radar:       'Shows a ✦ symbol next to the rarity badge when a plant carries a hidden allele of a rare trait not yet fully discovered.',
     unlock_discovery_index:  'Shows an overview of all discovered and undiscovered shapes and colors in the catalog.',
     unlock_showcase:         'A showcase with 3 display slots for your most beautiful blooms. Displayed plants cannot be sold or used for breeding.',
     unlock_order_book:       'Three daily orders: breed and sell blooms with specific traits for bonus coins.',

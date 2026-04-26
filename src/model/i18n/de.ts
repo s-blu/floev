@@ -54,7 +54,7 @@ export const de = {
 
   // Rare recessive carrier badge
   rareCarrierBadge: '✦',
-  rareCarrierTitle: 'Trägt ein seltenes rezessives Merkmal',
+  rareCarrierTitle: 'Trägt ein verborgenes Allel einer noch nicht vollständig entdeckten Rarität',
 
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Allele anzeigen',
@@ -171,7 +171,7 @@ export const de = {
   upgradeDesc: {
     unlock_lupe:             'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
     unlock_selfpollinate:    'Pflanzen können sich selbst bestäuben, um reinerbigere Nachkommen zu erzeugen.',
-    unlock_rare_radar:       'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein seltenes rezessives Allel trägt.',
+    unlock_rare_radar:       'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein verborgenes Allel einer seltenen, noch nicht vollständig entdeckten Eigenschaft trägt.',
     unlock_discovery_index:  'Zeigt im Katalog eine Übersicht aller entdeckten und noch unbekannten Formen und Farben.',
     unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
     unlock_order_book:       'Täglich 3 Aufträge: Züchte und verkaufe Blüten mit bestimmten Merkmalen für Bonus-Münzen.',

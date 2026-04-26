@@ -1,10 +1,8 @@
-import { ColorBucket, PALETTE_HUE_RANGES, RARE_EFFECTS, RARE_SHAPES } from "../../model/genetic_model";
+import { ColorBucket, PALETTE_HUE_RANGES } from "../../model/genetic_model";
 import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL, PetalEffect, StemTypes } from "../../model/plant";
 import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from "./dominance_utils";
 import { PALETTE_S } from '../../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../../model/genetic_model';
-
-const GRAY_HUES = [ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT];
 
 
 // ─── Hue / achromatic helpers ─────────────────────────────────────────────────
@@ -102,36 +100,6 @@ export function expressedLightness(pair: AllelePair<ChromaticL>): ChromaticL {
   return dominantLightness(pair.a, pair.b)
 }
 
-// ─── Rare recessive carrier detection ────────────────────────────────────────
-
-/**
- * Returns true if the plant carries at least one rare allele that is not
- * currently expressed (i.e., masked by a more dominant allele).
- * Rare traits: wavy/zickzack shapes, stamen center, gray colors, shimmer/iridescent effects.
- */
-export function hasHiddenRareTrait(plant: import('../../model/plant').Plant): boolean {
-  const exprShape = expressedShape(plant.petalShape);
-  if (!RARE_SHAPES.includes(exprShape)) {
-    if (RARE_SHAPES.includes(plant.petalShape.a) || RARE_SHAPES.includes(plant.petalShape.b)) return true;
-  }
-
-  const exprCenter = expressedCenter(plant.centerType);
-  if (exprCenter !== 'stamen') {
-    if (plant.centerType.a === 'stamen' || plant.centerType.b === 'stamen') return true;
-  }
-
-  const exprHue = expressedHue(plant.petalHue);
-  if (!GRAY_HUES.includes(exprHue)) {
-    if (GRAY_HUES.includes(plant.petalHue.a) || GRAY_HUES.includes(plant.petalHue.b)) return true;
-  }
-
-  const exprEffect = expressedEffect(plant.petalEffect);
-  if (!RARE_EFFECTS.includes(exprEffect)) {
-    if (RARE_EFFECTS.includes(plant.petalEffect.a) || RARE_EFFECTS.includes(plant.petalEffect.b)) return true;
-  }
-
-  return false;
-}
 
 // ─── Homozygosity ─────────────────────────────────────────────────────────────
 
