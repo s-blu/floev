@@ -62,7 +62,7 @@ export function renderSeedDrawerBody(): void {
     const isEmpty = slotSeeds.length === 0
 
     const seedItems = slotSeeds.map(seed =>
-      `<span class="seed-item${isSelectMode ? ' seed-item--selectable' : ''}" data-seed-id="${seed.id}" title="${isSelectMode ? t.selectSeedToPlant : ''}">${renderSeedSvg(32)}</span>`
+      `<span class="seed-item${isSelectMode ? ' seed-item--selectable' : ''}" data-seed-id="${seed.id}" title="${isSelectMode ? t.selectSeedToPlant : ''}">${renderSeedSvg(seed, 32)}</span>`
     ).join('')
 
     return `<div class="seed-slot${isEmpty ? ' seed-slot--empty' : ''}">${seedItems}</div>`
