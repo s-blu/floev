@@ -110,15 +110,18 @@ export function resolvePetalEffect(
     }
 
     // ── shimmer — soft sine-wave hue drift across petals ─────────────────────
+    // For grayscale colors the hue drift is invisible, so boost lightness amplitude instead.
     case 'shimmer': {
       const AMP = 18;
       const FREQ = 1.3;
+      const isGray = pc.s < 10;
+      const L_AMP = isGray ? 16 : 4;
       return {
         defs: '',
         getFill: (i, n) => {
           const t = n > 1 ? i / (n - 1) : 0;
           const hShift = Math.sin(t * Math.PI * FREQ * 2) * AMP;
-          const lShift = Math.sin(t * Math.PI * FREQ * 2 + 1.0) * 4;
+          const lShift = Math.sin(t * Math.PI * FREQ * 2 + 1.0) * L_AMP;
           return hsl({ h: (pc.h + hShift + 360) % 360, s: pc.s, l: clamp(pc.l + lShift, 20, 95) });
         },
         getStroke: (i, n) => {
@@ -131,17 +134,25 @@ export function resolvePetalEffect(
     }
 
     // ── iridescent — hue rotates 120° across all petals ──────────────────────
+    // For grayscale colors (s ≈ 0), force a full rainbow so the effect is visible.
     case 'iridescent': {
-      const spread = 120;
+      const isGray = pc.s < 10;
+      const spread = isGray ? 360 : 120;
+      const rainbowS = 75;
+      const rainbowL = clamp(pc.l, 45, 75);
       return {
         defs: '',
         getFill: (i, n) => {
           const h = (pc.h + (n > 1 ? (i / (n - 1)) * spread : 0)) % 360;
-          return hsl({ ...pc, h });
+          return isGray
+            ? hsl({ h, s: rainbowS, l: rainbowL })
+            : hsl({ ...pc, h });
         },
         getStroke: (i, n) => {
           const h = (pc.h + (n > 1 ? (i / (n - 1)) * spread : 0)) % 360;
-          return hsl(darken({ ...pc, h }));
+          return isGray
+            ? hsl(darken({ h, s: rainbowS, l: rainbowL }))
+            : hsl(darken({ ...pc, h }));
         },
         getOverlay: noOverlay,
       };
