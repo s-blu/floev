@@ -3,48 +3,14 @@ import { getVisibleAchievements } from '../engine/achievements'
 import { state } from './ui'
 import { t } from '../model/i18n'
 import { getAchievements } from '../engine/achievement_defs'
+import { addNotification } from './notification_log'
 
-// ─── Toast queue ──────────────────────────────────────────────────────────────
-
-const toastQueue: Achievement[] = []
-let toastActive = false
+// ─── Achievement notifications ────────────────────────────────────────────────
 
 export function queueAchievementToast(achievements: Achievement[]): void {
-  toastQueue.push(...achievements)
-  if (!toastActive) drainToastQueue()
-}
-
-function drainToastQueue(): void {
-  if (toastQueue.length === 0) { toastActive = false; return }
-  toastActive = true
-  const a = toastQueue.shift()!
-  showAchievementToast(a, () => {
-    setTimeout(drainToastQueue, 300)
-  })
-}
-
-function showAchievementToast(a: Achievement, onDone: () => void): void {
-  document.getElementById('achievement-toast')?.remove()
-
-  const el = document.createElement('div')
-  el.id = 'achievement-toast'
-  el.className = 'ach-toast'
-  el.innerHTML = `
-    <span class="ach-toast-icon">🏅</span>
-    <div class="ach-toast-body">
-      <span class="ach-toast-title">${t.achUnlocked}</span>
-      <span class="ach-toast-name">${a.title}</span>
-    </div>
-    <span class="ach-toast-reward">+${a.reward} 🪙</span>`
-
-  document.body.appendChild(el)
-  requestAnimationFrame(() => el.classList.add('ach-toast--visible'))
-
-  setTimeout(() => {
-    el.classList.remove('ach-toast--visible')
-    el.classList.add('ach-toast--hiding')
-    setTimeout(() => { el.remove(); onDone() }, 400)
-  }, 3200)
+  for (const a of achievements) {
+    addNotification(`🏅 ${t.achUnlocked}: ${a.title} — +${a.reward} 🪙`)
+  }
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

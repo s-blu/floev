@@ -1,9 +1,10 @@
 import { loadState } from './engine/game'
-import { initUI, showMsg } from './ui/ui'
+import { initUI } from './ui/ui'
 import { initHelp, showHelp } from './ui/help_ui'
 import { initShop, closeShop } from './ui/shop_ui'
 import { initOrderBookPanel } from './ui/orders_ui'
 import { initSeedDrawer } from './ui/seeds_ui'
+import { initNotificationFooter } from './ui/notification_log'
 import { t } from './model/i18n'
 
 // ─── Inject app shell ────────────────────────────────────────────────────────
@@ -21,7 +22,6 @@ app.innerHTML = `
         <button class="help-btn" id="help-btn" title="${t.helpBtnTitle}">?</button>
       </div>
     </div>
-    <p class="msg-bar" id="msg">${t.welcomeMsg}</p>
   </header>
 
   <section id="showcase-section" style="display:none">
@@ -115,6 +115,7 @@ document.body.insertAdjacentHTML('beforeend', `
 // ─── Load & start ────────────────────────────────────────────────────────────
 
 const state = loadState()
+initNotificationFooter(t.welcomeMsg)
 initUI(state)
 initOrderBookPanel()
 
@@ -130,4 +131,4 @@ document.getElementById('shop-overlay')?.addEventListener('click', closeShop)
 // Seed drawer
 initSeedDrawer()
 
-;(window as unknown as Record<string, unknown>).__floev__ = { state, showMsg }
+;(window as unknown as Record<string, unknown>).__floev__ = { state }

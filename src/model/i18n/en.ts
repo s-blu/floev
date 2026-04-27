@@ -246,6 +246,9 @@ export const en = {
   // Lightness labels
   lightnessLabels: { 30: 'Dark', 60: 'Mid', 90: 'Light' } as Record<number, string>,
 
+  // Notification footer
+  notifEmpty: 'No messages yet.',
+
   // Messages
   msgSeedPlanted: 'Seed planted!',
   msgPotCleared: 'Pot cleared.',

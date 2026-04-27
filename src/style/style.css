@@ -266,3 +266,137 @@ html, body {
   .breed-row { gap: 6px; }
   .breed-slot { width: 56px; height: 74px; }
 }
+
+/* ── Notification footer ─────────────────────────────────────────────────────── */
+.notif-footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 740px;
+  z-index: 2000;
+  font-size: 13px;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ── Bar ─── */
+.notif-footer-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, color 0.15s, border-radius 0.15s;
+}
+
+.notif-footer--open .notif-footer-bar {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.notif-footer-bar:hover {
+  background: var(--bg3);
+}
+
+/* ── Idle: bar shrinks to a small pill button ─── */
+.notif-footer--idle:not(.notif-footer--open) {
+  align-items: flex-end;
+}
+
+.notif-footer--idle:not(.notif-footer--open) .notif-footer-bar {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  justify-content: center;
+  gap: 0;
+  overflow: hidden;
+  opacity: 0.7;
+}
+
+.notif-footer--idle:not(.notif-footer--open) .notif-footer-bar:hover {
+  opacity: 1;
+}
+
+/* ── Text ─── */
+.notif-latest-text {
+  flex: 1;
+  color: var(--text2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 1;
+  max-width: 9999px;
+  transition: opacity 0.4s ease, max-width 0.4s ease;
+}
+
+.notif-footer--idle .notif-latest-text {
+  opacity: 0;
+  max-width: 0;
+}
+
+/* ── Chevron ─── */
+.notif-chevron {
+  color: var(--text3);
+  font-size: 10px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.notif-footer--open .notif-chevron {
+  transform: rotate(180deg);
+}
+
+/* ── Log panel ─── */
+.notif-log-panel {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px 0 8px;
+  margin-bottom: 6px;
+}
+
+.notif-log-entry {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 4px 12px;
+}
+
+.notif-log-entry:first-child .notif-log-text {
+  color: var(--text);
+}
+
+.notif-log-time {
+  font-size: 11px;
+  color: var(--text3);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.notif-log-text {
+  color: var(--text2);
+}
+
+.notif-log-empty {
+  padding: 6px 12px;
+  color: var(--text3);
+  font-style: italic;
+}
+
+.game {
+  padding-bottom: 3.5rem;
+}

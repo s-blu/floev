@@ -23,6 +23,7 @@ import { renderShopSidebar } from '../ui/shop_ui'
 import { t } from '../model/i18n/index'
 import { checkAchievements } from '../engine/achievements'
 import { renderAchievements, queueAchievementToast, initAchievementsPanel } from './achievements_ui'
+import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
 import { SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE } from '../model/genetic_model'
@@ -149,8 +150,7 @@ export function renderCoins(): void {
 // ─── Message bar ──────────────────────────────────────────────────────────────
 
 export function showMsg(text: string): void {
-  const el = document.getElementById('msg')
-  if (el) el.textContent = text
+  addNotification(text)
 }
 
 // ─── Action handlers ──────────────────────────────────────────────────────────
