@@ -16,9 +16,20 @@ import { saveState } from '../engine/game'
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer'
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_MID } from '../model/genetic_model'
 
-// ─── Panel open state (persisted in module scope) ─────────────────────────────
+// ─── Panel open state (persisted in localStorage) ────────────────────────────
 
-let panelOpen = false
+const PANEL_OPEN_KEY = 'orderBookPanelOpen'
+
+function loadPanelOpen(): boolean {
+  const stored = localStorage.getItem(PANEL_OPEN_KEY)
+  return stored === null ? true : stored === 'true'
+}
+
+function savePanelOpen(value: boolean): void {
+  localStorage.setItem(PANEL_OPEN_KEY, String(value))
+}
+
+let panelOpen = loadPanelOpen()
 
 // ─── Order preview plant ──────────────────────────────────────────────────────
 
@@ -206,6 +217,7 @@ export function initOrderBookPanel(): void {
   const toggle = panel.querySelector('.order-toggle-btn')
   toggle?.addEventListener('click', () => {
     panelOpen = !panelOpen
+    savePanelOpen(panelOpen)
     panel.classList.toggle('order-panel--open', panelOpen)
     renderOrderBook()
   })

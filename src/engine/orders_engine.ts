@@ -241,8 +241,8 @@ export function initOrderBook(state: GameState): void {
 export function canRefreshOrders(state: GameState): boolean {
   if (!state.orderBook) return false
   if (state.orderBook.dailyRefreshUsed) return false
-  // At least one order must be unpinned to refresh
-  return state.orderBook.orders.some(o => !o.pinned)
+  // At least one order must be unpinned and incomplete to refresh
+  return state.orderBook.orders.some(o => !o.pinned && !o.completedToday)
 }
 
 export function refreshOrders(state: GameState): boolean {
@@ -251,7 +251,7 @@ export function refreshOrders(state: GameState): boolean {
   // Use a different seed so the refresh gives different orders than initial
   const freshOrders = generateOrders(today + '-refresh')
   for (let i = 0; i < state.orderBook!.orders.length; i++) {
-    if (!state.orderBook!.orders[i].pinned) {
+    if (!state.orderBook!.orders[i].pinned && !state.orderBook!.orders[i].completedToday) {
       state.orderBook!.orders[i] = { ...freshOrders[i], pinned: false, completedToday: false }
     }
   }
