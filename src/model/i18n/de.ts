@@ -357,9 +357,9 @@ export const de = {
   achCatalogDesc: (n: number) => `Entdecke ${n} verschiedene Blüten.`,
 
   // Color diversity
-  achColorDivTitle: (n: number) => n === 8 ? 'Volle Palette' : `${n} Farben`,
-  achColorDivDesc: (n: number) => n === 8
-    ? 'Entdecke Blüten in allen 8 Farbbereichen (inkl. Weiß & Grau).'
+  achColorDivTitle: (n: number) => n === 7 ? 'Volle Palette' : `${n} Farben`,
+  achColorDivDesc: (n: number) => n === 7
+    ? 'Entdecke Blüten in allen 7 Farbbereichen (inkl. Weiß & Grau).'
     : `Entdecke Blüten in ${n} verschiedenen Farbbereichen.`,
 
   // Shape diversity

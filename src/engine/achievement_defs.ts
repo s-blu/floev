@@ -124,7 +124,7 @@ export function buildAchievements(): Achievement[] {
   }
 
   // ── 3. Colour diversity (visible) ────────────────────────────────────────────
-  const colorDivStack = [6, 7, 8]
+  const colorDivStack = [5, 6, 7]
   for (let i = 0; i < colorDivStack.length; i++) {
     const n = colorDivStack[i]
     list.push({
@@ -134,7 +134,7 @@ export function buildAchievements(): Achievement[] {
       hidden: false,
       title: t.achColorDivTitle(n),
       desc: t.achColorDivDesc(n),
-      reward: [20, 30, 80][i],
+      reward: [20, 50][i],
       progress: cat => ({ current: Math.min(countUniqueBuckets(cat), n), total: n }),
     })
   }
