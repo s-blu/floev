@@ -134,7 +134,7 @@ export function buildAchievements(): Achievement[] {
       hidden: false,
       title: t.achColorDivTitle(n),
       desc: t.achColorDivDesc(n),
-      reward: [20, 50][i],
+      reward: [20, 50, 75][i],
       progress: cat => ({ current: Math.min(countUniqueBuckets(cat), n), total: n }),
     })
   }
