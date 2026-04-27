@@ -470,7 +470,7 @@ export const de = {
   colorLabelGradient: "-Verlauf",
 
   colorLabel: {
-  0: {
+  5: {
     hueName: `Karmin (Gruppe)`,
     90: {
       30: "Karmesin",

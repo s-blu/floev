@@ -79,7 +79,7 @@ export function loadState(): GameState {
       }
       // orderBook is generated on first use — no migration needed
 
-      runMigrations(parsed)
+      if (runMigrations(parsed)) saveState(parsed)
       return parsed
     }
   } catch {

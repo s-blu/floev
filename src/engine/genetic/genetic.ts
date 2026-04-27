@@ -92,7 +92,7 @@ export function plannedPlant(plantConfiguration: {
   plantPhase?:   PlantPhase
 }): Plant {
   const config = {
-    hue:         0,
+    hue:         5,
     lightness:   60 as ChromaticL,
     petalShape:  'round' as PetalShape,
     petalEffect: 'none' as PetalEffect,

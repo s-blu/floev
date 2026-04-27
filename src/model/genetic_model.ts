@@ -88,7 +88,7 @@ export const MIN_STEM_HEIGHT = 0.35
 export const PALETTE_S = 90;
 // ─── Palette hues ─────────────────────────────────────────────────────────────
 //---------------------------red   / yellgr  / blue / purple   / pink        / red
-export const PALETTE_HUES = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350] as const
+export const PALETTE_HUES = [5, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350] as const
 export const PALETTE_HUES_BUCKETS = {
   yellowgreen: PALETTE_HUES.filter(PALETTE_HUE_RANGES.yellowgreen),
   red:         PALETTE_HUES.filter(PALETTE_HUE_RANGES.red),

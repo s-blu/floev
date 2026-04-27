@@ -470,7 +470,7 @@ export const en = {
   colorLabelGradient: " gradient",
 
   colorLabel: {
-  0: {
+  5: {
     hueName: `Carmine (group)`,
     90: {
       30: "Crimson",

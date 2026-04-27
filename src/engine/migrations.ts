@@ -1,11 +1,23 @@
 import type { GameState } from '../model/plant'
 import { calcRarityScore, calcRarity } from './rarity'
+import { catalogKey } from './catalog'
 
 // ─── Migration system ─────────────────────────────────────────────────────────
 
 interface Migration {
   version: number
   run: (state: GameState) => void
+}
+
+function migrateHue(hue: number, from: number, to: number): number {
+  return hue === from ? to : hue
+}
+
+function migrateAllPlantHues(plants: import('../model/plant').Plant[], from: number, to: number) {
+  for (const plant of plants) {
+    plant.petalHue.a = migrateHue(plant.petalHue.a, from, to)
+    plant.petalHue.b = migrateHue(plant.petalHue.b, from, to)
+  }
 }
 
 const migrations: Migration[] = [
@@ -17,6 +29,18 @@ const migrations: Migration[] = [
         entry.rarity = calcRarity(entry.plant)
       }
       state.catalog.sort((a, b) => b.rarityScore - a.rarityScore)
+    },
+  },
+  {
+    version: 2,
+    run(state) {
+      const potPlants = state.pots.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[]
+      const showcasePlants = state.showcase.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[]
+      const catalogPlants = state.catalog.map(e => e.plant)
+      migrateAllPlantHues([...potPlants, ...showcasePlants, ...catalogPlants, ...state.seeds], 0, 5)
+      for (const entry of state.catalog) {
+        entry.key = catalogKey(entry.plant)
+      }
     },
   },
 ]
