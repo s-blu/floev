@@ -188,6 +188,8 @@ export const en = {
   seedDrawerButton: (n: number) => `🌱 Seeds (${n})`,
   selectSeedToPlant: 'Select a seed to plant',
   seedMoveHint: 'Click a compartment to move seed',
+  seedSellZone: 'Sell',
+  msgSeedSold: (coins: number) => `Seed sold! +${coins} 🪙`,
   seedMoveCancel: 'Cancel',
   seedDrawerClose: 'Close',
 

@@ -3,7 +3,7 @@ import { randomPlant } from './genetic/genetic'
 import { addToCatalog } from './catalog'
 import { calcCoinScore } from './rarity'
 import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLANTS, DEBUG_SEEDS, USE_FIXED_SEEDS } from '../dev.config'
-import { MAX_SEED_STORAGE, SEEDS_PER_SLOT } from '../model/genetic_model'
+import { MAX_SEED_STORAGE, SEEDS_PER_SLOT, SEED_SELL_VALUE } from '../model/genetic_model'
 import { runMigrations, LATEST_MIGRATION_VERSION } from './migrations'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -205,6 +205,13 @@ export function removeSeedFromStorage(state: GameState, seedId: string): Plant |
   const layoutPos = state.seedLayout.indexOf(seedId)
   if (layoutPos !== -1) state.seedLayout[layoutPos] = ''
   return state.seeds.splice(idx, 1)[0]
+}
+
+export function sellSeedFromStorage(state: GameState, seedId: string): number {
+  const seed = removeSeedFromStorage(state, seedId)
+  if (!seed) return -1
+  state.coins += SEED_SELL_VALUE
+  return SEED_SELL_VALUE
 }
 
 export function moveSeedToSlot(state: GameState, seedId: string, targetSlotIdx: number): boolean {

@@ -1,7 +1,8 @@
-import { state, handlePlantSeedFromStorage, handleMoveSeedToSlot } from './ui'
+import { state, handlePlantSeedFromStorage, handleMoveSeedToSlot, handleSellSeed } from './ui'
 import { t } from '../model/i18n'
 import { SAATENSCHUBLADE_SLOTS, SEEDS_PER_SLOT, MAX_SEED_STORAGE } from '../model/genetic_model'
 import { renderSeedSvg } from '../engine/renderer/seed_renderer'
+import { SEED_SELL_VALUE } from '../model/genetic_model'
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
@@ -49,14 +50,23 @@ export function initSeedDrawer(): void {
       return
     }
 
-    // Move mode: seed is selected – click on a slot to move there
+    // Move mode: seed is selected – click on a slot or sell zone to act
     if (selectedSeedId !== null) {
       const slotEl = target.closest('[data-slot-idx]') as HTMLElement | null
       const seedEl = target.closest('[data-seed-id]') as HTMLElement | null
+      const sellZone = target.closest('[data-sell-zone]') as HTMLElement | null
 
       // Clicking the selected seed again → deselect
       if (seedEl?.dataset.seedId === selectedSeedId) {
         selectedSeedId = null
+        renderSeedDrawerBody()
+        return
+      }
+
+      if (sellZone) {
+        const seedToSell = selectedSeedId
+        selectedSeedId = null
+        handleSellSeed(seedToSell, sellZone)
         renderSeedDrawerBody()
         return
       }
@@ -154,13 +164,18 @@ export function renderSeedDrawerBody(): void {
     return `<div class="${slotCls}" data-slot-idx="${slotIdx}">${seedItems}</div>`
   }).join('')
 
+  const sellZone = isMoveMode
+    ? `<div class="seed-sell-zone-row"><button class="btn-sm btn-sell" data-sell-zone="1">🪙${SEED_SELL_VALUE} ${t.seedSellZone}</button></div>`
+    : ''
+
   body.innerHTML = `
     ${hint}
     <div class="seed-drawer-header-row">${capacity}</div>
     ${seeds.length === 0
       ? `<p class="seed-drawer-empty">${t.seedDrawerEmpty}</p>`
       : `<div class="seed-slots-grid">${slots}</div>`
-    }`
+    }
+    ${sellZone}`
 }
 
 export function updateSeedDrawerButton(): void {

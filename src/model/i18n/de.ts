@@ -188,6 +188,8 @@ export const de = {
   seedDrawerButton: (n: number) => `🌱 Saaten (${n})`,
   selectSeedToPlant: 'Saaten zum Einpflanzen wählen',
   seedMoveHint: 'Klick auf ein Fach zum Ablegen',
+  seedSellZone: 'Verkaufen',
+  msgSeedSold: (coins: number) => `Samen verkauft! +${coins} 🪙`,
   seedMoveCancel: 'Abbrechen',
   seedDrawerClose: 'Schließen',
 

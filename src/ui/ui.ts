@@ -9,6 +9,7 @@ import {
   addSeedToStorage,
   removeSeedFromStorage,
   moveSeedToSlot,
+  sellSeedFromStorage,
   moveToShowcase,
   moveFromShowcase,
   saveState,
@@ -208,6 +209,16 @@ export function handleSell(potId: number): void {
     const total = reward + bonus
     showMsg(bonus > 0 ? t.msgSoldWithBonus(total, bonus) : t.msgSold(total))
     if (sellBtn) spawnCoinFly(sellBtn, total)
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleSellSeed(seedId: string, fromEl: HTMLElement): void {
+  const reward = sellSeedFromStorage(state, seedId)
+  if (reward >= 0) {
+    showMsg(t.msgSeedSold(reward))
+    spawnCoinFly(fromEl, reward)
     checkAchAndSave(state)
     render()
   }
