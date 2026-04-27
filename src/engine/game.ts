@@ -8,7 +8,8 @@ import { runMigrations, LATEST_MIGRATION_VERSION } from './migrations'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const STORAGE_KEY   = 'bloom_v1'
+const STORAGE_KEY        = 'bloom_v1'
+const STORAGE_KEY_BACKUP = 'bloom_v1_backup'
 export const INITIAL_POT_COUNT = 9
 const STARTER_PLANTS = 4;
 
@@ -65,6 +66,8 @@ export function loadState(): GameState {
     if (raw) {
       const parsed = JSON.parse(raw) as GameState
 
+      localStorage.setItem(STORAGE_KEY_BACKUP, raw)
+
       // backwards compatibility: old saves without coins
       if (parsed.coins === undefined) parsed.coins = 0
       if (!parsed.achievements) parsed.achievements = { unlocked: [], rewarded: [] }
@@ -83,7 +86,10 @@ export function loadState(): GameState {
       return parsed
     }
   } catch {
-    // Corrupt save — start fresh
+    const backup = localStorage.getItem(STORAGE_KEY_BACKUP)
+    if (backup) {
+      try { return JSON.parse(backup) as GameState } catch { /* backup also corrupt */ }
+    }
   }
   return createInitialState()
 }
