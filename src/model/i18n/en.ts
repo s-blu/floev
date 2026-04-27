@@ -466,6 +466,9 @@ export const en = {
   effectLabelsShort: {
     bicolor: 'Bi', gradient: 'Gr', shimmer: 'Sh', iridescent: 'Ir',
   } as Record<string, string>,
+  colorBucketLabelsShort: {
+    white: 'Wh', yellowgreen: 'YG', red: 'Re', pink: 'Pk', purple: 'Pu', blue: 'Bl', gray: 'Gy',
+  } as Record<string, string>,
 
   colorLabelGradient: " gradient",
 
@@ -596,6 +599,7 @@ discoveryIndexTitle: 'Discovery Index',
   discoveryIndexMatrixCenter: 'Center',
   discoveryIndexMatrixEffect: 'Effect',
   discoveryIndexSectionColors: 'Colours',
+  discoveryIndexSectionShapeColors: 'Colour × Shape',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
     `${shapes}/${totalShapes} forms · ${colors}/${totalColors} colours`,
 

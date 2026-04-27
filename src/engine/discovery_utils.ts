@@ -1,4 +1,4 @@
-import { expressedShape, expressedCenter, expressedEffect, expressedColor, expressedHue, expressedNumber, hueBucket } from './genetic/genetic_utils';
+import { expressedShape, expressedCenter, expressedEffect, expressedColor, expressedHue, expressedNumber, hueBucket, colorBucket } from './genetic/genetic_utils';
 import { PETAL_SHAPES, CENTER_TYPES, PETAL_EFFECTS, PALETTE_HUES_BUCKETS, PALETTE_L, RARE_SHAPES, RARE_EFFECTS } from '../model/genetic_model';
 import type { CatalogEntry, Plant } from '../model/plant';
 import type { ColorBucket } from '../model/genetic_model';
@@ -36,6 +36,16 @@ export function buildDiscoveredShapeEffects(catalog: CatalogEntry[]): Set<string
     const shape = expressedShape(e.plant.petalShape);
     const effect = expressedEffect(e.plant.petalEffect);
     if (effect !== 'none') set.add(`${shape}_${effect}`);
+  }
+  return set;
+}
+
+export function buildDiscoveredShapeColors(catalog: CatalogEntry[]): Set<string> {
+  const set = new Set<string>();
+  for (const e of catalog) {
+    const shape = expressedShape(e.plant.petalShape);
+    const bucket = colorBucket(expressedColor(e.plant.petalHue, e.plant.petalLightness));
+    set.add(`${shape}_${bucket}`);
   }
   return set;
 }
