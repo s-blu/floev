@@ -68,7 +68,7 @@ export function loadState(): GameState {
 
       localStorage.setItem(STORAGE_KEY_BACKUP, raw)
 
-      // backwards compatibility: old saves without coins
+      // backwards compatibility
       if (parsed.coins === undefined) parsed.coins = 0
       if (!parsed.achievements) parsed.achievements = { unlocked: [], rewarded: [] }
       if (!parsed.upgrades) parsed.upgrades = []
@@ -80,15 +80,20 @@ export function loadState(): GameState {
         parsed.seedLayout = Array(MAX_SEED_STORAGE).fill('')
         parsed.seeds.forEach((s, i) => { if (i < MAX_SEED_STORAGE) parsed.seedLayout[i] = s.id })
       }
-      // orderBook is generated on first use — no migration needed
 
       if (runMigrations(parsed)) saveState(parsed)
       return parsed
     }
-  } catch {
+  } catch (err) {
+    console.error('Could not read the save state! Try to recover backup, if there is any', err)
     const backup = localStorage.getItem(STORAGE_KEY_BACKUP)
     if (backup) {
-      try { return JSON.parse(backup) as GameState } catch { /* backup also corrupt */ }
+      try { 
+        const bak = JSON.parse(backup) as GameState
+        return  bak;
+      } catch (e) {
+        console.error('Backup was not recoverable, need to initialize anew', e)
+      }
     }
   }
   return createInitialState()
@@ -98,7 +103,8 @@ export function saveState(state: GameState): void {
   try {
     state.lastSave = Date.now()
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-  } catch {
+  } catch (err) {
+    console.error('unable to save game', err)
     // Storage full or unavailable
   }
 }
