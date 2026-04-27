@@ -235,7 +235,7 @@ export const en = {
 
   // Order requirement labels
   orderReqShape:      (name: string) => `Shape: ${name}`,
-  orderReqColor:      (name: string) => `Color: ${name}`,
+  orderReqColor:      (name: string) => `Bucket: ${name}`,
   orderReqLightness:  (name: string) => `Lightness: ${name}`,
   orderReqCountGte:   (n: number)    => `Min. ${n} petals`,
   orderReqCountLte:   (n: number)    => `Max. ${n} petals`,
