@@ -4,6 +4,7 @@ import { addToCatalog } from './catalog'
 import { calcCoinScore } from './rarity'
 import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLANTS, DEBUG_SEEDS, USE_FIXED_SEEDS } from '../dev.config'
 import { MAX_SEED_STORAGE, SEEDS_PER_SLOT } from '../model/genetic_model'
+import { runMigrations, LATEST_MIGRATION_VERSION } from './migrations'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -46,7 +47,7 @@ function createInitialState(): GameState {
   }
 
 
-  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], seeds: [], seedLayout: Array(MAX_SEED_STORAGE).fill(''), lastSave: Date.now() }
+  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], seeds: [], seedLayout: Array(MAX_SEED_STORAGE).fill(''), lastSave: Date.now(), migrationVersion: LATEST_MIGRATION_VERSION }
   if (useDebugSeeds) {
     gameState.seeds = DEBUG_SEEDS
     DEBUG_SEEDS.forEach((s, i) => { gameState.seedLayout[i] = s.id })
@@ -78,6 +79,7 @@ export function loadState(): GameState {
       }
       // orderBook is generated on first use — no migration needed
 
+      runMigrations(parsed)
       return parsed
     }
   } catch {

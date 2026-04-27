@@ -91,6 +91,7 @@ export interface GameState {
   seedLayout: string[]           // fixed-length position map: seedId or '' per slot position
   lastSave:   number
   orderBook?: OrderBookState
+  migrationVersion?: number
 }
 
 
