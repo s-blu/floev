@@ -91,7 +91,10 @@ function renderAchievementBody(body: HTMLElement, visible: ReturnType<typeof get
       const pctB = b.progress.total > 0 ? b.progress.current / b.progress.total : 0
       return pctB - pctA
     })
-  const done = visible.filter(v => v.unlocked)
+  const unlockedOrder = state.achievements.unlocked
+  const done = visible
+    .filter(v => v.unlocked)
+    .sort((a, b) => unlockedOrder.indexOf(b.achievement.id) - unlockedOrder.indexOf(a.achievement.id))
 
   body.innerHTML = ''
 
