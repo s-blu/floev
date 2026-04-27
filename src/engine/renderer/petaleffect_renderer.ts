@@ -134,23 +134,25 @@ export function resolvePetalEffect(
       };
     }
 
-    // ── iridescent — hue rotates 120° across all petals ──────────────────────
+    // ── iridescent — hue shifts 15° per petal, centered on pc.h ─────────────
     // For grayscale colors (s ≈ 0), force a full rainbow so the effect is visible.
     case 'iridescent': {
       const isGray = pc.s < 10;
-      const spread = isGray ? 360 : 120;
+      const GRAY_STEP_DEG = 45;
       const rainbowS = 75;
       const rainbowL = clamp(pc.l, 45, 75);
+      const getStep = (n: number) => isGray ? GRAY_STEP_DEG : (n <= 5 ? 30 : 20);
+      const getH = (i: number, n: number) => (pc.h + (i - (n - 1) / 2) * getStep(n) + 3600) % 360;
       return {
         defs: '',
         getFill: (i, n) => {
-          const h = (pc.h + (n > 1 ? (i / (n - 1)) * spread : 0)) % 360;
+          const h = getH(i, n);
           return isGray
             ? hsl({ h, s: rainbowS, l: rainbowL })
             : hsl({ ...pc, h });
         },
         getStroke: (i, n) => {
-          const h = (pc.h + (n > 1 ? (i / (n - 1)) * spread : 0)) % 360;
+          const h = getH(i, n);
           return isGray
             ? hsl(darken({ h, s: rainbowS, l: rainbowL }))
             : hsl(darken({ ...pc, h }));
