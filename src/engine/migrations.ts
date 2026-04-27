@@ -43,6 +43,13 @@ const migrations: Migration[] = [
       }
     },
   },
+  {
+    version: 6,
+    run(state) {
+      state.achievements.unlocked = state.achievements.unlocked.filter(id => id !== 'color_div_8')
+      state.achievements.rewarded = state.achievements.rewarded.filter(id => id !== 'color_div_8')
+    },
+  },
 ]
 
 export const LATEST_MIGRATION_VERSION = migrations.length > 0
