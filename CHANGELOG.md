@@ -1,3 +1,21 @@
+# v1.4.0
+
+Improvements:
+
+- New purchasable feature: Seed storage
+- Enhance effect/petal rendering (yeah, still on it)
+- Unify & enhance messaging system
+- Disable rarity radar for properties that are already fully discovered
+- Open help modal/change log whenever an update is rolled out
+
+Bugs:
+
+- Fix wrong described lightness order in help modal
+- Order shuffle should not shuffle done tasks with new ones
+- Migrate wrongly calculated rarity scores in catalog
+- Remove impossible to get color bucket achievement
+
+
 # v1.3.0
 
 Improvements:
