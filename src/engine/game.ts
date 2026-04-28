@@ -1,9 +1,8 @@
 import type { GameState, Pot, Plant, PlantPhase } from '../model/plant'
 import { randomPlant } from './genetic/genetic'
 import { addToCatalog } from './catalog'
-import { calcCoinScore } from './rarity'
 import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLANTS, DEBUG_SEEDS, USE_FIXED_SEEDS } from '../dev.config'
-import { MAX_SEED_STORAGE, SEEDS_PER_SLOT, SEED_SELL_VALUE } from '../model/genetic_model'
+import { MAX_SEED_STORAGE } from '../model/genetic_model'
 import { runMigrations, LATEST_MIGRATION_VERSION } from './migrations'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -25,6 +24,7 @@ export function coinValueForScore(score: number): number {
 
 const useDebugPlants = import.meta.env.DEV && USE_FIXED_PLANTS;
 const useDebugSeeds = import.meta.env.DEV && USE_FIXED_SEEDS;
+
 // ─── Initial state ────────────────────────────────────────────────────────────
 
 function createInitialState(): GameState {
@@ -143,113 +143,4 @@ export function advancePhases(
     }
   }
   return changed
-}
-
-// ─── Pot actions ─────────────────────────────────────────────────────────────
-
-export function plantSeed(state: GameState, potId: number): boolean {
-  const pot = state.pots.find(p => p.id === potId)
-  if (!pot || pot.plant) return false
-  pot.plant      = randomPlant()
-  pot.phaseStart = Date.now()
-  return true
-}
-
-export function removePlant(state: GameState, potId: number): boolean {
-  const pot = state.pots.find(p => p.id === potId)
-  if (!pot) return false
-  pot.plant      = null
-  pot.phaseStart = null
-  return true
-}
-
-export function sellPlant(state: GameState, potId: number): number {
-  const pot = state.pots.find(p => p.id === potId)
-  if (!pot?.plant || pot.plant.phase < 4) return -1
-  const reward = coinValueForScore(calcCoinScore(pot.plant))
-  state.coins += reward
-  pot.plant      = null
-  pot.phaseStart = null
-  return reward
-}
-
-export function placeSeedInEmptyPot(state: GameState, plant: Plant): number | null {
-  const pot = state.pots.find(p => !p.plant)
-  if (!pot) return null
-  pot.plant      = plant
-  pot.phaseStart = Date.now()
-  return pot.id
-}
-
-export function placeSeedInSpecificPot(state: GameState, plant: Plant, potId: number): boolean {
-  const pot = state.pots.find(p => p.id === potId)
-  if (!pot || pot.plant) return false
-  pot.plant      = plant
-  pot.phaseStart = Date.now()
-  return true
-}
-
-// ─── Seed storage actions ─────────────────────────────────────────────────────
-
-export function addSeedToStorage(state: GameState, plant: Plant): boolean {
-  if (state.seeds.length >= MAX_SEED_STORAGE) return false
-  state.seeds.push(plant)
-  const emptyPos = state.seedLayout.findIndex(id => id === '')
-  if (emptyPos !== -1) state.seedLayout[emptyPos] = plant.id
-  return true
-}
-
-export function removeSeedFromStorage(state: GameState, seedId: string): Plant | null {
-  const idx = state.seeds.findIndex(s => s.id === seedId)
-  if (idx === -1) return null
-  const layoutPos = state.seedLayout.indexOf(seedId)
-  if (layoutPos !== -1) state.seedLayout[layoutPos] = ''
-  return state.seeds.splice(idx, 1)[0]
-}
-
-export function sellSeedFromStorage(state: GameState, seedId: string): number {
-  const seed = removeSeedFromStorage(state, seedId)
-  if (!seed) return -1
-  state.coins += SEED_SELL_VALUE
-  return SEED_SELL_VALUE
-}
-
-export function moveSeedToSlot(state: GameState, seedId: string, targetSlotIdx: number): boolean {
-  const currentPos = state.seedLayout.indexOf(seedId)
-  if (currentPos === -1) return false
-  const slotStart = targetSlotIdx * SEEDS_PER_SLOT
-  const slotEnd = slotStart + SEEDS_PER_SLOT
-  const targetPos = state.seedLayout.slice(slotStart, slotEnd).indexOf('')
-  if (targetPos === -1) return false  // target slot is full
-  state.seedLayout[currentPos] = ''
-  state.seedLayout[slotStart + targetPos] = seedId
-  return true
-}
-
-// ─── Showcase actions ────────────────────────────────────────────────────────
-
-export function moveToShowcase(state: GameState, potId: number): boolean {
-  const pot = state.pots.find(p => p.id === potId)
-  if (!pot?.plant || pot.plant.phase < 4) return false
-  const freePot = state.showcase.find(p => !p.plant)
-  if (!freePot) return false
-  freePot.plant  = pot.plant
-  pot.plant      = null
-  const gardenDesign   = pot.design
-  pot.design           = freePot.design
-  freePot.design       = gardenDesign
-  return true
-}
-
-export function moveFromShowcase(state: GameState, showcasePotId: number): boolean {
-  const showcasePot = state.showcase.find(p => p.id === showcasePotId)
-  if (!showcasePot?.plant) return false
-  const freePot = state.pots.find(p => !p.plant)
-  if (!freePot) return false
-  freePot.plant        = showcasePot.plant
-  showcasePot.plant    = null
-  const gardenDesign   = freePot.design
-  freePot.design       = showcasePot.design
-  showcasePot.design   = gardenDesign
-  return true
 }

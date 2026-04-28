@@ -1,19 +1,25 @@
 import type { GameState, BreedEstimate } from '../model/plant'
 import {
   advancePhases,
+  saveState,
+} from '../engine/game'
+import {
+  moveToShowcase,
+  moveFromShowcase
+} from '../engine/showcase_engine'
+import {
+  addSeedToStorage,
+  removeSeedFromStorage,
+  moveSeedToSlot,
+  sellSeedFromStorage
+} from '../engine/seed_storage_engine'
+import {
   plantSeed,
   removePlant,
   sellPlant,
   placeSeedInEmptyPot,
-  placeSeedInSpecificPot,
-  addSeedToStorage,
-  removeSeedFromStorage,
-  moveSeedToSlot,
-  sellSeedFromStorage,
-  moveToShowcase,
-  moveFromShowcase,
-  saveState,
-} from '../engine/game'
+  placeSeedInSpecificPot
+} from '../engine/pot_engine'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
 import { buyUpgrade, buyPotColor, buyPotShape, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
