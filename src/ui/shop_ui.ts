@@ -54,7 +54,7 @@ export function renderShopSidebar(): void {
   if (!sidebarOpen) return
   const body = document.getElementById('shop-sidebar-body')
   if (!body) return
-  body.innerHTML = renderUpgradesSection() + renderExtraPotsSection() + renderShowcaseSection() + renderDecoSection() 
+  body.innerHTML =  renderExtraPotsSection() + renderShowcaseSection() + renderUpgradesSection() +  renderDecoSection() 
 }
 
 // ─── Upgrades section ─────────────────────────────────────────────────────────
