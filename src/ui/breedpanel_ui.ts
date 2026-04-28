@@ -4,8 +4,24 @@ import { state, render, breedState } from './ui';
 import { t } from '../model/i18n';
 import { isHomozygous } from '../engine/genetic/genetic_utils';
 import { formatEstimate } from './breedestimate_ui';
+import { MAX_SURPLUS_SEEDS_PER_PLANT } from '../model/genetic_model';
+import { hasUpgrade } from '../engine/shop_engine';
+import type { Plant } from '../model/plant';
 
 // ─── Breeding panel ───────────────────────────────────────────────────────────
+
+function renderSurplusCap(plant: Plant): string {
+  const used = plant.surplusSeedsProduced ?? 0
+  const remaining = MAX_SURPLUS_SEEDS_PER_PLANT - used
+  const exhausted = remaining <= 0
+  const bars = Array.from({ length: MAX_SURPLUS_SEEDS_PER_PLANT }, (_, i) =>
+    `<span class="surplus-cap-bar${i < remaining ? ' surplus-cap-bar--full' : ''}"></span>`
+  ).join('')
+  return `<div class="surplus-cap" title="${t.surplusSeedCapacity(remaining, MAX_SURPLUS_SEEDS_PER_PLANT)}">
+    <span class="surplus-cap-icon${exhausted ? ' surplus-cap-icon--exhausted' : ''}">🌱</span>
+    <div class="surplus-cap-bars">${bars}</div>
+  </div>`
+}
 
 export function renderBreedPanel(): void {
   const slotA    = document.getElementById('breed-a');
@@ -42,6 +58,12 @@ export function renderBreedPanel(): void {
   }
 
   const hasEmptyPot = state.pots.some(p => !p.plant);
+  const showCap = hasUpgrade(state, 'unlock_seed_drawer');
+
+  const capA = document.getElementById('breed-a-cap');
+  const capB = document.getElementById('breed-b-cap');
+  if (capA) capA.innerHTML = showCap && potA?.plant ? renderSurplusCap(potA.plant) : '';
+  if (capB) capB.innerHTML = showCap && potB?.plant ? renderSurplusCap(potB.plant) : '';
 
   if (potA?.plant && potB?.plant) {
     if (!breedState.breedEstimate) {

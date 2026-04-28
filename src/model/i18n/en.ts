@@ -185,6 +185,7 @@ export const en = {
   seedDrawerEmpty: 'No seeds stored yet.',
   plantFromStorage: 'From Collection',
   surplusSeedObtained: 'Got a surplus seed!',
+  surplusSeedCapacity: (n: number, max: number) => `${n} of ${max} surplus seeds remaining`,
   seedDrawerButton: (n: number) => `🌱 Seeds (${n})`,
   selectSeedToPlant: 'Select a seed to plant',
   seedMoveHint: 'Click a compartment to move seed',

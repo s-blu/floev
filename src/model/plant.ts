@@ -49,6 +49,7 @@ export interface Plant {
   generation: number
   parentIds?: [string, string]   // [parentA.id, parentB.id]; absent for wild plants
   selfed?:    boolean            // true when produced by self-pollination
+  surplusSeedsProduced?: number  // how many surplus seeds this plant has contributed to
 }
 
 // ─── Game state ───────────────────────────────────────────────────────────────

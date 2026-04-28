@@ -38,9 +38,15 @@ app.innerHTML = `
     <p class="section-title">${t.sectionBreeding}</p>
     <div class="breed-panel">
       <div class="breed-row">
-        <div class="breed-slot" id="breed-a"><span>${t.breedParent1}</span></div>
+        <div class="breed-slot-col">
+          <div class="breed-slot" id="breed-a"><span>${t.breedParent1}</span></div>
+          <div id="breed-a-cap"></div>
+        </div>
         <span class="breed-op">+</span>
-        <div class="breed-slot" id="breed-b"><span>${t.breedParent2}</span></div>
+        <div class="breed-slot-col">
+          <div class="breed-slot" id="breed-b"><span>${t.breedParent2}</span></div>
+          <div id="breed-b-cap"></div>
+        </div>
         <span class="breed-op">=</span>
         <div class="breed-result" id="breed-preview">${t.breedPrompt}</div>
       </div>

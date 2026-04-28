@@ -27,7 +27,7 @@ import { renderAchievements, queueAchievementToast, initAchievementsPanel } from
 import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
-import { SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE } from '../model/genetic_model'
+import { SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT } from '../model/genetic_model'
 import { renderSeedDrawer } from './seeds_ui'
 
 
@@ -326,10 +326,14 @@ function handleBreed(): void {
   if (
     hasUpgrade(state, 'unlock_seed_drawer') &&
     Math.random() < SURPLUS_SEED_CHANCE &&
-    state.seeds.length < MAX_SEED_STORAGE
+    state.seeds.length < MAX_SEED_STORAGE &&
+    (potA.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT &&
+    (potB.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT
   ) {
     const surplusSeed = breedPlants(potA.plant, potB.plant)
     addSeedToStorage(state, surplusSeed)
+    potA.plant.surplusSeedsProduced = (potA.plant.surplusSeedsProduced ?? 0) + 1
+    potB.plant.surplusSeedsProduced = (potB.plant.surplusSeedsProduced ?? 0) + 1
     showMsg(t.surplusSeedObtained)
   } else {
     showMsg(t.breedSuccess(child.generation))
