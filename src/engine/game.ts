@@ -233,8 +233,11 @@ export function moveToShowcase(state: GameState, potId: number): boolean {
   if (!pot?.plant || pot.plant.phase < 4) return false
   const freePot = state.showcase.find(p => !p.plant)
   if (!freePot) return false
-  freePot.plant = pot.plant
-  pot.plant     = null
+  freePot.plant  = pot.plant
+  pot.plant      = null
+  const gardenDesign   = pot.design
+  pot.design           = freePot.design
+  freePot.design       = gardenDesign
   return true
 }
 
@@ -243,7 +246,10 @@ export function moveFromShowcase(state: GameState, showcasePotId: number): boole
   if (!showcasePot?.plant) return false
   const freePot = state.pots.find(p => !p.plant)
   if (!freePot) return false
-  freePot.plant      = showcasePot.plant
-  showcasePot.plant  = null
+  freePot.plant        = showcasePot.plant
+  showcasePot.plant    = null
+  const gardenDesign   = freePot.design
+  freePot.design       = showcasePot.design
+  showcasePot.design   = gardenDesign
   return true
 }
