@@ -71,6 +71,13 @@ function seededRng(seed: string): () => number {
   for (let i = 0; i < seed.length; i++) {
     h = (Math.imul(31, h) + seed.charCodeAt(i)) | 0
   }
+  // Avalanche mixing: small input differences (e.g. consecutive dates) otherwise
+  // produce seeds differing by 1, causing nearly identical RNG sequences.
+  h ^= h >>> 16
+  h = Math.imul(h, 0x45d9f3b) | 0
+  h ^= h >>> 16
+  h = Math.imul(h, 0x45d9f3b) | 0
+  h ^= h >>> 16
   return () => {
     h ^= h << 13; h ^= h >> 17; h ^= h << 5
     return ((h >>> 0) / 0xFFFFFFFF)
