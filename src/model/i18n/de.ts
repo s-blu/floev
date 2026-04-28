@@ -329,6 +329,8 @@ export const de = {
   helpQuickStartItem1: 'zufällige Samen pflanzen',
   helpQuickStartItem2: 'neue Funktionen freischalten',
   helpQuickStartItem3: 'deine erste Kreuzung ausprobieren',
+  helpQuickStartTip: '💡 Shop-Tipp!',
+  helpQuickStartTipText: 'Das Auftragsbuch hilft schon früh, Münzen zu verdienen – und die Genetik-Lupe lässt dich die Vererbung besser verstehen.',
 
   // Achievement panel
   achPanelTitle: 'Erfolge',

@@ -329,6 +329,8 @@ export const en = {
   helpQuickStartItem1: 'plant random seeds',
   helpQuickStartItem2: 'unlock new features',
   helpQuickStartItem3: 'try your first crossbreeding',
+  helpQuickStartTip: '💡 Shop tip!',
+  helpQuickStartTipText: 'The Order Book helps you earn coins early – and the Genetics Loupe lets you better understand inheritance.',
 
   // Achievement panel
   achPanelTitle: 'Achievements',

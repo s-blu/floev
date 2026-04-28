@@ -94,12 +94,16 @@ function buildHelpContent(): string {
             <span class="help-qs-text">${t.helpQuickStartItem1}</span>
           </div>
           <div class="help-qs-row">
+            <span class="help-qs-btn help-qs-btn--breed">${t.breedBtn}</span>
+            <span class="help-qs-text">${t.helpQuickStartItem3}</span>
+          </div>
+          <div class="help-qs-row">
             <span class="help-qs-btn help-qs-btn--shop">${t.shopOpenBtnLabel}</span>
             <span class="help-qs-text">${t.helpQuickStartItem2}</span>
           </div>
-          <div class="help-qs-row">
-            <span class="help-qs-btn help-qs-btn--breed">${t.breedBtn}</span>
-            <span class="help-qs-text">${t.helpQuickStartItem3}</span>
+          <div class="help-qs-tip">
+            <span class="help-qs-tip-label">${t.helpQuickStartTip}</span>
+            <span class="help-qs-tip-text">${t.helpQuickStartTipText}</span>
           </div>
           <button class="help-start-btn help-qs-start-btn" id="help-start-game-qs">${t.helpStartBtn}</button>
         </div>

@@ -424,6 +424,27 @@
   padding: 7px 20px;
 }
 
+.help-qs-tip {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid hsl(145, 40%, 60%);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+
+.help-qs-tip-label {
+  font-weight: 700;
+  white-space: nowrap;
+  color: hsl(145, 35%, 30%);
+}
+
+.help-qs-tip-text {
+  line-height: 1.4;
+  color: hsl(145, 35%, 30%);
+}
+
 /* ── AI Disclaimer ───────────────────────────────────────────────────────────── */
 .help-disclaimer {
   margin-bottom: 1.25rem;
@@ -582,6 +603,13 @@
     color: hsl(145, 45%, 65%);
   }
   .help-qs-text {
+    color: hsl(145, 25%, 60%);
+  }
+  .help-qs-tip {
+    border-color: hsl(145, 30%, 35%);
+  }
+  .help-qs-tip-label,
+  .help-qs-tip-text {
     color: hsl(145, 25%, 60%);
   }
   .help-disclaimer {
