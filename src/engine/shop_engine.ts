@@ -1,6 +1,6 @@
 import type { GameState } from '../model/plant'
 import type { UpgradeId, PotDesign } from '../model/shop'
-import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID, SHOWCASE_EXTRA_SLOT_PRICE } from '../model/shop'
+import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID, SHOWCASE_EXTRA_SLOT_PRICE, SHOWCASE_PREMIUM_SLOT_THRESHOLD, SHOWCASE_PREMIUM_SLOT_PRICE } from '../model/shop'
 import { INITIAL_POT_COUNT } from './game'
 
 // ─── Upgrade helpers ──────────────────────────────────────────────────────────
@@ -102,14 +102,21 @@ export function setShowcasePotDesign(state: GameState, potId: number, design: Pa
 
 // ─── Extra showcase slot purchasing ──────────────────────────────────────────
 
+export function getShowcaseSlotPrice(state: GameState): number {
+  return state.showcase.length >= SHOWCASE_PREMIUM_SLOT_THRESHOLD
+    ? SHOWCASE_PREMIUM_SLOT_PRICE
+    : SHOWCASE_EXTRA_SLOT_PRICE
+}
+
 export function canBuyExtraShowcaseSlot(state: GameState): boolean {
   return state.showcase.length < SHOWCASE_MAX_SLOTS
 }
 
 export function buyExtraShowcaseSlot(state: GameState): boolean {
   if (!canBuyExtraShowcaseSlot(state)) return false
-  if (state.coins < SHOWCASE_EXTRA_SLOT_PRICE) return false
-  state.coins -= SHOWCASE_EXTRA_SLOT_PRICE
+  const price = getShowcaseSlotPrice(state)
+  if (state.coins < price) return false
+  state.coins -= price
   state.showcase.push({ id: SHOWCASE_POT_BASE_ID + state.showcase.length, plant: null, phaseStart: null })
   return true
 }
