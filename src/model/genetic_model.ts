@@ -69,12 +69,11 @@ export const EFFECT_ALLELE_POOL = buildEffectAllelePool()
 //
 // These are special out-of-range values stored in the petalHue locus to encode
 // achromatic colours.  They are never real hue degrees.
-// When one of these is the expressed hue, petalLightness is ignored.
+// WHITE ignores petalLightness (single fixed colour).
+// GRAY uses petalLightness normally, like any chromatic hue.
 //
-export const ACHROMATIC_HUE_WHITE      = -1
-export const ACHROMATIC_HUE_GRAY_DARK  = -2
-export const ACHROMATIC_HUE_GRAY_MID   = -3
-export const ACHROMATIC_HUE_GRAY_LIGHT = -4
+export const ACHROMATIC_HUE_WHITE = -1
+export const ACHROMATIC_HUE_GRAY  = -2
 
 export const CENTER_TYPES: CenterType[] = ['dot', 'disc', 'stamen']
 
@@ -112,10 +111,8 @@ function buildHueAllelePool(): number[] {
   }
 
   // Grays: sehr selten
-  for (let i = 0; i < 2; i++) {
-    pool.push(ACHROMATIC_HUE_GRAY_DARK);
-    pool.push(ACHROMATIC_HUE_GRAY_MID);
-    pool.push(ACHROMATIC_HUE_GRAY_LIGHT);
+  for (let i = 0; i < 6; i++) {
+    pool.push(ACHROMATIC_HUE_GRAY);
   }
   return pool;
 }

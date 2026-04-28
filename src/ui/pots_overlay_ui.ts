@@ -2,7 +2,7 @@ import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominant
 import { isHomozygous, hueBucket } from '../engine/genetic/genetic_utils';
 import { RARE_SHAPES, RARE_EFFECTS } from "../model/genetic_model";
 import { hasPotColor, hasPotShape, hasUpgrade } from '../engine/shop_engine';
-import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT, PALETTE_S } from '../model/genetic_model';
+import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY, PALETTE_S } from '../model/genetic_model';
 import {
   buildDiscoveredShapeCounts, buildDiscoveredShapeCenters, buildDiscoveredShapeEffects,
   buildDiscoveredColors, isShapeFullyDiscovered, isStamenFullyDiscovered,
@@ -336,24 +336,18 @@ function positionShapesRow(overlay: HTMLElement, card: HTMLElement): void {
 // ─── Allele overlay helpers ───────────────────────────────────────────────────
 function hueToCSS(h: number, l: ChromaticL): string {
   if (h === ACHROMATIC_HUE_WHITE) return 'hsl(0,0%,97%)';
-  if (h === ACHROMATIC_HUE_GRAY_DARK) return 'hsl(0,0%,15%)';
-  if (h === ACHROMATIC_HUE_GRAY_MID) return 'hsl(0,0%,45%)';
-  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return 'hsl(0,0%,72%)';
+  if (h === ACHROMATIC_HUE_GRAY)  return `hsl(0,0%,${l}%)`;
   return `hsl(${Math.round(h)},${PALETTE_S}%,${l}%)`;
 }
 function groupHueBg(h: number, isDom: boolean): string {
-  if (h === ACHROMATIC_HUE_WHITE || h === ACHROMATIC_HUE_GRAY_DARK ||
-      h === ACHROMATIC_HUE_GRAY_MID || h === ACHROMATIC_HUE_GRAY_LIGHT) {
-    return hueToCSS(h, 60);
-  }
+  if (h === ACHROMATIC_HUE_WHITE) return hueToCSS(h, 60);
   const dir = isDom ? 'to right' : 'to bottom';
+  if (h === ACHROMATIC_HUE_GRAY) return buildFamilySwatchStyle({h: 0, s: 0, l: 0}, dir);
   return buildFamilySwatchStyle({h, s: PALETTE_S, l: 0}, dir)
 }
 function hueLabel(h: number): string {
   if (h === ACHROMATIC_HUE_WHITE) return t.alleleHueWhite;
-  if (h === ACHROMATIC_HUE_GRAY_DARK) return t.alleleHueGrayDark;
-  if (h === ACHROMATIC_HUE_GRAY_MID) return t.alleleHueGrayMid;
-  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return t.alleleHueGrayLight;
+  if (h === ACHROMATIC_HUE_GRAY)  return t.alleleHueGray;
   return (t.colorLabel as any)[h]?.hueName ?? `${Math.round(h)}°`;
 }
 function lightnessLabel(l: ChromaticL): string {

@@ -14,7 +14,7 @@ import {
 } from '../engine/orders_engine'
 import { saveState } from '../engine/game'
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer'
-import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_MID } from '../model/genetic_model'
+import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY } from '../model/genetic_model'
 
 // ─── Panel open state (persisted in localStorage) ────────────────────────────
 
@@ -40,7 +40,7 @@ const BUCKET_HUE: Record<string, number> = {
   blue:        200,
   purple:      250,
   pink:        310,
-  gray:        ACHROMATIC_HUE_GRAY_MID,
+  gray:        ACHROMATIC_HUE_GRAY,
 }
 
 const PREVIEW_RENDER_SIZE = 80

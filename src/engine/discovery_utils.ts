@@ -63,7 +63,7 @@ export function buildDiscoveredColors(catalog: CatalogEntry[]): Set<string> {
 
 export function getBucketKeys(bucket: ColorBucket): string[] {
   if (bucket === 'white') return ['1_100'];
-  if (bucket === 'gray') return ['2_10', '2_40', '2_70'];
+  if (bucket === 'gray') return ['2_30', '2_60', '2_90'];
   const hues = (PALETTE_HUES_BUCKETS as Record<string, readonly number[]>)[bucket] ?? [];
   return hues.flatMap(hue => (PALETTE_L as readonly number[]).map(l => `${hue}_${l}`));
 }

@@ -129,9 +129,9 @@ function renderBucketHueGroups(bucket: ColorBucket, discoveredColors: Set<string
 
   if (bucket === 'gray') {
     const grayShades = [
-      { key: '2_10',  css: 'hsl(0,0%,10%)', name: (t.colorLabel as any)[2]?.[0]?.[10] ?? '' },
-      { key: '2_40',  css: 'hsl(0,0%,40%)', name: (t.colorLabel as any)[2]?.[0]?.[40] ?? '' },
-      { key: '2_70',  css: 'hsl(0,0%,70%)', name: (t.colorLabel as any)[2]?.[0]?.[70] ?? '' },
+      { key: '2_30',  css: 'hsl(0,0%,30%)', name: (t.colorLabel as any)[2]?.[0]?.[30] ?? '' },
+      { key: '2_60',  css: 'hsl(0,0%,60%)', name: (t.colorLabel as any)[2]?.[0]?.[60] ?? '' },
+      { key: '2_90',  css: 'hsl(0,0%,90%)', name: (t.colorLabel as any)[2]?.[0]?.[90] ?? '' },
     ];
     const swatches = grayShades.map(s => colorSwatchHtml(s.css, s.name, discoveredColors.has(s.key))).join('');
     return `<div class="di-hue-group-row"><div class="di-swatches">${swatches}</div></div>`;

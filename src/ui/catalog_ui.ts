@@ -86,7 +86,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const center = expressedCenter(plant.centerType);
   const count = Math.round(expressedNumber(plant.petalCount));
   const effect = expressedEffect(plant.petalEffect);
-  const hasEffect = effect !== 'none' && pc.s > 0;
+  const hasEffect = effect !== 'none' && (pc.s > 0 || pc.h === 2);
   const pcForEffect = hasEffect ? { ...pc, l: 60 as const } : pc;
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`;
   const swatchStyle = `background: ${hasEffect ? buildFamilySwatchStyle(pc) : hslMain}`;

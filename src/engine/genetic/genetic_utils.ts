@@ -2,27 +2,20 @@ import { ColorBucket, PALETTE_HUE_RANGES } from "../../model/genetic_model";
 import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL, PetalEffect, StemTypes } from "../../model/plant";
 import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from "./dominance_utils";
 import { PALETTE_S } from '../../model/genetic_model';
-import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../../model/genetic_model';
+import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY } from '../../model/genetic_model';
 
 
 // ─── Hue / achromatic helpers ─────────────────────────────────────────────────
 
 /** Returns true when hue is one of the special achromatic sentinel values. */
 export function isAchromaticHue(h: number): boolean {
-  return (
-    h === ACHROMATIC_HUE_WHITE ||
-    h === ACHROMATIC_HUE_GRAY_DARK ||
-    h === ACHROMATIC_HUE_GRAY_MID ||
-    h === ACHROMATIC_HUE_GRAY_LIGHT
-  )
+  return h === ACHROMATIC_HUE_WHITE || h === ACHROMATIC_HUE_GRAY
 }
 
 /** Classify a chromatic hue number into a ColorBucket. */
 export function hueBucket(h: number): ColorBucket {
-  if (h === ACHROMATIC_HUE_WHITE)      return 'white'
-  if (h === ACHROMATIC_HUE_GRAY_DARK)  return 'gray'
-  if (h === ACHROMATIC_HUE_GRAY_MID)   return 'gray'
-  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return 'gray'
+  if (h === ACHROMATIC_HUE_WHITE) return 'white'
+  if (h === ACHROMATIC_HUE_GRAY)  return 'gray'
   if (PALETTE_HUE_RANGES.yellowgreen(h)) return 'yellowgreen'
   if (PALETTE_HUE_RANGES.red(h))         return 'red'
   if (PALETTE_HUE_RANGES.blue(h))        return 'blue'
@@ -53,12 +46,10 @@ export function expressedColor(
 ): HSLColor {
   const h = expressedHue(huePair)
 
-  if (h === ACHROMATIC_HUE_WHITE)      return { h: 1, s: 0, l: 100 }
-  if (h === ACHROMATIC_HUE_GRAY_DARK)  return { h: 2, s: 0, l: 10  }
-  if (h === ACHROMATIC_HUE_GRAY_MID)   return { h: 2, s: 0, l: 40  }
-  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return { h: 2, s: 0, l: 70  }
+  if (h === ACHROMATIC_HUE_WHITE) return { h: 1, s: 0, l: 100 }
 
   const l = expressedLightness(lightnessPair)
+  if (h === ACHROMATIC_HUE_GRAY)  return { h: 2, s: 0, l }
   return { h, s: PALETTE_S, l }
 }
 

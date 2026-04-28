@@ -1,5 +1,5 @@
 import { dominantHue } from '../engine/genetic/dominance_utils';
-import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT } from '../model/genetic_model';
+import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY } from '../model/genetic_model';
 import { t } from '../model/i18n';
 import type { Plant, BreedEstimate } from '../model/plant';
 import { buildFamilySwatchStyle } from './swatch_utils';
@@ -8,9 +8,7 @@ import { buildFamilySwatchStyle } from './swatch_utils';
 // ─── Hue helpers ─────────────────────────────────────────────────────────────
 function achromaticCSS(h: number): string | null {
   if (h === ACHROMATIC_HUE_WHITE) return 'background:hsl(0,0%,97%)';
-  if (h === ACHROMATIC_HUE_GRAY_DARK) return 'background:hsl(0,0%,15%)';
-  if (h === ACHROMATIC_HUE_GRAY_MID) return 'background:hsl(0,0%,45%)';
-  if (h === ACHROMATIC_HUE_GRAY_LIGHT) return 'background:hsl(0,0%,72%)';
+  if (h === ACHROMATIC_HUE_GRAY)  return `background:${buildFamilySwatchStyle({ h: 0, s: 0, l: 0 })}`;
   return null;
 }
 

@@ -5,7 +5,7 @@ import type {
 import type { ColorBucket } from "../../model/genetic_model"
 import { pick, uid } from "./genetic_utils"
 import {
-  ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_LIGHT, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_WHITE,
+  ACHROMATIC_HUE_GRAY, ACHROMATIC_HUE_WHITE,
   CENTER_TYPES,
   EFFECT_ALLELE_POOL,
   HUE_ALLELE_POOL,
@@ -30,7 +30,7 @@ export function randomPetalShapeAllele(includeRares = true): PetalShape {
 export function randomHueForBucket(bucket: ColorBucket): number {
   switch (bucket) {
     case 'white': return ACHROMATIC_HUE_WHITE
-    case 'gray':  return pick([ACHROMATIC_HUE_GRAY_DARK, ACHROMATIC_HUE_GRAY_MID, ACHROMATIC_HUE_GRAY_LIGHT])
+    case 'gray':  return ACHROMATIC_HUE_GRAY
     default:      return pick(PALETTE_HUES_BUCKETS[bucket] ?? PALETTE_HUES_BUCKETS.red)
   }
 }

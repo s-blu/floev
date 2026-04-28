@@ -59,9 +59,7 @@ export const en = {
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Show alleles',
   alleleHueWhite: 'white',
-  alleleHueGrayDark: 'dark gray',
-  alleleHueGrayMid: 'gray',
-  alleleHueGrayLight: 'light gray',
+  alleleHueGray: 'gray',
   alleleOverlayTitle: 'Genetics',
   alleleOverlayHue: 'Color',
   alleleOverlayLight: 'Lightness',
@@ -495,9 +493,9 @@ export const en = {
   2: {
     hueName: 'Gray (group)',
     0: {
-      10: "Anthracite",
-      40: "Stone gray",
-      70: "Silver",
+      30: "Anthracite",
+      60: "Stone gray",
+      90: "Silver",
     }
   },
   25: {
