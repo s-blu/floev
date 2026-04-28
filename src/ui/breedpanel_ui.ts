@@ -6,6 +6,7 @@ import { isHomozygous } from '../engine/genetic/genetic_utils';
 import { formatEstimate } from './breedestimate_ui';
 import { MAX_SURPLUS_SEEDS_PER_PLANT } from '../model/genetic_model';
 import { hasUpgrade } from '../engine/shop_engine';
+import { renderSeedIcon } from '../engine/renderer/seed_renderer';
 import type { Plant } from '../model/plant';
 
 // ─── Breeding panel ───────────────────────────────────────────────────────────
@@ -18,7 +19,7 @@ function renderSurplusCap(plant: Plant): string {
     `<span class="surplus-cap-bar${i < remaining ? ' surplus-cap-bar--full' : ''}"></span>`
   ).join('')
   return `<div class="surplus-cap" title="${t.surplusSeedCapacity(remaining, MAX_SURPLUS_SEEDS_PER_PLANT)}">
-    <span class="surplus-cap-icon${exhausted ? ' surplus-cap-icon--exhausted' : ''}">🌱</span>
+    <span class="surplus-cap-icon${exhausted ? ' surplus-cap-icon--exhausted' : ''}">${renderSeedIcon(12)}</span>
     <div class="surplus-cap-bars">${bars}</div>
   </div>`
 }

@@ -12,6 +12,23 @@ function seedRotation(plantId: string): number {
   return ((hash % 56) - 28)
 }
 
+export function renderSeedIcon(size = 14): string {
+  const id = `sico${++_seedId}`
+  const cx = size / 2
+  const cy = size / 2
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="vertical-align:middle;display:inline-block;flex-shrink:0">
+    <defs>
+      <radialGradient id="${id}" cx="35%" cy="28%" r="68%">
+        <stop offset="0%" stop-color="#c4916a"/>
+        <stop offset="100%" stop-color="#7a4a28"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="${cx}" cy="${cy}" rx="${size*0.31}" ry="${size*0.35}" fill="url(#${id})"/>
+    <ellipse cx="${cx - size*0.07}" cy="${cy - size*0.12}" rx="${size*0.14}" ry="${size*0.09}"
+      fill="rgba(255,255,255,0.22)" transform="rotate(-22,${cx},${cy})"/>
+  </svg>`
+}
+
 export function renderSeedSvg(plant: Plant, size = 40): string {
   const id = `seed${++_seedId}`
   const shape = expressedShape(plant.petalShape)

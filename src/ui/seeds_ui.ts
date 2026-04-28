@@ -1,7 +1,7 @@
 import { state, handlePlantSeedFromStorage, handleMoveSeedToSlot, handleSellSeed } from './ui'
 import { t } from '../model/i18n'
 import { SAATENSCHUBLADE_SLOTS, SEEDS_PER_SLOT, MAX_SEED_STORAGE } from '../model/genetic_model'
-import { renderSeedSvg } from '../engine/renderer/seed_renderer'
+import { renderSeedSvg, renderSeedIcon } from '../engine/renderer/seed_renderer'
 import { SEED_SELL_VALUE } from '../model/genetic_model'
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -183,7 +183,7 @@ export function updateSeedDrawerButton(): void {
   if (!btn) return
   const hasUpgrade = state.upgrades.includes('unlock_seed_drawer')
   btn.style.display = hasUpgrade ? '' : 'none'
-  if (hasUpgrade) btn.textContent = t.seedDrawerButton(state.seeds.length)
+  if (hasUpgrade) btn.innerHTML = `${renderSeedIcon(14)} ${t.seedDrawerButton(state.seeds.length)}`
 }
 
 export function renderSeedDrawer(): void {

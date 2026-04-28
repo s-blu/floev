@@ -186,7 +186,7 @@ export const de = {
   plantFromStorage: 'Aus Saatensammlung',
   surplusSeedObtained: 'Einen Überschuss-Samen erhalten!',
   surplusSeedCapacity: (n: number, max: number) => `${n} von ${max} Überschuss-Samen verbleibend`,
-  seedDrawerButton: (n: number) => `🌱 Saaten (${n})`,
+  seedDrawerButton: (n: number) => `Saaten (${n})`,
   selectSeedToPlant: 'Saaten zum Einpflanzen wählen',
   seedMoveHint: 'Klick auf ein Fach zum Ablegen',
   seedSellZone: 'Verkaufen',
