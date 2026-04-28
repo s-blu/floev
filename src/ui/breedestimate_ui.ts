@@ -60,7 +60,7 @@ function lightnessProbs(
   const DOMINANCE = [30, 60, 90];
   const counts = new Map<number, number>();
   for (const [a, b] of alleles) {
-    const expressed = DOMINANCE.indexOf(a) <= DOMINANCE.indexOf(b) ? a : b;
+    const expressed = DOMINANCE.indexOf(a) >= DOMINANCE.indexOf(b) ? a : b;
     counts.set(expressed, (counts.get(expressed) ?? 0) + 1);
   }
 
