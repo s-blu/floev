@@ -54,14 +54,12 @@ export const en = {
 
   // Rare recessive carrier badge
   rareCarrierBadge: '✦',
-  rareCarrierTitle: 'Carries a rare hidden trait',
+  rareCarrierTitle: 'Carries a hidden allele of a rare trait not yet fully discovered',
 
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Show alleles',
   alleleHueWhite: 'white',
-  alleleHueGrayDark: 'dark gray',
-  alleleHueGrayMid: 'gray',
-  alleleHueGrayLight: 'light gray',
+  alleleHueGray: 'gray',
   alleleOverlayTitle: 'Genetics',
   alleleOverlayHue: 'Color',
   alleleOverlayLight: 'Lightness',
@@ -167,15 +165,32 @@ export const en = {
     unlock_discovery_index:  'Discovery Index',
     unlock_showcase:         'Showcase',
     unlock_order_book:       'Order Book',
+    unlock_seed_drawer:      'Seed Drawer',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Shows you the hidden alleles of every blooming plant.',
     unlock_selfpollinate:    'Plants can self-pollinate to produce more homozygous offspring.',
-    unlock_rare_radar:       'Shows a ✦ symbol next to the rarity badge when a plant carries a rare recessive allele.',
+    unlock_rare_radar:       'Shows a ✦ symbol next to the rarity badge when a plant carries a hidden allele of a rare trait not yet fully discovered.',
     unlock_discovery_index:  'Shows an overview of all discovered and undiscovered shapes and colors in the catalog.',
     unlock_showcase:         'A showcase with 3 display slots for your most beautiful blooms. Displayed plants cannot be sold or used for breeding.',
     unlock_order_book:       'Three daily orders: breed and sell blooms with specific traits for bonus coins.',
+    unlock_seed_drawer:      'A drawer with 20 compartments for up to 100 seeds. Crossing plants gives a chance to receive a surplus seed.',
   } as Record<string, string>,
+
+  // Seed drawer
+  seedDrawerTitle: 'Seed Drawer',
+  seedDrawerCapacity: (n: number, max: number) => `${n} / ${max}`,
+  seedDrawerEmpty: 'No seeds stored yet.',
+  plantFromStorage: 'From Collection',
+  surplusSeedObtained: 'Got a surplus seed!',
+  surplusSeedCapacity: (n: number, max: number) => `${n} of ${max} surplus seeds remaining`,
+  seedDrawerButton: (n: number) => `Seeds (${n})`,
+  selectSeedToPlant: 'Select a seed to plant',
+  seedMoveHint: 'Click a compartment to move seed',
+  seedSellZone: 'Sell',
+  msgSeedSold: (coins: number) => `Seed sold! +${coins} 🪙`,
+  seedMoveCancel: 'Cancel',
+  seedDrawerClose: 'Close',
 
   // Shop — Showcase
   shopSectionShowcase: 'Expand showcase',
@@ -221,7 +236,7 @@ export const en = {
 
   // Order requirement labels
   orderReqShape:      (name: string) => `Shape: ${name}`,
-  orderReqColor:      (name: string) => `Color: ${name}`,
+  orderReqColor:      (name: string) => `Bucket: ${name}`,
   orderReqLightness:  (name: string) => `Lightness: ${name}`,
   orderReqCountGte:   (n: number)    => `Min. ${n} petals`,
   orderReqCountLte:   (n: number)    => `Max. ${n} petals`,
@@ -231,6 +246,9 @@ export const en = {
 
   // Lightness labels
   lightnessLabels: { 30: 'Dark', 60: 'Mid', 90: 'Light' } as Record<number, string>,
+
+  // Notification footer
+  notifEmpty: 'No messages yet.',
 
   // Messages
   msgSeedPlanted: 'Seed planted!',
@@ -255,7 +273,7 @@ export const en = {
   helpColorsBody: 'Each plant carries two color alleles and two lightness alleles. The more dominant allele determines the visible color.',
   helpColorBucketsExplain: 'Colors are grouped into ranges — from common (left) to rare (right). Some ranges are still undiscovered:',
   helpColorsDominance: 'Color dominance — left dominates, right is recessive',
-  helpLightnessDominance: 'Lightness: Dark dominates Mid dominates Light',
+  helpLightnessDominance: 'Lightness: Light dominates Mid dominates Dark',
   helpLightnessDark: 'dark',
   helpLightnessMid: 'mid',
   helpLightnessLight: 'light',
@@ -309,6 +327,8 @@ export const en = {
   helpQuickStartItem1: 'plant random seeds',
   helpQuickStartItem2: 'unlock new features',
   helpQuickStartItem3: 'try your first crossbreeding',
+  helpQuickStartTip: '💡 Shop tip!',
+  helpQuickStartTipText: 'The Order Book helps you earn coins early – and the Genetics Loupe lets you better understand inheritance.',
 
   // Achievement panel
   achPanelTitle: 'Achievements',
@@ -340,9 +360,9 @@ export const en = {
   achCatalogDesc: (n: number) => `Discover ${n} different blooms.`,
 
   // Color diversity
-  achColorDivTitle: (n: number) => n === 8 ? 'Full Palette' : `${n} colors`,
-  achColorDivDesc: (n: number) => n === 8
-    ? 'Discover blooms in all 8 color ranges (incl. white & gray).'
+  achColorDivTitle: (n: number) => n === 7? 'Full Palette' : `${n} colors`,
+  achColorDivDesc: (n: number) => n === 7
+    ? 'Discover blooms in all 7 color ranges (incl. white & gray).'
     : `Discover blooms in ${n} different color ranges.`,
 
   // Shape diversity
@@ -449,11 +469,14 @@ export const en = {
   effectLabelsShort: {
     bicolor: 'Bi', gradient: 'Gr', shimmer: 'Sh', iridescent: 'Ir',
   } as Record<string, string>,
+  colorBucketLabelsShort: {
+    white: 'Wh', yellowgreen: 'YG', red: 'Re', pink: 'Pk', purple: 'Pu', blue: 'Bl', gray: 'Gy',
+  } as Record<string, string>,
 
   colorLabelGradient: " gradient",
 
   colorLabel: {
-  0: {
+  5: {
     hueName: `Carmine (group)`,
     90: {
       30: "Crimson",
@@ -470,9 +493,9 @@ export const en = {
   2: {
     hueName: 'Gray (group)',
     0: {
-      10: "Anthracite",
-      40: "Stone gray",
-      70: "Silver",
+      30: "Anthracite",
+      60: "Stone gray",
+      90: "Silver",
     }
   },
   25: {
@@ -579,6 +602,7 @@ discoveryIndexTitle: 'Discovery Index',
   discoveryIndexMatrixCenter: 'Center',
   discoveryIndexMatrixEffect: 'Effect',
   discoveryIndexSectionColors: 'Colours',
+  discoveryIndexSectionShapeColors: 'Colour × Shape',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
     `${shapes}/${totalShapes} forms · ${colors}/${totalColors} colours`,
 

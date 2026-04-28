@@ -1,6 +1,6 @@
-import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, SHOWCASE_MAX_SLOTS, SHOWCASE_EXTRA_SLOT_PRICE } from '../model/shop'
+import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, SHOWCASE_MAX_SLOTS } from '../model/shop'
 import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleBuyExtraPot, handleBuyExtraShowcaseSlot } from './ui'
-import { hasUpgrade, hasPotColor, hasPotShape, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot } from '../engine/shop_engine'
+import { hasUpgrade, hasPotColor, hasPotShape, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot, getShowcaseSlotPrice } from '../engine/shop_engine'
 import { renderPotShopPreview } from '../engine/renderer/pot_renderer'
 import { t } from '../model/i18n'
 
@@ -54,7 +54,7 @@ export function renderShopSidebar(): void {
   if (!sidebarOpen) return
   const body = document.getElementById('shop-sidebar-body')
   if (!body) return
-  body.innerHTML = renderUpgradesSection() + renderExtraPotsSection() + renderShowcaseSection() + renderDecoSection() 
+  body.innerHTML =  renderExtraPotsSection() + renderShowcaseSection() + renderUpgradesSection() +  renderDecoSection() 
 }
 
 // ─── Upgrades section ─────────────────────────────────────────────────────────
@@ -128,7 +128,8 @@ function renderShowcaseSection(): string {
 
   const slotCount  = state.showcase.length
   const atMax      = !canBuyExtraShowcaseSlot(state)
-  const canAfford  = state.coins >= SHOWCASE_EXTRA_SLOT_PRICE
+  const price      = getShowcaseSlotPrice(state)
+  const canAfford  = state.coins >= price
 
   const actionArea = atMax
     ? `<span class="shop-item-owned-badge">${t.shopShowcaseSlotsMax}</span>`
@@ -136,7 +137,7 @@ function renderShowcaseSection(): string {
          class="shop-buy-btn ${!canAfford ? 'shop-buy-btn--locked' : ''}"
          data-action="buy-extra-showcase-slot"
          ${!canAfford ? 'disabled' : ''}>
-         🪙 ${SHOWCASE_EXTRA_SLOT_PRICE}
+         🪙 ${price}
        </button>`
 
   return `

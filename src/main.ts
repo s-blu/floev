@@ -1,8 +1,10 @@
 import { loadState } from './engine/game'
-import { initUI, showMsg } from './ui/ui'
+import { initUI } from './ui/ui'
 import { initHelp, showHelp } from './ui/help_ui'
 import { initShop, closeShop } from './ui/shop_ui'
 import { initOrderBookPanel } from './ui/orders_ui'
+import { initSeedDrawer } from './ui/seeds_ui'
+import { initNotificationFooter } from './ui/notification_log'
 import { t } from './model/i18n'
 
 // ─── Inject app shell ────────────────────────────────────────────────────────
@@ -15,11 +17,11 @@ app.innerHTML = `
       <h1 class="game-title">${t.appTitle}</h1>
       <div class="header-actions">
         <span class="coin-badge" id="coin-badge">🪙 0</span>
+        <button class="seed-drawer-btn" id="seed-drawer-btn" style="display:none">${t.seedDrawerButton(0)}</button>
         <button class="shop-open-btn" id="shop-open-btn" title="Shop öffnen">🛒 Shop</button>
         <button class="help-btn" id="help-btn" title="${t.helpBtnTitle}">?</button>
       </div>
     </div>
-    <p class="msg-bar" id="msg">${t.welcomeMsg}</p>
   </header>
 
   <section id="showcase-section" style="display:none">
@@ -36,9 +38,15 @@ app.innerHTML = `
     <p class="section-title">${t.sectionBreeding}</p>
     <div class="breed-panel">
       <div class="breed-row">
-        <div class="breed-slot" id="breed-a"><span>${t.breedParent1}</span></div>
+        <div class="breed-slot-col">
+          <div class="breed-slot" id="breed-a"><span>${t.breedParent1}</span></div>
+          <div id="breed-a-cap"></div>
+        </div>
         <span class="breed-op">+</span>
-        <div class="breed-slot" id="breed-b"><span>${t.breedParent2}</span></div>
+        <div class="breed-slot-col">
+          <div class="breed-slot" id="breed-b"><span>${t.breedParent2}</span></div>
+          <div id="breed-b-cap"></div>
+        </div>
         <span class="breed-op">=</span>
         <div class="breed-result" id="breed-preview">${t.breedPrompt}</div>
       </div>
@@ -97,9 +105,23 @@ document.body.insertAdjacentHTML('beforeend', `
   </aside>
 `)
 
+// ─── Seed drawer & overlay ────────────────────────────────────────────────────
+
+document.body.insertAdjacentHTML('beforeend', `
+  <div id="seed-overlay" class="seed-overlay"></div>
+  <aside id="seed-drawer" class="seed-drawer">
+    <div class="seed-drawer-header">
+      <span class="seed-drawer-title">${t.seedDrawerTitle}</span>
+      <button class="seed-drawer-close" id="seed-drawer-close-btn" title="${t.seedDrawerClose}">×</button>
+    </div>
+    <div class="seed-drawer-body" id="seed-drawer-body"></div>
+  </aside>
+`)
+
 // ─── Load & start ────────────────────────────────────────────────────────────
 
 const state = loadState()
+initNotificationFooter(t.welcomeMsg)
 initUI(state)
 initOrderBookPanel()
 
@@ -112,4 +134,7 @@ initShop()
 document.getElementById('shop-close-btn')?.addEventListener('click', closeShop)
 document.getElementById('shop-overlay')?.addEventListener('click', closeShop)
 
-;(window as unknown as Record<string, unknown>).__floev__ = { state, showMsg }
+// Seed drawer
+initSeedDrawer()
+
+;(window as unknown as Record<string, unknown>).__floev__ = { state }

@@ -1,12 +1,14 @@
-import type { GameState, Pot, Plant, PetalEffect, PlantPhase } from '../model/plant'
-import { plannedPlant, randomPlant } from './genetic/genetic'
+import type { GameState, Pot, Plant, PlantPhase } from '../model/plant'
+import { randomPlant } from './genetic/genetic'
 import { addToCatalog } from './catalog'
-import { calcCoinScore } from './rarity'
-import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS } from '../dev.config'
+import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLANTS, DEBUG_SEEDS, USE_FIXED_SEEDS } from '../dev.config'
+import { MAX_SEED_STORAGE } from '../model/genetic_model'
+import { runMigrations, LATEST_MIGRATION_VERSION } from './migrations'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const STORAGE_KEY   = 'bloom_v1'
+const STORAGE_KEY        = 'bloom_v1'
+const STORAGE_KEY_BACKUP = 'bloom_v1_backup'
 export const INITIAL_POT_COUNT = 9
 const STARTER_PLANTS = 4;
 
@@ -21,47 +23,7 @@ export function coinValueForScore(score: number): number {
 }
 
 const useDebugPlants = import.meta.env.DEV && USE_FIXED_PLANTS;
-const sharedDebugConfig = {
-      hue: 200,
-      petalCount: 5,
-      plantPhase: 3 as PlantPhase,
-}
-const DEBUG_PLANTS = [
-    plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'shimmer' as PetalEffect,
-    }
-  ),
-  plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'bicolor' as PetalEffect,
-    }
-  ),
-    plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'iridescent' as PetalEffect,
-    }
-  ),
-    plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'gradient' as PetalEffect,
-    }
-  ),
-    plannedPlant(
-    {
-      ...sharedDebugConfig,
-      petalShape: 'zickzack',
-    }
-  ),
-]
+const useDebugSeeds = import.meta.env.DEV && USE_FIXED_SEEDS;
 
 // ─── Initial state ────────────────────────────────────────────────────────────
 
@@ -84,7 +46,16 @@ function createInitialState(): GameState {
       return { id: i, plant, phaseStart: Date.now() - (phase3Dur - starterOffsets[i]) };
     });
   }
-  return { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], lastSave: Date.now() }
+
+
+  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], seeds: [], seedLayout: Array(MAX_SEED_STORAGE).fill(''), lastSave: Date.now(), migrationVersion: LATEST_MIGRATION_VERSION }
+  if (useDebugSeeds) {
+    gameState.seeds = DEBUG_SEEDS
+    DEBUG_SEEDS.forEach((s, i) => { gameState.seedLayout[i] = s.id })
+    gameState.upgrades.push('unlock_seed_drawer')
+  }
+
+  return gameState
 }
 
 // ─── Persistence ─────────────────────────────────────────────────────────────
@@ -95,19 +66,35 @@ export function loadState(): GameState {
     if (raw) {
       const parsed = JSON.parse(raw) as GameState
 
-      // backwards compatibility: old saves without coins
+      localStorage.setItem(STORAGE_KEY_BACKUP, raw)
+
+      // backwards compatibility
       if (parsed.coins === undefined) parsed.coins = 0
       if (!parsed.achievements) parsed.achievements = { unlocked: [], rewarded: [] }
       if (!parsed.upgrades) parsed.upgrades = []
       if (!parsed.unlockedPotColors) parsed.unlockedPotColors = []
       if (!parsed.unlockedPotShapes) parsed.unlockedPotShapes = []
       if (!parsed.showcase) parsed.showcase = []
-      // orderBook is generated on first use — no migration needed
+      if (!parsed.seeds) parsed.seeds = []
+      if (!parsed.seedLayout || parsed.seedLayout.length !== MAX_SEED_STORAGE) {
+        parsed.seedLayout = Array(MAX_SEED_STORAGE).fill('')
+        parsed.seeds.forEach((s, i) => { if (i < MAX_SEED_STORAGE) parsed.seedLayout[i] = s.id })
+      }
 
+      if (runMigrations(parsed)) saveState(parsed)
       return parsed
     }
-  } catch {
-    // Corrupt save — start fresh
+  } catch (err) {
+    console.error('Could not read the save state! Try to recover backup, if there is any', err)
+    const backup = localStorage.getItem(STORAGE_KEY_BACKUP)
+    if (backup) {
+      try { 
+        const bak = JSON.parse(backup) as GameState
+        return  bak;
+      } catch (e) {
+        console.error('Backup was not recoverable, need to initialize anew', e)
+      }
+    }
   }
   return createInitialState()
 }
@@ -116,7 +103,8 @@ export function saveState(state: GameState): void {
   try {
     state.lastSave = Date.now()
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-  } catch {
+  } catch (err) {
+    console.error('unable to save game', err)
     // Storage full or unavailable
   }
 }
@@ -155,62 +143,4 @@ export function advancePhases(
     }
   }
   return changed
-}
-
-// ─── Pot actions ─────────────────────────────────────────────────────────────
-
-export function plantSeed(state: GameState, potId: number): boolean {
-  const pot = state.pots.find(p => p.id === potId)
-  if (!pot || pot.plant) return false
-  pot.plant      = randomPlant()
-  pot.phaseStart = Date.now()
-  return true
-}
-
-export function removePlant(state: GameState, potId: number): boolean {
-  const pot = state.pots.find(p => p.id === potId)
-  if (!pot) return false
-  pot.plant      = null
-  pot.phaseStart = null
-  return true
-}
-
-export function sellPlant(state: GameState, potId: number): number {
-  const pot = state.pots.find(p => p.id === potId)
-  if (!pot?.plant || pot.plant.phase < 4) return -1
-  const reward = coinValueForScore(calcCoinScore(pot.plant))
-  state.coins += reward
-  pot.plant      = null
-  pot.phaseStart = null
-  return reward
-}
-
-export function placeSeedInEmptyPot(state: GameState, plant: Plant): number | null {
-  const pot = state.pots.find(p => !p.plant)
-  if (!pot) return null
-  pot.plant      = plant
-  pot.phaseStart = Date.now()
-  return pot.id
-}
-
-// ─── Showcase actions ────────────────────────────────────────────────────────
-
-export function moveToShowcase(state: GameState, potId: number): boolean {
-  const pot = state.pots.find(p => p.id === potId)
-  if (!pot?.plant || pot.plant.phase < 4) return false
-  const freePot = state.showcase.find(p => !p.plant)
-  if (!freePot) return false
-  freePot.plant = pot.plant
-  pot.plant     = null
-  return true
-}
-
-export function moveFromShowcase(state: GameState, showcasePotId: number): boolean {
-  const showcasePot = state.showcase.find(p => p.id === showcasePotId)
-  if (!showcasePot?.plant) return false
-  const freePot = state.pots.find(p => !p.plant)
-  if (!freePot) return false
-  freePot.plant      = showcasePot.plant
-  showcasePot.plant  = null
-  return true
 }

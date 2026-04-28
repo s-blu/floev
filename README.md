@@ -9,9 +9,12 @@ Ein entspanntes Pflanzenzucht-Spiel. Züchte, kreuze und entdecke neue Blumenart
 Dieses Spiel wurde großteils mithilfe von Claude Sonnet 4.6 geschrieben, als Experiment, wozu KI Stand April 2026 in der Lage ist und wo ihre Grenzen liegen. Der Code wurde anschließend von mir überprüft. Mein Eindruck: KI kann erschreckend viel, wiederholt aber auch immer die selben Fehler.
 
 - Kann Features einigermaßen zuverlässig hinzufügen, erzeugt selten offensichtliche Bugs
+- Leitet Anforderung von der bestehenden Codebase ab und setzt diese um, ohne das sie explizit spezifiziert wurden
 - Code ist durchgängig ausführbar
+- Kann deutlich besser/schneller arbeiten, wenn konkrete Codestellen/Files angegeben werden, statt den Sachverhalt freitextlich zu beschreiben
+
 - Wiederholt selbe Bad Practices: Hardcoded Übersetzungen, Magic Numbers, Code repetition, !important im css
-- Ist schlecht im refactoring, insb. beim Lösen von Typescript-Errors (Nutzt unsinnige Quick Fixes, statt dem Kern des Problems nachzugehen; castet Variablennutzungen mehrfach statt der Variable)
+- Ist schlecht im refactoring, insb. beim Lösen von Typescript-Errors (Nutzt unsinnige Quick Fixes, statt dem Kern des Problems nachzugehen; löst Probleme immer da, wo sie reported werden und castet dann zB eine Variablennutzung 4 Mal statt einmal die Variable)
 - Fährt sich bei schwammigen Bugbeschreibungen schnell fest und verschleudert dann Tokens, um die (fehlerhafte) Nutzerbeschreibung und den Code übereinanderzubringen
 
 ## Setup

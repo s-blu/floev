@@ -49,6 +49,7 @@ export interface Plant {
   generation: number
   parentIds?: [string, string]   // [parentA.id, parentB.id]; absent for wild plants
   selfed?:    boolean            // true when produced by self-pollination
+  surplusSeedsProduced?: number  // how many surplus seeds this plant has contributed to
 }
 
 // ─── Game state ───────────────────────────────────────────────────────────────
@@ -87,8 +88,11 @@ export interface GameState {
   upgrades:           string[]   // purchased upgrade ids
   unlockedPotColors:  string[]   // purchased pot color ids
   unlockedPotShapes:  string[]   // purchased pot shape ids
-  lastSave:  number
+  seeds:      Plant[]             // stored seeds in Saatenschublade
+  seedLayout: string[]           // fixed-length position map: seedId or '' per slot position
+  lastSave:   number
   orderBook?: OrderBookState
+  migrationVersion?: number
 }
 
 

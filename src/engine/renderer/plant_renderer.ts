@@ -6,16 +6,16 @@ import { renderStem } from './renderer';
 import { hsl, clamp } from './renderer_utils';
 import { resolvePetalEffect } from './petaleffect_renderer';
 
-export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number, body: string) {
+export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number, body: string, context: string = '') {
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
   const shape = expressedShape(plant.petalShape);
   const n = Math.round(expressedNumber(plant.petalCount));
   const pr = 14 + (8 - n) * 0.8;
 
   const effect = expressedEffect(plant.petalEffect);
-  // Effects always render at L=60 regardless of allele lightness
-  const effectPc = (effect !== 'none' && pc.s > 0) ? { ...pc, l: 60 as const } : pc;
-  const fills = resolvePetalEffect(effect, effectPc, shape, plant.id, pr, cx, bloomY);
+  // Effects always render at L=60 regardless of allele lightness (gray: h===2, s===0)
+  const effectPc = (effect !== 'none' && (pc.s > 0 || pc.h === 2)) ? { ...pc, l: 60 as const } : pc;
+  const fills = resolvePetalEffect(effect, effectPc, shape, plant.id, pr, cx, bloomY, context);
   // defs wird erst nach allen getFill-Calls gezogen (lazy getter für bicolor)
   for (let i = 0; i < n; i++) {
     const angle = (i / n) * Math.PI * 2 - Math.PI / 2;

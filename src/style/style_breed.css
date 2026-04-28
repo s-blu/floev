@@ -76,9 +76,50 @@
   filter: drop-shadow(0 0 2px rgba(255,255,255,0.6));
 }
 
+.breed-slot-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
 .breed-op {
   font-size: 18px;
   color: var(--text2);
+}
+
+/* ── Surplus seed capacity indicator ─────────────────────────────────────────── */
+.surplus-cap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.surplus-cap-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.surplus-cap-icon--exhausted {
+  filter: grayscale(1);
+  opacity: 0.4;
+}
+
+.surplus-cap-bars {
+  display: flex;
+  gap: 3px;
+}
+
+.surplus-cap-bar {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg3);
+}
+
+.surplus-cap-bar--full {
+  background: var(--green);
 }
 
 .breed-result {

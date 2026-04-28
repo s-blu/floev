@@ -1,5 +1,6 @@
 import { getPhaseProgress, PHASE_DURATION_MS } from '../engine/game';
 import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
+import { openSeedDrawer } from './seeds_ui';
 import { t } from '../model/i18n';
 import type { Pot } from '../model/plant';
 import { coinValueForScore } from '../engine/game';
@@ -130,7 +131,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
       .filter(([p]) => Number(p) > pot.plant!.phase)
       .reduce((sum, [, dur]) => sum + dur, 0);
     const remainingMs = currentPhaseRemainingMs + laterPhasesMs;
-    const remainingMin = Math.ceil(remainingMs / 60_000);
+    const remainingMin = Math.floor(remainingMs / 60_000);
     const timeLabel = remainingMin < 1 ? t.phaseAlmostDone : t.phaseTimeLeft(remainingMin);
     belowSillContent = `<p class="phase-label">${PHASE_LABEL(pot)} · <span class="phase-pct">${timeLabel}</span></p>`;
     progressHtml = `<div class="progress-row"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><button class="btn-sm btn-cancel-grow danger" data-action="remove" data-pot="${pot.id}" title="${t.btnRemove}">${t.btnRemove}</button></div>`;
@@ -139,9 +140,11 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   // ── Action buttons — single row ──
   let buttonsHtml = '';
   if (!pot.plant) {
+    const hasSeedDrawer = hasUpgrade(state, 'unlock_seed_drawer') && state.seeds.length > 0;
     buttonsHtml = `
       <div class="btn-row">
         <button class="btn-sm" data-action="plant" data-pot="${pot.id}">${t.btnPlant}</button>
+        ${hasSeedDrawer ? `<button class="btn-sm" data-action="plant-from-storage" data-pot="${pot.id}">${t.plantFromStorage}</button>` : ''}
       </div>`;
   } else if (isBlooming) {
     const isBreedSelected = pot.id === selA || pot.id === selB;
@@ -179,8 +182,9 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
 
     if (action !== 'overflow-toggle') closeAllOverflowMenus();
 
-    if      (action === 'plant')          handlePlantSeed(potId);
-    else if (action === 'remove')         handleRemove(potId);
+    if      (action === 'plant')                handlePlantSeed(potId);
+    else if (action === 'plant-from-storage')  openSeedDrawer(potId);
+    else if (action === 'remove')              handleRemove(potId);
     else if (action === 'sell') {
       if (sellPendingPots.has(potId)) {
         cancelSellPending(potId);

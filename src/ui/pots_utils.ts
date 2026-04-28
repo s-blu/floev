@@ -1,4 +1,5 @@
-import { hasHiddenRareTrait, isHomozygous } from '../engine/genetic/genetic_utils';
+import { isHomozygous } from '../engine/genetic/genetic_utils';
+import { hasHiddenRareUndiscoveredTrait } from '../engine/discovery_utils';
 import { getRarityForPot } from '../engine/rarity';
 import { renderPlantSVG } from '../engine/renderer/renderer';
 import { t } from '../model/i18n';
@@ -31,7 +32,7 @@ export function buildSideInfo(pot: Pot, state: GameState): string {
     if (!pot || pot.plant?.phase !== 4 || !pot.plant) return '';
     const r = getRarityForPot(state, pot);
     const homozyg = isHomozygous(pot.plant);
-    const rareCarrier = hasUpgrade(state, 'unlock_rare_radar') && hasHiddenRareTrait(pot.plant)
+    const rareCarrier = hasUpgrade(state, 'unlock_rare_radar') && hasHiddenRareUndiscoveredTrait(pot.plant, state.catalog)
         ? `<span class="phase-rare-carrier" title="${t.rareCarrierTitle}">${t.rareCarrierBadge}</span>`
         : '';
     const orderNums = getMatchingOrderNumbers(pot.plant)

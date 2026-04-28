@@ -69,12 +69,11 @@ export const EFFECT_ALLELE_POOL = buildEffectAllelePool()
 //
 // These are special out-of-range values stored in the petalHue locus to encode
 // achromatic colours.  They are never real hue degrees.
-// When one of these is the expressed hue, petalLightness is ignored.
+// WHITE ignores petalLightness (single fixed colour).
+// GRAY uses petalLightness normally, like any chromatic hue.
 //
-export const ACHROMATIC_HUE_WHITE      = -1
-export const ACHROMATIC_HUE_GRAY_DARK  = -2
-export const ACHROMATIC_HUE_GRAY_MID   = -3
-export const ACHROMATIC_HUE_GRAY_LIGHT = -4
+export const ACHROMATIC_HUE_WHITE = -1
+export const ACHROMATIC_HUE_GRAY  = -2
 
 export const CENTER_TYPES: CenterType[] = ['dot', 'disc', 'stamen']
 
@@ -88,7 +87,7 @@ export const MIN_STEM_HEIGHT = 0.35
 export const PALETTE_S = 90;
 // ─── Palette hues ─────────────────────────────────────────────────────────────
 //---------------------------red   / yellgr  / blue / purple   / pink        / red
-export const PALETTE_HUES = [0, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350] as const
+export const PALETTE_HUES = [5, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350] as const
 export const PALETTE_HUES_BUCKETS = {
   yellowgreen: PALETTE_HUES.filter(PALETTE_HUE_RANGES.yellowgreen),
   red:         PALETTE_HUES.filter(PALETTE_HUE_RANGES.red),
@@ -112,10 +111,8 @@ function buildHueAllelePool(): number[] {
   }
 
   // Grays: sehr selten
-  for (let i = 0; i < 2; i++) {
-    pool.push(ACHROMATIC_HUE_GRAY_DARK);
-    pool.push(ACHROMATIC_HUE_GRAY_MID);
-    pool.push(ACHROMATIC_HUE_GRAY_LIGHT);
+  for (let i = 0; i < 6; i++) {
+    pool.push(ACHROMATIC_HUE_GRAY);
   }
   return pool;
 }
@@ -131,3 +128,12 @@ export const HUE_ALLELE_POOL       = buildHueAllelePool();
 export const LIGHTNESS_ALLELE_POOL = buildLightnessAllelePool();
 export const RARE_SHAPES: PetalShape[] = ['wavy', 'zickzack'];
 export const RARE_EFFECTS: PetalEffect[] = ['shimmer', 'iridescent'];
+
+// ─── Saatenschublade ──────────────────────────────────────────────────────────
+
+export const SAATENSCHUBLADE_SLOTS = 20
+export const SEEDS_PER_SLOT = 5
+export const MAX_SEED_STORAGE = SAATENSCHUBLADE_SLOTS * SEEDS_PER_SLOT
+export const SURPLUS_SEED_CHANCE = 0.15
+export const MAX_SURPLUS_SEEDS_PER_PLANT = 3
+export const SEED_SELL_VALUE = 5

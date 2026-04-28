@@ -71,6 +71,13 @@ function seededRng(seed: string): () => number {
   for (let i = 0; i < seed.length; i++) {
     h = (Math.imul(31, h) + seed.charCodeAt(i)) | 0
   }
+  // Avalanche mixing: small input differences (e.g. consecutive dates) otherwise
+  // produce seeds differing by 1, causing nearly identical RNG sequences.
+  h ^= h >>> 16
+  h = Math.imul(h, 0x45d9f3b) | 0
+  h ^= h >>> 16
+  h = Math.imul(h, 0x45d9f3b) | 0
+  h ^= h >>> 16
   return () => {
     h ^= h << 13; h ^= h >> 17; h ^= h << 5
     return ((h >>> 0) / 0xFFFFFFFF)
@@ -89,6 +96,19 @@ function rewardForRequirements(reqs: OrderRequirement[]): number {
     if (r.difficulty === 'medium') return sum + ORDER_REWARD_MEDIUM
     return sum + ORDER_REWARD_HARD
   }, 0)
+}
+
+// petalEffect uses all hue-bucket colors, so lightness is irrelevant when an effect is active
+const TRAIT_CONFLICTS: Partial<Record<OrderTrait, OrderTrait[]>> = {
+  petalEffect:    ['petalLightness'],
+  petalLightness: ['petalEffect'],
+}
+
+function addWithConflicts(used: Set<OrderTrait>, trait: OrderTrait): void {
+  used.add(trait)
+  for (const conflict of TRAIT_CONFLICTS[trait] ?? []) {
+    used.add(conflict as OrderTrait)
+  }
 }
 
 function pickWithoutTraitConflict(
@@ -116,13 +136,13 @@ export function generateOrders(date: string): Order[] {
   if (order2Variant === 0) {
     const used2 = new Set<OrderTrait>()
     const req2a = pickWithoutTraitConflict(EASY_POOL, used2, rng)!
-    used2.add(req2a.trait)
+    addWithConflicts(used2, req2a.trait)
     const req2b = pickWithoutTraitConflict(EASY_POOL, used2, rng)!
     reqs2 = [req2a, req2b]
   } else if (order2Variant === 1) {
     const used2 = new Set<OrderTrait>()
     const req2a = pickWithoutTraitConflict(EASY_POOL, used2, rng)!
-    used2.add(req2a.trait)
+    addWithConflicts(used2, req2a.trait)
     const req2b = pickWithoutTraitConflict(MEDIUM_POOL, used2, rng) ?? pickWithoutTraitConflict(EASY_POOL, used2, rng)!
     reqs2 = [req2a, req2b]
   } else {
@@ -137,13 +157,13 @@ export function generateOrders(date: string): Order[] {
   if (order3Variant === 0) {
     const used3 = new Set<OrderTrait>()
     const req3a = pickWithoutTraitConflict(MEDIUM_POOL, used3, rng)!
-    used3.add(req3a.trait)
+    addWithConflicts(used3, req3a.trait)
     const req3b = pickWithoutTraitConflict(MEDIUM_POOL, used3, rng) ?? pickWithoutTraitConflict(EASY_POOL, used3, rng)!
     reqs3 = [req3a, req3b]
   } else {
     const used3 = new Set<OrderTrait>()
     const req3a = pickWithoutTraitConflict(EASY_POOL, used3, rng)!
-    used3.add(req3a.trait)
+    addWithConflicts(used3, req3a.trait)
     const req3b = pickWithoutTraitConflict(HARD_POOL, used3, rng) ?? pickRng(HARD_POOL, rng)
     reqs3 = [req3a, req3b]
   }
@@ -241,8 +261,8 @@ export function initOrderBook(state: GameState): void {
 export function canRefreshOrders(state: GameState): boolean {
   if (!state.orderBook) return false
   if (state.orderBook.dailyRefreshUsed) return false
-  // At least one order must be unpinned to refresh
-  return state.orderBook.orders.some(o => !o.pinned)
+  // At least one order must be unpinned and incomplete to refresh
+  return state.orderBook.orders.some(o => !o.pinned && !o.completedToday)
 }
 
 export function refreshOrders(state: GameState): boolean {
@@ -251,7 +271,7 @@ export function refreshOrders(state: GameState): boolean {
   // Use a different seed so the refresh gives different orders than initial
   const freshOrders = generateOrders(today + '-refresh')
   for (let i = 0; i < state.orderBook!.orders.length; i++) {
-    if (!state.orderBook!.orders[i].pinned) {
+    if (!state.orderBook!.orders[i].pinned && !state.orderBook!.orders[i].completedToday) {
       state.orderBook!.orders[i] = { ...freshOrders[i], pinned: false, completedToday: false }
     }
   }

@@ -11,12 +11,15 @@ import changelog from '../../CHANGELOG.md?raw';
 const HELP_SEEN_KEY = 'floev_help_seen';
 
 export function initHelp(): void {
-  if (!localStorage.getItem(HELP_SEEN_KEY)) {
+  const raw = localStorage.getItem(HELP_SEEN_KEY);
+  if (raw === null) {
     showHelp();
+  } else if (raw !== version) {
+    showHelp(true);
   }
 }
 
-export function showHelp(): void {
+export function showHelp(expandChangelog = false): void {
   document.getElementById('help-modal')?.remove();
 
   const modal = document.createElement('div');
@@ -29,12 +32,16 @@ export function showHelp(): void {
   modal.querySelector('#help-close')?.addEventListener('click', () => closeHelp(modal));
   modal.querySelector('#help-start-game')?.addEventListener('click', () => closeHelp(modal));
   modal.querySelector('#help-start-game-qs')?.addEventListener('click', () => closeHelp(modal));
+  const changelogEl = modal.querySelector<HTMLElement>('#help-changelog');
   const changelogToggle = modal.querySelector<HTMLElement>('#help-changelog-toggle');
+  if (expandChangelog && changelogEl && changelogToggle) {
+    changelogEl.hidden = false;
+    changelogToggle.classList.add('help-changelog-btn--active');
+  }
   changelogToggle?.addEventListener('click', () => {
-    const el = modal.querySelector<HTMLElement>('#help-changelog');
-    if (el) {
-      el.hidden = !el.hidden;
-      changelogToggle.classList.toggle('help-changelog-btn--active', !el.hidden);
+    if (changelogEl) {
+      changelogEl.hidden = !changelogEl.hidden;
+      changelogToggle.classList.toggle('help-changelog-btn--active', !changelogEl.hidden);
     }
   });
   modal.addEventListener('click', (e) => {
@@ -49,7 +56,7 @@ export function showHelp(): void {
 function closeHelp(modal: HTMLElement): void {
   modal.classList.add('help-modal--closing');
   setTimeout(() => modal.remove(), 220);
-  localStorage.setItem(HELP_SEEN_KEY, '1');
+  localStorage.setItem(HELP_SEEN_KEY, version);
 }
 
 // ─── Content builders ─────────────────────────────────────────────────────────
@@ -87,12 +94,16 @@ function buildHelpContent(): string {
             <span class="help-qs-text">${t.helpQuickStartItem1}</span>
           </div>
           <div class="help-qs-row">
+            <span class="help-qs-btn help-qs-btn--breed">${t.breedBtn}</span>
+            <span class="help-qs-text">${t.helpQuickStartItem3}</span>
+          </div>
+          <div class="help-qs-row">
             <span class="help-qs-btn help-qs-btn--shop">${t.shopOpenBtnLabel}</span>
             <span class="help-qs-text">${t.helpQuickStartItem2}</span>
           </div>
-          <div class="help-qs-row">
-            <span class="help-qs-btn help-qs-btn--breed">${t.breedBtn}</span>
-            <span class="help-qs-text">${t.helpQuickStartItem3}</span>
+          <div class="help-qs-tip">
+            <span class="help-qs-tip-label">${t.helpQuickStartTip}</span>
+            <span class="help-qs-tip-text">${t.helpQuickStartTipText}</span>
           </div>
           <button class="help-start-btn help-qs-start-btn" id="help-start-game-qs">${t.helpStartBtn}</button>
         </div>
@@ -170,7 +181,7 @@ function buildDecoFlower(): string {
     petalEffect: 'none',
     petalCount: 5,
   });
-  return renderBloomSVG(plant, 64, 64);
+  return renderBloomSVG(plant, 64, 64, 'hlp');
 }
 
 // ─── Hue strip ────────────────────────────────────────────────────────────────
@@ -238,9 +249,9 @@ function buildDominanceChain(items: string[]): string {
 function buildLightnessSwatches(): string {
   const hue = 310; // pink — clear example color
   const levels: [number, string][] = [
-    [30, t.helpLightnessDark],
-    [60, t.helpLightnessMid],
     [90, t.helpLightnessLight],
+    [60, t.helpLightnessMid],
+    [30, t.helpLightnessDark],
   ];
   return levels.map(([l, label]) =>
     `<div class="help-lightness-chip">

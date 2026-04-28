@@ -17,7 +17,8 @@ export function resolvePetalEffect(
   plantId: string,
   pr: number,
   cx: number = 0,
-  cy: number = 0
+  cy: number = 0,
+  context: string = ''
 ): EffectFills {
   const baseStroke = hsl(darken(pc));
   const noOverlay = () => '';
@@ -39,7 +40,7 @@ export function resolvePetalEffect(
     // Light near center, hard-edged dark tips.
     case 'bicolor': {
       const { h, s } = pc;
-      const lLight = 90, lMid = 60, lDark = 30;
+      const lLight = 60, lMid = 45, lDark = 35;
       // round/lanzett tips sit at pr*1.8 — smaller TIP_DIST moves tip beyond 100% (clamped dark).
       // round uses pr*2.0 so only the outer ~15% shows dark; lanzett pr*1.6 for a sharper tip.
       // tropfen/wavy/zickzack tips reach pr*2.2–2.3, keep larger TIP_DIST.
@@ -65,11 +66,12 @@ export function resolvePetalEffect(
           x2 = cx + Math.cos(angle) * TIP_DIST;
           y2 = cy + Math.sin(angle) * TIP_DIST;
         }
+        const [s1, s2, s3] = shape === 'lanzett' ? [52, 58, 64] : [64, 70, 76];
         defsMap[i] = `<linearGradient id="${id}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" gradientUnits="userSpaceOnUse">
           <stop offset="0%"   stop-color="hsl(${h},${s}%,${lLight}%)"/>
-          <stop offset="54%"  stop-color="hsl(${h},${s}%,${lLight}%)"/>
-          <stop offset="66%"  stop-color="hsl(${h},${s}%,${lMid}%)"/>
-          <stop offset="78%"  stop-color="hsl(${h},${s}%,${lDark + 4}%)"/>
+          <stop offset="${s1}%"  stop-color="hsl(${h},${s}%,${lLight}%)"/>
+          <stop offset="${s2}%"  stop-color="hsl(${h},${s}%,${lMid}%)"/>
+          <stop offset="${s3}%"  stop-color="hsl(${h},${s}%,${lDark}%)"/>
           <stop offset="100%" stop-color="hsl(${h},${s}%,${lDark}%)"/>
         </linearGradient>`;
         return id;
@@ -84,7 +86,7 @@ export function resolvePetalEffect(
 
     // ── gradient — radial, center light → tip dark ────────────────────────────
     case 'gradient': {
-      const gradId = `g_${plantId.replace(/[^a-z0-9]/gi, '')}`;
+      const gradId = `g_${plantId.replace(/[^a-z0-9]/gi, '')}${context ? `_${context}` : ''}`;
       if (shape === 'round') {
         return {
           defs: renderGradientDef(pc, shape, gradId),
@@ -110,15 +112,18 @@ export function resolvePetalEffect(
     }
 
     // ── shimmer — soft sine-wave hue drift across petals ─────────────────────
+    // For grayscale colors the hue drift is invisible, so boost lightness amplitude instead.
     case 'shimmer': {
       const AMP = 18;
       const FREQ = 1.3;
+      const isGray = pc.s < 10;
+      const L_AMP = isGray ? 16 : 4;
       return {
         defs: '',
         getFill: (i, n) => {
           const t = n > 1 ? i / (n - 1) : 0;
           const hShift = Math.sin(t * Math.PI * FREQ * 2) * AMP;
-          const lShift = Math.sin(t * Math.PI * FREQ * 2 + 1.0) * 4;
+          const lShift = Math.sin(t * Math.PI * FREQ * 2 + 1.0) * L_AMP;
           return hsl({ h: (pc.h + hShift + 360) % 360, s: pc.s, l: clamp(pc.l + lShift, 20, 95) });
         },
         getStroke: (i, n) => {
@@ -130,18 +135,28 @@ export function resolvePetalEffect(
       };
     }
 
-    // ── iridescent — hue rotates 120° across all petals ──────────────────────
+    // ── iridescent — hue shifts 15° per petal, centered on pc.h ─────────────
+    // For grayscale colors (s ≈ 0), force a full rainbow so the effect is visible.
     case 'iridescent': {
-      const spread = 120;
+      const isGray = pc.s < 10;
+      const GRAY_STEP_DEG = 45;
+      const rainbowS = 75;
+      const rainbowL = clamp(pc.l, 45, 75);
+      const getStep = (n: number) => isGray ? GRAY_STEP_DEG : (n <= 5 ? 30 : 20);
+      const getH = (i: number, n: number) => (pc.h + (i - (n - 1) / 2) * getStep(n) + 3600) % 360;
       return {
         defs: '',
         getFill: (i, n) => {
-          const h = (pc.h + (n > 1 ? (i / (n - 1)) * spread : 0)) % 360;
-          return hsl({ ...pc, h });
+          const h = getH(i, n);
+          return isGray
+            ? hsl({ h, s: rainbowS, l: rainbowL })
+            : hsl({ ...pc, h });
         },
         getStroke: (i, n) => {
-          const h = (pc.h + (n > 1 ? (i / (n - 1)) * spread : 0)) % 360;
-          return hsl(darken({ ...pc, h }));
+          const h = getH(i, n);
+          return isGray
+            ? hsl(darken({ h, s: rainbowS, l: rainbowL }))
+            : hsl(darken({ ...pc, h }));
         },
         getOverlay: noOverlay,
       };

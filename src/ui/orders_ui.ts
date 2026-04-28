@@ -14,11 +14,22 @@ import {
 } from '../engine/orders_engine'
 import { saveState } from '../engine/game'
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer'
-import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY_MID } from '../model/genetic_model'
+import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY } from '../model/genetic_model'
 
-// ─── Panel open state (persisted in module scope) ─────────────────────────────
+// ─── Panel open state (persisted in localStorage) ────────────────────────────
 
-let panelOpen = false
+const PANEL_OPEN_KEY = 'orderBookPanelOpen'
+
+function loadPanelOpen(): boolean {
+  const stored = localStorage.getItem(PANEL_OPEN_KEY)
+  return stored === null ? true : stored === 'true'
+}
+
+function savePanelOpen(value: boolean): void {
+  localStorage.setItem(PANEL_OPEN_KEY, String(value))
+}
+
+let panelOpen = loadPanelOpen()
 
 // ─── Order preview plant ──────────────────────────────────────────────────────
 
@@ -29,7 +40,7 @@ const BUCKET_HUE: Record<string, number> = {
   blue:        200,
   purple:      250,
   pink:        310,
-  gray:        ACHROMATIC_HUE_GRAY_MID,
+  gray:        ACHROMATIC_HUE_GRAY,
 }
 
 const PREVIEW_RENDER_SIZE = 80
@@ -105,7 +116,7 @@ function buildOrderCard(order: Order, index: number): HTMLElement {
   const card = document.createElement('div')
   card.className = `order-card${order.completedToday ? ' order-card--done' : ''}`
 
-  const previewSvg = renderBloomSVG(previewPlantForOrder(order), PREVIEW_RENDER_SIZE, PREVIEW_RENDER_SIZE)
+  const previewSvg = renderBloomSVG(previewPlantForOrder(order), PREVIEW_RENDER_SIZE, PREVIEW_RENDER_SIZE, 'ord')
 
   const reqTags = order.requirements
     .map(r => `<span class="order-req-tag ${difficultyClass(r)}">${requirementLabel(r)}</span>`)
@@ -206,6 +217,7 @@ export function initOrderBookPanel(): void {
   const toggle = panel.querySelector('.order-toggle-btn')
   toggle?.addEventListener('click', () => {
     panelOpen = !panelOpen
+    savePanelOpen(panelOpen)
     panel.classList.toggle('order-panel--open', panelOpen)
     renderOrderBook()
   })

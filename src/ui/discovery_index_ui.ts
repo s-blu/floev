@@ -1,57 +1,17 @@
 import { t } from '../model/i18n';
-import { expressedColor, expressedShape, expressedNumber, colorBucket, expressedCenter, expressedEffect } from '../engine/genetic/genetic_utils';
+import { expressedColor, colorBucket } from '../engine/genetic/genetic_utils';
 import {
-  PETAL_SHAPES, PALETTE_HUES_BUCKETS, PALETTE_S, PALETTE_L, CENTER_TYPES, PETAL_EFFECTS,
+  PETAL_SHAPES, PALETTE_HUES_BUCKETS, PALETTE_S, PALETTE_L, CENTER_TYPES,
 } from '../model/genetic_model';
 import type { CatalogEntry } from '../model/plant';
 import type { ColorBucket } from '../model/genetic_model';
-import type { PetalEffect } from '../model/plant';
+import {
+  buildDiscoveredShapeCounts, buildDiscoveredShapeCenters, buildDiscoveredShapeEffects,
+  buildDiscoveredColors, buildDiscoveredShapeColors, getBucketKeys, PETAL_COUNTS, DISPLAY_EFFECTS,
+} from '../engine/discovery_utils';
 
 const SECRET_BUCKETS = new Set<ColorBucket>(['purple', 'blue', 'gray']);
-const PETAL_COUNTS = [3, 4, 5, 6, 7, 8] as const;
 const BUCKET_ORDER: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray', 'white'];
-const DISPLAY_EFFECTS = PETAL_EFFECTS.filter(e => e !== 'none') as PetalEffect[];
-
-// ─── Discovery set builders ───────────────────────────────────────────────────
-
-function buildDiscoveredShapeCounts(catalog: CatalogEntry[]): Set<string> {
-  const set = new Set<string>();
-  for (const e of catalog) {
-    const shape = expressedShape(e.plant.petalShape);
-    const count = Math.round(expressedNumber(e.plant.petalCount));
-    set.add(`${shape}_${count}`);
-  }
-  return set;
-}
-
-function buildDiscoveredShapeCenters(catalog: CatalogEntry[]): Set<string> {
-  const set = new Set<string>();
-  for (const e of catalog) {
-    const shape = expressedShape(e.plant.petalShape);
-    const center = expressedCenter(e.plant.centerType);
-    set.add(`${shape}_${center}`);
-  }
-  return set;
-}
-
-function buildDiscoveredShapeEffects(catalog: CatalogEntry[]): Set<string> {
-  const set = new Set<string>();
-  for (const e of catalog) {
-    const shape = expressedShape(e.plant.petalShape);
-    const effect = expressedEffect(e.plant.petalEffect);
-    if (effect !== 'none') set.add(`${shape}_${effect}`);
-  }
-  return set;
-}
-
-function buildDiscoveredColors(catalog: CatalogEntry[]): Set<string> {
-  const set = new Set<string>();
-  for (const e of catalog) {
-    const c = expressedColor(e.plant.petalHue, e.plant.petalLightness);
-    set.add(`${c.h}_${c.l}`);
-  }
-  return set;
-}
 
 // ─── Shape section (count / center / effect) — three responsive sub-grids ────
 
@@ -169,9 +129,9 @@ function renderBucketHueGroups(bucket: ColorBucket, discoveredColors: Set<string
 
   if (bucket === 'gray') {
     const grayShades = [
-      { key: '2_10',  css: 'hsl(0,0%,10%)', name: (t.colorLabel as any)[2]?.[0]?.[10] ?? '' },
-      { key: '2_40',  css: 'hsl(0,0%,40%)', name: (t.colorLabel as any)[2]?.[0]?.[40] ?? '' },
-      { key: '2_70',  css: 'hsl(0,0%,70%)', name: (t.colorLabel as any)[2]?.[0]?.[70] ?? '' },
+      { key: '2_30',  css: 'hsl(0,0%,30%)', name: (t.colorLabel as any)[2]?.[0]?.[30] ?? '' },
+      { key: '2_60',  css: 'hsl(0,0%,60%)', name: (t.colorLabel as any)[2]?.[0]?.[60] ?? '' },
+      { key: '2_90',  css: 'hsl(0,0%,90%)', name: (t.colorLabel as any)[2]?.[0]?.[90] ?? '' },
     ];
     const swatches = grayShades.map(s => colorSwatchHtml(s.css, s.name, discoveredColors.has(s.key))).join('');
     return `<div class="di-hue-group-row"><div class="di-swatches">${swatches}</div></div>`;
@@ -208,12 +168,6 @@ function renderSecretBucketGroups(bucket: ColorBucket): string {
   }).join('');
 }
 
-function getBucketKeys(bucket: ColorBucket): string[] {
-  if (bucket === 'white') return ['1_100'];
-  if (bucket === 'gray') return ['2_10', '2_40', '2_70'];
-  const hues = (PALETTE_HUES_BUCKETS as Record<string, readonly number[]>)[bucket] ?? [];
-  return hues.flatMap(hue => (PALETTE_L as readonly number[]).map(l => `${hue}_${l}`));
-}
 
 function renderColorSection(catalog: CatalogEntry[]): string {
   const discoveredColors = buildDiscoveredColors(catalog);
@@ -246,6 +200,65 @@ function renderColorSection(catalog: CatalogEntry[]): string {
   </div>`;
 }
 
+// ─── Shape × Color bucket matrix ─────────────────────────────────────────────
+
+function renderShapeColorSection(catalog: CatalogEntry[]): string {
+  const discoveredShapeColors = buildDiscoveredShapeColors(catalog);
+
+  const knownBuckets = new Set(
+    catalog.map(e => colorBucket(expressedColor(e.plant.petalHue, e.plant.petalLightness)))
+  );
+  const discoveredShapes = new Set(
+    PETAL_SHAPES.filter(s => BUCKET_ORDER.some(b => discoveredShapeColors.has(`${s}_${b}`)))
+  );
+
+  const HEADER_ROW = 1;
+  const DATA_ROW   = 2;
+
+  function cell(cls: string, col: number, row: number, title = '', content = ''): string {
+    const titleAttr = title ? ` title="${title}"` : '';
+    return `<span class="${cls}"${titleAttr} style="grid-column:${col};grid-row:${row}">${content}</span>`;
+  }
+  function dot(shapeKnown: boolean, bucketKnown: boolean, found: boolean, col: number, row: number, title: string): string {
+    if (!shapeKnown || !bucketKnown) return cell('di-count-dot di-dot--secret', col, row);
+    const cls = found ? 'di-count-dot di-dot--found' : 'di-count-dot di-dot--missing';
+    return cell(cls, col, row, title);
+  }
+
+  const nBuckets = BUCKET_ORDER.length;
+
+  const colHeaders = BUCKET_ORDER.map((bucket, i) => {
+    const bucketKnown = !SECRET_BUCKETS.has(bucket) || knownBuckets.has(bucket);
+    const label = bucketKnown ? (t.colorBucketLabelsShort[bucket] ?? bucket) : '?';
+    const title = bucketKnown ? (t.colorBucketLabels[bucket] ?? bucket) : '';
+    return cell('di-col-header', 2 + i, HEADER_ROW, title, label);
+  }).join('');
+
+  const shapeRows = PETAL_SHAPES.map((shape, si) => {
+    const row        = DATA_ROW + si;
+    const shapeKnown = discoveredShapes.has(shape);
+    const name       = shapeKnown ? (t.shapeLabels[shape] ?? shape) : '?';
+    const labelCls   = shapeKnown ? 'di-shape-label' : 'di-shape-label di-shape-label--secret';
+    const shapeLabel = cell(labelCls, 1, row, '', name);
+    const dots = BUCKET_ORDER.map((bucket, i) => {
+      const bucketKnown = !SECRET_BUCKETS.has(bucket) || knownBuckets.has(bucket);
+      const title = shapeKnown && bucketKnown ? `${name} · ${t.colorBucketLabels[bucket] ?? bucket}` : '';
+      return dot(shapeKnown, bucketKnown, discoveredShapeColors.has(`${shape}_${bucket}`), 2 + i, row, title);
+    }).join('');
+    return shapeLabel + dots;
+  }).join('');
+
+  const grid = `<div class="di-shape-grid" style="grid-template-columns:auto repeat(${nBuckets}, 17px)">
+    ${colHeaders}
+    ${shapeRows}
+  </div>`;
+
+  return `<div class="di-block">
+    <div class="di-block-title">${t.discoveryIndexSectionShapeColors}</div>
+    <div class="di-shape-groups">${grid}</div>
+  </div>`;
+}
+
 // ─── Summary ──────────────────────────────────────────────────────────────────
 
 function buildSummaryStats(catalog: CatalogEntry[]): string {
@@ -273,7 +286,7 @@ export function renderDiscoveryIndex(catalog: CatalogEntry[], open = false): HTM
       <span class="di-summary-stats">${buildSummaryStats(catalog)}</span>
     </summary>
     <div class="di-body">
-      ${catalog.length > 0 ? renderShapeSection(catalog) + renderColorSection(catalog) : ''}
+      ${catalog.length > 0 ? renderShapeSection(catalog) + renderShapeColorSection(catalog) + renderColorSection(catalog) : ''}
     </div>`;
 
   return el;

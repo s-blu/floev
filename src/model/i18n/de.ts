@@ -54,14 +54,12 @@ export const de = {
 
   // Rare recessive carrier badge
   rareCarrierBadge: '✦',
-  rareCarrierTitle: 'Trägt ein seltenes rezessives Merkmal',
+  rareCarrierTitle: 'Trägt ein verborgenes Allel einer noch nicht vollständig entdeckten Rarität',
 
   // Allele inspect (magnifier)
   alleleInspectTitle: 'Allele anzeigen',
   alleleHueWhite: 'weiß',
-  alleleHueGrayDark: 'dunkelgrau',
-  alleleHueGrayMid: 'grau',
-  alleleHueGrayLight: 'hellgrau',
+  alleleHueGray: 'grau',
   alleleOverlayTitle: 'Genetik',
   alleleOverlayHue: 'Farbe',
   alleleOverlayLight: 'Helligkeit',
@@ -167,15 +165,32 @@ export const de = {
     unlock_discovery_index:  'Entdeckungs-Index',
     unlock_showcase:         'Schaukasten',
     unlock_order_book:       'Auftragsbuch',
+    unlock_seed_drawer:      'Saatenschublade',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
     unlock_selfpollinate:    'Pflanzen können sich selbst bestäuben, um reinerbigere Nachkommen zu erzeugen.',
-    unlock_rare_radar:       'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein seltenes rezessives Allel trägt.',
+    unlock_rare_radar:       'Zeigt ein ✦-Symbol neben der Seltenheitsstufe, wenn eine Pflanze ein verborgenes Allel einer seltenen, noch nicht vollständig entdeckten Eigenschaft trägt.',
     unlock_discovery_index:  'Zeigt im Katalog eine Übersicht aller entdeckten und noch unbekannten Formen und Farben.',
     unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
     unlock_order_book:       'Täglich 3 Aufträge: Züchte und verkaufe Blüten mit bestimmten Merkmalen für Bonus-Münzen.',
+    unlock_seed_drawer:      'Eine Schublade mit 20 Fächern für bis zu 100 Saaten. Beim Kreuzen besteht eine Chance auf einen Überschuss-Samen.',
   } as Record<string, string>,
+
+  // Saatenschublade
+  seedDrawerTitle: 'Saatenschublade',
+  seedDrawerCapacity: (n: number, max: number) => `${n} / ${max}`,
+  seedDrawerEmpty: 'Noch keine Saaten vorhanden.',
+  plantFromStorage: 'Aus Saatensammlung',
+  surplusSeedObtained: 'Einen Überschuss-Samen erhalten!',
+  surplusSeedCapacity: (n: number, max: number) => `${n} von ${max} Überschuss-Samen verbleibend`,
+  seedDrawerButton: (n: number) => `Saaten (${n})`,
+  selectSeedToPlant: 'Saaten zum Einpflanzen wählen',
+  seedMoveHint: 'Klick auf ein Fach zum Ablegen',
+  seedSellZone: 'Verkaufen',
+  msgSeedSold: (coins: number) => `Samen verkauft! +${coins} 🪙`,
+  seedMoveCancel: 'Abbrechen',
+  seedDrawerClose: 'Schließen',
 
   // Shop — Showcase
   shopSectionShowcase: 'Schaukasten erweitern',
@@ -221,7 +236,7 @@ export const de = {
 
   // Order requirement labels
   orderReqShape:      (name: string) => `Form: ${name}`,
-  orderReqColor:      (name: string) => `Farbe: ${name}`,
+  orderReqColor:      (name: string) => `Farbbereich: ${name}`,
   orderReqLightness:  (name: string) => `Helligkeit: ${name}`,
   orderReqCountGte:   (n: number)    => `Min. ${n} Blütenbl.`,
   orderReqCountLte:   (n: number)    => `Max. ${n} Blütenbl.`,
@@ -231,6 +246,9 @@ export const de = {
 
   // Lightness labels
   lightnessLabels: { 30: 'Dunkel', 60: 'Mittel', 90: 'Hell' } as Record<number, string>,
+
+  // Notification footer
+  notifEmpty: 'Noch keine Meldungen.',
 
   // Messages
   msgSeedPlanted: 'Samen gepflanzt!',
@@ -255,7 +273,7 @@ export const de = {
   helpColorsBody: 'Jede Pflanze trägt zwei Farb-Allele und zwei Helligkeits-Allele. Das dominantere Allel bestimmt die sichtbare Farbe.',
   helpColorBucketsExplain: 'Farben sind in Bereiche eingeteilt — von häufig (links) bis selten (rechts). Manche Bereiche sind noch unentdeckt:',
   helpColorsDominance: 'Farbdominanz — links dominiert, rechts ist rezessiv',
-  helpLightnessDominance: 'Helligkeit: Dunkel dominiert Mittel dominiert Hell',
+  helpLightnessDominance: 'Helligkeit: Hell dominiert Mittel dominiert Dunkel',
   helpLightnessDark: 'dunkel',
   helpLightnessMid: 'mittel',
   helpLightnessLight: 'hell',
@@ -309,6 +327,8 @@ export const de = {
   helpQuickStartItem1: 'zufällige Samen pflanzen',
   helpQuickStartItem2: 'neue Funktionen freischalten',
   helpQuickStartItem3: 'deine erste Kreuzung ausprobieren',
+  helpQuickStartTip: '💡 Shop-Tipp!',
+  helpQuickStartTipText: 'Das Auftragsbuch hilft schon früh, Münzen zu verdienen – und die Genetik-Lupe lässt dich die Vererbung besser verstehen.',
 
   // Achievement panel
   achPanelTitle: 'Erfolge',
@@ -340,9 +360,9 @@ export const de = {
   achCatalogDesc: (n: number) => `Entdecke ${n} verschiedene Blüten.`,
 
   // Color diversity
-  achColorDivTitle: (n: number) => n === 8 ? 'Volle Palette' : `${n} Farben`,
-  achColorDivDesc: (n: number) => n === 8
-    ? 'Entdecke Blüten in allen 8 Farbbereichen (inkl. Weiß & Grau).'
+  achColorDivTitle: (n: number) => n === 7 ? 'Volle Palette' : `${n} Farben`,
+  achColorDivDesc: (n: number) => n === 7
+    ? 'Entdecke Blüten in allen 7 Farbbereichen (inkl. Weiß & Grau).'
     : `Entdecke Blüten in ${n} verschiedenen Farbbereichen.`,
 
   // Shape diversity
@@ -449,11 +469,14 @@ export const de = {
   effectLabelsShort: {
     bicolor: 'Zw', gradient: 'FV', shimmer: 'Si', iridescent: 'Ir',
   } as Record<string, string>,
+  colorBucketLabelsShort: {
+    white: 'W', yellowgreen: 'GG', red: 'Ro', pink: 'Pi', purple: 'Li', blue: 'Bl', gray: 'Gr',
+  } as Record<string, string>,
 
   colorLabelGradient: "-Verlauf",
 
   colorLabel: {
-  0: {
+  5: {
     hueName: `Karmin (Gruppe)`,
     90: {
       30: "Karmesin",
@@ -470,9 +493,9 @@ export const de = {
   2: {
     hueName: 'Grau (Gruppe)',
     0: {
-      10: "Anthrazit",
-      40: "Steingrau",
-      70: "Silber",
+      30: "Anthrazit",
+      60: "Steingrau",
+      90: "Silber",
     }
   },
   25: {
@@ -579,6 +602,7 @@ discoveryIndexTitle: 'Entdeckungs-Index',
   discoveryIndexMatrixCenter: 'Zentrum',
   discoveryIndexMatrixEffect: 'Effekt',
   discoveryIndexSectionColors: 'Farben',
+  discoveryIndexSectionShapeColors: 'Farbe × Form',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
     `${shapes}/${totalShapes} Formen · ${colors}/${totalColors} Farben`,
 

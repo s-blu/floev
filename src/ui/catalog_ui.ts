@@ -86,7 +86,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const center = expressedCenter(plant.centerType);
   const count = Math.round(expressedNumber(plant.petalCount));
   const effect = expressedEffect(plant.petalEffect);
-  const hasEffect = effect !== 'none' && pc.s > 0;
+  const hasEffect = effect !== 'none' && (pc.s > 0 || pc.h === 2);
   const pcForEffect = hasEffect ? { ...pc, l: 60 as const } : pc;
   const hslMain = `hsl(${Math.round(pc.h)},${Math.round(pc.s)}%,${Math.round(pc.l)}%)`;
   const swatchStyle = `background: ${hasEffect ? buildFamilySwatchStyle(pc) : hslMain}`;
@@ -108,7 +108,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
       <div class="enc-entry-num">${t.catalogEntryNum(num)}</div>
     </div>
     <div class="enc-body">
-      <div class="enc-bloom">${renderBloomSVG(plant, 80, 80)}</div>
+      <div class="enc-bloom">${renderBloomSVG(plant, 80, 80, 'cat')}</div>
       <div class="enc-info">
         <div class="enc-badges-row">
           <span class="enc-rarity-badge" style="background:${badge.bg};color:${badge.color}">${t.rarity[entry.rarity]}</span>
@@ -147,10 +147,19 @@ function buildEffectSwatchStyle(effect: PetalEffect, pc: HSLColor): string {
       return `background: linear-gradient(90deg, ${hsl(h, s, s === 0 ? 90 : 88)} 50%, ${hsl(h, s, s === 0 ? 20 : 28)} 50%)`;
     case 'gradient':
       return `background: linear-gradient(to right, ${hsl(h, s, 90)}, ${hsl(h, s, 30)})`;
-    case 'shimmer':
-      return diagonal4([-12, 0, 12, 0].map(o => hsl(h + o, s, l)));
-    case 'iridescent':
-      return diagonal4([0, 40, 80, 120].map(o => hsl(h + o, s, l)));
+    case 'shimmer': {
+      const isGray = s < 10;
+      return isGray
+        ? diagonal4([l - 20, l - 5, l + 15, l - 8].map(lv => hsl(h, s, lv)))
+        : diagonal4([-12, 0, 12, 0].map(o => hsl(h + o, s, l)));
+    }
+    case 'iridescent': {
+      const isGray = s < 10;
+      const rl = Math.min(Math.max(l, 45), 75);
+      return isGray
+        ? diagonal4([0, 90, 180, 270].map(o => hsl(o, 75, rl)))
+        : diagonal4([0, 40, 80, 120].map(o => hsl(h + o, s, l)));
+    }
     default:
       return `background: ${hsl(h, s, l)}`;
   }

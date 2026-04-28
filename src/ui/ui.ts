@@ -1,14 +1,25 @@
 import type { GameState, BreedEstimate } from '../model/plant'
 import {
   advancePhases,
+  saveState,
+} from '../engine/game'
+import {
+  moveToShowcase,
+  moveFromShowcase
+} from '../engine/showcase_engine'
+import {
+  addSeedToStorage,
+  removeSeedFromStorage,
+  moveSeedToSlot,
+  sellSeedFromStorage
+} from '../engine/seed_storage_engine'
+import {
   plantSeed,
   removePlant,
   sellPlant,
   placeSeedInEmptyPot,
-  moveToShowcase,
-  moveFromShowcase,
-  saveState,
-} from '../engine/game'
+  placeSeedInSpecificPot
+} from '../engine/pot_engine'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
 import { buyUpgrade, buyPotColor, buyPotShape, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
@@ -19,8 +30,11 @@ import { renderShopSidebar } from '../ui/shop_ui'
 import { t } from '../model/i18n/index'
 import { checkAchievements } from '../engine/achievements'
 import { renderAchievements, queueAchievementToast, initAchievementsPanel } from './achievements_ui'
+import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
+import { SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT } from '../model/genetic_model'
+import { renderSeedDrawer } from './seeds_ui'
 
 
 
@@ -72,6 +86,7 @@ export function render(): void {
   renderCoins()
   renderShopSidebar()
   renderOrderBook()
+  renderSeedDrawer()
 }
 
 // ─── Shop action handlers ─────────────────────────────────────────────────────
@@ -142,8 +157,7 @@ export function renderCoins(): void {
 // ─── Message bar ──────────────────────────────────────────────────────────────
 
 export function showMsg(text: string): void {
-  const el = document.getElementById('msg')
-  if (el) el.textContent = text
+  addNotification(text)
 }
 
 // ─── Action handlers ──────────────────────────────────────────────────────────
@@ -201,6 +215,16 @@ export function handleSell(potId: number): void {
     const total = reward + bonus
     showMsg(bonus > 0 ? t.msgSoldWithBonus(total, bonus) : t.msgSold(total))
     if (sellBtn) spawnCoinFly(sellBtn, total)
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleSellSeed(seedId: string, fromEl: HTMLElement): void {
+  const reward = sellSeedFromStorage(state, seedId)
+  if (reward >= 0) {
+    showMsg(t.msgSeedSold(reward))
+    spawnCoinFly(fromEl, reward)
     checkAchAndSave(state)
     render()
   }
@@ -305,7 +329,38 @@ function handleBreed(): void {
     return
   }
 
-  showMsg(t.breedSuccess(child.generation))
+  if (
+    hasUpgrade(state, 'unlock_seed_drawer') &&
+    Math.random() < SURPLUS_SEED_CHANCE &&
+    state.seeds.length < MAX_SEED_STORAGE &&
+    (potA.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT &&
+    (potB.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT
+  ) {
+    const surplusSeed = breedPlants(potA.plant, potB.plant)
+    addSeedToStorage(state, surplusSeed)
+    potA.plant.surplusSeedsProduced = (potA.plant.surplusSeedsProduced ?? 0) + 1
+    potB.plant.surplusSeedsProduced = (potB.plant.surplusSeedsProduced ?? 0) + 1
+    showMsg(t.surplusSeedObtained)
+  } else {
+    showMsg(t.breedSuccess(child.generation))
+  }
+
+  checkAchAndSave(state)
+  render()
+}
+
+export function handleMoveSeedToSlot(seedId: string, targetSlotIdx: number): void {
+  moveSeedToSlot(state, seedId, targetSlotIdx)
+  saveState(state)
+}
+
+export function handlePlantSeedFromStorage(potId: number, seedId: string): void {
+  const seed = removeSeedFromStorage(state, seedId)
+  if (!seed) return
+  if (!placeSeedInSpecificPot(state, seed, potId)) {
+    state.seeds.push(seed)
+    return
+  }
   checkAchAndSave(state)
   render()
 }
