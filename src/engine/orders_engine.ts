@@ -98,6 +98,19 @@ function rewardForRequirements(reqs: OrderRequirement[]): number {
   }, 0)
 }
 
+// petalEffect uses all hue-bucket colors, so lightness is irrelevant when an effect is active
+const TRAIT_CONFLICTS: Partial<Record<OrderTrait, OrderTrait[]>> = {
+  petalEffect:    ['petalLightness'],
+  petalLightness: ['petalEffect'],
+}
+
+function addWithConflicts(used: Set<OrderTrait>, trait: OrderTrait): void {
+  used.add(trait)
+  for (const conflict of TRAIT_CONFLICTS[trait] ?? []) {
+    used.add(conflict as OrderTrait)
+  }
+}
+
 function pickWithoutTraitConflict(
   pool: OrderRequirement[],
   used: Set<OrderTrait>,
@@ -123,13 +136,13 @@ export function generateOrders(date: string): Order[] {
   if (order2Variant === 0) {
     const used2 = new Set<OrderTrait>()
     const req2a = pickWithoutTraitConflict(EASY_POOL, used2, rng)!
-    used2.add(req2a.trait)
+    addWithConflicts(used2, req2a.trait)
     const req2b = pickWithoutTraitConflict(EASY_POOL, used2, rng)!
     reqs2 = [req2a, req2b]
   } else if (order2Variant === 1) {
     const used2 = new Set<OrderTrait>()
     const req2a = pickWithoutTraitConflict(EASY_POOL, used2, rng)!
-    used2.add(req2a.trait)
+    addWithConflicts(used2, req2a.trait)
     const req2b = pickWithoutTraitConflict(MEDIUM_POOL, used2, rng) ?? pickWithoutTraitConflict(EASY_POOL, used2, rng)!
     reqs2 = [req2a, req2b]
   } else {
@@ -144,13 +157,13 @@ export function generateOrders(date: string): Order[] {
   if (order3Variant === 0) {
     const used3 = new Set<OrderTrait>()
     const req3a = pickWithoutTraitConflict(MEDIUM_POOL, used3, rng)!
-    used3.add(req3a.trait)
+    addWithConflicts(used3, req3a.trait)
     const req3b = pickWithoutTraitConflict(MEDIUM_POOL, used3, rng) ?? pickWithoutTraitConflict(EASY_POOL, used3, rng)!
     reqs3 = [req3a, req3b]
   } else {
     const used3 = new Set<OrderTrait>()
     const req3a = pickWithoutTraitConflict(EASY_POOL, used3, rng)!
-    used3.add(req3a.trait)
+    addWithConflicts(used3, req3a.trait)
     const req3b = pickWithoutTraitConflict(HARD_POOL, used3, rng) ?? pickRng(HARD_POOL, rng)
     reqs3 = [req3a, req3b]
   }
