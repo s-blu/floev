@@ -1,5 +1,6 @@
 import { t } from '../model/i18n';
 import { PALETTE_HUES, PALETTE_S } from '../model/genetic_model';
+import { renderPetalShapeSvg } from './icons';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import { plannedPlant } from '../engine/genetic/genetic';
 import { RARITY_COLORS, type Rarity } from "../model/rarity_model";
@@ -265,9 +266,9 @@ function buildLightnessSwatches(): string {
 
 function buildShapeCards(): string {
   const known: { name: string; label: string; svg: string }[] = [
-    { name: 'round',   label: t.shapeRound,   svg: buildShapeSVG('round') },
-    { name: 'lanzett', label: t.shapeLanzett, svg: buildShapeSVG('lanzett') },
-    { name: 'tropfen', label: t.shapeDrop,    svg: buildShapeSVG('tropfen') },
+    { name: 'round',   label: t.shapeRound,   svg: renderPetalShapeSvg('round') },
+    { name: 'lanzett', label: t.shapeLanzett, svg: renderPetalShapeSvg('lanzett') },
+    { name: 'tropfen', label: t.shapeDrop,    svg: renderPetalShapeSvg('tropfen') },
   ];
 
   const knownHtml = known.map(s =>
@@ -285,24 +286,6 @@ function buildShapeCards(): string {
   ).join('');
 
   return knownHtml + secretHtml;
-}
-
-// Minimal inline SVG per petal shape (single petal, top-centered)
-function buildShapeSVG(shape: 'round' | 'lanzett' | 'tropfen'): string {
-  const w = 40, h = 44, cx = 20, cy = 38;
-  let path = '';
-  const fill = 'hsl(330,80%,72%)';
-  const stroke = 'hsl(330,70%,55%)';
-  const sw = 'stroke-width="0.8"';
-
-  if (shape === 'round') {
-    path = `<ellipse cx="${cx}" cy="${cy - 14}" rx="12" ry="8.5" fill="${fill}" stroke="${stroke}" ${sw}/>`;
-  } else if (shape === 'lanzett') {
-    path = `<path d="M${cx},${cy - 2} C${cx + 4},${cy - 16} ${cx},${cy - 30} ${cx},${cy - 30} C${cx},${cy - 30} ${cx - 4},${cy - 16} ${cx},${cy - 2} Z" fill="${fill}" stroke="${stroke}" ${sw}/>`;
-  } else {
-    path = `<path d="M${cx},${cy - 2} C${cx + 10},${cy - 14} ${cx},${cy - 32} ${cx},${cy - 32} C${cx},${cy - 32} ${cx - 10},${cy - 14} ${cx},${cy - 2} Z" fill="${fill}" stroke="${stroke}" ${sw}/>`;
-  }
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${path}</svg>`;
 }
 
 // ─── Rarity list ──────────────────────────────────────────────────────────────

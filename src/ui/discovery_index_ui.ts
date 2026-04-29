@@ -9,56 +9,10 @@ import {
   buildDiscoveredShapeCounts, buildDiscoveredShapeCenters, buildDiscoveredShapeEffects,
   buildDiscoveredColors, buildDiscoveredShapeColors, getBucketKeys, PETAL_COUNTS, DISPLAY_EFFECTS,
 } from '../engine/discovery_utils';
+import { CENTER_TYPE_ICONS, renderEffectSwatch, renderBucketSwatchStrip } from './icons';
 
 const SECRET_BUCKETS = new Set<ColorBucket>(['purple', 'blue', 'gray']);
 const BUCKET_ORDER: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray', 'white'];
-const BUCKET_SWATCH_L = 60;
-const CENTER_TYPE_ICONS: Record<string, string> = {
-  dot:    `<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>`,
-  disc:   `<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3" fill="currentColor"/><circle cx="5" cy="5" r="4.5" fill="none" stroke="currentColor" stroke-width="1"/></svg>`,
-  stamen: `<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="2" cy="8" r="1.5" fill="currentColor"/><circle cx="5" cy="3.5" r="1.5" fill="currentColor"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/></svg>`,
-};
-const EFFECT_SWATCH_HUE: Record<string, number> = {
-  bicolor: 320, gradient: 200, shimmer: 40, iridescent: 0,
-};
-
-function effectSwatchHtml(effect: string): string {
-  const h = EFFECT_SWATCH_HUE[effect] ?? 0;
-  const hsl = (hue: number, s: number, l: number) =>
-    `hsl(${((hue % 360) + 360) % 360},${s}%,${l}%)`;
-  let bg: string;
-  switch (effect) {
-    case 'bicolor':
-      bg = `linear-gradient(90deg, ${hsl(h,90,88)} 50%, ${hsl(h,90,28)} 50%)`;
-      break;
-    case 'gradient':
-      bg = `linear-gradient(to right, ${hsl(h,90,90)}, ${hsl(h,90,30)})`;
-      break;
-    case 'shimmer':
-      bg = `linear-gradient(135deg, ${hsl(h-15,90,60)} 25%, ${hsl(h,90,60)} 25%, ${hsl(h,90,60)} 50%, ${hsl(h+15,90,60)} 50%, ${hsl(h+15,90,60)} 75%, ${hsl(h,90,60)} 75%)`;
-      break;
-    case 'iridescent':
-      bg = `linear-gradient(135deg, ${hsl(0,80,65)} 25%, ${hsl(90,80,65)} 25%, ${hsl(90,80,65)} 50%, ${hsl(180,80,65)} 50%, ${hsl(180,80,65)} 75%, ${hsl(270,80,65)} 75%)`;
-      break;
-    default:
-      bg = hsl(h,90,60);
-  }
-  return `<div class="di-mini-swatches"><span class="di-mini-swatch di-mini-swatch--effect" style="background:${bg}"></span></div>`;
-}
-
-function bucketSwatchStripHtml(bucket: ColorBucket): string {
-  if (bucket === 'white') {
-    return `<div class="di-mini-swatches"><span class="di-mini-swatch" style="background:hsl(0,0%,97%)"></span></div>`;
-  }
-  if (bucket === 'gray') {
-    return `<div class="di-mini-swatches"><span class="di-mini-swatch" style="background:hsl(0,0%,${BUCKET_SWATCH_L}%)"></span></div>`;
-  }
-  const hues = (PALETTE_HUES_BUCKETS as Record<string, readonly number[]>)[bucket] ?? [];
-  const swatches = hues.map(hue =>
-    `<span class="di-mini-swatch" style="background:hsl(${hue},${PALETTE_S}%,${BUCKET_SWATCH_L}%)"></span>`
-  ).join('');
-  return `<div class="di-mini-swatches">${swatches}</div>`;
-}
 
 // ─── Shape section (count / center / effect) — three responsive sub-grids ────
 
@@ -135,7 +89,7 @@ function renderShapeSection(catalog: CatalogEntry[]): string {
     <span class="di-matrix-subtitle" style="grid-column:2/${2 + nEffects};grid-row:${SUBTITLE_ROW}">${t.discoveryIndexMatrixEffect}</span>
     ${DISPLAY_EFFECTS.map((ef, i) => {
       const discovered = PETAL_SHAPES.some(s => discoveredEffects.has(`${s}_${ef}`));
-      const content = discovered ? effectSwatchHtml(ef) : '?';
+      const content = discovered ? renderEffectSwatch(ef) : '?';
       const title   = discovered ? (t.effectLabels[ef] ?? ef) : '';
       return cell('di-col-header', 2 + i, HEADER_ROW, title, content);
     }).join('')}
@@ -276,7 +230,7 @@ function renderShapeColorSection(catalog: CatalogEntry[]): string {
 
   const colHeaders = BUCKET_ORDER.map((bucket, i) => {
     const bucketKnown = !SECRET_BUCKETS.has(bucket) || knownBuckets.has(bucket);
-    const content = bucketKnown ? bucketSwatchStripHtml(bucket) : '?';
+    const content = bucketKnown ? renderBucketSwatchStrip(bucket) : '?';
     const title   = bucketKnown ? (t.colorBucketLabels[bucket] ?? bucket) : '';
     return cell('di-col-header', 2 + i, HEADER_ROW, title, content);
   }).join('');
