@@ -404,6 +404,11 @@ export function handleMoveSeedToSlot(seedId: string, targetSlotIdx: number): voi
   saveState(state)
 }
 
+export function handleSetSlotLabel(slotIdx: number, labels: string[]): void {
+  state.seedSlotLabels[slotIdx] = labels.slice(0, 2)
+  saveState(state)
+}
+
 export function handlePlantSeedFromStorage(potId: number, seedId: string): void {
   const seed = removeSeedFromStorage(state, seedId)
   if (!seed) return

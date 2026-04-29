@@ -2,7 +2,7 @@ import type { GameState, Pot, Plant, PlantPhase } from '../model/plant'
 import { randomPlant } from './genetic/genetic'
 import { addToCatalog } from './catalog'
 import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLANTS, DEBUG_SEEDS, USE_FIXED_SEEDS } from '../dev.config'
-import { MAX_SEED_STORAGE } from '../model/genetic_model'
+import { MAX_SEED_STORAGE, SAATENSCHUBLADE_SLOTS } from '../model/genetic_model'
 import { runMigrations, LATEST_MIGRATION_VERSION } from './migrations'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ function createInitialState(): GameState {
   }
 
 
-  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], seeds: [], seedLayout: Array(MAX_SEED_STORAGE).fill(''), lastSave: Date.now(), migrationVersion: LATEST_MIGRATION_VERSION }
+  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], seeds: [], seedLayout: Array(MAX_SEED_STORAGE).fill(''), seedSlotLabels: Array.from({ length: SAATENSCHUBLADE_SLOTS }, () => []), lastSave: Date.now(), migrationVersion: LATEST_MIGRATION_VERSION }
   if (useDebugSeeds) {
     gameState.seeds = DEBUG_SEEDS
     DEBUG_SEEDS.forEach((s, i) => { gameState.seedLayout[i] = s.id })
@@ -79,6 +79,9 @@ export function loadState(): GameState {
       if (!parsed.seedLayout || parsed.seedLayout.length !== MAX_SEED_STORAGE) {
         parsed.seedLayout = Array(MAX_SEED_STORAGE).fill('')
         parsed.seeds.forEach((s, i) => { if (i < MAX_SEED_STORAGE) parsed.seedLayout[i] = s.id })
+      }
+      if (!parsed.seedSlotLabels || parsed.seedSlotLabels.length !== SAATENSCHUBLADE_SLOTS) {
+        parsed.seedSlotLabels = Array.from({ length: SAATENSCHUBLADE_SLOTS }, () => [])
       }
 
       if (runMigrations(parsed)) saveState(parsed)

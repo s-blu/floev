@@ -194,6 +194,16 @@ export const en = {
   msgSeedSold: (coins: number) => `Seed sold! +${coins} ${COIN_ICON}`,
   seedMoveCancel: 'Cancel',
   seedDrawerClose: 'Close',
+  seedLabelEditBtn: 'Label',
+  seedLabelEditHint: 'Click a compartment to label it',
+  seedLabelPickerTitle: 'Label',
+  seedLabelPickerClear: 'Clear',
+  seedLabelPickerDone: 'Done',
+  seedLabelCategoryBucket: 'Color',
+  seedLabelCategoryShape: 'Petal shape',
+  seedLabelCategoryCenter: 'Center',
+  seedLabelCategoryEffect: 'Effect',
+  seedLabelMaxHint: '(max. 2)',
 
   // Shop — Showcase
   shopSectionShowcase: 'Expand showcase',

@@ -194,6 +194,16 @@ export const de = {
   msgSeedSold: (coins: number) => `Samen verkauft! +${coins} ${COIN_ICON}`,
   seedMoveCancel: 'Abbrechen',
   seedDrawerClose: 'Schließen',
+  seedLabelEditBtn: 'Beschriften',
+  seedLabelEditHint: 'Fach anklicken zum Beschriften',
+  seedLabelPickerTitle: 'Beschriftung',
+  seedLabelPickerClear: 'Löschen',
+  seedLabelPickerDone: 'Fertig',
+  seedLabelCategoryBucket: 'Farbe',
+  seedLabelCategoryShape: 'Blütenform',
+  seedLabelCategoryCenter: 'Blütenmitte',
+  seedLabelCategoryEffect: 'Effekt',
+  seedLabelMaxHint: '(max. 2)',
 
   // Shop — Showcase
   shopSectionShowcase: 'Schaukasten erweitern',

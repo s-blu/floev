@@ -16,6 +16,7 @@ export const USE_FIXED_PLANTS = true;
 const sharedDebugConfig = {
   hue: -4,
   petalCount: 6,
+  petalEffect: 'shimmer' as PetalEffect,
   plantPhase: 3 as PlantPhase,
 }
 export const DEBUG_PLANTS = [
@@ -23,28 +24,31 @@ export const DEBUG_PLANTS = [
     {
       ...sharedDebugConfig,
       petalShape: 'zickzack',
-      petalEffect: 'shimmer' as PetalEffect,
+      petalCount: 8,
+      hue: 5,
     }
   ),
   plannedPlant(
     {
       ...sharedDebugConfig,
       petalShape: 'zickzack',
-      petalEffect: 'bicolor' as PetalEffect,
+      hue: 60,
     }
   ),
   plannedPlant(
     {
       ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'iridescent' as PetalEffect,
+      petalShape: 'tropfen',
+      petalCount: 4,
+      hue: 220
     }
   ),
   plannedPlant(
     {
       ...sharedDebugConfig,
-      petalShape: 'zickzack',
-      petalEffect: 'gradient' as PetalEffect,
+      petalShape: 'round',
+      petalCount: 3,
+      hue: 320
     }
   ),
   plannedPlant(

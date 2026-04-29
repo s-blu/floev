@@ -118,7 +118,8 @@
 .seed-drawer-header-row {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .seed-drawer-capacity {
@@ -198,8 +199,14 @@
   box-shadow:
     inset 0 3px 8px rgba(0, 0, 0, 0.22),
     inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
   transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.seed-slot-inner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
 }
 
 /* Wood-grain texture overlay */
@@ -301,6 +308,304 @@
   transform: scale(1.18) translateY(-2px);
   box-shadow: 0 3px 12px rgba(0, 168, 232, 0.55);
   z-index: 3;
+}
+
+/* ── Label-edit toggle button ──────────────────────────────────────────────── */
+
+.seed-label-edit-btn {
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--border2);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.seed-label-edit-btn:hover {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+.seed-label-edit-btn--active {
+  background: rgba(90, 140, 80, 0.12);
+  color: var(--green, #1D9E75);
+  border-color: rgba(90, 140, 80, 0.35);
+}
+
+.seed-drawer-mode-hint--label {
+  color: var(--green, #1D9E75);
+  background: rgba(29, 158, 117, 0.08);
+}
+
+/* ── Slot label modes ──────────────────────────────────────────────────────── */
+
+.seed-slot--editable {
+  cursor: pointer;
+  border-color: rgba(29, 158, 117, 0.55);
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.22),
+    0 0 0 1.5px rgba(29, 158, 117, 0.30);
+}
+
+.seed-slot--editable:hover {
+  border-color: var(--green, #1D9E75);
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.22),
+    0 0 0 2px rgba(29, 158, 117, 0.50);
+}
+
+.seed-slot--editing {
+  border-color: var(--green, #1D9E75) !important;
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.22),
+    0 0 0 2.5px rgba(29, 158, 117, 0.75) !important;
+}
+
+/* ── Slot label tag (Zettel) ───────────────────────────────────────────────── */
+
+.seed-slot-label {
+  position: absolute;
+  top: -8px;
+  left: 5px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 7px 5px 3px;
+  background: rgba(255, 253, 232, 0.97);
+  border: 0.5px solid rgba(150, 110, 50, 0.28);
+  border-radius: 2px;
+  box-shadow:
+    2px 3px 6px rgba(0, 0, 0, 0.26),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.55);
+  z-index: 10;
+  pointer-events: none;
+  transform: rotate(6deg);
+  transform-origin: top left;
+}
+
+/* Pin head — floats above the label top, in the wooden slot border/gap */
+.seed-slot-label::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 38%;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 35%, #ff9a9a 15%, #c42828 85%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  z-index: 11;
+}
+
+@media (prefers-color-scheme: dark) {
+  .seed-slot-label {
+    background: rgba(48, 40, 22, 0.94);
+    border-color: rgba(230, 190, 100, 0.18);
+    box-shadow:
+      2px 3px 7px rgba(0, 0, 0, 0.50),
+      inset 0 0 0 0.5px rgba(255, 255, 255, 0.07);
+  }
+}
+
+/* ── Per-slot rotation & pin color variance ────────────────────────────────── */
+
+/* Rotations: alternating tilt direction, slight variation per slot */
+[data-slot-idx="0"]  .seed-slot-label { transform: rotate(7deg);  }
+[data-slot-idx="1"]  .seed-slot-label { transform: rotate(-5deg); }
+[data-slot-idx="2"]  .seed-slot-label { transform: rotate(9deg);  }
+[data-slot-idx="3"]  .seed-slot-label { transform: rotate(-7deg); }
+[data-slot-idx="4"]  .seed-slot-label { transform: rotate(5deg);  }
+[data-slot-idx="5"]  .seed-slot-label { transform: rotate(-9deg); }
+[data-slot-idx="6"]  .seed-slot-label { transform: rotate(8deg);  }
+[data-slot-idx="7"]  .seed-slot-label { transform: rotate(-4deg); }
+[data-slot-idx="8"]  .seed-slot-label { transform: rotate(6deg);  }
+[data-slot-idx="9"]  .seed-slot-label { transform: rotate(-8deg); }
+[data-slot-idx="10"] .seed-slot-label { transform: rotate(4deg);  }
+[data-slot-idx="11"] .seed-slot-label { transform: rotate(-6deg); }
+[data-slot-idx="12"] .seed-slot-label { transform: rotate(9deg);  }
+[data-slot-idx="13"] .seed-slot-label { transform: rotate(-3deg); }
+[data-slot-idx="14"] .seed-slot-label { transform: rotate(7deg);  }
+[data-slot-idx="15"] .seed-slot-label { transform: rotate(-8deg); }
+[data-slot-idx="16"] .seed-slot-label { transform: rotate(5deg);  }
+[data-slot-idx="17"] .seed-slot-label { transform: rotate(-6deg); }
+[data-slot-idx="18"] .seed-slot-label { transform: rotate(8deg);  }
+[data-slot-idx="19"] .seed-slot-label { transform: rotate(-4deg); }
+
+/* Pin colors: cycling through red, blue, gold, green, purple */
+[data-slot-idx="0"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #ff9a9a 15%, #c42828 85%); }
+[data-slot-idx="1"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #9ac4ff 15%, #2855c4 85%); }
+[data-slot-idx="2"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #f0d578 15%, #a07010 85%); }
+[data-slot-idx="3"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #7ee89a 15%, #1a8a3c 85%); }
+[data-slot-idx="4"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #c09aff 15%, #6a28c4 85%); }
+[data-slot-idx="5"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #f0d578 15%, #a07010 85%); }
+[data-slot-idx="6"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #ff9a9a 15%, #c42828 85%); }
+[data-slot-idx="7"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #c09aff 15%, #6a28c4 85%); }
+[data-slot-idx="8"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #9ac4ff 15%, #2855c4 85%); }
+[data-slot-idx="9"]  .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #7ee89a 15%, #1a8a3c 85%); }
+[data-slot-idx="10"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #c09aff 15%, #6a28c4 85%); }
+[data-slot-idx="11"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #f0d578 15%, #a07010 85%); }
+[data-slot-idx="12"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #ff9a9a 15%, #c42828 85%); }
+[data-slot-idx="13"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #9ac4ff 15%, #2855c4 85%); }
+[data-slot-idx="14"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #7ee89a 15%, #1a8a3c 85%); }
+[data-slot-idx="15"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #f0d578 15%, #a07010 85%); }
+[data-slot-idx="16"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #ff9a9a 15%, #c42828 85%); }
+[data-slot-idx="17"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #9ac4ff 15%, #2855c4 85%); }
+[data-slot-idx="18"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #c09aff 15%, #6a28c4 85%); }
+[data-slot-idx="19"] .seed-slot-label::before { background: radial-gradient(circle at 38% 35%, #7ee89a 15%, #1a8a3c 85%); }
+
+.seed-tag-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.seed-tag-icon--bucket {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.seed-tag-icon--effect {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.seed-tag-icon--svg svg {
+  width: 9px;
+  height: 11px;
+  display: block;
+}
+
+/* ── Label picker panel ────────────────────────────────────────────────────── */
+
+.seed-label-picker {
+  background: var(--bg2, #f5f3ee);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.seed-label-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.seed-label-picker-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.seed-label-picker-hint {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text3);
+}
+
+.seed-label-picker-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.seed-label-picker-empty {
+  font-size: 13px;
+  color: var(--text3);
+  margin: 0;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.seed-label-picker-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.seed-label-picker-section-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.seed-label-picker-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.seed-label-picker-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border2);
+  background: var(--bg);
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s, background 0.12s;
+  padding: 0;
+}
+
+.seed-label-picker-item:hover:not(:disabled) {
+  border-color: var(--text2);
+  background: var(--bg3);
+}
+
+.seed-label-picker-item--selected {
+  border-color: var(--green, #1D9E75);
+  background: rgba(29, 158, 117, 0.08);
+  box-shadow: 0 0 0 2px rgba(29, 158, 117, 0.22);
+}
+
+.seed-label-picker-item--disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.seed-picker-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seed-picker-icon--bucket {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.seed-picker-icon--effect .di-mini-swatches {
+  margin: 0;
+}
+
+.seed-picker-icon--effect .di-mini-swatch {
+  width: 22px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.seed-picker-icon--svg svg {
+  width: 16px;
+  height: 18px;
+  display: block;
 }
 
 /* ── Sell zone row (appears in move mode) ──────────────────────────────────── */

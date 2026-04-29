@@ -88,8 +88,9 @@ export interface GameState {
   upgrades:           string[]   // purchased upgrade ids
   unlockedPotColors:  string[]   // purchased pot color ids
   unlockedPotShapes:  string[]   // purchased pot shape ids
-  seeds:      Plant[]             // stored seeds in Saatenschublade
-  seedLayout: string[]           // fixed-length position map: seedId or '' per slot position
+  seeds:           Plant[]        // stored seeds in Saatenschublade
+  seedLayout:      string[]       // fixed-length position map: seedId or '' per slot position
+  seedSlotLabels:  string[][]     // per-slot label keys, each up to 2 entries
   lastSave:   number
   orderBook?: OrderBookState
   migrationVersion?: number

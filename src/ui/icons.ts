@@ -63,8 +63,9 @@ export function renderBucketSwatchStrip(bucket: ColorBucket): string {
 // ─── Petal shape SVG ──────────────────────────────────────────────────────────
 
 export function renderPetalShapeSvg(shape: PetalShape, w = 40, h = 44): string {
-  const cx = w / 2
-  const cy = h - 6
+  // Fixed coordinate space so shapes stay fully visible at any display size.
+  const cx = 20
+  const cy = 38
   const fill = 'hsl(330,80%,72%)'
   const stroke = 'hsl(330,70%,55%)'
   const sw = 'stroke-width="0.8"'
@@ -88,5 +89,5 @@ export function renderPetalShapeSvg(shape: PetalShape, w = 40, h = 44): string {
       break
   }
 
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${path}</svg>`
+  return `<svg width="${w}" height="${h}" viewBox="0 0 40 44" xmlns="http://www.w3.org/2000/svg">${path}</svg>`
 }
