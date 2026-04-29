@@ -113,7 +113,7 @@ export function resolvePetalEffect(
 
     // ── shimmer — soft sine-wave lightness drift across petals ───────────────
     case 'shimmer': {
-      const L_AMP = 20;
+      const L_AMP = 15;
       const FREQ = 1.3;
       return {
         defs: '',
