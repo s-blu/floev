@@ -248,7 +248,6 @@ export const en = {
   notifEmpty: 'No messages yet.',
 
   // Messages
-  msgSeedPlanted: 'Seed planted!',
   msgPotCleared: 'Pot cleared.',
   msgNewBloom: (gen: number) => `A new bloom has opened! (Gen. ${gen})`,
 

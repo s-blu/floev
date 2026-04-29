@@ -164,7 +164,6 @@ export function showMsg(text: string): void {
 
 export function handlePlantSeed(potId: number): void {
   if (plantSeed(state, potId)) {
-    showMsg(t.msgSeedPlanted)
     checkAchAndSave(state)
     render()
   }
