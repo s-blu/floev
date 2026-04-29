@@ -224,8 +224,9 @@ export const en = {
   // Order book panel
   orderBookTitle:       'Order Book',
   orderBookEmpty:       'No orders available.',
-  orderBookRefreshBtn:  'Reshuffle',
-  orderBookRefreshUsed: 'Already reshuffled today',
+  orderBookRefreshBtn:        'Reshuffle',
+  orderBookRefreshConfirmBtn: 'Press again to confirm',
+  orderBookRefreshUsed:       'Already reshuffled today',
   orderBookPinTitle:    'Pin order — keeps it when reshuffling',
   orderBookUnpinTitle:  'Unpin order',
   orderBookOrderLabel:  (n: number) => `Order ${n}`,

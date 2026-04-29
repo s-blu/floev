@@ -224,8 +224,9 @@ export const de = {
   // Order book panel
   orderBookTitle:       'Auftragsbuch',
   orderBookEmpty:       'Keine Aufträge verfügbar.',
-  orderBookRefreshBtn:  'Neue Aufträge anfordern',
-  orderBookRefreshUsed: 'Heute bereits neu angefordert',
+  orderBookRefreshBtn:        'Neue Aufträge anfordern',
+  orderBookRefreshConfirmBtn: 'Nochmal drücken zum Bestätigen',
+  orderBookRefreshUsed:       'Heute bereits neu angefordert',
   orderBookPinTitle:    'Auftrag anpinnen — bleibt beim Neu-Mischen erhalten',
   orderBookUnpinTitle:  'Auftrag lösen',
   orderBookOrderLabel:  (n: number) => `Auftrag ${n}`,
