@@ -77,7 +77,6 @@ export const de = {
   breedBtn: 'Züchten',
   breedHint: 'Ergebnis landet in einem leeren Topf',
   breedHintNoSpace: 'Kein freier Topf — entferne zuerst eine Pflanze.',
-  breedSuccess: (gen: number) => `Samen gezüchtet! Generation ${gen}.`,
   breedNoSpace: 'Kein leerer Topf! Entferne zuerst eine Pflanze.',
   breedSlotRemoveTitle: 'Entfernen',
 
@@ -112,7 +111,6 @@ export const de = {
   selfPollinateWarning: 'Die Pflanze wird dabei entfernt.',
   selfPollinateConfirm: 'Bestäuben',
   selfPollinateCancel: 'Abbrechen',
-  selfPollinateSuccess: (gen: number) => `Selbstbestäubt! Samen der Generation ${gen} gepflanzt.`,
 
   // Catalog / encyclopedia
   catalogEmpty: 'Noch keine Entdeckungen.',
@@ -131,7 +129,6 @@ export const de = {
   btnMoveFromShowcase: 'Zurück in den Garten',
   btnMoveFromShowcaseTitle: 'Pflanze in einen freien Topf zurücksetzen',
   showcaseNoFreePot: 'Kein freier Topf im Garten.',
-  msgMovedToShowcase: 'Pflanze ausgestellt!',
   msgMovedFromShowcase: 'Pflanze zurück in den Garten.',
 
   // Sell

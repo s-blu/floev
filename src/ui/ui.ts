@@ -184,7 +184,6 @@ export function handleMoveToShowcase(potId: number): void {
   if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
   if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
   if (moveToShowcase(state, potId)) {
-    showMsg(t.msgMovedToShowcase)
     checkAchAndSave(state)
     render()
   }
@@ -311,7 +310,6 @@ function executeSelfPollinate(potId: number): void {
   pot.plant      = child
   pot.phaseStart = Date.now()
 
-  showMsg(t.selfPollinateSuccess(child.generation))
   checkAchAndSave(state)
   render()
 }
@@ -341,8 +339,6 @@ function handleBreed(): void {
     potA.plant.surplusSeedsProduced = (potA.plant.surplusSeedsProduced ?? 0) + 1
     potB.plant.surplusSeedsProduced = (potB.plant.surplusSeedsProduced ?? 0) + 1
     showMsg(t.surplusSeedObtained)
-  } else {
-    showMsg(t.breedSuccess(child.generation))
   }
 
   checkAchAndSave(state)
