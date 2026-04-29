@@ -69,6 +69,8 @@ export const en = {
   alleleOverlayGradient: 'Gradient',
   alleleOverlayPetalCount: 'Petal count',
   alleleOverlayStemHeight: 'Stem height',
+  alleleOverlayBloomedAt: 'Bloomed on',
+  dateLocale: 'en-GB',
 
   // Breeding panel
   breedParent1: 'Parent 1',

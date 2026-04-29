@@ -18,9 +18,9 @@ const CENTER_LABELS: Record<string, string> = {
 
 let entryIndex = new Map<string, number>();
 
-function formatDate(ts: number): string {
+export function formatDate(ts: number): string {
   const d = new Date(ts);
-  return d.toLocaleDateString('de-DE', { day: 'numeric', month: 'short', year: 'numeric' });
+  return d.toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 // ─── Catalog ──────────────────────────────────────────────────────────────────

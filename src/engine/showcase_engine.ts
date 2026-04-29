@@ -8,7 +8,9 @@ export function moveToShowcase(state: GameState, potId: number): boolean {
   const freePot = state.showcase.find(p => !p.plant);
   if (!freePot) return false;
   freePot.plant = pot.plant;
+  freePot.phaseStart = pot.phaseStart;
   pot.plant = null;
+  pot.phaseStart = null;
   const gardenDesign = pot.design;
   pot.design = freePot.design;
   freePot.design = gardenDesign;
@@ -21,7 +23,9 @@ export function moveFromShowcase(state: GameState, showcasePotId: number): boole
   const freePot = state.pots.find(p => !p.plant);
   if (!freePot) return false;
   freePot.plant = showcasePot.plant;
+  freePot.phaseStart = showcasePot.phaseStart;
   showcasePot.plant = null;
+  showcasePot.phaseStart = null;
   const gardenDesign = freePot.design;
   freePot.design = showcasePot.design;
   showcasePot.design = gardenDesign;

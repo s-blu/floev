@@ -216,6 +216,11 @@
   text-align: right;
 }
 
+.allele-overlay-row.date > span {
+  color: var(--text3);
+  font-size: 8px;
+}
+
 .allele-chips-row {
   display: flex;
   align-items: center;

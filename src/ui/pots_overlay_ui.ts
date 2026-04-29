@@ -14,6 +14,7 @@ import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
 import { buildFamilySwatchStyle } from './swatch_utils';
 import { openAlleleIds, state, handleSetPotDesign, handleSetShowcasePotDesign, openPotDesignIds } from './ui'
+import { formatDate } from './catalog_ui'
 import { SHOWCASE_POT_BASE_ID } from '../model/shop';
 
 
@@ -148,7 +149,12 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayStemHeight}</span>
       <span class="allele-overlay-value">${stemValue}</span>
-    </div>`;
+    </div>
+    ${pot.phaseStart != null ? `
+    <div class="allele-overlay-row date">
+      <span class="allele-overlay-label">${t.alleleOverlayBloomedAt}</span>
+      <span class="allele-overlay-value">${formatDate(pot.phaseStart)}</span>
+    </div>` : ''}`;
 
   overlay.addEventListener('click', (e) => {
     if ((e.target as HTMLElement).dataset.action === 'close-overlay') {
