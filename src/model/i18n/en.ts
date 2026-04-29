@@ -461,15 +461,6 @@ export const en = {
   centerTypeLabels: {
     dot: 'Dot', disc: 'Disc', stamen: 'Stamens',
   } as Record<string, string>,
-  centerTypeLabelsShort: {
-    dot: 'Dt', disc: 'Di', stamen: 'St',
-  } as Record<string, string>,
-  effectLabelsShort: {
-    bicolor: 'Bi', gradient: 'Gr', shimmer: 'Sh', iridescent: 'Ir',
-  } as Record<string, string>,
-  colorBucketLabelsShort: {
-    white: 'Wh', yellowgreen: 'YG', red: 'Re', pink: 'Pk', purple: 'Pu', blue: 'Bl', gray: 'Gy',
-  } as Record<string, string>,
 
   colorLabelGradient: " gradient",
 

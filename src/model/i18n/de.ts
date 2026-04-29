@@ -461,15 +461,6 @@ export const de = {
   centerTypeLabels: {
     dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
   } as Record<string, string>,
-  centerTypeLabelsShort: {
-    dot: 'Pt', disc: 'Sch', stamen: 'St',
-  } as Record<string, string>,
-  effectLabelsShort: {
-    bicolor: 'Zw', gradient: 'FV', shimmer: 'Si', iridescent: 'Ir',
-  } as Record<string, string>,
-  colorBucketLabelsShort: {
-    white: 'W', yellowgreen: 'GG', red: 'Ro', pink: 'Pi', purple: 'Li', blue: 'Bl', gray: 'Gr',
-  } as Record<string, string>,
 
   colorLabelGradient: "-Verlauf",
 
