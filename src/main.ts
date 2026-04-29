@@ -15,8 +15,8 @@ app.innerHTML = `
   <header class="game-header">
     <div class="header-top">
       <h1 class="game-title">${t.appTitle}</h1>
+      <span class="coin-badge" id="coin-badge">🪙 0</span>
       <div class="header-actions">
-        <span class="coin-badge" id="coin-badge">🪙 0</span>
         <button class="seed-drawer-btn" id="seed-drawer-btn" style="display:none">${t.seedDrawerButton(0)}</button>
         <button class="shop-open-btn" id="shop-open-btn" title="Shop öffnen">🛒 Shop</button>
         <button class="help-btn" id="help-btn" title="${t.helpBtnTitle}">?</button>

@@ -77,7 +77,6 @@ export const en = {
   breedBtn: 'Breed',
   breedHint: 'Result goes into an empty pot',
   breedHintNoSpace: 'No empty pot — remove a plant first.',
-  breedSuccess: (gen: number) => `Seed bred! Generation ${gen}.`,
   breedNoSpace: 'No empty pot! Remove a plant first.',
   breedSlotRemoveTitle: 'Remove',
 
@@ -112,7 +111,6 @@ export const en = {
   selfPollinateWarning: 'The parent plant will be used up and removed.',
   selfPollinateConfirm: 'Pollinate',
   selfPollinateCancel: 'Cancel',
-  selfPollinateSuccess: (gen: number) => `Self-pollinated! Generation ${gen} seed planted.`,
 
   // Catalog / encyclopedia
   catalogEmpty: 'No discoveries yet.',
@@ -131,8 +129,6 @@ export const en = {
   btnMoveFromShowcase: 'Back to garden',
   btnMoveFromShowcaseTitle: 'Move plant back to a free pot',
   showcaseNoFreePot: 'No free pot in the garden.',
-  msgMovedToShowcase: 'Plant displayed in showcase!',
-  msgMovedFromShowcase: 'Plant moved back to the garden.',
 
   // Sell
   btnSell: 'Sell',
@@ -224,8 +220,9 @@ export const en = {
   // Order book panel
   orderBookTitle:       'Order Book',
   orderBookEmpty:       'No orders available.',
-  orderBookRefreshBtn:  'Reshuffle',
-  orderBookRefreshUsed: 'Already reshuffled today',
+  orderBookRefreshBtn:        'Reshuffle',
+  orderBookRefreshConfirmBtn: 'Press again to reshuffle',
+  orderBookRefreshUsed:       'Already reshuffled today',
   orderBookPinTitle:    'Pin order — keeps it when reshuffling',
   orderBookUnpinTitle:  'Unpin order',
   orderBookOrderLabel:  (n: number) => `Order ${n}`,

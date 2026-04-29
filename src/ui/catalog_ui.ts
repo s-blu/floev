@@ -158,7 +158,7 @@ function buildEffectSwatchStyle(effect: PetalEffect, pc: HSLColor): string {
       const rl = Math.min(Math.max(l, 45), 75);
       return isGray
         ? diagonal4([0, 90, 180, 270].map(o => hsl(o, 75, rl)))
-        : diagonal4([0, 40, 80, 120].map(o => hsl(h + o, s, l)));
+        : diagonal4([-60, -20, 20, 60].map(o => hsl(h + o, s, l)));
     }
     default:
       return `background: ${hsl(h, s, l)}`;

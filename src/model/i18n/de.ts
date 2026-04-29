@@ -77,7 +77,6 @@ export const de = {
   breedBtn: 'Züchten',
   breedHint: 'Ergebnis landet in einem leeren Topf',
   breedHintNoSpace: 'Kein freier Topf — entferne zuerst eine Pflanze.',
-  breedSuccess: (gen: number) => `Samen gezüchtet! Generation ${gen}.`,
   breedNoSpace: 'Kein leerer Topf! Entferne zuerst eine Pflanze.',
   breedSlotRemoveTitle: 'Entfernen',
 
@@ -112,7 +111,6 @@ export const de = {
   selfPollinateWarning: 'Die Pflanze wird dabei entfernt.',
   selfPollinateConfirm: 'Bestäuben',
   selfPollinateCancel: 'Abbrechen',
-  selfPollinateSuccess: (gen: number) => `Selbstbestäubt! Samen der Generation ${gen} gepflanzt.`,
 
   // Catalog / encyclopedia
   catalogEmpty: 'Noch keine Entdeckungen.',
@@ -131,8 +129,6 @@ export const de = {
   btnMoveFromShowcase: 'Zurück in den Garten',
   btnMoveFromShowcaseTitle: 'Pflanze in einen freien Topf zurücksetzen',
   showcaseNoFreePot: 'Kein freier Topf im Garten.',
-  msgMovedToShowcase: 'Pflanze ausgestellt!',
-  msgMovedFromShowcase: 'Pflanze zurück in den Garten.',
 
   // Sell
   btnSell: 'Verkaufen',
@@ -224,8 +220,9 @@ export const de = {
   // Order book panel
   orderBookTitle:       'Auftragsbuch',
   orderBookEmpty:       'Keine Aufträge verfügbar.',
-  orderBookRefreshBtn:  'Neue Aufträge anfordern',
-  orderBookRefreshUsed: 'Heute bereits neu angefordert',
+  orderBookRefreshBtn:        'Neue Aufträge anfordern',
+  orderBookRefreshConfirmBtn: 'Zum Anfordern nochmal drücken',
+  orderBookRefreshUsed:       'Heute bereits neu angefordert',
   orderBookPinTitle:    'Auftrag anpinnen — bleibt beim Neu-Mischen erhalten',
   orderBookUnpinTitle:  'Auftrag lösen',
   orderBookOrderLabel:  (n: number) => `Auftrag ${n}`,

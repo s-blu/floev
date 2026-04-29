@@ -67,8 +67,7 @@ html, body {
 .header-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .header-actions {
@@ -157,6 +156,8 @@ html, body {
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--text);
+  flex: 1;
+  min-width: 0;
 }
 
 .msg-bar {
@@ -265,6 +266,14 @@ html, body {
   .pots-row { gap: 8px; }
   .breed-row { gap: 6px; }
   .breed-slot { width: 56px; height: 74px; }
+
+  .header-top {
+    flex-wrap: wrap;
+  }
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 /* ── Notification footer ─────────────────────────────────────────────────────── */

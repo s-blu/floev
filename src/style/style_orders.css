@@ -58,6 +58,29 @@
   cursor: default;
 }
 
+.order-refresh-btn--pending {
+  background: #f7db8f;
+  border-color: #c89a00;
+  color: #5a3e00;
+}
+
+.order-refresh-btn--pending:hover:not(:disabled) {
+  background: #e6b800;
+  color: #3a2800;
+}
+
+@media (prefers-color-scheme: dark) {
+  .order-refresh-btn--pending {
+    background: rgba(240, 192, 64, 0.75);
+    border-color: #f0c040;
+    color: #1a1000;
+  }
+
+  .order-refresh-btn--pending:hover:not(:disabled) {
+    background: rgba(240, 192, 64, 0.90);
+  }
+}
+
 /* ── Order card ──────────────────────────────────────────────────────────────── */
 
 .order-card {

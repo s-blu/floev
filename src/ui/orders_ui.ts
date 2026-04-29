@@ -31,6 +31,35 @@ function savePanelOpen(value: boolean): void {
 
 let panelOpen = loadPanelOpen()
 
+// ─── Refresh button confirm state ─────────────────────────────────────────────
+
+const REFRESH_CONFIRM_TIMEOUT_MS = 2500
+
+let refreshPending = false
+let refreshPendingTimer: ReturnType<typeof setTimeout> | undefined
+
+function armRefreshButton(btn: HTMLButtonElement): void {
+  cancelRefreshPending()
+  refreshPending = true
+  btn.classList.add('order-refresh-btn--pending')
+  btn.textContent = t.orderBookRefreshConfirmBtn
+  refreshPendingTimer = setTimeout(() => {
+    refreshPending = false
+    refreshPendingTimer = undefined
+    const el = document.querySelector<HTMLButtonElement>('.order-refresh-btn')
+    if (el) {
+      el.classList.remove('order-refresh-btn--pending')
+      el.textContent = t.orderBookRefreshBtn
+    }
+  }, REFRESH_CONFIRM_TIMEOUT_MS)
+}
+
+function cancelRefreshPending(): void {
+  if (refreshPendingTimer !== undefined) clearTimeout(refreshPendingTimer)
+  refreshPendingTimer = undefined
+  refreshPending = false
+}
+
 // ─── Order preview plant ──────────────────────────────────────────────────────
 
 const BUCKET_HUE: Record<string, number> = {
@@ -191,13 +220,22 @@ export function renderOrderBook(): void {
   // Refresh button
   const canRefresh = canRefreshOrders(state)
   const refreshBtn = document.createElement('button')
-  refreshBtn.className = `btn-sm order-refresh-btn${!canRefresh ? ' order-refresh-btn--used' : ''}`
-  refreshBtn.textContent = canRefresh ? t.orderBookRefreshBtn : t.orderBookRefreshUsed
+  refreshBtn.className = `btn-sm order-refresh-btn${!canRefresh ? ' order-refresh-btn--used' : ''}${refreshPending && canRefresh ? ' order-refresh-btn--pending' : ''}`
+  refreshBtn.textContent = !canRefresh
+    ? t.orderBookRefreshUsed
+    : refreshPending
+      ? t.orderBookRefreshConfirmBtn
+      : t.orderBookRefreshBtn
   refreshBtn.disabled = !canRefresh
   refreshBtn.addEventListener('click', () => {
-    if (refreshOrders(state)) {
-      saveState(state)
-      renderOrderBook()
+    if (refreshPending) {
+      cancelRefreshPending()
+      if (refreshOrders(state)) {
+        saveState(state)
+        renderOrderBook()
+      }
+    } else {
+      armRefreshButton(refreshBtn)
     }
   })
   body.appendChild(refreshBtn)
