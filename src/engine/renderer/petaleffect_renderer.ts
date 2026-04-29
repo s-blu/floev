@@ -111,25 +111,21 @@ export function resolvePetalEffect(
       };
     }
 
-    // ── shimmer — soft sine-wave hue drift across petals ─────────────────────
-    // For grayscale colors the hue drift is invisible, so boost lightness amplitude instead.
+    // ── shimmer — soft sine-wave lightness drift across petals ───────────────
     case 'shimmer': {
-      const AMP = 18;
+      const L_AMP = 20;
       const FREQ = 1.3;
-      const isGray = pc.s < 10;
-      const L_AMP = isGray ? 16 : 4;
       return {
         defs: '',
         getFill: (i, n) => {
           const t = n > 1 ? i / (n - 1) : 0;
-          const hShift = Math.sin(t * Math.PI * FREQ * 2) * AMP;
-          const lShift = Math.sin(t * Math.PI * FREQ * 2 + 1.0) * L_AMP;
-          return hsl({ h: (pc.h + hShift + 360) % 360, s: pc.s, l: clamp(pc.l + lShift, 20, 95) });
+          const lShift = Math.sin(t * Math.PI * FREQ * 2) * L_AMP;
+          return hsl({ ...pc, l: clamp(pc.l + lShift, 20, 95) });
         },
         getStroke: (i, n) => {
           const t = n > 1 ? i / (n - 1) : 0;
-          const hShift = Math.sin(t * Math.PI * FREQ * 2) * AMP;
-          return hsl(darken({ h: (pc.h + hShift + 360) % 360, s: pc.s, l: pc.l }));
+          const lShift = Math.sin(t * Math.PI * FREQ * 2) * L_AMP;
+          return hsl(darken({ ...pc, l: clamp(pc.l + lShift, 20, 95) }));
         },
         getOverlay: noOverlay,
       };
