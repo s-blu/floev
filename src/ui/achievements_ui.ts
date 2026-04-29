@@ -3,13 +3,14 @@ import { getVisibleAchievements } from '../engine/achievements'
 import { state } from './ui'
 import { t } from '../model/i18n'
 import { getAchievements } from '../engine/achievement_defs'
+import { COIN_ICON } from './icons'
 import { addNotification } from './notification_log'
 
 // ─── Achievement notifications ────────────────────────────────────────────────
 
 export function queueAchievementToast(achievements: Achievement[]): void {
   for (const a of achievements) {
-    addNotification(`🏅 ${t.achUnlocked}: ${a.title} — +${a.reward} 🪙`)
+    addNotification(`🏅 ${t.achUnlocked}: ${a.title} — +${a.reward} ${COIN_ICON}`)
   }
 }
 
@@ -79,7 +80,7 @@ function buildCollapsedPreview(v: ReturnType<typeof getVisibleAchievements>[0]):
           <span class="ach-progress-label">${prog.current}/${prog.total}</span>
         </div>` : `<span class="ach-preview-desc">${a.desc}</span>`}
       </div>
-      <span class="ach-preview-reward">${a.reward} 🪙</span>
+      <span class="ach-preview-reward">${a.reward} ${COIN_ICON}</span>
     </div>`
 }
 
@@ -131,7 +132,7 @@ function buildDoneIcon(v: ReturnType<typeof getVisibleAchievements>[0]): HTMLEle
   const { achievement: a } = v
   const el = document.createElement('div')
   el.className = 'ach-done-icon'
-  el.title = `${a.title} — ${a.desc} (+${a.reward} 🪙)`
+  el.title = `${a.title} — ${a.desc} (+${a.reward} ${COIN_ICON})`
   el.innerHTML = `<span class="ach-done-icon-medal">🏅</span>`
   // Tooltip on hover via title; for better UX also show a small label below
   el.innerHTML = `
@@ -169,8 +170,8 @@ function buildAchievementCard(v: ReturnType<typeof getVisibleAchievements>[0]): 
     </div>
     <div class="ach-card-right">
       ${isComplete
-        ? `<span class="ach-card-reward ach-card-reward--done">+${a.reward} 🪙</span>`
-        : `<span class="ach-card-reward">${a.reward} 🪙</span>`
+        ? `<span class="ach-card-reward ach-card-reward--done">+${a.reward} ${COIN_ICON}</span>`
+        : `<span class="ach-card-reward">${a.reward} ${COIN_ICON}</span>`
       }
     </div>`
 

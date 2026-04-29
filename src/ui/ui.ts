@@ -37,6 +37,7 @@ import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
 import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT } from '../model/genetic_model'
 import { renderSeedDrawer } from './seeds_ui'
+import { COIN_ICON } from './icons'
 
 
 
@@ -149,9 +150,9 @@ export { hasUpgrade }
 export function renderCoins(): void {
   const el = document.getElementById('coin-badge')
   if (!el) return
-  const next = `🪙 ${state.coins}`
-  if (el.textContent !== next) {
-    el.textContent = next
+  const next = `${COIN_ICON} ${state.coins}`
+  if (el.innerHTML !== next) {
+    el.innerHTML = next
     el.classList.remove('pop')
     void (el as HTMLElement).offsetWidth // reflow to restart animation
     el.classList.add('pop')
@@ -275,7 +276,7 @@ function spawnCoinFly(fromEl: HTMLElement, amount: number): void {
   const rect = fromEl.getBoundingClientRect()
   const coin = document.createElement('div')
   coin.className = 'coin-fly'
-  coin.textContent = `+${amount} 🪙`
+  coin.innerHTML = `+${amount} ${COIN_ICON}`
   coin.style.left = `${rect.left + rect.width / 2}px`
   coin.style.top  = `${rect.top}px`
   document.body.appendChild(coin)

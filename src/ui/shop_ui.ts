@@ -3,6 +3,7 @@ import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleBu
 import { hasUpgrade, hasPotColor, hasPotShape, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot, getShowcaseSlotPrice } from '../engine/shop_engine'
 import { renderPotShopPreview } from '../engine/renderer/pot_renderer'
 import { t } from '../model/i18n'
+import { COIN_ICON } from './icons'
 
 // ─── Shop sidebar ─────────────────────────────────────────────────────────────
 
@@ -76,7 +77,7 @@ function renderUpgradesSection(): string {
             ? `<span class="shop-item-owned-badge">${t.shopItemOwned}</span>`
             : `<button class="shop-buy-btn ${!canAfford ? 'shop-buy-btn--locked' : ''}"
                  data-action="buy-upgrade" data-id="${u.id}" ${disabled ? 'disabled' : ''}>
-                 🪙 ${u.price}
+                 ${COIN_ICON} ${u.price}
                </button>`
           }
         </div>
@@ -104,7 +105,7 @@ function renderExtraPotsSection(): string {
          class="shop-buy-btn ${!canAfford ? 'shop-buy-btn--locked' : ''}"
          data-action="buy-extra-pot"
          ${!canAfford ? 'disabled' : ''}>
-         🪙 ${price}
+         ${COIN_ICON} ${price}
        </button>`
 
   return `
@@ -137,7 +138,7 @@ function renderShowcaseSection(): string {
          class="shop-buy-btn ${!canAfford ? 'shop-buy-btn--locked' : ''}"
          data-action="buy-extra-showcase-slot"
          ${!canAfford ? 'disabled' : ''}>
-         🪙 ${price}
+         ${COIN_ICON} ${price}
        </button>`
 
   return `
@@ -166,13 +167,13 @@ function renderDecoSection(): string {
         class="pot-swatch ${owned ? 'pot-swatch--owned' : ''} ${!owned && !canAfford ? 'pot-swatch--cant-afford' : ''}"
         data-action="${owned ? '' : 'buy-color'}"
         data-id="${c.id}"
-        title="${t.potColorLabels[c.id]}${owned ? t.shopOwnedSuffix : ` — 🪙 ${c.price}`}"
+        title="${t.potColorLabels[c.id]}${owned ? t.shopOwnedSuffix : ` — ${COIN_ICON} ${c.price}`}"
         ${owned ? 'disabled' : (!canAfford ? 'disabled' : '')}
       >
         <span class="pot-swatch-dot" style="background:${c.body};border-color:${c.rim}"></span>
         ${owned
           ? `<span class="pot-swatch-check">✓</span>`
-          : `<span class="pot-swatch-price">🪙${c.price}</span>`}
+          : `<span class="pot-swatch-price">${COIN_ICON}${c.price}</span>`}
       </button>`
   }).join('')
 
@@ -191,7 +192,7 @@ function renderDecoSection(): string {
         <span class="pot-shape-label">${t.potShapeLabels[s.id]}</span>
         ${owned
           ? `<span class="pot-shape-price" style="color:var(--green)">✓</span>`
-          : `<span class="pot-shape-price">🪙 ${s.price}</span>`}
+          : `<span class="pot-shape-price">${COIN_ICON} ${s.price}</span>`}
       </button>`
   }).join('')
 

@@ -2,7 +2,7 @@ import type { ColorBucket } from '../model/genetic_model'
 import { PALETTE_HUES_BUCKETS, PALETTE_S } from '../model/genetic_model'
 import type { PetalShape, CenterType } from '../model/plant'
 
-export const COIN_ICON = '<span class="coin-icon" aria-label="Münze" role="img"></span>'
+export const COIN_ICON = '<span class="coin-icon" aria-label="Münze">🪙</span>'
 
 // ─── Center type icons ────────────────────────────────────────────────────────
 

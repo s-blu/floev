@@ -1,4 +1,5 @@
 import { getPhaseProgress, PHASE_DURATION_MS } from '../engine/game';
+import { COIN_ICON } from './icons';
 import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, handleSwapGardenPot, openAlleleIds, hasUpgrade, openPotDesignIds, swapGardenPotId } from './ui';
 import { openSeedDrawer } from './seeds_ui';
 import { t } from '../model/i18n';
@@ -169,7 +170,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
           ${isBreedSelected ? t.btnBreedDeselect : t.btnBreedSelect}
         </button>
         ${secondaryHtml}
-        <button class="btn-sm btn-icon btn-sell${sellPendingPots.has(pot.id) ? ' sell-pending' : ''}" data-action="sell" data-pot="${pot.id}" title="${sellPendingPots.has(pot.id) ? t.btnSellConfirmTitle : t.btnSellTitle}">🪙${coinVal}</button>
+        <button class="btn-sm btn-icon btn-sell${sellPendingPots.has(pot.id) ? ' sell-pending' : ''}" data-action="sell" data-pot="${pot.id}" title="${sellPendingPots.has(pot.id) ? t.btnSellConfirmTitle : t.btnSellTitle}">${COIN_ICON}${coinVal}</button>
       </div>`;
   }
 

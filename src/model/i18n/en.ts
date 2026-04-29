@@ -1,4 +1,5 @@
 // ─── Floev — English UI strings ───────────────────────────────────────────────
+import { COIN_ICON } from '../../ui/icons'
 
 const colorBucketLabels = {
     white: 'White', yellowgreen: 'Yellow/Green', red: 'Red', pink: 'Pink',
@@ -140,7 +141,7 @@ export const en = {
   btnSell: 'Sell',
   btnSellTitle: 'Sell plant — earns coins',
   btnSellConfirmTitle: 'Press again to confirm sale',
-  msgSold: (coins: number) => `Bloom sold! +${coins} 🪙`,
+  msgSold: (coins: number) => `Bloom sold! +${coins} ${COIN_ICON}`,
 
   // Shop (placeholder)
   shopTab: 'Shop',
@@ -152,7 +153,7 @@ export const en = {
   shopOwnedSuffix: ' (owned)',
   shopSectionPots: 'Pots',
   shopPotsTitle: 'Buy new pot',
-  shopPotsDesc: (current: number, max: number) => `Currently ${current} of ${max} pots. Each additional pot costs +50 🪙.`,
+  shopPotsDesc: (current: number, max: number) => `Currently ${current} of ${max} pots. Each additional pot costs +50 ${COIN_ICON}.`,
   shopPotsMax: 'Maximum reached',
   shopSectionDeco: 'Pot Design',
   shopSubsectionColors: 'Unlock colors',
@@ -190,7 +191,7 @@ export const en = {
   selectSeedToPlant: 'Select a seed to plant',
   seedMoveHint: 'Click a compartment to move seed',
   seedSellZone: 'Sell',
-  msgSeedSold: (coins: number) => `Seed sold! +${coins} 🪙`,
+  msgSeedSold: (coins: number) => `Seed sold! +${coins} ${COIN_ICON}`,
   seedMoveCancel: 'Cancel',
   seedDrawerClose: 'Close',
 
@@ -232,10 +233,10 @@ export const en = {
   orderBookPinTitle:    'Pin order — keeps it when reshuffling',
   orderBookUnpinTitle:  'Unpin order',
   orderBookOrderLabel:  (n: number) => `Order ${n}`,
-  orderBookReward:      (coins: number) => `+${coins} 🪙 bonus`,
+  orderBookReward:      (coins: number) => `+${coins} ${COIN_ICON} bonus`,
   orderBookDoneLabel:   'Done',
   orderBookBadgeTitle:  (n: number) => `Sell fulfills order ${n}`,
-  msgSoldWithBonus:     (total: number, bonus: number) => `Bloom sold! +${total} 🪙 (incl. +${bonus} 🪙 order bonus)`,
+  msgSoldWithBonus:     (total: number, bonus: number) => `Bloom sold! +${total} ${COIN_ICON} (incl. +${bonus} ${COIN_ICON} order bonus)`,
 
   // Order requirement labels
   orderReqShape:      (name: string) => `Shape: ${name}`,

@@ -77,6 +77,23 @@ html, body {
   flex-shrink: 0;
 }
 
+/* ── Coin icon — emoji with text fallback for browsers without 🪙 support ── */
+.coin-icon {
+  font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+}
+.no-emoji-coin .coin-icon {
+  font-size: 0;
+  padding: 2px;
+}
+.no-emoji-coin .coin-icon::after {
+  content: '●';
+  font-size: 0.9rem;
+  color: #f5c518;
+  font-family: sans-serif;
+  text-shadow: 0 0 0 #b8860b;
+  -webkit-text-stroke: 0.5px #b8860b;
+}
+
 /* ── Coin badge ────────────────────────────────────────────────────────────── */
 .coin-badge {
   display: inline-flex;

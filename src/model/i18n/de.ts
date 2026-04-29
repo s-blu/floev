@@ -1,4 +1,5 @@
 // ─── Floev — German UI strings ───────────────────────────────────────────────
+import { COIN_ICON } from '../../ui/icons'
 
 const colorBucketLabels = {
     white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Pink',
@@ -140,7 +141,7 @@ export const de = {
   btnSell: 'Verkaufen',
   btnSellTitle: 'Pflanze verkaufen — erhält Münzen',
   btnSellConfirmTitle: 'Nochmal drücken zum Bestätigen',
-  msgSold: (coins: number) => `Blüte verkauft! +${coins} 🪙`,
+  msgSold: (coins: number) => `Blüte verkauft! +${coins} ${COIN_ICON}`,
 
   // Shop (placeholder)
   shopTab: 'Shop',
@@ -152,7 +153,7 @@ export const de = {
   shopOwnedSuffix: ' (gekauft)',
   shopSectionPots: 'Töpfe',
   shopPotsTitle: 'Neuen Topf kaufen',
-  shopPotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Töpfen. Jeder weitere Topf kostet +50 🪙.`,
+  shopPotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Töpfen. Jeder weitere Topf kostet +50 ${COIN_ICON}.`,
   shopPotsMax: 'Maximum erreicht',
   shopSectionDeco: 'Topf-Design',
   shopSubsectionColors: 'Farben freischalten',
@@ -190,7 +191,7 @@ export const de = {
   selectSeedToPlant: 'Saaten zum Einpflanzen wählen',
   seedMoveHint: 'Klick auf ein Fach zum Ablegen',
   seedSellZone: 'Verkaufen',
-  msgSeedSold: (coins: number) => `Samen verkauft! +${coins} 🪙`,
+  msgSeedSold: (coins: number) => `Samen verkauft! +${coins} ${COIN_ICON}`,
   seedMoveCancel: 'Abbrechen',
   seedDrawerClose: 'Schließen',
 
@@ -232,10 +233,10 @@ export const de = {
   orderBookPinTitle:    'Auftrag anpinnen — bleibt beim Neu-Mischen erhalten',
   orderBookUnpinTitle:  'Auftrag lösen',
   orderBookOrderLabel:  (n: number) => `Auftrag ${n}`,
-  orderBookReward:      (coins: number) => `+${coins} 🪙 Bonus`,
+  orderBookReward:      (coins: number) => `+${coins} ${COIN_ICON} Bonus`,
   orderBookDoneLabel:   'Erledigt',
   orderBookBadgeTitle:  (n: number) => `Verkauf erfüllt Auftrag ${n}`,
-  msgSoldWithBonus:     (total: number, bonus: number) => `Blüte verkauft! +${total} 🪙 (inkl. +${bonus} 🪙 Auftrag)`,
+  msgSoldWithBonus:     (total: number, bonus: number) => `Blüte verkauft! +${total} ${COIN_ICON} (inkl. +${bonus} ${COIN_ICON} Auftrag)`,
 
   // Order requirement labels
   orderReqShape:      (name: string) => `Form: ${name}`,

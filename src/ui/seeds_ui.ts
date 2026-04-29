@@ -1,4 +1,5 @@
 import { state, handlePlantSeedFromStorage, handleMoveSeedToSlot, handleSellSeed } from './ui'
+import { COIN_ICON } from './icons'
 import { t } from '../model/i18n'
 import { SAATENSCHUBLADE_SLOTS, SEEDS_PER_SLOT, MAX_SEED_STORAGE } from '../model/genetic_model'
 import { renderSeedSvg, renderSeedIcon } from '../engine/renderer/seed_renderer'
@@ -165,7 +166,7 @@ export function renderSeedDrawerBody(): void {
   }).join('')
 
   const sellZone = isMoveMode
-    ? `<div class="seed-sell-zone-row"><button class="btn-sm btn-sell" data-sell-zone="1">🪙${SEED_SELL_VALUE} ${t.seedSellZone}</button></div>`
+    ? `<div class="seed-sell-zone-row"><button class="btn-sm btn-sell" data-sell-zone="1">${COIN_ICON}${SEED_SELL_VALUE} ${t.seedSellZone}</button></div>`
     : ''
 
   body.innerHTML = `
