@@ -191,7 +191,6 @@ export function handleMoveToShowcase(potId: number): void {
 
 export function handleMoveFromShowcase(showcasePotId: number): void {
   if (moveFromShowcase(state, showcasePotId)) {
-    showMsg(t.msgMovedFromShowcase)
     checkAchAndSave(state)
     render()
   }

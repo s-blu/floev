@@ -129,7 +129,6 @@ export const de = {
   btnMoveFromShowcase: 'Zurück in den Garten',
   btnMoveFromShowcaseTitle: 'Pflanze in einen freien Topf zurücksetzen',
   showcaseNoFreePot: 'Kein freier Topf im Garten.',
-  msgMovedFromShowcase: 'Pflanze zurück in den Garten.',
 
   // Sell
   btnSell: 'Verkaufen',

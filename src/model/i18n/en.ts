@@ -129,7 +129,6 @@ export const en = {
   btnMoveFromShowcase: 'Back to garden',
   btnMoveFromShowcaseTitle: 'Move plant back to a free pot',
   showcaseNoFreePot: 'No free pot in the garden.',
-  msgMovedFromShowcase: 'Plant moved back to the garden.',
 
   // Sell
   btnSell: 'Sell',
