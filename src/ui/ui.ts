@@ -33,7 +33,7 @@ import { renderAchievements, queueAchievementToast, initAchievementsPanel } from
 import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
-import { SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT } from '../model/genetic_model'
+import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT } from '../model/genetic_model'
 import { renderSeedDrawer } from './seeds_ui'
 
 
@@ -300,6 +300,17 @@ function executeSelfPollinate(potId: number): void {
 
   const child = selfPollinateePlant(pot.plant)
   child.selfed = true
+
+  if (
+    hasUpgrade(state, 'unlock_seed_drawer') &&
+    Math.random() < SELF_POLLINATE_SURPLUS_SEED_CHANCE &&
+    state.seeds.length < MAX_SEED_STORAGE
+  ) {
+    const surplusSeed = selfPollinateePlant(pot.plant)
+    surplusSeed.selfed = true
+    addSeedToStorage(state, surplusSeed)
+    showMsg(t.surplusSeedObtained)
+  }
 
   // Clear the parent from breeding selection if needed
   if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
