@@ -72,7 +72,7 @@ export function renderPetalShapeSvg(shape: PetalShape, w = 40, h = 44): string {
 
   switch (shape) {
     case 'round':
-      path = `<ellipse cx="${cx}" cy="${cy - 14}" rx="12" ry="8.5" fill="${fill}" stroke="${stroke}" ${sw}/>`
+      path = `<ellipse cx="${cx}" cy="${cy - 14}" rx="8.5" ry="12" fill="${fill}" stroke="${stroke}" ${sw}/>`
       break
     case 'lanzett':
       path = `<path d="M${cx},${cy - 2} C${cx + 4},${cy - 16} ${cx},${cy - 30} ${cx},${cy - 30} C${cx},${cy - 30} ${cx - 4},${cy - 16} ${cx},${cy - 2} Z" fill="${fill}" stroke="${stroke}" ${sw}/>`
