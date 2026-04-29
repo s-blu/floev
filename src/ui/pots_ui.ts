@@ -1,5 +1,5 @@
 import { getPhaseProgress, PHASE_DURATION_MS } from '../engine/game';
-import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, openAlleleIds, hasUpgrade, openPotDesignIds } from './ui';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, handleSwapGardenPot, openAlleleIds, hasUpgrade, openPotDesignIds, swapGardenPotId } from './ui';
 import { openSeedDrawer } from './seeds_ui';
 import { t } from '../model/i18n';
 import type { Pot } from '../model/plant';
@@ -107,17 +107,20 @@ export function renderPots(selA: number | null, selB: number | null): void {
 function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLElement {
   const card = document.createElement('div');
   const isSelected = pot.id === selA || pot.id === selB;
+  const isSwapSelected = pot.id === swapGardenPotId;
   const isBlooming = pot.plant?.phase === 4;
   const r = getRarityForPot(state, pot);
 
   card.className = [
     'pot-card',
     isSelected ? 'selected' : '',
+    isSwapSelected ? 'swap-selected' : '',
     isBlooming && !isSelected ? 'blooming' : '',
     isBlooming ? `rarity-${r}` : ''
   ].filter(Boolean).join(' ');
 
-  const visualAreaHtml = buildPotVisualArea(pot, state);
+  const swapBtnHtml = `<button class="pot-swap-btn${isSwapSelected ? ' active' : ''}" data-action="swap" data-pot="${pot.id}" title="${isSwapSelected ? t.btnSwapPotCancel : t.btnSwapPotTitle}">⇄</button>`;
+  const visualAreaHtml = buildPotVisualArea(pot, state, swapBtnHtml);
   const sillHtml = buildPotSill();
 
   // ── Phase label + progress (growing plants only; blooming info is in side panel) ──
@@ -176,7 +179,10 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   // ── Event delegation ──
   card.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null;
-    if (!btn) return;
+    if (!btn) {
+      if (swapGardenPotId !== null) handleSwapGardenPot(pot.id);
+      return;
+    }
     const action = btn.dataset.action;
     const potId = Number(btn.dataset.pot);
 
@@ -204,6 +210,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
         showOverflowMenu(potId, card, !!btn.dataset.selfpollinate, !!btn.dataset.showcase);
       }
     }
+    else if (action === 'swap')           handleSwapGardenPot(potId);
     else if (action === 'allele-inspect') showAlleleOverlay(potId, card);
     else if (action === 'pot-design')     showPotDesignRing(potId, card);
   });

@@ -5,7 +5,9 @@ import {
 } from '../engine/game'
 import {
   moveToShowcase,
-  moveFromShowcase
+  moveFromShowcase,
+  swapGardenPots,
+  swapShowcasePots
 } from '../engine/showcase_engine'
 import {
   addSeedToStorage,
@@ -48,10 +50,12 @@ interface BreedState {
 
 export let state: GameState
 export const openAlleleIds = new Set<number>()
-export const openPotDesignIds = new Set<number>()  
+export const openPotDesignIds = new Set<number>()
 export const breedState: BreedState = {
   breedSelA: null, breedSelB: null, breedEstimate: null
 }
+export let swapGardenPotId: number | null = null
+export let swapShowcasePotId: number | null = null
 
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
 
@@ -193,6 +197,46 @@ export function handleMoveFromShowcase(showcasePotId: number): void {
     checkAchAndSave(state)
     render()
   }
+}
+
+export function handleSwapGardenPot(potId: number): void {
+  if (swapGardenPotId === null) {
+    swapGardenPotId = potId
+    render()
+    return
+  }
+  if (swapGardenPotId === potId) {
+    swapGardenPotId = null
+    render()
+    return
+  }
+  if (breedState.breedSelA === swapGardenPotId || breedState.breedSelA === potId) {
+    breedState.breedSelA = null; breedState.breedEstimate = null
+  }
+  if (breedState.breedSelB === swapGardenPotId || breedState.breedSelB === potId) {
+    breedState.breedSelB = null; breedState.breedEstimate = null
+  }
+  swapGardenPots(state, swapGardenPotId, potId)
+  swapGardenPotId = null
+  checkAchAndSave(state)
+  render()
+}
+
+export function handleSwapShowcasePot(potId: number): void {
+  if (swapShowcasePotId === null) {
+    swapShowcasePotId = potId
+    render()
+    return
+  }
+  if (swapShowcasePotId === potId) {
+    swapShowcasePotId = null
+    render()
+    return
+  }
+  swapShowcasePots(state, swapShowcasePotId, potId)
+  swapShowcasePotId = null
+  checkAchAndSave(state)
+  render()
 }
 
 export function handleSell(potId: number): void {

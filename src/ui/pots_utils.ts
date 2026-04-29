@@ -47,8 +47,8 @@ export function buildSideInfo(pot: Pot, state: GameState): string {
     return `<div class="pot-side-info">${content}</div>`;
 }
 
-export function buildPotVisualArea(pot: Pot, state: GameState): string {
-    return `<div class="pot-visual-area">${buildLeftActions(pot, state)}${buildPlantViewForPot(pot, state)}${buildSideInfo(pot, state)}</div>`;
+export function buildPotVisualArea(pot: Pot, state: GameState, rightActionsHtml = ''): string {
+    return `<div class="pot-visual-area">${buildLeftActions(pot, state)}${buildPlantViewForPot(pot, state)}${buildSideInfo(pot, state)}${rightActionsHtml}</div>`;
 }
 
 export function buildPotSill(): string {

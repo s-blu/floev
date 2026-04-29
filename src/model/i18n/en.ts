@@ -132,6 +132,10 @@ export const en = {
   btnMoveFromShowcaseTitle: 'Move plant back to a free pot',
   showcaseNoFreePot: 'No free pot in the garden.',
 
+  // Pot swap
+  btnSwapPotTitle: 'Swap position with another pot',
+  btnSwapPotCancel: 'Cancel selection',
+
   // Sell
   btnSell: 'Sell',
   btnSellTitle: 'Sell plant — earns coins',

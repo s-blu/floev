@@ -132,6 +132,10 @@ export const de = {
   btnMoveFromShowcaseTitle: 'Pflanze in einen freien Topf zurücksetzen',
   showcaseNoFreePot: 'Kein freier Topf im Garten.',
 
+  // Pot swap
+  btnSwapPotTitle: 'Position mit einem anderen Topf tauschen',
+  btnSwapPotCancel: 'Auswahl aufheben',
+
   // Sell
   btnSell: 'Verkaufen',
   btnSellTitle: 'Pflanze verkaufen — erhält Münzen',
