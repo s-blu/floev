@@ -1,3 +1,13 @@
+# v1.4.1
+
+Bugs:
+
+- remove spammy messages from notifications
+- avoid accident shuffles on orders
+- fix price of seed storage
+- fix horizontal scroll on small screens
+- correctly allow seeds on self-pollination
+
 # v1.4.0
 
 Improvements:
