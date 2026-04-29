@@ -14,7 +14,7 @@ import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
 import { buildFamilySwatchStyle } from './swatch_utils';
 import { openAlleleIds, state, handleSetPotDesign, handleSetShowcasePotDesign, openPotDesignIds } from './ui'
-import { formatDate } from './catalog_ui'
+import { formatDate } from './ui';
 import { SHOWCASE_POT_BASE_ID } from '../model/shop';
 
 

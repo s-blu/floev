@@ -385,4 +385,8 @@ function checkAchAndSave(state: GameState) {
 
 function bindStaticEvents(): void {
   document.getElementById('breed-btn')?.addEventListener('click', handleBreed)
+}export function formatDate(ts: number): string {
+  const d = new Date(ts);
+  return d.toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'short', year: 'numeric' });
 }
+
