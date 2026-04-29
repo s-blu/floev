@@ -225,7 +225,7 @@ export const de = {
   orderBookTitle:       'Auftragsbuch',
   orderBookEmpty:       'Keine Aufträge verfügbar.',
   orderBookRefreshBtn:        'Neue Aufträge anfordern',
-  orderBookRefreshConfirmBtn: 'Nochmal drücken zum Bestätigen',
+  orderBookRefreshConfirmBtn: 'Zum Anfordern nochmal drücken',
   orderBookRefreshUsed:       'Heute bereits neu angefordert',
   orderBookPinTitle:    'Auftrag anpinnen — bleibt beim Neu-Mischen erhalten',
   orderBookUnpinTitle:  'Auftrag lösen',

@@ -225,7 +225,7 @@ export const en = {
   orderBookTitle:       'Order Book',
   orderBookEmpty:       'No orders available.',
   orderBookRefreshBtn:        'Reshuffle',
-  orderBookRefreshConfirmBtn: 'Press again to confirm',
+  orderBookRefreshConfirmBtn: 'Press again to reshuffle',
   orderBookRefreshUsed:       'Already reshuffled today',
   orderBookPinTitle:    'Pin order — keeps it when reshuffling',
   orderBookUnpinTitle:  'Unpin order',
