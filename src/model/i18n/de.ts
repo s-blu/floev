@@ -304,7 +304,7 @@ export const de = {
   helpBreedStep2: 'Die Vorschau zeigt Wahrscheinlichkeiten für Farbe, Form und Blütenmitte.',
   helpBreedStep3: 'Klicke „Züchten" — ein neuer Samen landet im nächsten freien Topf.',
   helpBreedStep4: 'Lass den Samen wachsen und beobachte das Ergebnis.',
-  helpSelfBody: 'Mit ↺ (Selbstbestäubung) kreuzt sich eine Pflanze mit sich selbst — das verbraucht die Mutterpflanze, erzeugt aber reinerbigere Nachkommen.',
+  helpSelfBody: 'Mit ↺ (Selbstbestäubung, im Shop erhältlich) kreuzt sich eine Pflanze mit sich selbst — das verbraucht die Mutterpflanze, erzeugt aber reinerbigere Nachkommen.',
   helpHomoBody: 'Reinerbige Pflanzen (◈) tragen auf beiden Allelen denselben Wert — ihre Nachkommen sind deutlich berechenbarer.',
 
   // Other heritable traits

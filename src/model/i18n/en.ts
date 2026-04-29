@@ -304,7 +304,7 @@ export const en = {
   helpBreedStep2: 'The preview shows probabilities for color, shape, and center.',
   helpBreedStep3: 'Click "Breed" — a new seed lands in the next empty pot.',
   helpBreedStep4: 'Let the seed grow and observe the result.',
-  helpSelfBody: 'With ↺ (self-pollination) a plant crosses with itself — this consumes the mother plant but produces more homozygous offspring.',
+  helpSelfBody: 'With ↺ (self-pollination, a buyable upgrade) a plant crosses with itself — this consumes the mother plant but produces more homozygous offspring.',
   helpHomoBody: 'Homozygous plants (◈) carry the same value on both alleles — their offspring are considerably more predictable.',
 
   // Other heritable traits
