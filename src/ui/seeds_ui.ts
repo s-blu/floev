@@ -12,6 +12,12 @@ import {
 } from '../engine/discovery_utils'
 import { expressedColor, colorBucket } from '../engine/genetic/genetic_utils'
 
+// ─── Mark symbols ─────────────────────────────────────────────────────────────
+
+const MARK_EMOJIS = ['❤️', '⭐', '🔥', '💎', '✨', '🌿', '🏆', '❓']
+const MARK_ALPHANUM = ['1','2','3','4','5','6','7','8','9','A','B','C','D','E','F']
+const MARK_SYMBOLS = [...MARK_EMOJIS, ...MARK_ALPHANUM]
+
 // ─── State ────────────────────────────────────────────────────────────────────
 
 let drawerOpen = false
@@ -80,13 +86,13 @@ function renderTagIcon(key: string): string {
       return `<span class="seed-tag-icon seed-tag-icon--bucket" style="background:${c};${border}" title="${t.colorBucketLabels[val] ?? val}"></span>`
     }
     case 'shape':
-      return `<span class="seed-tag-icon seed-tag-icon--svg" title="${t.shapeLabels[val] ?? val}">${renderPetalShapeSvg(val as PetalShape, 9, 11)}</span>`
+      return `<span class="seed-tag-icon seed-tag-icon--svg" title="${t.shapeLabels[val] ?? val}">${renderPetalShapeSvg(val as PetalShape, 9, 11, '#1a1a1a', '#1a1a1a')}</span>`
     case 'center':
       return `<span class="seed-tag-icon seed-tag-icon--svg" title="${t.centerTypeLabels[val] ?? val}">${CENTER_TYPE_ICONS[val as CenterType] ?? ''}</span>`
-    case 'effect': {
-      const hue = ({ bicolor: 320, gradient: 200, shimmer: 40, iridescent: 0 } as Record<string, number>)[val] ?? 0
-      return `<span class="seed-tag-icon seed-tag-icon--effect" style="background:hsl(${hue},80%,60%)" title="${t.effectLabels[val] ?? val}"></span>`
-    }
+    case 'effect':
+      return `<span class="seed-tag-icon seed-tag-icon--effect" title="${t.effectLabels[val] ?? val}">${renderEffectSwatch(val)}</span>`
+    case 'mark':
+      return `<span class="seed-tag-icon seed-tag-icon--mark" title="${val}">${val}</span>`
     default: return ''
   }
 }
@@ -110,6 +116,8 @@ function renderPickerIcon(key: string): string {
       return `<span class="seed-picker-icon seed-picker-icon--svg">${CENTER_TYPE_ICONS[val as CenterType] ?? ''}</span>`
     case 'effect':
       return `<span class="seed-picker-icon seed-picker-icon--effect">${renderEffectSwatch(val)}</span>`
+    case 'mark':
+      return `<span class="seed-picker-icon seed-picker-icon--mark">${val}</span>`
     default: return ''
   }
 }
@@ -145,6 +153,10 @@ function renderLabelPicker(slotIdx: number): string {
       <span class="seed-label-picker-section-title">${t.seedLabelCategoryEffect}</span>
       <div class="seed-label-picker-items">${effects.map(ef => item(`effect:${ef}`, t.effectLabels[ef] ?? ef)).join('')}</div>
     </div>` : '',
+    `<div class="seed-label-picker-section">
+      <span class="seed-label-picker-section-title">${t.seedLabelCategoryMark}</span>
+      <div class="seed-label-picker-items">${MARK_SYMBOLS.map(m => item(`mark:${m}`, m)).join('')}</div>
+    </div>`,
   ].filter(Boolean).join('')
 
   return `<div class="seed-label-picker">

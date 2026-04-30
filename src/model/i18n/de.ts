@@ -203,6 +203,7 @@ export const de = {
   seedLabelCategoryShape: 'Blütenform',
   seedLabelCategoryCenter: 'Blütenmitte',
   seedLabelCategoryEffect: 'Effekt',
+  seedLabelCategoryMark: 'Symbole',
   seedLabelMaxHint: '(max. 2)',
 
   // Shop — Showcase

@@ -228,7 +228,6 @@
 
 .seed-slot--empty {
   background: #c49858;
-  opacity: 0.60;
 }
 
 .seed-slot--droppable {
@@ -261,7 +260,6 @@
   }
   .seed-slot--empty {
     background: #7a5428;
-    opacity: 0.55;
   }
   .seed-slot--droppable {
     border-color: #0096d6;
@@ -371,12 +369,12 @@
 
 .seed-slot-label {
   position: absolute;
-  top: -8px;
+  top: -10px;
   left: 5px;
   display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 7px 5px 3px;
+  gap: 4px;
+  padding: 9px 7px 5px;
   background: rgba(255, 253, 232, 0.97);
   border: 0.5px solid rgba(150, 110, 50, 0.28);
   border-radius: 2px;
@@ -393,11 +391,11 @@
 .seed-slot-label::before {
   content: '';
   position: absolute;
-  top: -3px;
+  top: -4px;
   left: 38%;
   transform: translateX(-50%);
-  width: 7px;
-  height: 7px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: radial-gradient(circle at 38% 35%, #ff9a9a 15%, #c42828 85%);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
@@ -468,21 +466,40 @@
 }
 
 .seed-tag-icon--bucket {
-  width: 8px;
-  height: 8px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
 }
 
 .seed-tag-icon--effect {
-  width: 8px;
-  height: 8px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.seed-tag-icon--effect .di-mini-swatches {
+  margin: 0;
+}
+
+.seed-tag-icon--effect .di-mini-swatch {
+  width: 14px;
+  height: 11px;
   border-radius: 2px;
 }
 
 .seed-tag-icon--svg svg {
-  width: 9px;
-  height: 11px;
+  width: 14px;
+  height: 17px;
   display: block;
+}
+
+.seed-tag-icon--mark {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.seed-picker-icon--mark {
+  font-size: 18px;
+  line-height: 1;
 }
 
 /* ── Label picker panel ────────────────────────────────────────────────────── */

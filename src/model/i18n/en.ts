@@ -203,6 +203,7 @@ export const en = {
   seedLabelCategoryShape: 'Petal shape',
   seedLabelCategoryCenter: 'Center',
   seedLabelCategoryEffect: 'Effect',
+  seedLabelCategoryMark: 'Symbols',
   seedLabelMaxHint: '(max. 2)',
 
   // Shop — Showcase
