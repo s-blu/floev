@@ -38,6 +38,7 @@ import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
 import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT } from '../model/genetic_model'
 import { renderSeedDrawer } from './seeds_ui'
 import { COIN_ICON } from './icons'
+import { renderSeedIcon } from '../engine/renderer/seed_renderer'
 
 
 
@@ -272,6 +273,17 @@ export function handleSellSeed(seedId: string, fromEl: HTMLElement): void {
   }
 }
 
+function spawnSeedFly(fromEl: HTMLElement): void {
+  const rect = fromEl.getBoundingClientRect()
+  const el = document.createElement('div')
+  el.className = 'seed-fly'
+  el.innerHTML = renderSeedIcon(18)
+  el.style.left = `${rect.left + rect.width / 2}px`
+  el.style.top  = `${rect.top}px`
+  document.body.appendChild(el)
+  el.addEventListener('animationend', () => el.remove())
+}
+
 function spawnCoinFly(fromEl: HTMLElement, amount: number): void {
   const rect = fromEl.getBoundingClientRect()
   const coin = document.createElement('div')
@@ -307,6 +319,8 @@ function showSelfPollinateDialog(potId: number): void {
   // Remove any existing dialog
   document.getElementById('selfpollinate-dialog')?.remove()
 
+  const sourceBtn = document.querySelector<HTMLElement>(`[data-action="sell"][data-pot="${potId}"]`)
+
   const overlay = document.createElement('div')
   overlay.id = 'selfpollinate-dialog'
   overlay.className = 'dialog-overlay'
@@ -333,11 +347,11 @@ function showSelfPollinateDialog(potId: number): void {
 
   document.getElementById('selfpollinate-confirm')?.addEventListener('click', () => {
     overlay.remove()
-    executeSelfPollinate(potId)
+    executeSelfPollinate(potId, sourceBtn)
   })
 }
 
-function executeSelfPollinate(potId: number): void {
+function executeSelfPollinate(potId: number, sourceBtn?: HTMLElement | null): void {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot?.plant) return
 
@@ -353,6 +367,7 @@ function executeSelfPollinate(potId: number): void {
     surplusSeed.selfed = true
     addSeedToStorage(state, surplusSeed)
     showMsg(t.surplusSeedObtained)
+    if (sourceBtn) spawnSeedFly(sourceBtn)
   }
 
   // Clear the parent from breeding selection if needed
@@ -393,6 +408,8 @@ function handleBreed(): void {
     potA.plant.surplusSeedsProduced = (potA.plant.surplusSeedsProduced ?? 0) + 1
     potB.plant.surplusSeedsProduced = (potB.plant.surplusSeedsProduced ?? 0) + 1
     showMsg(t.surplusSeedObtained)
+    const breedBtn = document.getElementById('breed-btn')
+    if (breedBtn) spawnSeedFly(breedBtn)
   }
 
   checkAchAndSave(state)

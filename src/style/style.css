@@ -278,6 +278,21 @@ html, body {
   .coin-fly { color: #f0c040; }
 }
 
+/* ── Seed fly animation ──────────────────────────────────────────────────── */
+.seed-fly {
+  position: fixed;
+  z-index: 9999;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: seed-fly-up 0.9s ease-out forwards;
+}
+
+@keyframes seed-fly-up {
+  0%   { opacity: 1;   transform: translateX(-50%) translateY(0);    }
+  70%  { opacity: 1;   transform: translateX(-50%) translateY(-48px); }
+  100% { opacity: 0;   transform: translateX(-50%) translateY(-72px); }
+}
+
 /* ── Responsive ──────────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .pots-row { gap: 8px; }
