@@ -14,6 +14,7 @@ import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES } from '../model/shop';
 import { buildFamilySwatchStyle } from './swatch_utils';
 import { openAlleleIds, state, handleSetPotDesign, handleSetShowcasePotDesign, openPotDesignIds } from './ui'
+import { formatDate } from './ui';
 import { SHOWCASE_POT_BASE_ID } from '../model/shop';
 
 
@@ -47,6 +48,12 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
   const discoveredEffects = showRareRadar ? buildDiscoveredShapeEffects(state.catalog) : new Set<string>();
   const discoveredColors  = showRareRadar ? buildDiscoveredColors(state.catalog)       : new Set<string>();
 
+  const PETAL_SHAPE_LABELS: Record<string, string> = {
+    round: t.shapeRound, lanzett: t.shapeLanzett, tropfen: t.shapeDrop, wavy: t.shapeWavy, zickzack: t.shapeZickzack,
+  };
+  const shapeLabel = (s: string) => PETAL_SHAPE_LABELS[s] ?? s;
+  const centerLabel = (c: string) => (t.centerTypeLabels as Record<string, string>)[c] ?? c;
+
   const shapeA = plant.petalShape.a;
   const shapeB = plant.petalShape.b;
   const domShape = dominantShape(shapeA, shapeB);
@@ -56,8 +63,8 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     && !isShapeFullyDiscovered(recShape, discoveredCounts, discoveredCenters, discoveredEffects)
     ? rareMarker : '';
   const shapeValue = shapeA === shapeB
-    ? shapeA
-    : `${domShape} · ${recShape}${shapeRareMarker}`;
+    ? shapeLabel(shapeA)
+    : `${shapeLabel(domShape)} · ${shapeLabel(recShape)}${shapeRareMarker}`;
 
   const centerA = plant.centerType.a;
   const centerB = plant.centerType.b;
@@ -68,8 +75,8 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     && !isStamenFullyDiscovered(discoveredCenters)
     ? rareMarker : '';
   const centerValue = centerA === centerB
-    ? centerA
-    : `${domCenter} · ${recCenter}${centerRareMarker}`;
+    ? centerLabel(centerA)
+    : `${centerLabel(domCenter)} · ${centerLabel(recCenter)}${centerRareMarker}`;
 
   const effectA = plant.petalEffect.a;
   const effectB = plant.petalEffect.b;
@@ -142,7 +149,12 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     <div class="allele-overlay-row">
       <span class="allele-overlay-label">${t.alleleOverlayStemHeight}</span>
       <span class="allele-overlay-value">${stemValue}</span>
-    </div>`;
+    </div>
+    ${pot.phaseStart != null ? `
+    <div class="allele-overlay-row date">
+      <span class="allele-overlay-label">${t.alleleOverlayBloomedAt}</span>
+      <span class="allele-overlay-value">${formatDate(pot.phaseStart)}</span>
+    </div>` : ''}`;
 
   overlay.addEventListener('click', (e) => {
     if ((e.target as HTMLElement).dataset.action === 'close-overlay') {

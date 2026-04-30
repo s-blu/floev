@@ -1,4 +1,5 @@
 // ─── Floev — German UI strings ───────────────────────────────────────────────
+import { COIN_ICON } from '../../ui/icons'
 
 const colorBucketLabels = {
     white: 'Weiß', yellowgreen: 'Gelb/Grün', red: 'Rot', pink: 'Pink',
@@ -69,6 +70,8 @@ export const de = {
   alleleOverlayGradient: 'Farbverlauf',
   alleleOverlayPetalCount: 'Blattanzahl',
   alleleOverlayStemHeight: 'Stängelhöhe',
+  alleleOverlayBloomedAt: 'Erblüht am',
+  dateLocale: 'de-DE',
 
   // Breeding panel
   breedParent1: 'Elternteil 1',
@@ -76,6 +79,7 @@ export const de = {
   breedPrompt: 'Wähle zwei blühende Pflanzen aus.',
   breedBtn: 'Züchten',
   breedHint: 'Ergebnis landet in einem leeren Topf',
+  breedHintWithSeed: 'Ergebnis landet in einem leeren Topf · Chance auf einen Samen',
   breedHintNoSpace: 'Kein freier Topf — entferne zuerst eine Pflanze.',
   breedNoSpace: 'Kein leerer Topf! Entferne zuerst eine Pflanze.',
   breedSlotRemoveTitle: 'Entfernen',
@@ -112,6 +116,24 @@ export const de = {
   selfPollinateConfirm: 'Bestäuben',
   selfPollinateCancel: 'Abbrechen',
 
+  // Seed crafting
+  craftSingleSeedBtn: '1 Samen herstellen',
+  craftSingleSeedTitle: '1 Samen herstellen — verbraucht je einen Überschuss-Slot beider Pflanzen & 24 Std. Ruhezeit',
+  craftSingleSeedWarningShort: '⚠ Beide Pflanzen 24h Ruhezeit',
+  craftSingleSeedConfirm: 'Herstellen',
+  craftSingleSeedCancel: 'Abbrechen',
+  craftMultiSeedBtn: '3–5 Samen herstellen',
+  craftMultiSeedWarningShort: '⚠ Verbraucht beide Pflanzen',
+  craftMultiSeedTitle: '3–5 Samen herstellen — verbraucht beide Pflanzen',
+  craftMultiSeedConfirmTitle: 'Samenernte',
+  craftMultiSeedConfirmText: 'Aus den beiden Pflanzen werden 3–5 Samen gewonnen. Die Samen landen in der Saatenschublade.',
+  craftMultiSeedWarning: 'Beide Pflanzen werden dabei verbraucht und entfernt.',
+  craftMultiSeedConfirm: 'Ernten',
+  craftMultiSeedCancel: 'Abbrechen',
+  craftRestingLabel: 'In Ruhezeit',
+  craftRestingTime: (time: string) => `(noch ${time})`,
+  craftSeedObtained: (n: number) => `${n} Samen in der Schublade abgelegt!`,
+
   // Catalog / encyclopedia
   catalogEmpty: 'Noch keine Entdeckungen.',
   catalogMetaPetals: 'Blätter',
@@ -130,11 +152,15 @@ export const de = {
   btnMoveFromShowcaseTitle: 'Pflanze in einen freien Topf zurücksetzen',
   showcaseNoFreePot: 'Kein freier Topf im Garten.',
 
+  // Pot swap
+  btnSwapPotTitle: 'Position mit einem anderen Topf tauschen',
+  btnSwapPotCancel: 'Auswahl aufheben',
+
   // Sell
   btnSell: 'Verkaufen',
   btnSellTitle: 'Pflanze verkaufen — erhält Münzen',
   btnSellConfirmTitle: 'Nochmal drücken zum Bestätigen',
-  msgSold: (coins: number) => `Blüte verkauft! +${coins} 🪙`,
+  msgSold: (coins: number) => `Blüte verkauft! +${coins} ${COIN_ICON}`,
 
   // Shop (placeholder)
   shopTab: 'Shop',
@@ -146,7 +172,7 @@ export const de = {
   shopOwnedSuffix: ' (gekauft)',
   shopSectionPots: 'Töpfe',
   shopPotsTitle: 'Neuen Topf kaufen',
-  shopPotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Töpfen. Jeder weitere Topf kostet +50 🪙.`,
+  shopPotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Töpfen. Jeder weitere Topf kostet +50 ${COIN_ICON}.`,
   shopPotsMax: 'Maximum erreicht',
   shopSectionDeco: 'Topf-Design',
   shopSubsectionColors: 'Farben freischalten',
@@ -184,9 +210,20 @@ export const de = {
   selectSeedToPlant: 'Saaten zum Einpflanzen wählen',
   seedMoveHint: 'Klick auf ein Fach zum Ablegen',
   seedSellZone: 'Verkaufen',
-  msgSeedSold: (coins: number) => `Samen verkauft! +${coins} 🪙`,
+  msgSeedSold: (coins: number) => `Samen verkauft! +${coins} ${COIN_ICON}`,
   seedMoveCancel: 'Abbrechen',
   seedDrawerClose: 'Schließen',
+  seedLabelEditBtn: 'Beschriften',
+  seedLabelEditHint: 'Fach anklicken zum Beschriften',
+  seedLabelPickerTitle: 'Beschriftung',
+  seedLabelPickerClear: 'Löschen',
+  seedLabelPickerDone: 'Fertig',
+  seedLabelCategoryBucket: 'Farbe',
+  seedLabelCategoryShape: 'Blütenform',
+  seedLabelCategoryCenter: 'Blütenmitte',
+  seedLabelCategoryEffect: 'Effekt',
+  seedLabelCategoryMark: 'Symbole',
+  seedLabelMaxHint: '(max. 2)',
 
   // Shop — Showcase
   shopSectionShowcase: 'Schaukasten erweitern',
@@ -226,10 +263,10 @@ export const de = {
   orderBookPinTitle:    'Auftrag anpinnen — bleibt beim Neu-Mischen erhalten',
   orderBookUnpinTitle:  'Auftrag lösen',
   orderBookOrderLabel:  (n: number) => `Auftrag ${n}`,
-  orderBookReward:      (coins: number) => `+${coins} 🪙 Bonus`,
+  orderBookReward:      (coins: number) => `+${coins} ${COIN_ICON} Bonus`,
   orderBookDoneLabel:   'Erledigt',
   orderBookBadgeTitle:  (n: number) => `Verkauf erfüllt Auftrag ${n}`,
-  msgSoldWithBonus:     (total: number, bonus: number) => `Blüte verkauft! +${total} 🪙 (inkl. +${bonus} 🪙 Auftrag)`,
+  msgSoldWithBonus:     (total: number, bonus: number) => `Blüte verkauft! +${total} ${COIN_ICON} (inkl. +${bonus} ${COIN_ICON} Auftrag)`,
 
   // Order requirement labels
   orderReqShape:      (name: string) => `Form: ${name}`,
@@ -248,7 +285,6 @@ export const de = {
   notifEmpty: 'Noch keine Meldungen.',
 
   // Messages
-  msgSeedPlanted: 'Samen gepflanzt!',
   msgPotCleared: 'Topf geleert.',
   msgNewBloom: (gen: number) => `Eine neue Blüte ist aufgegangen! (Gen. ${gen})`,
 
@@ -303,7 +339,7 @@ export const de = {
   helpBreedStep2: 'Die Vorschau zeigt Wahrscheinlichkeiten für Farbe, Form und Blütenmitte.',
   helpBreedStep3: 'Klicke „Züchten" — ein neuer Samen landet im nächsten freien Topf.',
   helpBreedStep4: 'Lass den Samen wachsen und beobachte das Ergebnis.',
-  helpSelfBody: 'Mit ↺ (Selbstbestäubung) kreuzt sich eine Pflanze mit sich selbst — das verbraucht die Mutterpflanze, erzeugt aber reinerbigere Nachkommen.',
+  helpSelfBody: 'Mit ↺ (Selbstbestäubung, im Shop erhältlich) kreuzt sich eine Pflanze mit sich selbst — das verbraucht die Mutterpflanze, erzeugt aber reinerbigere Nachkommen.',
   helpHomoBody: 'Reinerbige Pflanzen (◈) tragen auf beiden Allelen denselben Wert — ihre Nachkommen sind deutlich berechenbarer.',
 
   // Other heritable traits
@@ -459,15 +495,6 @@ export const de = {
   
   centerTypeLabels: {
     dot: 'Punkt', disc: 'Scheibe', stamen: 'Staubblätter',
-  } as Record<string, string>,
-  centerTypeLabelsShort: {
-    dot: 'Pt', disc: 'Sch', stamen: 'St',
-  } as Record<string, string>,
-  effectLabelsShort: {
-    bicolor: 'Zw', gradient: 'FV', shimmer: 'Si', iridescent: 'Ir',
-  } as Record<string, string>,
-  colorBucketLabelsShort: {
-    white: 'W', yellowgreen: 'GG', red: 'Ro', pink: 'Pi', purple: 'Li', blue: 'Bl', gray: 'Gr',
   } as Record<string, string>,
 
   colorLabelGradient: "-Verlauf",

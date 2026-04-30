@@ -24,6 +24,54 @@
   border-bottom: none;
 }
 
+.pot-card.swap-selected .pot-visual-area {
+  background: rgba(74, 144, 217, 0.08);
+  border: 2px solid rgba(74, 144, 217, 0.6);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: none;
+}
+
+.pot-swap-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg2);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+  color: #4a72a0;
+}
+
+.pot-card:hover .pot-swap-btn { opacity: 1; }
+.pot-swap-btn:hover { opacity: 1; background: var(--bg3); }
+.pot-swap-btn.active {
+  opacity: 1;
+  background: rgba(74, 144, 217, 0.18);
+  color: #2060a0;
+  box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  .pot-swap-btn { color: #7ab0e0; }
+  .pot-swap-btn.active {
+    background: rgba(74, 144, 217, 0.22);
+    color: #a8d0f0;
+    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.45);
+  }
+}
+
 /* ── Visual area (plant SVG centered, buttons/info positioned around it) ────────── */
 .pot-visual-area {
   position: relative;
@@ -139,7 +187,14 @@
 }
 
 .pot-card:hover .plant-magnifier { opacity: 1; }
-.plant-magnifier:hover { opacity: 1 !important; background: var(--bg3); }
+.plant-magnifier:hover { opacity: 1; background: var(--bg3); }
+
+/* ── Cooldown / rest badge ───────────────────────────────────────────────── */
+.plant-rest-badge {
+  font-size: 12px;
+  line-height: 1;
+  margin-left: -4px;
+}
 
 /* ── Allele overlay ──────────────────────────────────────────────────────── */
 .allele-overlay {
@@ -214,6 +269,11 @@
   font-size: 10px;
   color: var(--text);
   text-align: right;
+}
+
+.allele-overlay-row.date > span {
+  color: var(--text3);
+  font-size: 8px;
 }
 
 .allele-chips-row {
@@ -393,7 +453,8 @@
   .pot-left-actions { gap: 8px; }
 
   .plant-magnifier,
-  .pot-design-btn {
+  .pot-design-btn,
+  .pot-swap-btn {
     width: 28px;
     height: 28px;
     font-size: 14px;

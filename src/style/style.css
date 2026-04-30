@@ -77,6 +77,23 @@ html, body {
   flex-shrink: 0;
 }
 
+/* ── Coin icon — emoji with text fallback for browsers without 🪙 support ── */
+.coin-icon {
+  font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+}
+.no-emoji-coin .coin-icon {
+  font-size: 0;
+  padding: 2px;
+}
+.no-emoji-coin .coin-icon::after {
+  content: '●';
+  font-size: 0.9rem;
+  color: #f5c518;
+  font-family: sans-serif;
+  text-shadow: 0 0 0 #b8860b;
+  -webkit-text-stroke: 0.5px #b8860b;
+}
+
 /* ── Coin badge ────────────────────────────────────────────────────────────── */
 .coin-badge {
   display: inline-flex;
@@ -259,6 +276,21 @@ html, body {
 
 @media (prefers-color-scheme: dark) {
   .coin-fly { color: #f0c040; }
+}
+
+/* ── Seed fly animation ──────────────────────────────────────────────────── */
+.seed-fly {
+  position: fixed;
+  z-index: 9999;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: seed-fly-up 0.9s ease-out forwards;
+}
+
+@keyframes seed-fly-up {
+  0%   { opacity: 1;   transform: translateX(-50%) translateY(0);    }
+  70%  { opacity: 1;   transform: translateX(-50%) translateY(-48px); }
+  100% { opacity: 0;   transform: translateX(-50%) translateY(-72px); }
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────────── */

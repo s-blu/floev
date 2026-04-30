@@ -5,7 +5,7 @@ import { renderPlantSVG } from '../engine/renderer/renderer';
 import { t } from '../model/i18n';
 import { GameState, Pot } from '../model/plant';
 import { RARITY_COLORS, RARITY_ICON } from '../model/rarity_model';
-import { hasUpgrade } from './ui';
+import { hasUpgrade, isOnCooldown } from './ui';
 import { getMatchingOrderNumbers } from './orders_ui';
 
 export function buildPlantViewForPot(pot: Pot, _state: GameState): string {
@@ -39,16 +39,20 @@ export function buildSideInfo(pot: Pot, state: GameState): string {
     const orderBadges = orderNums
         .map(n => `<span class="order-match-badge" title="${t.orderBookBadgeTitle(n)}">📖${n}</span>`)
         .join('')
+    const restBadge = isOnCooldown(pot.plant)
+        ? `<span class="plant-rest-badge" title="${t.craftRestingLabel}">⏳</span>`
+        : '';
     let content = '';
     if (homozyg) content += `<span class="pot-side-homo" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
     if (rareCarrier) content += rareCarrier;
     if (orderBadges) content += orderBadges;
+    if (restBadge) content += restBadge;
     content += `<span class="pot-side-gen"><span class="pot-side-rarity" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span> Gen. ${pot.plant.generation}</span>`;
     return `<div class="pot-side-info">${content}</div>`;
 }
 
-export function buildPotVisualArea(pot: Pot, state: GameState): string {
-    return `<div class="pot-visual-area">${buildLeftActions(pot, state)}${buildPlantViewForPot(pot, state)}${buildSideInfo(pot, state)}</div>`;
+export function buildPotVisualArea(pot: Pot, state: GameState, rightActionsHtml = ''): string {
+    return `<div class="pot-visual-area">${buildLeftActions(pot, state)}${buildPlantViewForPot(pot, state)}${buildSideInfo(pot, state)}${rightActionsHtml}</div>`;
 }
 
 export function buildPotSill(): string {

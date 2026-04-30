@@ -1,4 +1,5 @@
 // ─── Floev — English UI strings ───────────────────────────────────────────────
+import { COIN_ICON } from '../../ui/icons'
 
 const colorBucketLabels = {
     white: 'White', yellowgreen: 'Yellow/Green', red: 'Red', pink: 'Pink',
@@ -69,6 +70,8 @@ export const en = {
   alleleOverlayGradient: 'Gradient',
   alleleOverlayPetalCount: 'Petal count',
   alleleOverlayStemHeight: 'Stem height',
+  alleleOverlayBloomedAt: 'Bloomed on',
+  dateLocale: 'en-GB',
 
   // Breeding panel
   breedParent1: 'Parent 1',
@@ -76,6 +79,7 @@ export const en = {
   breedPrompt: 'Select two blooming plants.',
   breedBtn: 'Breed',
   breedHint: 'Result goes into an empty pot',
+  breedHintWithSeed: 'Result goes into an empty pot · chance of a seed',
   breedHintNoSpace: 'No empty pot — remove a plant first.',
   breedNoSpace: 'No empty pot! Remove a plant first.',
   breedSlotRemoveTitle: 'Remove',
@@ -112,6 +116,24 @@ export const en = {
   selfPollinateConfirm: 'Pollinate',
   selfPollinateCancel: 'Cancel',
 
+  // Seed crafting
+  craftSingleSeedBtn: 'Craft 1 Seed',
+  craftSingleSeedTitle: 'Craft 1 seed — uses one surplus slot from each plant & 24 h rest period',
+   craftSingleSeedWarningShort: '⚠ Both plants rest for 24h',
+  craftSingleSeedConfirm: 'Craft',
+  craftSingleSeedCancel: 'Cancel',
+  craftMultiSeedBtn: 'Craft 3–5 Seeds',
+  craftMultiSeedWarningShort: '⚠ Consumes both plants',
+  craftMultiSeedTitle: 'Craft 3–5 seeds — consumes both plants',
+  craftMultiSeedConfirmTitle: 'Seed Harvest',
+  craftMultiSeedConfirmText: 'Both plants yield 3–5 seeds. The seeds go into the seed drawer.',
+  craftMultiSeedWarning: 'Both plants will be consumed and removed.',
+  craftMultiSeedConfirm: 'Harvest',
+  craftMultiSeedCancel: 'Cancel',
+  craftRestingLabel: 'Resting',
+  craftRestingTime: (time: string) => `(${time} remaining)`,
+  craftSeedObtained: (n: number) => `${n} seed${n === 1 ? '' : 's'} placed in the drawer!`,
+
   // Catalog / encyclopedia
   catalogEmpty: 'No discoveries yet.',
   catalogMetaPetals: 'Petals',
@@ -130,11 +152,15 @@ export const en = {
   btnMoveFromShowcaseTitle: 'Move plant back to a free pot',
   showcaseNoFreePot: 'No free pot in the garden.',
 
+  // Pot swap
+  btnSwapPotTitle: 'Swap position with another pot',
+  btnSwapPotCancel: 'Cancel selection',
+
   // Sell
   btnSell: 'Sell',
   btnSellTitle: 'Sell plant — earns coins',
   btnSellConfirmTitle: 'Press again to confirm sale',
-  msgSold: (coins: number) => `Bloom sold! +${coins} 🪙`,
+  msgSold: (coins: number) => `Bloom sold! +${coins} ${COIN_ICON}`,
 
   // Shop (placeholder)
   shopTab: 'Shop',
@@ -146,7 +172,7 @@ export const en = {
   shopOwnedSuffix: ' (owned)',
   shopSectionPots: 'Pots',
   shopPotsTitle: 'Buy new pot',
-  shopPotsDesc: (current: number, max: number) => `Currently ${current} of ${max} pots. Each additional pot costs +50 🪙.`,
+  shopPotsDesc: (current: number, max: number) => `Currently ${current} of ${max} pots. Each additional pot costs +50 ${COIN_ICON}.`,
   shopPotsMax: 'Maximum reached',
   shopSectionDeco: 'Pot Design',
   shopSubsectionColors: 'Unlock colors',
@@ -184,9 +210,20 @@ export const en = {
   selectSeedToPlant: 'Select a seed to plant',
   seedMoveHint: 'Click a compartment to move seed',
   seedSellZone: 'Sell',
-  msgSeedSold: (coins: number) => `Seed sold! +${coins} 🪙`,
+  msgSeedSold: (coins: number) => `Seed sold! +${coins} ${COIN_ICON}`,
   seedMoveCancel: 'Cancel',
   seedDrawerClose: 'Close',
+  seedLabelEditBtn: 'Label',
+  seedLabelEditHint: 'Click a compartment to label it',
+  seedLabelPickerTitle: 'Label',
+  seedLabelPickerClear: 'Clear',
+  seedLabelPickerDone: 'Done',
+  seedLabelCategoryBucket: 'Color',
+  seedLabelCategoryShape: 'Petal shape',
+  seedLabelCategoryCenter: 'Center',
+  seedLabelCategoryEffect: 'Effect',
+  seedLabelCategoryMark: 'Symbols',
+  seedLabelMaxHint: '(max. 2)',
 
   // Shop — Showcase
   shopSectionShowcase: 'Expand showcase',
@@ -226,10 +263,10 @@ export const en = {
   orderBookPinTitle:    'Pin order — keeps it when reshuffling',
   orderBookUnpinTitle:  'Unpin order',
   orderBookOrderLabel:  (n: number) => `Order ${n}`,
-  orderBookReward:      (coins: number) => `+${coins} 🪙 bonus`,
+  orderBookReward:      (coins: number) => `+${coins} ${COIN_ICON} bonus`,
   orderBookDoneLabel:   'Done',
   orderBookBadgeTitle:  (n: number) => `Sell fulfills order ${n}`,
-  msgSoldWithBonus:     (total: number, bonus: number) => `Bloom sold! +${total} 🪙 (incl. +${bonus} 🪙 order bonus)`,
+  msgSoldWithBonus:     (total: number, bonus: number) => `Bloom sold! +${total} ${COIN_ICON} (incl. +${bonus} ${COIN_ICON} order bonus)`,
 
   // Order requirement labels
   orderReqShape:      (name: string) => `Shape: ${name}`,
@@ -248,7 +285,6 @@ export const en = {
   notifEmpty: 'No messages yet.',
 
   // Messages
-  msgSeedPlanted: 'Seed planted!',
   msgPotCleared: 'Pot cleared.',
   msgNewBloom: (gen: number) => `A new bloom has opened! (Gen. ${gen})`,
 
@@ -303,7 +339,7 @@ export const en = {
   helpBreedStep2: 'The preview shows probabilities for color, shape, and center.',
   helpBreedStep3: 'Click "Breed" — a new seed lands in the next empty pot.',
   helpBreedStep4: 'Let the seed grow and observe the result.',
-  helpSelfBody: 'With ↺ (self-pollination) a plant crosses with itself — this consumes the mother plant but produces more homozygous offspring.',
+  helpSelfBody: 'With ↺ (self-pollination, a buyable upgrade) a plant crosses with itself — this consumes the mother plant but produces more homozygous offspring.',
   helpHomoBody: 'Homozygous plants (◈) carry the same value on both alleles — their offspring are considerably more predictable.',
 
   // Other heritable traits
@@ -459,15 +495,6 @@ export const en = {
 
   centerTypeLabels: {
     dot: 'Dot', disc: 'Disc', stamen: 'Stamens',
-  } as Record<string, string>,
-  centerTypeLabelsShort: {
-    dot: 'Dt', disc: 'Di', stamen: 'St',
-  } as Record<string, string>,
-  effectLabelsShort: {
-    bicolor: 'Bi', gradient: 'Gr', shimmer: 'Sh', iridescent: 'Ir',
-  } as Record<string, string>,
-  colorBucketLabelsShort: {
-    white: 'Wh', yellowgreen: 'YG', red: 'Re', pink: 'Pk', purple: 'Pu', blue: 'Bl', gray: 'Gy',
   } as Record<string, string>,
 
   colorLabelGradient: " gradient",

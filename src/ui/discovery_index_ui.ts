@@ -9,6 +9,7 @@ import {
   buildDiscoveredShapeCounts, buildDiscoveredShapeCenters, buildDiscoveredShapeEffects,
   buildDiscoveredColors, buildDiscoveredShapeColors, getBucketKeys, PETAL_COUNTS, DISPLAY_EFFECTS,
 } from '../engine/discovery_utils';
+import { CENTER_TYPE_ICONS, renderEffectSwatch, renderBucketSwatchStrip } from './icons';
 
 const SECRET_BUCKETS = new Set<ColorBucket>(['purple', 'blue', 'gray']);
 const BUCKET_ORDER: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray', 'white'];
@@ -69,9 +70,9 @@ function renderShapeSection(catalog: CatalogEntry[]): string {
     <span class="di-matrix-subtitle" style="grid-column:2/${2 + nCenters};grid-row:${SUBTITLE_ROW}">${t.discoveryIndexMatrixCenter}</span>
     ${CENTER_TYPES.map((ct, i) => {
       const discovered = PETAL_SHAPES.some(s => discoveredCenters.has(`${s}_${ct}`));
-      const label = discovered ? (t.centerTypeLabelsShort[ct] ?? ct) : '?';
-      const title = discovered ? (t.centerTypeLabels[ct] ?? ct) : '';
-      return cell('di-col-header', 2 + i, HEADER_ROW, title, label);
+      const content = discovered ? CENTER_TYPE_ICONS[ct] ?? ct : '?';
+      const title   = discovered ? (t.centerTypeLabels[ct] ?? ct) : '';
+      return cell('di-col-header', 2 + i, HEADER_ROW, title, content);
     }).join('')}
     ${shapeLabels()}
     ${PETAL_SHAPES.map((shape, si) => {
@@ -88,9 +89,9 @@ function renderShapeSection(catalog: CatalogEntry[]): string {
     <span class="di-matrix-subtitle" style="grid-column:2/${2 + nEffects};grid-row:${SUBTITLE_ROW}">${t.discoveryIndexMatrixEffect}</span>
     ${DISPLAY_EFFECTS.map((ef, i) => {
       const discovered = PETAL_SHAPES.some(s => discoveredEffects.has(`${s}_${ef}`));
-      const label = discovered ? (t.effectLabelsShort[ef] ?? ef) : '?';
-      const title = discovered ? (t.effectLabels[ef] ?? ef) : '';
-      return cell('di-col-header', 2 + i, HEADER_ROW, title, label);
+      const content = discovered ? renderEffectSwatch(ef) : '?';
+      const title   = discovered ? (t.effectLabels[ef] ?? ef) : '';
+      return cell('di-col-header', 2 + i, HEADER_ROW, title, content);
     }).join('')}
     ${shapeLabels()}
     ${PETAL_SHAPES.map((shape, si) => {
@@ -229,9 +230,9 @@ function renderShapeColorSection(catalog: CatalogEntry[]): string {
 
   const colHeaders = BUCKET_ORDER.map((bucket, i) => {
     const bucketKnown = !SECRET_BUCKETS.has(bucket) || knownBuckets.has(bucket);
-    const label = bucketKnown ? (t.colorBucketLabelsShort[bucket] ?? bucket) : '?';
-    const title = bucketKnown ? (t.colorBucketLabels[bucket] ?? bucket) : '';
-    return cell('di-col-header', 2 + i, HEADER_ROW, title, label);
+    const content = bucketKnown ? renderBucketSwatchStrip(bucket) : '?';
+    const title   = bucketKnown ? (t.colorBucketLabels[bucket] ?? bucket) : '';
+    return cell('di-col-header', 2 + i, HEADER_ROW, title, content);
   }).join('');
 
   const shapeRows = PETAL_SHAPES.map((shape, si) => {

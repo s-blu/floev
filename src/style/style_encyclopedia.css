@@ -463,3 +463,21 @@
   outline: none;
   border: 1.5px solid var(--border);
 }
+
+.di-mini-swatches {
+  display: flex;
+  justify-content: center;
+  border-radius: 2px;
+  border: 1px solid rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.di-mini-swatch {
+  width: 4px;
+  height: 12px;
+  flex: 1;
+}
+
+.di-mini-swatch--effect {
+  width: 13px;
+}

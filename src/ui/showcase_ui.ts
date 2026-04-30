@@ -1,4 +1,4 @@
-import { state, handleMoveFromShowcase, hasUpgrade, openAlleleIds, openPotDesignIds } from './ui'
+import { state, handleMoveFromShowcase, handleSwapShowcasePot, hasUpgrade, openAlleleIds, openPotDesignIds, swapShowcasePotId } from './ui'
 import { t } from '../model/i18n'
 import type { Pot } from '../model/plant'
 import { type Rarity } from "../model/rarity_model"
@@ -37,15 +37,18 @@ export function renderShowcase(): void {
 function buildShowcasePotCard(pot: Pot): HTMLElement {
   const card = document.createElement('div')
   const isBlooming = !!pot.plant
+  const isSwapSelected = pot.id === swapShowcasePotId
   const r = rarity(pot)
 
   card.className = [
     'pot-card',
+    isSwapSelected ? 'swap-selected' : '',
     isBlooming ? 'blooming' : '',
     isBlooming ? `rarity-${r}` : '',
   ].filter(Boolean).join(' ')
 
-  const visualAreaHtml = buildPotVisualArea(pot, state)
+  const swapBtnHtml = `<button class="pot-swap-btn${isSwapSelected ? ' active' : ''}" data-action="swap" data-pot="${pot.id}" title="${isSwapSelected ? t.btnSwapPotCancel : t.btnSwapPotTitle}">⇄</button>`
+  const visualAreaHtml = buildPotVisualArea(pot, state, swapBtnHtml)
   const sillHtml = buildPotSill()
 
   // ── Buttons ──
@@ -66,10 +69,14 @@ function buildShowcasePotCard(pot: Pot): HTMLElement {
 
   card.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null
-    if (!btn) return
+    if (!btn) {
+      if (swapShowcasePotId !== null) handleSwapShowcasePot(pot.id)
+      return
+    }
     const action = btn.dataset.action
     const potId = Number(btn.dataset.pot)
     if      (action === 'move-from-showcase') handleMoveFromShowcase(potId)
+    else if (action === 'swap')               handleSwapShowcasePot(potId)
     else if (action === 'allele-inspect')     showAlleleOverlay(potId, card)
     else if (action === 'pot-design')         showPotDesignRing(potId, card)
   })

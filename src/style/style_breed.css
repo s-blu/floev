@@ -304,3 +304,42 @@
   background: #18856A;
   border-color: #18856A;
 }
+
+/* ── Seed crafting ────────────────────────────────────────────────────────────── */
+.breed-cooldown-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.4;
+  height: 28px;
+  justify-content: flex-end;
+  padding-bottom: 2px;
+}
+
+.breed-craft-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 0.5px solid var(--border);
+}
+
+.breed-craft-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breed-craft-hint {
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.btn-craft-seed {
+  font-size: 12px;
+  padding: 4px 10px;
+  flex-shrink: 0;
+}

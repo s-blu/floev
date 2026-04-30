@@ -55,7 +55,7 @@ function renderFooter(): void {
 
   // Bar text: visible only when collapsed and not idle
   if (latestEl) {
-    latestEl.textContent = (!footerOpen && !isIdle) ? (log[0]?.text ?? t.notifEmpty) : ''
+    latestEl.innerHTML = (!footerOpen && !isIdle) ? (log[0]?.text ?? t.notifEmpty) : ''
     latestEl.hidden      = footerOpen
   }
 

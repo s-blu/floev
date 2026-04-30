@@ -1,3 +1,19 @@
+# v1.5.0
+
+Improvements:
+- Enhance seed storage: allow explicit seed breeding
+- Enhance seed storage: Add labeling to boxes
+- Be able to swap pots in their position
+- Show blooming date on genetic overlay
+- Enhance labels on discovery index
+- Enhance effect/petal rendering (I know I know)
+
+
+Bugs:
+- Use the translated label in the genetic overlay 
+- Display coin emoji in older browsers
+- Orders should display directly on page load (if purchased)
+
 # v1.4.1
 
 Bugs:

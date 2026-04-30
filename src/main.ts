@@ -6,6 +6,7 @@ import { initOrderBookPanel } from './ui/orders_ui'
 import { initSeedDrawer } from './ui/seeds_ui'
 import { initNotificationFooter } from './ui/notification_log'
 import { t } from './model/i18n'
+import { COIN_ICON } from './ui/icons'
 
 // ─── Inject app shell ────────────────────────────────────────────────────────
 
@@ -15,7 +16,7 @@ app.innerHTML = `
   <header class="game-header">
     <div class="header-top">
       <h1 class="game-title">${t.appTitle}</h1>
-      <span class="coin-badge" id="coin-badge">🪙 0</span>
+      <span class="coin-badge" id="coin-badge">${COIN_ICON} 0</span>
       <div class="header-actions">
         <button class="seed-drawer-btn" id="seed-drawer-btn" style="display:none">${t.seedDrawerButton(0)}</button>
         <button class="shop-open-btn" id="shop-open-btn" title="Shop öffnen">🛒 Shop</button>
@@ -54,6 +55,7 @@ app.innerHTML = `
         <button class="btn" id="breed-btn" disabled>${t.breedBtn}</button>
         <span class="breed-hint">${t.breedHint}</span>
       </div>
+      <div id="breed-craft-actions"></div>
     </div>
   </section>
 
@@ -117,6 +119,20 @@ document.body.insertAdjacentHTML('beforeend', `
     <div class="seed-drawer-body" id="seed-drawer-body"></div>
   </aside>
 `)
+
+// ─── Emoji support detection ─────────────────────────────────────────────────
+
+;(function detectCoinEmoji() {
+  try {
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 2
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    ctx.fillText('🪙', -2, 2)
+    if (ctx.getImageData(0, 0, 1, 1).data[3] === 0)
+      document.documentElement.classList.add('no-emoji-coin')
+  } catch { /* canvas unavailable, assume support */ }
+})()
 
 // ─── Load & start ────────────────────────────────────────────────────────────
 

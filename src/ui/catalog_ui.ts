@@ -2,7 +2,7 @@ import { expressedColor, expressedShape, expressedCenter, expressedNumber, expre
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import type { CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
 import { RARITY_BADGE_STYLES, RARITY_COLORS, RARITY_ICON, type Rarity } from "../model/rarity_model";
-import { state } from './ui';
+import { formatDate, state } from './ui';
 import { t } from '../model/i18n';
 import { hasUpgrade } from '../engine/shop_engine';
 import { renderDiscoveryIndex } from './discovery_index_ui';
@@ -17,11 +17,6 @@ const CENTER_LABELS: Record<string, string> = {
 };
 
 let entryIndex = new Map<string, number>();
-
-function formatDate(ts: number): string {
-  const d = new Date(ts);
-  return d.toLocaleDateString('de-DE', { day: 'numeric', month: 'short', year: 'numeric' });
-}
 
 // ─── Catalog ──────────────────────────────────────────────────────────────────
 export function renderCatalog(): void {
