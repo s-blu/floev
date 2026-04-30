@@ -118,9 +118,6 @@ export const de = {
   // Seed crafting
   craftSingleSeedBtn: '1 Samen herstellen',
   craftSingleSeedTitle: '1 Samen herstellen — verbraucht je einen Überschuss-Slot beider Pflanzen & 24 Std. Ruhezeit',
-  craftSingleSeedConfirmTitle: 'Samen herstellen',
-  craftSingleSeedConfirmText: 'Die beiden Pflanzen erzeugen gemeinsam einen Samen. Das Ergebnis wird direkt in der Saatenschublade abgelegt — es wird kein freier Topf benötigt.',
-  craftSingleSeedWarning: 'Beide Pflanzen gehen für 24 Stunden in Ruhezeit und können weder gekreuzt noch selbstbestäubt werden.',
   craftSingleSeedWarningShort: '⚠ Beide Pflanzen 24h Ruhezeit',
   craftSingleSeedConfirm: 'Herstellen',
   craftSingleSeedCancel: 'Abbrechen',
@@ -128,7 +125,7 @@ export const de = {
   craftMultiSeedWarningShort: '⚠ Verbraucht beide Pflanzen',
   craftMultiSeedTitle: '3–5 Samen herstellen — verbraucht beide Pflanzen',
   craftMultiSeedConfirmTitle: 'Samenernte',
-  craftMultiSeedConfirmText: 'Aus den beiden Pflanzen werden 3–5 Samen gewonnen, jeder mit einer unabhängig gewürfelten Genkombination. Die Samen landen direkt in der Saatenschublade.',
+  craftMultiSeedConfirmText: 'Aus den beiden Pflanzen werden 3–5 Samen gewonnen. Die Samen landen in der Saatenschublade.',
   craftMultiSeedWarning: 'Beide Pflanzen werden dabei verbraucht und entfernt.',
   craftMultiSeedConfirm: 'Ernten',
   craftMultiSeedCancel: 'Abbrechen',
