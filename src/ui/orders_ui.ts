@@ -206,15 +206,13 @@ export function renderOrderBook(): void {
   const chevron = panel.querySelector('.order-chevron') as HTMLElement | null
   if (chevron) chevron.textContent = panelOpen ? '▴' : '▾'
 
+  panel.classList.toggle('order-panel--open', panelOpen)
+
   const body = panel.querySelector('.order-body') as HTMLElement | null
   if (!body) return
 
-  if (!panelOpen) {
-    body.style.display = 'none'
-    return
-  }
+  if (!panelOpen) return
 
-  body.style.display = ''
   body.innerHTML = ''
 
   // Refresh button
@@ -256,7 +254,6 @@ export function initOrderBookPanel(): void {
   toggle?.addEventListener('click', () => {
     panelOpen = !panelOpen
     savePanelOpen(panelOpen)
-    panel.classList.toggle('order-panel--open', panelOpen)
     renderOrderBook()
   })
 }
