@@ -373,8 +373,8 @@
   left: 5px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 9px 7px 5px;
+  gap: 3px;
+  padding: 8px 5px 4px;
   background: rgba(255, 253, 232, 0.97);
   border: 0.5px solid rgba(150, 110, 50, 0.28);
   border-radius: 2px;
@@ -487,8 +487,8 @@
 }
 
 .seed-tag-icon--svg svg {
-  width: 14px;
-  height: 17px;
+  width: 11px;
+  height: 13px;
   display: block;
 }
 

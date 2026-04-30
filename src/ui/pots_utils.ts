@@ -39,19 +39,20 @@ export function buildSideInfo(pot: Pot, state: GameState): string {
     const orderBadges = orderNums
         .map(n => `<span class="order-match-badge" title="${t.orderBookBadgeTitle(n)}">📖${n}</span>`)
         .join('')
+    const restBadge = isOnCooldown(pot.plant)
+        ? `<span class="plant-rest-badge" title="${t.craftRestingLabel}">⏳</span>`
+        : '';
     let content = '';
     if (homozyg) content += `<span class="pot-side-homo" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
     if (rareCarrier) content += rareCarrier;
     if (orderBadges) content += orderBadges;
+    if (restBadge) content += restBadge;
     content += `<span class="pot-side-gen"><span class="pot-side-rarity" style="color:${RARITY_COLORS[r]}" title="${t.rarity[r]}">${RARITY_ICON[r]}</span> Gen. ${pot.plant.generation}</span>`;
     return `<div class="pot-side-info">${content}</div>`;
 }
 
 export function buildPotVisualArea(pot: Pot, state: GameState, rightActionsHtml = ''): string {
-    const restBadge = pot.plant && isOnCooldown(pot.plant)
-        ? `<span class="plant-rest-badge" title="${t.craftRestingLabel}">⏳</span>`
-        : '';
-    return `<div class="pot-visual-area">${buildLeftActions(pot, state)}${buildPlantViewForPot(pot, state)}${restBadge}${buildSideInfo(pot, state)}${rightActionsHtml}</div>`;
+    return `<div class="pot-visual-area">${buildLeftActions(pot, state)}${buildPlantViewForPot(pot, state)}${buildSideInfo(pot, state)}${rightActionsHtml}</div>`;
 }
 
 export function buildPotSill(): string {

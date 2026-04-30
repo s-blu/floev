@@ -79,6 +79,7 @@ export const en = {
   breedPrompt: 'Select two blooming plants.',
   breedBtn: 'Breed',
   breedHint: 'Result goes into an empty pot',
+  breedHintWithSeed: 'Result goes into an empty pot · chance of a seed',
   breedHintNoSpace: 'No empty pot — remove a plant first.',
   breedNoSpace: 'No empty pot! Remove a plant first.',
   breedSlotRemoveTitle: 'Remove',

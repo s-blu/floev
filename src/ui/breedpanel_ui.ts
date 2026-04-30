@@ -102,7 +102,8 @@ export function renderBreedPanel(): void {
       hint.textContent = t.breedHintNoSpace;
       hint.style.color = '#A32D2D';
     } else {
-      hint.textContent = t.breedHint;
+      const seedChancePossible = showCap && !(bothBlooming && (aCapFull || bCapFull));
+      hint.textContent = seedChancePossible ? t.breedHintWithSeed : t.breedHint;
       hint.style.color = '';
     }
   }

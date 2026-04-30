@@ -79,6 +79,7 @@ export const de = {
   breedPrompt: 'Wähle zwei blühende Pflanzen aus.',
   breedBtn: 'Züchten',
   breedHint: 'Ergebnis landet in einem leeren Topf',
+  breedHintWithSeed: 'Ergebnis landet in einem leeren Topf · Chance auf einen Samen',
   breedHintNoSpace: 'Kein freier Topf — entferne zuerst eine Pflanze.',
   breedNoSpace: 'Kein leerer Topf! Entferne zuerst eine Pflanze.',
   breedSlotRemoveTitle: 'Entfernen',
