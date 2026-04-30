@@ -35,7 +35,7 @@ import { renderAchievements, queueAchievementToast, initAchievementsPanel } from
 import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
-import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT } from '../model/genetic_model'
+import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT, SEED_CRAFT_COOLDOWN_MS, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
 import { renderSeedDrawer } from './seeds_ui'
 import { COIN_ICON } from './icons'
 import { renderSeedIcon } from '../engine/renderer/seed_renderer'
@@ -310,8 +310,8 @@ export function handleBreedSelect(potId: number): void {
 export function handleSelfPollinate(potId: number): void {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot?.plant || pot.plant.phase < 4) return
+  if (isOnCooldown(pot.plant)) return
 
-  // Show confirmation dialog
   showSelfPollinateDialog(potId)
 }
 
@@ -383,11 +383,120 @@ function executeSelfPollinate(potId: number, sourceBtn?: HTMLElement | null): vo
   render()
 }
 
+export function formatCooldownRemaining(until: number): string {
+  const ms = until - Date.now()
+  if (ms <= 0) return ''
+  const totalMin = Math.ceil(ms / 60_000)
+  const h = Math.floor(totalMin / 60)
+  const m = totalMin % 60
+  return h > 0 ? `${h}h ${m}m` : `${m}m`
+}
+
+export function isOnCooldown(plant: { breedCooldownUntil?: number }): boolean {
+  return (plant.breedCooldownUntil ?? 0) > Date.now()
+}
+
+export function handleCraftSingleSeed(): void {
+  if (breedState.breedSelA === null || breedState.breedSelB === null) return
+  const potA = state.pots.find(p => p.id === breedState.breedSelA)
+  const potB = state.pots.find(p => p.id === breedState.breedSelB)
+  if (!potA?.plant || !potB?.plant) return
+  if (isOnCooldown(potA.plant) || isOnCooldown(potB.plant)) return
+  if ((potA.plant.surplusSeedsProduced ?? 0) >= MAX_SURPLUS_SEEDS_PER_PLANT) return
+  if ((potB.plant.surplusSeedsProduced ?? 0) >= MAX_SURPLUS_SEEDS_PER_PLANT) return
+  if (state.seeds.length >= MAX_SEED_STORAGE) return
+
+  executeCraftSingleSeed()
+}
+
+function executeCraftSingleSeed(): void {
+  if (breedState.breedSelA === null || breedState.breedSelB === null) return
+  const potA = state.pots.find(p => p.id === breedState.breedSelA)
+  const potB = state.pots.find(p => p.id === breedState.breedSelB)
+  if (!potA?.plant || !potB?.plant) return
+
+  const seed = breedPlants(potA.plant, potB.plant)
+  addSeedToStorage(state, seed)
+
+  potA.plant.surplusSeedsProduced = (potA.plant.surplusSeedsProduced ?? 0) + 1
+  potB.plant.surplusSeedsProduced = (potB.plant.surplusSeedsProduced ?? 0) + 1
+  const cooldownUntil = Date.now() + SEED_CRAFT_COOLDOWN_MS
+  potA.plant.breedCooldownUntil = cooldownUntil
+  potB.plant.breedCooldownUntil = cooldownUntil
+
+  showMsg(t.craftSeedObtained(1))
+  checkAchAndSave(state)
+  render()
+}
+
+export function handleCraftMultipleSeeds(): void {
+  if (breedState.breedSelA === null || breedState.breedSelB === null) return
+  const potA = state.pots.find(p => p.id === breedState.breedSelA)
+  const potB = state.pots.find(p => p.id === breedState.breedSelB)
+  if (!potA?.plant || !potB?.plant) return
+  if (isOnCooldown(potA.plant) || isOnCooldown(potB.plant)) return
+  if (state.seeds.length + MULTI_SEED_COUNT_MIN > MAX_SEED_STORAGE) return
+
+  showCraftMultiSeedDialog()
+}
+
+function showCraftMultiSeedDialog(): void {
+  document.getElementById('craft-multi-seed-dialog')?.remove()
+
+  const overlay = document.createElement('div')
+  overlay.id = 'craft-multi-seed-dialog'
+  overlay.className = 'dialog-overlay'
+  overlay.innerHTML = `
+    <div class="dialog-box">
+      <p class="dialog-title">${t.craftMultiSeedConfirmTitle}</p>
+      <p class="dialog-text">${t.craftMultiSeedConfirmText}</p>
+      <p class="dialog-warning">⚠ ${t.craftMultiSeedWarning}</p>
+      <div class="dialog-actions">
+        <button class="btn" id="craft-multi-seed-cancel">${t.craftMultiSeedCancel}</button>
+        <button class="btn btn-confirm" id="craft-multi-seed-confirm">${t.craftMultiSeedConfirm}</button>
+      </div>
+    </div>`
+
+  document.body.appendChild(overlay)
+  document.getElementById('craft-multi-seed-cancel')?.addEventListener('click', () => overlay.remove())
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove() })
+  document.getElementById('craft-multi-seed-confirm')?.addEventListener('click', () => {
+    overlay.remove()
+    executeCraftMultipleSeeds()
+  })
+}
+
+function executeCraftMultipleSeeds(): void {
+  if (breedState.breedSelA === null || breedState.breedSelB === null) return
+  const potA = state.pots.find(p => p.id === breedState.breedSelA)
+  const potB = state.pots.find(p => p.id === breedState.breedSelB)
+  if (!potA?.plant || !potB?.plant) return
+
+  const count = MULTI_SEED_COUNT_MIN + Math.floor(Math.random() * (MULTI_SEED_COUNT_MAX - MULTI_SEED_COUNT_MIN + 1))
+  for (let i = 0; i < count; i++) {
+    if (state.seeds.length >= MAX_SEED_STORAGE) break
+    addSeedToStorage(state, breedPlants(potA.plant, potB.plant))
+  }
+
+  const potIdA = breedState.breedSelA
+  const potIdB = breedState.breedSelB
+  breedState.breedSelA = null
+  breedState.breedSelB = null
+  breedState.breedEstimate = null
+  removePlant(state, potIdA)
+  removePlant(state, potIdB)
+
+  showMsg(t.craftSeedObtained(count))
+  checkAchAndSave(state)
+  render()
+}
+
 function handleBreed(): void {
   if (breedState.breedSelA === null || breedState.breedSelB === null) return
   const potA = state.pots.find(p => p.id === breedState.breedSelA)
   const potB = state.pots.find(p => p.id === breedState.breedSelB)
   if (!potA?.plant || !potB?.plant) return
+  if (isOnCooldown(potA.plant) || isOnCooldown(potB.plant)) return
 
   const child = breedPlants(potA.plant, potB.plant)
   const placed = placeSeedInEmptyPot(state, child)

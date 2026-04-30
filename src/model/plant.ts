@@ -50,6 +50,7 @@ export interface Plant {
   parentIds?: [string, string]   // [parentA.id, parentB.id]; absent for wild plants
   selfed?:    boolean            // true when produced by self-pollination
   surplusSeedsProduced?: number  // how many surplus seeds this plant has contributed to
+  breedCooldownUntil?: number    // timestamp until which the plant cannot breed or craft seeds
 }
 
 // ─── Game state ───────────────────────────────────────────────────────────────

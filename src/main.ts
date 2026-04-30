@@ -55,6 +55,7 @@ app.innerHTML = `
         <button class="btn" id="breed-btn" disabled>${t.breedBtn}</button>
         <span class="breed-hint">${t.breedHint}</span>
       </div>
+      <div id="breed-craft-actions"></div>
     </div>
   </section>
 

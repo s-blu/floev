@@ -5,7 +5,7 @@ import { renderPlantSVG } from '../engine/renderer/renderer';
 import { t } from '../model/i18n';
 import { GameState, Pot } from '../model/plant';
 import { RARITY_COLORS, RARITY_ICON } from '../model/rarity_model';
-import { hasUpgrade } from './ui';
+import { hasUpgrade, isOnCooldown } from './ui';
 import { getMatchingOrderNumbers } from './orders_ui';
 
 export function buildPlantViewForPot(pot: Pot, _state: GameState): string {
@@ -48,7 +48,10 @@ export function buildSideInfo(pot: Pot, state: GameState): string {
 }
 
 export function buildPotVisualArea(pot: Pot, state: GameState, rightActionsHtml = ''): string {
-    return `<div class="pot-visual-area">${buildLeftActions(pot, state)}${buildPlantViewForPot(pot, state)}${buildSideInfo(pot, state)}${rightActionsHtml}</div>`;
+    const restBadge = pot.plant && isOnCooldown(pot.plant)
+        ? `<span class="plant-rest-badge" title="${t.craftRestingLabel}">⏳</span>`
+        : '';
+    return `<div class="pot-visual-area">${buildLeftActions(pot, state)}${buildPlantViewForPot(pot, state)}${restBadge}${buildSideInfo(pot, state)}${rightActionsHtml}</div>`;
 }
 
 export function buildPotSill(): string {

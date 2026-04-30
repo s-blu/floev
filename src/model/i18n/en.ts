@@ -115,6 +115,27 @@ export const en = {
   selfPollinateConfirm: 'Pollinate',
   selfPollinateCancel: 'Cancel',
 
+  // Seed crafting
+  craftSingleSeedBtn: 'Craft 1 Seed',
+  craftSingleSeedTitle: 'Craft 1 seed — uses one surplus slot from each plant & 24 h rest period',
+  craftSingleSeedConfirmTitle: 'Craft Seed',
+  craftSingleSeedConfirmText: 'Both plants produce one seed together. The result goes directly into the seed drawer — no empty pot needed.',
+  craftSingleSeedWarning: 'Both plants will rest for 24 hours and cannot be crossed or self-pollinated during that time.',
+  craftSingleSeedWarningShort: '⚠ Both plants rest for 24h',
+  craftSingleSeedConfirm: 'Craft',
+  craftSingleSeedCancel: 'Cancel',
+  craftMultiSeedBtn: 'Craft 3–5 Seeds',
+  craftMultiSeedWarningShort: '⚠ Consumes both plants',
+  craftMultiSeedTitle: 'Craft 3–5 seeds — consumes both plants',
+  craftMultiSeedConfirmTitle: 'Seed Harvest',
+  craftMultiSeedConfirmText: 'Both plants yield 3–5 seeds, each with an independently rolled gene combination. The seeds go directly into the seed drawer.',
+  craftMultiSeedWarning: 'Both plants will be consumed and removed.',
+  craftMultiSeedConfirm: 'Harvest',
+  craftMultiSeedCancel: 'Cancel',
+  craftRestingLabel: 'Resting',
+  craftRestingTime: (time: string) => `(${time} remaining)`,
+  craftSeedObtained: (n: number) => `${n} seed${n === 1 ? '' : 's'} placed in the drawer!`,
+
   // Catalog / encyclopedia
   catalogEmpty: 'No discoveries yet.',
   catalogMetaPetals: 'Petals',
