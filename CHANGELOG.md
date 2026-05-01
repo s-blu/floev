@@ -3,6 +3,7 @@
 Improvements:
 
 - New purchasable: Pot finished (+2 pot designs)
+- New feature: Garden settings (eases pot handling)
 - Improve petal effects for white
 - Improve cooldown display
 - Allow collapsing catalog sections
