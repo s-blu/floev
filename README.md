@@ -16,6 +16,8 @@ Dieses Spiel wurde großteils mithilfe von Claude Sonnet 4.6 geschrieben, als Ex
 - Wiederholt selbe Bad Practices: Hardcoded Übersetzungen, Magic Numbers, Code repetition, !important im css
 - Ist schlecht im refactoring, insb. beim Lösen von Typescript-Errors (Nutzt unsinnige Quick Fixes, statt dem Kern des Problems nachzugehen; löst Probleme immer da, wo sie reported werden und castet dann zB eine Variablennutzung 4 Mal statt einmal die Variable)
 - Fährt sich bei schwammigen Bugbeschreibungen schnell fest und verschleudert dann Tokens, um die (fehlerhafte) Nutzerbeschreibung und den Code übereinanderzubringen
+- Löscht mit Vorliebe erklärende Kommentare - das war aber nur bei der Web-Variante, eingebunden in die IDE lässt Claude das bleiben
+- Catcht silently errors ohne irgendeinen Log. Immer `catch { /* empty */ }`.
 
 ## Setup
 

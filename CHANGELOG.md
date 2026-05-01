@@ -1,3 +1,22 @@
+# v1.6.0
+
+Improvements:
+
+- New purchasable: Pot finished (+2 pot designs)
+- Improve petal effects for white
+- Improve cooldown display
+- Allow collapsing catalog sections
+
+Bugs:
+
+- Disable self pollination if on cooldown
+- Fix seed storage labels in dark mode
+
+# v1.5.1
+
+Bugs:
+- Fix price labels on pot colors
+
 # v1.5.0
 
 Improvements:
