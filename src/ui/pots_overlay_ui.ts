@@ -1,7 +1,7 @@
 import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from '../engine/genetic/dominance_utils';
 import { isHomozygous, hueBucket } from '../engine/genetic/genetic_utils';
 import { RARE_SHAPES, RARE_EFFECTS } from "../model/genetic_model";
-import { hasPotColor, hasPotShape, hasUpgrade } from '../engine/shop_engine';
+import { hasPotColor, hasPotShape, hasPotEffect, hasUpgrade } from '../engine/shop_engine';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY, PALETTE_S } from '../model/genetic_model';
 import {
   buildDiscoveredShapeCounts, buildDiscoveredShapeCenters, buildDiscoveredShapeEffects,
@@ -11,7 +11,7 @@ import {
 
 import { t } from '../model/i18n';
 import type { ChromaticL } from '../model/plant';
-import { POT_COLORS, POT_SHAPES } from '../model/shop';
+import { POT_COLORS, POT_SHAPES, POT_EFFECTS } from '../model/shop';
 import { buildFamilySwatchStyle } from './swatch_utils';
 import { openAlleleIds, state, handleSetPotDesign, handleSetShowcasePotDesign, openPotDesignIds } from './ui'
 import { formatDate } from './ui';
@@ -198,12 +198,14 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   const isShowcasePot = potId >= SHOWCASE_POT_BASE_ID
   const setDesign = isShowcasePot ? handleSetShowcasePotDesign : handleSetPotDesign
 
-  const activeColor = pot.design?.colorId ?? 'terracotta'
-  const activeShape = pot.design?.shape ?? 'standard'
+  const activeColor  = pot.design?.colorId  ?? 'terracotta'
+  const activeShape  = pot.design?.shape    ?? 'standard'
+  const activeEffect = pot.design?.effectId ?? 'none'
 
-  const unlockedColors = POT_COLORS.filter(c => hasPotColor(state, c.id))
-  const unlockedShapes = POT_SHAPES.filter(s => hasPotShape(state, s.id))
-  if (unlockedColors.length === 0 && unlockedShapes.length === 0) return
+  const unlockedColors  = POT_COLORS.filter(c  => hasPotColor(state,  c.id))
+  const unlockedShapes  = POT_SHAPES.filter(s  => hasPotShape(state,  s.id))
+  const unlockedEffects = POT_EFFECTS.filter(e => hasPotEffect(state, e.id))
+  if (unlockedColors.length === 0 && unlockedShapes.length === 0 && unlockedEffects.length <= 1) return
 
   // ── Shape buttons ──
   const shapeButtons = unlockedShapes.map(s => {
@@ -214,6 +216,15 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
     >${t.potShapeLabels[s.id]}</button>`
   }).join('')
 
+  // ── Effect buttons ──
+  const effectButtons = unlockedEffects.map(e => {
+    const isActive = e.id === activeEffect
+    return `<button
+      class="pdo-shape-btn${isActive ? ' pdo-shape-btn--active' : ''}"
+      data-pdo-effect="${e.id}"
+    >${t.potEffectLabels[e.id]}</button>`
+  }).join('')
+
   const overlay = document.createElement('div')
   overlay.className = 'pot-design-overlay-new'
   overlay.innerHTML = `
@@ -221,6 +232,10 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
     ${unlockedShapes.length > 0 ? `
     <div class="pdo-shapes-row">
       ${shapeButtons}
+    </div>` : ''}
+    ${unlockedEffects.length > 1 ? `
+    <div class="pdo-shapes-row">
+      ${effectButtons}
     </div>` : ''}
   `
 
@@ -245,8 +260,9 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   overlay.addEventListener('click', (e) => {
     const el = e.target as HTMLElement
     const action = el.dataset.pdoAction
-    const color = el.dataset.pdoColor
-    const shape = el.dataset.pdoShape
+    const color  = el.dataset.pdoColor
+    const shape  = el.dataset.pdoShape
+    const effect = el.dataset.pdoEffect
 
     if (action === 'close') {
       overlay.remove()
@@ -255,14 +271,19 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
     }
     if (color) {
       setDesign(potId, { colorId: color })
-      // Update active state visually
       overlay.querySelectorAll('[data-pdo-color]').forEach(b => b.classList.remove('pdo-color-swatch--active'))
       el.classList.add('pdo-color-swatch--active')
       return
     }
     if (shape) {
-      setDesign(potId, { shape: shape as 'standard' | 'conic' | 'belly' })
+      setDesign(potId, { shape })
       overlay.querySelectorAll('[data-pdo-shape]').forEach(b => b.classList.remove('pdo-shape-btn--active'))
+      el.classList.add('pdo-shape-btn--active')
+      return
+    }
+    if (effect) {
+      setDesign(potId, { effectId: effect })
+      overlay.querySelectorAll('[data-pdo-effect]').forEach(b => b.classList.remove('pdo-shape-btn--active'))
       el.classList.add('pdo-shape-btn--active')
       return
     }

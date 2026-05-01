@@ -23,7 +23,7 @@ import {
   placeSeedInSpecificPot
 } from '../engine/pot_engine'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
-import { buyUpgrade, buyPotColor, buyPotShape, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot } from '../engine/shop_engine'
+import { buyUpgrade, buyPotColor, buyPotShape, buyPotEffect, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
 import { renderShowcase } from './showcase_ui'
 import { renderBreedPanel } from './breedpanel_ui'
@@ -118,6 +118,13 @@ export function handleBuyPotShape(shape: string): void {
   }
 }
 
+export function handleBuyPotEffect(effectId: string): void {
+  if (buyPotEffect(state, effectId)) {
+    checkAchAndSave(state)
+    render()
+  }
+}
+
 export function handleBuyExtraPot(): void {
   if (buyExtraPot(state)) {
     checkAchAndSave(state)
@@ -125,14 +132,14 @@ export function handleBuyExtraPot(): void {
   }
 }
 
-export function handleSetPotDesign(potId: number, partial: { colorId?: string; shape?: 'standard' | 'conic' | 'belly' }): void {
-  setPotDesign(state, potId, partial)
+export function handleSetPotDesign(potId: number, partial: { colorId?: string; shape?: string; effectId?: string }): void {
+  setPotDesign(state, potId, partial as Parameters<typeof setPotDesign>[2])
   saveState(state)
   render()
 }
 
-export function handleSetShowcasePotDesign(potId: number, partial: { colorId?: string; shape?: 'standard' | 'conic' | 'belly' }): void {
-  setShowcasePotDesign(state, potId, partial)
+export function handleSetShowcasePotDesign(potId: number, partial: { colorId?: string; shape?: string; effectId?: string }): void {
+  setShowcasePotDesign(state, potId, partial as Parameters<typeof setShowcasePotDesign>[2])
   saveState(state)
   render()
 }

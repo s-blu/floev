@@ -178,6 +178,7 @@ export const de = {
   shopSubsectionColors: 'Farben freischalten',
   shopDecoHint: 'Gekaufte Designs per 🎨-Button an jedem Topf wechseln.',
   shopSubsectionShapes: 'Formen freischalten',
+  shopSubsectionEffects: 'Oberflächen freischalten',
 
   // Shop — Upgrade-Beschriftungen
   upgradeTitle: {
@@ -252,6 +253,15 @@ export const de = {
     bowl:     'Schale',
     urn:      'Vase',
     tiny:     'Mini',
+    amphore:  'Amphore',
+    offset:   'Offset',
+  } as Record<string, string>,
+  potEffectLabels: {
+    none:     'Normal',
+    glossy:   'Glänzend',
+    stripes:  'Streifen',
+    diagonal: 'Diagonal',
+    dots:     'Punkte',
   } as Record<string, string>,
 
   // Order book panel

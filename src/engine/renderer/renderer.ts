@@ -28,7 +28,9 @@ export function renderPlantSVG(plant: Plant | null, w: number, h: number, potDes
   const stemLen = h * 0.50 * (plant ? expressedNumber(plant.stemHeight) : 0.6);
   const bloomY = stemBase - stemLen;
 
-  body = renderPot(w, groundY, potRimH, potH, body, potDesign);
+  const potResult = renderPot(w, groundY, potRimH, potH, body, potDesign);
+  body = potResult.body;
+  defs += potResult.defs;
 
   if (!plant) return svg(defs, body, w, h)
 

@@ -2,6 +2,7 @@
 
 import { Rarity } from "./rarity_model"
 import type { OrderBookState } from "./orders"
+import type { PotShape } from "./shop"
 
 export interface HSLColor {
   h: number
@@ -72,8 +73,9 @@ export interface CatalogEntry {
 }
 
 export interface PotDesign {
-  colorId: string
-  shape:   'standard' | 'conic' | 'belly' | 'bowl' | 'urn' | 'tiny'
+  colorId:   string
+  shape:     PotShape
+  effectId?: string
 }
 
 export interface GameState {
@@ -87,8 +89,9 @@ export interface GameState {
   }
   // Shop
   upgrades:           string[]   // purchased upgrade ids
-  unlockedPotColors:  string[]   // purchased pot color ids
-  unlockedPotShapes:  string[]   // purchased pot shape ids
+  unlockedPotColors:   string[]   // purchased pot color ids
+  unlockedPotShapes:   string[]   // purchased pot shape ids
+  unlockedPotEffects:  string[]   // purchased pot effect ids
   seeds:           Plant[]        // stored seeds in Saatenschublade
   seedLayout:      string[]       // fixed-length position map: seedId or '' per slot position
   seedSlotLabels:  string[][]     // per-slot label keys, each up to 2 entries

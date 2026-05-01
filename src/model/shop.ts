@@ -42,7 +42,7 @@ export const EXTRA_POT_PRICE_STEP   = 50
 
 // ─── Pot cosmetics ────────────────────────────────────────────────────────────
 
-export type PotShape = 'standard' | 'conic' | 'belly' | 'bowl' | 'urn' | 'tiny'
+export type PotShape = 'standard' | 'conic' | 'belly' | 'bowl' | 'urn' | 'tiny' | 'amphore' | 'offset'
 
 export interface PotColorDef {
   id: string
@@ -85,13 +85,34 @@ export const POT_SHAPES: PotShapeDef[] = [
   { id: 'bowl',                price: 45 },
   { id: 'urn',                 price: 60 },
   { id: 'tiny',                price: 35 },
+  { id: 'amphore',             price: 70 },
+  { id: 'offset',              price: 55 },
+]
+
+// ─── Pot effects ──────────────────────────────────────────────────────────────
+
+export type PotEffect = 'none' | 'glossy' | 'stripes' | 'diagonal' | 'dots'
+
+export interface PotEffectDef {
+  id: PotEffect
+  price: number
+  free?: boolean
+}
+
+export const POT_EFFECTS: PotEffectDef[] = [
+  { id: 'none',     free: true, price:  0 },
+  { id: 'glossy',              price: 40 },
+  { id: 'stripes',             price: 35 },
+  { id: 'diagonal',            price: 35 },
+  { id: 'dots',                price: 35 },
 ]
 
 // ─── Active pot design (stored in GameState) ──────────────────────────────────
 
 export interface PotDesign {
   colorId: string
-  shape: PotShape
+  shape:    PotShape
+  effectId?: string
 }
 
 export const DEFAULT_POT_DESIGN: PotDesign = {

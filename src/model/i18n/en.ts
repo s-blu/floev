@@ -178,6 +178,7 @@ export const en = {
   shopSubsectionColors: 'Unlock colors',
   shopDecoHint: 'Switch purchased designs via the 🎨 button on each pot.',
   shopSubsectionShapes: 'Unlock shapes',
+  shopSubsectionEffects: 'Unlock finishes',
 
   // Shop — upgrade labels
   upgradeTitle: {
@@ -252,6 +253,15 @@ export const en = {
     bowl:     'Bowl',
     urn:      'Vase',
     tiny:     'Mini',
+    amphore:  'Amphora',
+    offset:   'Offset',
+  } as Record<string, string>,
+  potEffectLabels: {
+    none:     'Plain',
+    glossy:   'Glossy',
+    stripes:  'Stripes',
+    diagonal: 'Diagonal',
+    dots:     'Dots',
   } as Record<string, string>,
 
   // Order book panel

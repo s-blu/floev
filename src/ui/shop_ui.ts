@@ -1,6 +1,6 @@
-import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, SHOWCASE_MAX_SLOTS } from '../model/shop'
-import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleBuyExtraPot, handleBuyExtraShowcaseSlot } from './ui'
-import { hasUpgrade, hasPotColor, hasPotShape, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot, getShowcaseSlotPrice } from '../engine/shop_engine'
+import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, SHOWCASE_MAX_SLOTS } from '../model/shop'
+import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleBuyPotEffect, handleBuyExtraPot, handleBuyExtraShowcaseSlot } from './ui'
+import { hasUpgrade, hasPotColor, hasPotShape, hasPotEffect, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot, getShowcaseSlotPrice } from '../engine/shop_engine'
 import { renderPotShopPreview } from '../engine/renderer/pot_renderer'
 import { t } from '../model/i18n'
 import { COIN_ICON } from './icons'
@@ -26,6 +26,7 @@ export function initShop(): void {
       if      (action === 'buy-upgrade')   handleBuyUpgrade(id)
       else if (action === 'buy-color')     handleBuyPotColor(id)
       else if (action === 'buy-shape')     handleBuyPotShape(id)
+      else if (action === 'buy-effect')    handleBuyPotEffect(id)
       else if (action === 'buy-extra-pot')          handleBuyExtraPot()
       else if (action === 'buy-extra-showcase-slot') handleBuyExtraShowcaseSlot()
     })
@@ -196,6 +197,25 @@ function renderDecoSection(): string {
       </button>`
   }).join('')
 
+  // ── Effect cards ──
+  const effectCards = POT_EFFECTS.map(e => {
+    const owned = hasPotEffect(state, e.id)
+    const canAfford = state.coins >= e.price
+    return `
+      <button
+        class="pot-shape-card ${owned ? 'pot-shape-card--owned' : ''} ${!owned && !canAfford ? 'pot-shape-card--locked' : ''}"
+        data-action="${owned ? '' : 'buy-effect'}"
+        data-id="${e.id}"
+        ${owned ? 'disabled' : (!canAfford ? 'disabled' : '')}
+      >
+        <span class="pot-shape-preview">${renderPotShopPreview('standard', 'terracotta', e.id)}</span>
+        <span class="pot-shape-label">${t.potEffectLabels[e.id]}</span>
+        ${owned
+          ? `<span class="pot-shape-price" style="color:var(--green)">✓</span>`
+          : `<span class="pot-shape-price">${COIN_ICON} ${e.price}</span>`}
+      </button>`
+  }).join('')
+
   return `
     <div class="shop-section">
       <p class="shop-section-label">${t.shopSectionDeco}</p>
@@ -204,5 +224,7 @@ function renderDecoSection(): string {
       <div class="pot-color-grid">${colorSwatches}</div>
       <p class="shop-subsection-label" style="margin-top:12px">${t.shopSubsectionShapes}</p>
       <div class="pot-shape-row">${shapeCards}</div>
+      <p class="shop-subsection-label" style="margin-top:12px">${t.shopSubsectionEffects}</p>
+      <div class="pot-shape-row">${effectCards}</div>
     </div>`
 }

@@ -1,6 +1,6 @@
 import type { GameState } from '../model/plant'
 import type { UpgradeId, PotDesign } from '../model/shop'
-import { UPGRADES, POT_COLORS, POT_SHAPES, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID, SHOWCASE_EXTRA_SLOT_PRICE, SHOWCASE_PREMIUM_SLOT_THRESHOLD, SHOWCASE_PREMIUM_SLOT_PRICE } from '../model/shop'
+import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID, SHOWCASE_EXTRA_SLOT_PRICE, SHOWCASE_PREMIUM_SLOT_THRESHOLD, SHOWCASE_PREMIUM_SLOT_PRICE } from '../model/shop'
 import { INITIAL_POT_COUNT } from './game'
 
 // ─── Upgrade helpers ──────────────────────────────────────────────────────────
@@ -60,6 +60,25 @@ export function buyPotShape(state: GameState, shape: string): boolean {
 
   state.coins -= s.price
   state.unlockedPotShapes = [...(state.unlockedPotShapes ?? []), shape]
+  return true
+}
+
+// ─── Pot effects ─────────────────────────────────────────────────────────────
+
+export function hasPotEffect(state: GameState, effectId: string): boolean {
+  const e = POT_EFFECTS.find(p => p.id === effectId)
+  if (e?.free) return true
+  return state.unlockedPotEffects?.includes(effectId) ?? false
+}
+
+export function buyPotEffect(state: GameState, effectId: string): boolean {
+  const e = POT_EFFECTS.find(p => p.id === effectId)
+  if (!e) return false
+  if (hasPotEffect(state, effectId)) return false
+  if (state.coins < e.price) return false
+
+  state.coins -= e.price
+  state.unlockedPotEffects = [...(state.unlockedPotEffects ?? []), effectId]
   return true
 }
 
