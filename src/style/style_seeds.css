@@ -402,15 +402,6 @@
   z-index: 11;
 }
 
-@media (prefers-color-scheme: dark) {
-  .seed-slot-label {
-    background: rgba(48, 40, 22, 0.94);
-    border-color: rgba(230, 190, 100, 0.18);
-    box-shadow:
-      2px 3px 7px rgba(0, 0, 0, 0.50),
-      inset 0 0 0 0.5px rgba(255, 255, 255, 0.07);
-  }
-}
 
 /* ── Per-slot rotation & pin color variance ────────────────────────────────── */
 
