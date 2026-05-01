@@ -1,6 +1,6 @@
 import { getPhaseProgress, PHASE_DURATION_MS } from '../engine/game';
 import { COIN_ICON } from './icons';
-import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, handleSwapGardenPot, openAlleleIds, hasUpgrade, openPotDesignIds, swapGardenPotId } from './ui';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, handleSwapGardenPot, openAlleleIds, hasUpgrade, openPotDesignIds, swapGardenPotId, isOnCooldown } from './ui';
 import { openSeedDrawer } from './seeds_ui';
 import { t } from '../model/i18n';
 import type { Pot } from '../model/plant';
@@ -38,7 +38,7 @@ function cancelSellPending(potId: number): void {
   sellPendingPots.delete(potId);
 }
 
-function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boolean, showcaseAvail: boolean): void {
+function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boolean, showcaseAvail: boolean, selfPollinateOnCooldown = false): void {
   const wrap = card.querySelector('.overflow-wrap') as HTMLElement | null;
   if (!wrap) return;
   const menu = document.createElement('div');
@@ -48,8 +48,9 @@ function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boole
     b.className = 'btn-sm btn-icon';
     b.dataset.action = 'selfpollinate';
     b.dataset.pot = String(potId);
-    b.title = t.selfPollinateTitle;
+    b.title = selfPollinateOnCooldown ? t.craftRestingLabel : t.selfPollinateTitle;
     b.textContent = '↺';
+    if (selfPollinateOnCooldown) b.disabled = true;
     menu.appendChild(b);
   }
   if (showcaseAvail) {
@@ -97,7 +98,7 @@ export function renderPots(selA: number | null, selB: number | null): void {
       const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
       const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
       if (selfPurchased && showcaseHasSpace) {
-        showOverflowMenu(pot.id, card, true, true);
+        showOverflowMenu(pot.id, card, true, true, isOnCooldown(pot.plant!));
       } else {
         overflowOpenPots.delete(pot.id);
       }
@@ -157,10 +158,11 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
     const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
     const hasBothSecondary = selfPurchased && showcaseHasSpace;
+    const onCooldown = selfPurchased && isOnCooldown(pot.plant!);
     const secondaryHtml = hasBothSecondary
       ? `<div class="overflow-wrap"><button class="btn-sm btn-icon" data-action="overflow-toggle" data-pot="${pot.id}" data-selfpollinate="1" data-showcase="1" title="${t.btnOverflowTitle}">···</button></div>`
       : selfPurchased
-        ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${t.selfPollinateTitle}">↺</button>`
+        ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${onCooldown ? t.craftRestingLabel : t.selfPollinateTitle}"${onCooldown ? ' disabled' : ''}>↺</button>`
         : showcaseHasSpace
           ? `<button class="btn-sm btn-icon" data-action="showcase" data-pot="${pot.id}" title="${t.btnMoveToShowcaseTitle}">${t.btnMoveToShowcase}</button>`
           : '';
@@ -208,7 +210,9 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
         closeAllOverflowMenus();
       } else {
         closeAllOverflowMenus();
-        showOverflowMenu(potId, card, !!btn.dataset.selfpollinate, !!btn.dataset.showcase);
+        const plant = state.pots.find(p => p.id === potId)?.plant;
+        const selfOnCooldown = !!btn.dataset.selfpollinate && !!plant && isOnCooldown(plant);
+        showOverflowMenu(potId, card, !!btn.dataset.selfpollinate, !!btn.dataset.showcase, selfOnCooldown);
       }
     }
     else if (action === 'swap')           handleSwapGardenPot(potId);
