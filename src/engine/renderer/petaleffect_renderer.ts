@@ -42,7 +42,7 @@ export function resolvePetalEffect(
       const { h, s } = pc;
       const isWhite = pc.s === 0 && pc.l === 100;
       const lLight = 60, lMid = 45, lDark = 35;
-      const SKY_H = 207, SKY_S = 65, SKY_L = 78;
+      const SKY_H = 207, SKY_S = 65, SKY_L = 85;
       // round/lanzett tips sit at pr*1.8 — smaller TIP_DIST moves tip beyond 100% (clamped dark).
       // round uses pr*2.0 so only the outer ~15% shows dark; lanzett pr*1.6 for a sharper tip.
       // tropfen/wavy/zickzack tips reach pr*2.2–2.3, keep larger TIP_DIST.
