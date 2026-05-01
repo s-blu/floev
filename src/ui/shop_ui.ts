@@ -167,7 +167,7 @@ function renderDecoSection(): string {
         class="pot-swatch ${owned ? 'pot-swatch--owned' : ''} ${!owned && !canAfford ? 'pot-swatch--cant-afford' : ''}"
         data-action="${owned ? '' : 'buy-color'}"
         data-id="${c.id}"
-        title="${t.potColorLabels[c.id]}${owned ? t.shopOwnedSuffix : ` — ${COIN_ICON} ${c.price}`}"
+        title="${t.potColorLabels[c.id]}${owned ? t.shopOwnedSuffix : ` — 🪙 ${c.price}`}"
         ${owned ? 'disabled' : (!canAfford ? 'disabled' : '')}
       >
         <span class="pot-swatch-dot" style="background:${c.body};border-color:${c.rim}"></span>
