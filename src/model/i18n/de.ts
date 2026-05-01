@@ -178,7 +178,7 @@ export const de = {
   shopSubsectionColors: 'Farben freischalten',
   shopDecoHint: 'Gekaufte Designs per 🎨-Button an jedem Topf wechseln.',
   shopSubsectionShapes: 'Formen freischalten',
-  shopSubsectionEffects: 'Oberflächen freischalten',
+  shopSubsectionEffects: 'Muster freischalten',
 
   // Shop — Upgrade-Beschriftungen
   upgradeTitle: {
