@@ -392,6 +392,14 @@ export function formatCooldownRemaining(until: number): string {
   return h > 0 ? `${h}h ${m}m` : `${m}m`
 }
 
+export function formatCooldownShort(until: number): string {
+  const ms = until - Date.now()
+  if (ms <= 0) return ''
+  const h = Math.floor(ms / 3_600_000)
+  if (h >= 1) return `${h}h`
+  return `${Math.ceil(ms / 60_000)}m`
+}
+
 export function isOnCooldown(plant: { breedCooldownUntil?: number }): boolean {
   return (plant.breedCooldownUntil ?? 0) > Date.now()
 }

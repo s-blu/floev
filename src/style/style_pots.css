@@ -191,9 +191,9 @@
 
 /* ── Cooldown / rest badge ───────────────────────────────────────────────── */
 .plant-rest-badge {
-  font-size: 12px;
+  font-size: 11px;
+  color: var(--text2);
   line-height: 1;
-  margin-left: -4px;
 }
 
 /* ── Allele overlay ──────────────────────────────────────────────────────── */

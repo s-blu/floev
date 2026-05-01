@@ -5,7 +5,7 @@ import { renderPlantSVG } from '../engine/renderer/renderer';
 import { t } from '../model/i18n';
 import { GameState, Pot } from '../model/plant';
 import { RARITY_COLORS, RARITY_ICON } from '../model/rarity_model';
-import { hasUpgrade, isOnCooldown } from './ui';
+import { hasUpgrade, isOnCooldown, formatCooldownShort } from './ui';
 import { getMatchingOrderNumbers } from './orders_ui';
 
 export function buildPlantViewForPot(pot: Pot, _state: GameState): string {
@@ -40,7 +40,7 @@ export function buildSideInfo(pot: Pot, state: GameState): string {
         .map(n => `<span class="order-match-badge" title="${t.orderBookBadgeTitle(n)}">📖${n}</span>`)
         .join('')
     const restBadge = isOnCooldown(pot.plant)
-        ? `<span class="plant-rest-badge" title="${t.craftRestingLabel}">⏳</span>`
+        ? `<span class="plant-rest-badge" title="${t.craftRestingLabel}">⏳ ${formatCooldownShort(pot.plant.breedCooldownUntil!)}</span>`
         : '';
     let content = '';
     if (homozyg) content += `<span class="pot-side-homo" title="${t.homozygousTitle}">${t.homozygousBadge}</span>`;
