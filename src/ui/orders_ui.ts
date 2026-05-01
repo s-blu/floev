@@ -217,9 +217,10 @@ export function renderOrderBook(): void {
 
   // Refresh button
   const canRefresh = canRefreshOrders(state)
+  const refreshUsed = state.orderBook!.dailyRefreshUsed
   const refreshBtn = document.createElement('button')
-  refreshBtn.className = `btn-sm order-refresh-btn${!canRefresh ? ' order-refresh-btn--used' : ''}${refreshPending && canRefresh ? ' order-refresh-btn--pending' : ''}`
-  refreshBtn.textContent = !canRefresh
+  refreshBtn.className = `btn-sm order-refresh-btn${refreshUsed ? ' order-refresh-btn--used' : ''}${refreshPending && canRefresh ? ' order-refresh-btn--pending' : ''}`
+  refreshBtn.textContent = refreshUsed
     ? t.orderBookRefreshUsed
     : refreshPending
       ? t.orderBookRefreshConfirmBtn
