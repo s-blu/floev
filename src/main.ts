@@ -1,6 +1,7 @@
 import { loadState } from './engine/game'
 import { initUI } from './ui/ui'
 import { initHelp, showHelp } from './ui/help_ui'
+import { showGardenSettings } from './ui/garden_settings_ui'
 import { initShop, closeShop } from './ui/shop_ui'
 import { initOrderBookPanel } from './ui/orders_ui'
 import { initSeedDrawer } from './ui/seeds_ui'
@@ -31,7 +32,10 @@ app.innerHTML = `
   </section>
 
   <section>
-    <p class="section-title">${t.sectionGarden}</p>
+    <div class="section-header-row">
+      <p class="section-title">${t.sectionGarden}</p>
+      <button class="section-settings-btn" id="garden-settings-btn" title="${t.gardenSettingsBtnTitle}">⚙️</button>
+    </div>
     <div class="pots-row" id="pots-row"></div>
   </section>
 
@@ -152,6 +156,9 @@ document.getElementById('help-btn')?.addEventListener('click', showHelp)
 initShop()
 document.getElementById('shop-close-btn')?.addEventListener('click', closeShop)
 document.getElementById('shop-overlay')?.addEventListener('click', closeShop)
+
+// Garden settings
+document.getElementById('garden-settings-btn')?.addEventListener('click', showGardenSettings)
 
 // Seed drawer
 initSeedDrawer()

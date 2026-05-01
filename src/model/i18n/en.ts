@@ -359,6 +359,17 @@ export const en = {
   // Start button
   helpStartBtn: 'Let\'s go 🌱',
 
+  // Garden settings modal
+  gardenSettingsBtnTitle: 'Garden settings',
+  gardenSettingsHeading: 'Garden settings',
+  gardenSettingsClose: 'Close',
+  gardenSettingsResetOnSell: 'Reset design on sell',
+  gardenSettingsResetOnSellDesc: 'Pot design is reset to the default appearance after selling a plant.',
+  gardenSettingsDefaultDesign: 'Default appearance',
+  gardenSettingsDefaultDesignDesc: 'Used when resetting a pot.',
+  gardenSettingsEmptyAtEnd: 'Empty pots at end',
+  gardenSettingsEmptyAtEndDesc: 'Pots without a plant are moved to the end of the row.',
+
   // Help button tooltip
   helpBtnTitle: 'Help & rules',
   helpDisclaimerTitle: 'AI Usage Notice',

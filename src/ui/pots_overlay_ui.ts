@@ -14,6 +14,7 @@ import type { ChromaticL } from '../model/plant';
 import { POT_COLORS, POT_SHAPES, POT_EFFECTS } from '../model/shop';
 import { buildFamilySwatchStyle } from './swatch_utils';
 import { openAlleleIds, state, handleSetPotDesign, handleSetShowcasePotDesign, openPotDesignIds } from './ui'
+import { gardenSettings } from '../model/garden_settings'
 import { formatDate } from './ui';
 import { SHOWCASE_POT_BASE_ID } from '../model/shop';
 
@@ -202,9 +203,9 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   const isShowcasePot = potId >= SHOWCASE_POT_BASE_ID
   const setDesign = isShowcasePot ? handleSetShowcasePotDesign : handleSetPotDesign
 
-  const activeColor  = pot.design?.colorId  ?? 'terracotta'
-  const activeShape  = pot.design?.shape    ?? 'standard'
-  const activeEffect = pot.design?.effectId ?? 'none'
+  const activeColor  = pot.design?.colorId  ?? gardenSettings.defaultDesign.colorId
+  const activeShape  = pot.design?.shape    ?? gardenSettings.defaultDesign.shape
+  const activeEffect = pot.design?.effectId ?? gardenSettings.defaultDesign.effectId
 
   const unlockedColors  = POT_COLORS.filter(c  => hasPotColor(state,  c.id))
   const unlockedShapes  = POT_SHAPES.filter(s  => hasPotShape(state,  s.id))

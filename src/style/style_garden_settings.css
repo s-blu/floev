@@ -1,0 +1,138 @@
+/* ── Garden section header ──────────────────────────────────────────────────── */
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.section-header-row .section-title {
+  margin-bottom: 0;
+}
+
+.section-settings-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 2px 4px;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+  line-height: 1;
+}
+
+.section-settings-btn:hover {
+  opacity: 1;
+}
+
+/* ── Garden settings overlay ─────────────────────────────────────────────────── */
+.garden-settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+  animation: help-fade-in 0.2s ease;
+}
+
+.garden-settings-overlay.garden-settings-overlay--closing {
+  animation: help-fade-out 0.22s ease forwards;
+}
+
+/* ── Box ─────────────────────────────────────────────────────────────────────── */
+.garden-settings-box {
+  background: var(--bg);
+  border: 0.5px solid var(--border2);
+  border-radius: var(--radius-xl);
+  max-width: 520px;
+  width: 100%;
+  max-height: 88dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  animation: help-slide-up 0.22s ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+}
+
+.garden-settings-overlay--closing .garden-settings-box {
+  animation: none;
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────────── */
+.garden-settings-section {
+  border-top: 1px solid var(--border);
+  padding: 1rem 0;
+}
+
+.garden-settings-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.garden-settings-section--disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ── Toggle row ──────────────────────────────────────────────────────────────── */
+.garden-settings-toggle-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.garden-settings-toggle-label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.garden-settings-checkbox {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--green);
+}
+
+/* ── Modal heading ───────────────────────────────────────────────────────────── */
+.garden-settings-heading {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* ── Description text ────────────────────────────────────────────────────────── */
+.garden-settings-desc {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.4;
+}
+
+/* ── Preview + pickers row ───────────────────────────────────────────────────── */
+.garden-settings-preview-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+.garden-settings-preview {
+  flex-shrink: 0;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.garden-settings-pickers {
+  flex: 1;
+  min-width: 0;
+}

@@ -1,6 +1,7 @@
 import type { PotDesign } from '../../model/plant';
 import type { PotColorDef } from '../../model/shop';
 import { POT_COLORS } from '../../model/shop';
+import { gardenSettings } from '../../model/garden_settings';
 
 // ─── Effect fill helper ───────────────────────────────────────────────────────
 
@@ -137,8 +138,10 @@ export function renderPotShopPreview(shape: string, colorId: string, effectId?: 
 // ─── Full-scale pot render ────────────────────────────────────────────────────
 
 export function renderPot(w: number, groundY: number, potRimH: number, potH: number, body: string, potDesign?: PotDesign): { body: string; defs: string } {
-  const colorId = potDesign?.colorId ?? 'terracotta';
-  const shape   = potDesign?.shape   ?? 'standard';
+  const { colorId: defColor, shape: defShape, effectId: defEffect } = gardenSettings.defaultDesign;
+  const colorId  = potDesign?.colorId  ?? defColor;
+  const shape    = potDesign?.shape    ?? defShape;
+  const effectId = potDesign?.effectId ?? defEffect;
   const c = POT_COLORS.find(pc => pc.id === colorId) ?? POT_COLORS[0];
 
   const potW = w * 0.72;
@@ -151,7 +154,7 @@ export function renderPot(w: number, groundY: number, potRimH: number, potH: num
   const potBot = potTop + potH;
   const cx = w / 2;
 
-  const { defs: effectDefs, fill: bodyFill } = getEffectFill(potDesign?.effectId, c, `${colorId}_${shape}`)
+  const { defs: effectDefs, fill: bodyFill } = getEffectFill(effectId, c, `${colorId}_${shape}`)
 
   if (shape === 'conic') {
     const topHalf = potW * 0.50;

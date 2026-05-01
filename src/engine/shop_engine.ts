@@ -2,6 +2,7 @@ import type { GameState } from '../model/plant'
 import type { UpgradeId, PotDesign } from '../model/shop'
 import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID, SHOWCASE_EXTRA_SLOT_PRICE, SHOWCASE_PREMIUM_SLOT_THRESHOLD, SHOWCASE_PREMIUM_SLOT_PRICE } from '../model/shop'
 import { INITIAL_POT_COUNT } from './game'
+import { gardenSettings } from '../model/garden_settings'
 
 // ─── Upgrade helpers ──────────────────────────────────────────────────────────
 
@@ -108,14 +109,14 @@ export function buyExtraPot(state: GameState): boolean {
 export function setPotDesign(state: GameState, potId: number, design: Partial<PotDesign>): void {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot) return
-  const current = pot.design ?? { colorId: 'terracotta', shape: 'standard' }
+  const current = pot.design ?? { ...gardenSettings.defaultDesign } as PotDesign
   pot.design = { ...current, ...design }
 }
 
 export function setShowcasePotDesign(state: GameState, potId: number, design: Partial<PotDesign>): void {
   const pot = state.showcase.find(p => p.id === potId)
   if (!pot) return
-  const current = pot.design ?? { colorId: 'terracotta', shape: 'standard' }
+  const current = pot.design ?? { ...gardenSettings.defaultDesign } as PotDesign
   pot.design = { ...current, ...design }
 }
 

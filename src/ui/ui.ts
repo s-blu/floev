@@ -39,6 +39,7 @@ import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SEED_STORA
 import { renderSeedDrawer } from './seeds_ui'
 import { COIN_ICON } from './icons'
 import { renderSeedIcon } from '../engine/renderer/seed_renderer'
+import { gardenSettings } from '../model/garden_settings'
 
 
 
@@ -261,6 +262,15 @@ export function handleSell(potId: number): void {
 
   const reward = sellPlant(state, potId)
   if (reward >= 0) {
+    const soldPot = state.pots.find(p => p.id === potId)
+    if (soldPot) {
+      if (gardenSettings.resetDesignOnSell) soldPot.design = undefined
+      if (gardenSettings.emptyPotsAtEnd) {
+        const idx = state.pots.indexOf(soldPot)
+        state.pots.splice(idx, 1)
+        state.pots.push(soldPot)
+      }
+    }
     state.coins += bonus
     const total = reward + bonus
     showMsg(bonus > 0 ? t.msgSoldWithBonus(total, bonus) : t.msgSold(total))

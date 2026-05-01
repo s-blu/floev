@@ -360,6 +360,17 @@ export const de = {
   helpStartBtn: 'Los geht\'s 🌱',
 
   // Help button tooltip
+  // Garden settings modal
+  gardenSettingsBtnTitle: 'Garteneinstellungen',
+  gardenSettingsHeading: 'Garteneinstellungen',
+  gardenSettingsClose: 'Schließen',
+  gardenSettingsResetOnSell: 'Design beim Verkauf zurücksetzen',
+  gardenSettingsResetOnSellDesc: 'Topf-Design wird nach dem Verkauf einer Pflanze auf das Standard-Aussehen zurückgesetzt.',
+  gardenSettingsDefaultDesign: 'Standard-Aussehen',
+  gardenSettingsDefaultDesignDesc: 'Wird beim Zurücksetzen verwendet.',
+  gardenSettingsEmptyAtEnd: 'Leere Töpfe ans Ende',
+  gardenSettingsEmptyAtEndDesc: 'Töpfe ohne Pflanze werden ans Ende der Reihe verschoben.',
+
   helpBtnTitle: 'Hilfe & Spielregeln',
   helpDisclaimerTitle: 'KI-Nutzungshinweis',
   helpDisclaimerText: 'Dieses Spiel ist ein KI-Experiment, um herauszufinden, wie leistungsstark KI in der Webentwicklung ist und wo die Grenzen liegen. Der Großteil des Spiels ist durch Claude Sonnet 4.6 geschrieben und von einem menschlichen Entwickler überprüft.',
