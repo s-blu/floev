@@ -131,7 +131,10 @@ document.body.insertAdjacentHTML('beforeend', `
     ctx.fillText('🪙', -2, 2)
     if (ctx.getImageData(0, 0, 1, 1).data[3] === 0)
       document.documentElement.classList.add('no-emoji-coin')
-  } catch { /* canvas unavailable, assume support */ }
+  } catch { 
+    /* canvas unavailable, assume outdated browser */ 
+    document.documentElement.classList.add('no-emoji-coin')
+  }
 })()
 
 // ─── Load & start ────────────────────────────────────────────────────────────
