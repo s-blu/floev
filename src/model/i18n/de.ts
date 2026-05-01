@@ -369,7 +369,7 @@ export const de = {
   gardenSettingsDefaultDesign: 'Standard-Aussehen',
   gardenSettingsDefaultDesignDesc: 'Wird beim Zurücksetzen verwendet.',
   gardenSettingsEmptyAtEnd: 'Leere Töpfe ans Ende',
-  gardenSettingsEmptyAtEndDesc: 'Töpfe ohne Pflanze werden ans Ende der Reihe verschoben.',
+  gardenSettingsEmptyAtEndDesc: 'Töpfe werden nach dem Verkauf ans Ende verschoben.',
 
   helpBtnTitle: 'Hilfe & Spielregeln',
   helpDisclaimerTitle: 'KI-Nutzungshinweis',

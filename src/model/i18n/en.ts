@@ -368,7 +368,7 @@ export const en = {
   gardenSettingsDefaultDesign: 'Default appearance',
   gardenSettingsDefaultDesignDesc: 'Used when resetting a pot.',
   gardenSettingsEmptyAtEnd: 'Empty pots at end',
-  gardenSettingsEmptyAtEndDesc: 'Pots without a plant are moved to the end of the row.',
+  gardenSettingsEmptyAtEndDesc: 'Pots are moved to the end after sell.',
 
   // Help button tooltip
   helpBtnTitle: 'Help & rules',
