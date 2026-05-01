@@ -138,6 +138,6 @@ export const SURPLUS_SEED_CHANCE = 0.15
 export const SELF_POLLINATE_SURPLUS_SEED_CHANCE = 0.2
 export const MAX_SURPLUS_SEEDS_PER_PLANT = 3
 export const SEED_SELL_VALUE = 5
-export const SEED_CRAFT_COOLDOWN_MS = 24 * 60 * 60 * 1000
+export const SEED_CRAFT_COOLDOWN_MS = 20 * 60 * 60 * 1000
 export const MULTI_SEED_COUNT_MIN = 3
 export const MULTI_SEED_COUNT_MAX = 5
