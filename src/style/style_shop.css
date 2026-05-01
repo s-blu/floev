@@ -593,9 +593,10 @@
    NEW Pot Design Overlay — mockup redesign
    Layout:
      • Full-card transparent backdrop (catches mis-clicks)
-     • Color swatches in a half-ring around the flower (positioned via JS)
+     • Color swatches column on the left
+     • Effect icon buttons column on the right
      • Labeled shape buttons at the bottom
-     • Close (×) top-right corner
+     • Close (×) centered at the top
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .pot-design-overlay-new {
@@ -612,7 +613,8 @@
 .pdo-close {
   position: absolute;
   top: 5px;
-  right: 5px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -635,10 +637,32 @@
   color: var(--text);
 }
 
-/* ── Color swatch buttons — positioned via JS in a half-ring ──────────── */
+/* ── Color column (left) & effect column (right) ─────────────────────── */
+
+.pdo-color-col,
+.pdo-effect-col {
+  position: absolute;
+  top: 28px;
+  display: grid;
+  gap: 4px;
+  z-index: 2;
+}
+
+.pdo-color-col {
+  left: 4px;
+  grid-template-columns: repeat(2, 22px);
+}
+
+.pdo-effect-col {
+  right: 4px;
+  grid-template-columns: 22px;
+}
+
+/* ── Color swatch buttons ─────────────────────────────────────────────── */
 
 [data-pdo-color] {
-  position: absolute;  /* overridden by JS */
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 2.5px solid transparent;
   background: var(--swatch-bg, #b8724a);
@@ -646,7 +670,7 @@
   cursor: pointer;
   padding: 0;
   transition: transform 0.14s, border-color 0.14s, box-shadow 0.14s;
-  z-index: 2;
+  flex-shrink: 0;
 }
 
 [data-pdo-color]:hover {
@@ -658,6 +682,44 @@
   border-color: var(--green);
   box-shadow: 0 0 0 1.5px var(--green), 0 2px 6px rgba(0,0,0,0.20);
   transform: scale(1.08);
+}
+
+/* ── Effect icon buttons ──────────────────────────────────────────────── */
+
+.pdo-effect-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2.5px solid transparent;
+  background: var(--bg2);
+  color: var(--text3);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.14s, border-color 0.14s, box-shadow 0.14s, color 0.14s;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+
+.pdo-effect-btn svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+  pointer-events: none;
+}
+
+.pdo-effect-btn:hover {
+  transform: scale(1.18);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  color: var(--text);
+}
+
+.pdo-effect-btn--active {
+  border-color: var(--green);
+  color: var(--green);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
 }
 
 /* ── Shape buttons row ────────────────────────────────────────────────── */

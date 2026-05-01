@@ -18,9 +18,13 @@ import { formatDate } from './ui';
 import { SHOWCASE_POT_BASE_ID } from '../model/shop';
 
 
-// FIXME make overlay transparent not blurred
-// FIXME place placeholder element to ing to always have same form no matter how many colors
-// FIXME make ring more compact
+const EFFECT_ICONS: Record<string, string> = {
+  none:     `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="14" height="14" rx="2.5" fill="currentColor"/></svg>`,
+  glossy:   `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="14" height="14" rx="2.5" fill="currentColor"/><path d="M4.5 5.5 Q9 3.5 13.5 8.5" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+  stripes:  `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="14" height="14" rx="2.5" fill="currentColor" opacity="0.25"/><rect x="2" y="2" width="14" height="4" rx="1.5" fill="currentColor"/><rect x="2" y="8" width="14" height="4" fill="currentColor"/><rect x="2" y="14" width="14" height="2" rx="1" fill="currentColor"/></svg>`,
+  diagonal: `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="14" height="14" rx="2.5" fill="currentColor" opacity="0.25"/><line x1="2" y1="9" x2="9" y2="2" stroke="currentColor" stroke-width="4" stroke-linecap="square"/><line x1="2" y1="16" x2="16" y2="2" stroke="currentColor" stroke-width="4" stroke-linecap="square"/><line x1="9" y1="16" x2="16" y2="9" stroke="currentColor" stroke-width="4" stroke-linecap="square"/></svg>`,
+  dots:     `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="14" height="14" rx="2.5" fill="currentColor" opacity="0.2"/><circle cx="6" cy="6" r="2.5" fill="currentColor"/><circle cx="12" cy="6" r="2.5" fill="currentColor"/><circle cx="6" cy="12" r="2.5" fill="currentColor"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg>`,
+}
 
 export function showAlleleOverlay(potId: number, card: HTMLElement, silent = false): void {
   if (!silent) {
@@ -216,49 +220,38 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
     >${t.potShapeLabels[s.id]}</button>`
   }).join('')
 
+  // ── Color swatches ──
+  const colorSwatches = unlockedColors.map(c => {
+    const isActive = c.id === activeColor
+    return `<button
+      class="pdo-color-swatch${isActive ? ' pdo-color-swatch--active' : ''}"
+      data-pdo-color="${c.id}"
+      title="${t.potColorLabels[c.id]}"
+      style="--swatch-bg:${c.body};--swatch-rim:${c.rim}"
+    ></button>`
+  }).join('')
+
   // ── Effect buttons ──
   const effectButtons = unlockedEffects.map(e => {
     const isActive = e.id === activeEffect
     return `<button
-      class="pdo-shape-btn${isActive ? ' pdo-shape-btn--active' : ''}"
+      class="pdo-effect-btn${isActive ? ' pdo-effect-btn--active' : ''}"
       data-pdo-effect="${e.id}"
-    >${t.potEffectLabels[e.id]}</button>`
+      title="${t.potEffectLabels[e.id]}"
+    >${EFFECT_ICONS[e.id] ?? e.id}</button>`
   }).join('')
 
   const overlay = document.createElement('div')
   overlay.className = 'pot-design-overlay-new'
   overlay.innerHTML = `
     <button class="pdo-close" data-pdo-action="close" title="${t.helpClose}">×</button>
-    ${unlockedShapes.length > 0 ? `
-    <div class="pdo-shapes-row">
-      ${shapeButtons}
-    </div>` : ''}
-    ${unlockedEffects.length > 1 ? `
-    <div class="pdo-shapes-row">
-      ${effectButtons}
-    </div>` : ''}
+    ${unlockedColors.length > 0 ? `<div class="pdo-color-col">${colorSwatches}</div>` : ''}
+    ${unlockedEffects.length > 1 ? `<div class="pdo-effect-col">${effectButtons}</div>` : ''}
+    ${unlockedShapes.length > 0 ? `<div class="pdo-shapes-row">${shapeButtons}</div>` : ''}
   `
 
-  // ── Color swatches positioned in a half-ring ──
-  // We use absolute positioning calculated after mounting
-  const swatchContainer = document.createElement('div')
-  swatchContainer.className = 'pdo-color-ring'
-  unlockedColors.forEach((c, i) => {
-    const btn = document.createElement('button')
-    btn.className = `pdo-color-swatch${c.id === activeColor ? ' pdo-color-swatch--active' : ''}`
-    btn.dataset.pdoColor = c.id
-    btn.title = t.potColorLabels[c.id]
-    btn.style.setProperty('--swatch-bg', c.body)
-    btn.style.setProperty('--swatch-rim', c.rim)
-    btn.dataset.index = String(i)
-    btn.dataset.total = String(unlockedColors.length)
-    overlay.appendChild(btn)
-  })
-
-  overlay.appendChild(swatchContainer)
-
   overlay.addEventListener('click', (e) => {
-    const el = e.target as HTMLElement
+    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-pdo-action],[data-pdo-color],[data-pdo-shape],[data-pdo-effect]') ?? e.target as HTMLElement
     const action = el.dataset.pdoAction
     const color  = el.dataset.pdoColor
     const shape  = el.dataset.pdoShape
@@ -283,8 +276,8 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
     }
     if (effect) {
       setDesign(potId, { effectId: effect })
-      overlay.querySelectorAll('[data-pdo-effect]').forEach(b => b.classList.remove('pdo-shape-btn--active'))
-      el.classList.add('pdo-shape-btn--active')
+      overlay.querySelectorAll('[data-pdo-effect]').forEach(b => b.classList.remove('pdo-effect-btn--active'))
+      el.classList.add('pdo-effect-btn--active')
       return
     }
     e.stopPropagation()
@@ -293,9 +286,7 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   openPotDesignIds.add(potId)
   card.appendChild(overlay)
 
-  // Position color swatches in a half-ring after mount
   requestAnimationFrame(() => {
-    positionColorSwatches(overlay, card)
     positionShapesRow(overlay, card)
   })
 
@@ -318,41 +309,6 @@ export function attachPotDesignRing(potId: number, card: HTMLElement, silent: bo
   }
 }
 
-function positionColorSwatches(overlay: HTMLElement, card: HTMLElement): void {
-  const swatches = overlay.querySelectorAll<HTMLElement>('[data-pdo-color]')
-  const cardW = card.offsetWidth
-
-  const visualArea = card.querySelector<HTMLElement>('.pot-visual-area')
-  const visualAreaH = visualArea?.offsetHeight ?? card.offsetHeight * 0.72
-
-  // Center ring on flower (upper portion of visual area, above pot)
-  const cx = cardW / 2
-  const cy = visualAreaH * 0.45
-
-  // Radius sized so the arc extremes don't reach the pot at the bottom
-  const radius = Math.min(cardW * 0.42, visualAreaH * 0.36)
-
-  const n = swatches.length
-  // Arc from 155° to 385° (=25°): left-down → left → top → right → right-down
-  // Spans 230°, avoids the bottom 90° sector where the pot sits
-  const startAngle = 155
-  const endAngle = 385
-  const swatchSize = 22
-
-  swatches.forEach((btn, i) => {
-    const frac = n === 1 ? 0.5 : i / (n - 1)
-    const deg = startAngle + frac * (endAngle - startAngle)
-    const rad = (deg * Math.PI) / 180
-    const x = cx + Math.cos(rad) * radius - swatchSize / 2
-    const y = cy + Math.sin(rad) * radius - swatchSize / 2
-
-    btn.style.position = 'absolute'
-    btn.style.left = `${x}px`
-    btn.style.top = `${y}px`
-    btn.style.width = `${swatchSize}px`
-    btn.style.height = `${swatchSize}px`
-  })
-}
 
 function positionShapesRow(overlay: HTMLElement, card: HTMLElement): void {
   const shapesRow = overlay.querySelector<HTMLElement>('.pdo-shapes-row')
