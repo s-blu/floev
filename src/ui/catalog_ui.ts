@@ -18,6 +18,25 @@ const CENTER_LABELS: Record<string, string> = {
 
 let entryIndex = new Map<string, number>();
 
+const RARITY_OPEN_KEY = 'catalog_rarity_open';
+
+function loadRarityOpenStates(): Map<number, boolean> {
+  try {
+    const raw = localStorage.getItem(RARITY_OPEN_KEY);
+    if (raw) return new Map(Object.entries(JSON.parse(raw)).map(([k, v]) => [Number(k), v as boolean]));
+  } catch { /* empty */ }
+  return new Map();
+}
+
+function saveRarityOpenState(rarity: number, open: boolean): void {
+  try {
+    const raw = localStorage.getItem(RARITY_OPEN_KEY);
+    const current = raw ? JSON.parse(raw) : {};
+    current[rarity] = open;
+    localStorage.setItem(RARITY_OPEN_KEY, JSON.stringify(current));
+  } catch { /* empty */ }
+}
+
 // ─── Catalog ──────────────────────────────────────────────────────────────────
 export function renderCatalog(): void {
   const container = document.getElementById('catalog-grid');
@@ -44,6 +63,8 @@ export function renderCatalog(): void {
   allSorted.forEach((e, i) => entryIndex.set(e.plant.id, i + 1));
 
   const discoveryIndexOpen = (document.getElementById('discovery-index') as HTMLDetailsElement | null)?.open ?? false;
+  const persistedStates = loadRarityOpenStates();
+
   container.innerHTML = '';
   if (hasUpgrade(state, 'unlock_discovery_index')) {
     container.appendChild(renderDiscoveryIndex(state.catalog, discoveryIndexOpen));
@@ -53,15 +74,20 @@ export function renderCatalog(): void {
     const entries = groups[rarity];
     if (entries.length === 0) continue;
 
-    const heading = document.createElement('div');
-    heading.className = 'catalog-section-heading';
-    heading.innerHTML = `
+    const section = document.createElement('details');
+    section.id = `catalog-section-rarity-${rarity}`;
+    if (persistedStates.get(rarity) ?? true) section.setAttribute('open', '');
+    section.addEventListener('toggle', () => saveRarityOpenState(rarity, section.open));
+
+    const summary = document.createElement('summary');
+    summary.className = 'catalog-section-heading';
+    summary.innerHTML = `
       <span class="rarity-dot" style="color:${RARITY_COLORS[rarity]}">${RARITY_ICON[rarity]}</span>
       <span class="rarity-line"></span>
       <span class="rarity-name" style="color:${RARITY_COLORS[rarity]}">${t.rarity[rarity]}</span>
       <span class="rarity-line"></span>
       <span class="catalog-section-count">${entries.length}</span>`;
-    container.appendChild(heading);
+    section.appendChild(summary);
 
     const grid = document.createElement('div');
     grid.className = 'catalog-rarity-group';
@@ -69,7 +95,8 @@ export function renderCatalog(): void {
       const num = entryIndex.get(entry.plant.id) ?? 0;
       grid.appendChild(buildEncyclopediaEntry(entry, num));
     }
-    container.appendChild(grid);
+    section.appendChild(grid);
+    container.appendChild(section);
   }
 
 }

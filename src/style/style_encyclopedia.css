@@ -14,6 +14,19 @@
   gap: 8px;
   padding: 10px 0 6px;
   margin-bottom: 10px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.catalog-section-heading::-webkit-details-marker { display: none; }
+
+details:not([open]) .catalog-section-heading { margin-bottom: 4px; }
+
+details:not([open]) .catalog-section-heading .rarity-name::after {
+  content: ' ›';
+  opacity: 0.45;
+  font-weight: 400;
 }
 
 .catalog-section-heading .rarity-line {
