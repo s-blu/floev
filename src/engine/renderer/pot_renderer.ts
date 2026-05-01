@@ -23,21 +23,21 @@ function getEffectFill(effectId: string | undefined, c: PotColorDef, potUid: str
     case 'stripes': {
       const defs = `<pattern id="${id}" x="0" y="0" width="100" height="7" patternUnits="userSpaceOnUse">
         <rect x="0" y="0" width="100" height="7"   fill="${c.body}"/>
-        <rect x="0" y="0" width="100" height="3.5" fill="${c.rim}" fill-opacity="0.55"/>
+        <rect x="0" y="0" width="100" height="3.5" fill="${c.rim}" fill-opacity="0.75"/>
       </pattern>`
       return { defs, fill: `url(#${id})` }
     }
     case 'diagonal': {
       const defs = `<pattern id="${id}" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
         <rect x="0" y="0" width="10" height="10" fill="${c.body}"/>
-        <rect x="0" y="0" width="5"  height="10" fill="${c.rim}" fill-opacity="0.5"/>
+        <rect x="0" y="0" width="5"  height="10" fill="${c.rim}" fill-opacity="0.70"/>
       </pattern>`
       return { defs, fill: `url(#${id})` }
     }
     case 'dots': {
-      const defs = `<pattern id="${id}" x="0" y="0" width="9" height="9" patternUnits="userSpaceOnUse">
+      const defs = `<pattern id="${id}" x="0" y="0" width="11" height="11" patternUnits="userSpaceOnUse">
         <rect   x="0"   y="0"   width="12" height="12" fill="${c.body}"/>
-        <circle cx="4" cy="4" r="3"              fill="${c.rim}" fill-opacity="0.65"/>
+        <circle cx="5" cy="5" r="4"              fill="${c.rim}" fill-opacity="0.80"/>
       </pattern>`
       return { defs, fill: `url(#${id})` }
     }
