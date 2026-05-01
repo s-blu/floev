@@ -36,8 +36,8 @@ function getEffectFill(effectId: string | undefined, c: PotColorDef, potUid: str
     }
     case 'dots': {
       const defs = `<pattern id="${id}" x="0" y="0" width="9" height="9" patternUnits="userSpaceOnUse">
-        <rect   x="0"   y="0"   width="9" height="9" fill="${c.body}"/>
-        <circle cx="4.5" cy="4.5" r="2"              fill="${c.rim}" fill-opacity="0.65"/>
+        <rect   x="0"   y="0"   width="12" height="12" fill="${c.body}"/>
+        <circle cx="4" cy="4" r="3"              fill="${c.rim}" fill-opacity="0.65"/>
       </pattern>`
       return { defs, fill: `url(#${id})` }
     }
@@ -89,21 +89,30 @@ export function renderPotShopPreview(shape: string, colorId: string, effectId?: 
     potPath = `<rect x="11" y="${potTop}" width="14" height="${potH}" rx="4" fill="${bodyFill}"/>`
     rimPath = `<rect x="9" y="0" width="18" height="${rimH}" rx="2" fill="${c.rim}"/>`
   } else if (shape === 'amphore') {
-    const neckY  = potTop + potH * 0.30
-    const bellyY = potTop + potH * 0.62
+    // Proportions derived from hand-tuned reference SVG (viewBox 0 0 100 130)
+    const tH  = w * 0.317,  nH = w * 0.258,  bH = w * 0.334,  basH = w * 0.288
+    const cx2 = w / 2
+    const nY  = potTop + potH * 0.30
+    const bY  = potTop + potH * 0.62
+    const bot = potTop + potH
     potPath = `<path d="
-      M8,${potTop} L28,${potTop}
-      C27,${potTop+1} 25,${neckY-2} 24,${neckY}
-      C23,${neckY+2} 29,${bellyY-3} 30,${bellyY}
-      C30,${bellyY+3} 27,${potTop+potH-1} 26,${potTop+potH}
-      L10,${potTop+potH}
-      C9,${potTop+potH-1} 6,${bellyY+3} 6,${bellyY}
-      C7,${bellyY-3} 13,${neckY+2} 12,${neckY}
-      C11,${neckY-2} 9,${potTop+1} 8,${potTop}
+      M${cx2-tH},${potTop} L${cx2+tH},${potTop}
+      C${cx2+tH},${potTop+potH*0.077} ${cx2+w*0.2776},${potTop+potH*0.223} ${cx2+nH},${nY}
+      C${cx2+w*0.2476},${potTop+potH*0.415} ${cx2+bH},${potTop+potH*0.427} ${cx2+bH},${bY}
+      C${cx2+bH},${potTop+potH*0.774} ${cx2+w*0.308},${potTop+potH*0.885} ${cx2+basH},${bot}
+      L${cx2-basH},${bot}
+      C${cx2-w*0.308},${potTop+potH*0.885} ${cx2-bH},${potTop+potH*0.774} ${cx2-bH},${bY}
+      C${cx2-bH},${potTop+potH*0.427} ${cx2-w*0.2476},${potTop+potH*0.415} ${cx2-nH},${nY}
+      C${cx2-w*0.2776},${potTop+potH*0.223} ${cx2-tH},${potTop+potH*0.077} ${cx2-tH},${potTop}
       Z" fill="${bodyFill}"/>
-    <path d="M24,${neckY} C33,${potTop-3} 33,${neckY+4} 30,${bellyY}" fill="none" stroke="${c.rim}" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M12,${neckY} C3,${potTop-3} 3,${neckY+4} 6,${bellyY}" fill="none" stroke="${c.rim}" stroke-width="2.5" stroke-linecap="round"/>`
-    rimPath = `<rect x="5" y="0" width="26" height="${rimH}" rx="2" fill="${c.rim}"/>`
+    <path d="M${cx2+nH},${potTop+potH*0.423} C${cx2+w*0.415},${rimH*0.16} ${cx2+w*0.415},${potTop+potH*0.465} ${cx2+bH},${bY}" fill="none" stroke="${c.rim}" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M${cx2-nH},${potTop+potH*0.423} C${cx2-w*0.415},${rimH*0.16} ${cx2-w*0.415},${potTop+potH*0.465} ${cx2-bH},${bY}" fill="none" stroke="${c.rim}" stroke-width="2.5" stroke-linecap="round"/>`
+    // Curved rim: edges slightly higher than center, flat bottom flush with body
+    const aRH = w * 0.345, rC = rimH * 0.28
+    rimPath = `<path d="
+      M${cx2-aRH},${rC} Q${cx2},${0} ${cx2+aRH},${rC}
+      L${cx2+aRH},${rimH} L${cx2-aRH},${rimH}
+      Z" fill="${c.rim}"/>`
   } else if (shape === 'offset') {
     const midY = potTop + potH * 0.50
     potPath = `<path d="
@@ -205,34 +214,38 @@ export function renderPot(w: number, groundY: number, potRimH: number, potH: num
     body += `<rect x="${tinyRimX}" y="${groundY}" width="${tinyRimW}" height="${potRimH}" rx="3" fill="${c.rim}"/>`;
     body += `<rect x="${tinyShineX}" y="${potTop + 2}" width="${tinyShineW}" height="3" rx="1" fill="${c.shadow}" opacity="0.35"/>`;
   } else if (shape === 'amphore') {
-    const mouthHalf = potW * 0.44;
-    const neckHalf  = potW * 0.33;
-    const bellyHalf = potW * 0.52;
-    const baseHalf  = potW * 0.40;
-    const neckY     = potTop + potH * 0.30;
-    const bellyY    = potTop + potH * 0.62;
-    const mXL = cx - mouthHalf, mXR = cx + mouthHalf;
-    const nXL = cx - neckHalf,  nXR = cx + neckHalf;
-    const bXL = cx - bellyHalf, bXR = cx + bellyHalf;
-    const basXL = cx - baseHalf, basXR = cx + baseHalf;
+    // Proportions derived from hand-tuned reference SVG (viewBox 0 0 100 130)
+    const tH   = w * 0.317,  nH  = w * 0.258,  bH  = w * 0.334,  basH = w * 0.288;
+    const nXL  = cx - nH,    nXR = cx + nH;
+    const bXL  = cx - bH,    bXR = cx + bH;
+    const neckY  = potTop + potH * 0.30;
+    const bellyY = potTop + potH * 0.62;
     body += `<path d="
-      M${mXL},${potTop} L${mXR},${potTop}
-      C${mXR},${potTop+2} ${nXR+2},${neckY-2} ${nXR},${neckY}
-      C${nXR-1},${neckY+3} ${bXR},${bellyY-5} ${bXR},${bellyY}
-      C${bXR},${bellyY+4} ${basXR+2},${potBot-3} ${basXR},${potBot}
-      L${basXL},${potBot}
-      C${basXL-2},${potBot-3} ${bXL},${bellyY+4} ${bXL},${bellyY}
-      C${bXL},${bellyY-5} ${nXL+1},${neckY+3} ${nXL},${neckY}
-      C${nXL-2},${neckY-2} ${mXL},${potTop+2} ${mXL},${potTop}
+      M${cx-tH},${potTop} L${cx+tH},${potTop}
+      C${cx+tH},${potTop+potH*0.077} ${cx+w*0.2776},${potTop+potH*0.223} ${nXR},${neckY}
+      C${cx+w*0.2476},${potTop+potH*0.415} ${bXR},${potTop+potH*0.427} ${bXR},${bellyY}
+      C${bXR},${potTop+potH*0.774} ${cx+w*0.308},${potTop+potH*0.885} ${cx+basH},${potBot}
+      L${cx-basH},${potBot}
+      C${cx-w*0.308},${potTop+potH*0.885} ${bXL},${potTop+potH*0.774} ${bXL},${bellyY}
+      C${bXL},${potTop+potH*0.427} ${cx-w*0.2476},${potTop+potH*0.415} ${nXL},${neckY}
+      C${cx-w*0.2776},${potTop+potH*0.223} ${cx-tH},${potTop+potH*0.077} ${cx-tH},${potTop}
       Z" fill="${bodyFill}"/>`;
-    const handleArchX = cx + potW * 0.72;
-    const handleArchY = groundY - potH * 0.15;
-    const handleStroke = Math.max(3, potW * 0.07);
-    body += `<path d="M${nXR},${neckY} C${handleArchX},${handleArchY} ${handleArchX},${neckY + potH * 0.18} ${bXR},${bellyY}" fill="none" stroke="${c.rim}" stroke-width="${handleStroke}" stroke-linecap="round"/>`;
-    body += `<path d="M${nXL},${neckY} C${w - handleArchX},${handleArchY} ${w - handleArchX},${neckY + potH * 0.18} ${bXL},${bellyY}" fill="none" stroke="${c.rim}" stroke-width="${handleStroke}" stroke-linecap="round"/>`;
-    const amphRimW = mouthHalf * 2 * 1.09;
-    const amphRimX = (w - amphRimW) / 2;
-    body += `<rect x="${amphRimX}" y="${groundY}" width="${amphRimW}" height="${potRimH}" rx="3" fill="${c.rim}"/>`;
+    // Handles: arch up to rim level, starting exactly at body edge at neckY
+    const hAX = cx + w * 0.415, hAY = groundY + potRimH * 0.16;
+    const hMY = potTop + potH * 0.465;
+    const handleStroke = Math.max(3, w * 0.05);
+    body += `<path d="M${nXR},${neckY} C${hAX},${hAY} ${hAX},${hMY} ${bXR},${bellyY}" fill="none" stroke="${c.rim}" stroke-width="${handleStroke}" stroke-linecap="round"/>`;
+    body += `<path d="M${nXL},${neckY} C${2*cx-hAX},${hAY} ${2*cx-hAX},${hMY} ${bXL},${bellyY}" fill="none" stroke="${c.rim}" stroke-width="${handleStroke}" stroke-linecap="round"/>`;
+    // Rim: edges higher than center, center stays at groundY so flower sits flush
+    const aRH = w * 0.345, rC = potRimH * 0.6, rimR = rC * 0.6;
+    body += `<path d="
+      M${cx-aRH},${potTop}
+      L${cx-aRH},${groundY-rC+rimR}
+      A${rimR},${rimR} 0 0 1 ${cx-aRH+rimR},${groundY-rC}
+      Q${cx},${groundY+rC} ${cx+aRH-rimR},${groundY-rC}
+      A${rimR},${rimR} 0 0 1 ${cx+aRH},${groundY-rC+rimR}
+      L${cx+aRH},${potTop}
+      Z" fill="${c.rim}"/>`;
     body += `<rect x="${shineX}" y="${potTop + 2}" width="${shineW}" height="3" rx="1" fill="${c.shadow}" opacity="0.35"/>`;
   } else if (shape === 'offset') {
     const midY      = potTop + potH * 0.50;
