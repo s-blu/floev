@@ -101,10 +101,10 @@ export interface PotEffectDef {
 
 export const POT_EFFECTS: PotEffectDef[] = [
   { id: 'none',     free: true, price:  0 },
-  { id: 'glossy',              price: 40 },
-  { id: 'stripes',             price: 35 },
-  { id: 'diagonal',            price: 35 },
-  { id: 'dots',                price: 35 },
+  { id: 'glossy',              price: 50 },
+  { id: 'stripes',             price: 60 },
+  { id: 'diagonal',            price: 60 },
+  { id: 'dots',                price: 60 },
 ]
 
 // ─── Active pot design (stored in GameState) ──────────────────────────────────
