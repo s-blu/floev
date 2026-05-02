@@ -41,7 +41,7 @@ export function dominantEffect(a: PetalEffect, b: PetalEffect): PetalEffect {
   return ia <= ib ? a : b;
 }
 
-/** Return the more dominant of two petal count alleles. 3 > 5 > 7 */
+/** Return the more dominant of two petal count alleles. 3 > 5 > 8 */
 export function dominantPetalCount(a: PetalCount, b: PetalCount): PetalCount {
   const ia = PETAL_COUNT_DOMINANCE.indexOf(a);
   const ib = PETAL_COUNT_DOMINANCE.indexOf(b);

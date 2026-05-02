@@ -90,7 +90,7 @@ console.log('migration 4', allPlants)
       function snapCount(n: number): number {
         if (n <= 3.5) return 3
         if (n <= 6)   return 5
-        return 7
+        return 8
       }
 
       const allPlants = [
@@ -100,8 +100,8 @@ console.log('migration 4', allPlants)
         ...state.seeds,
       ]
       for (const plant of allPlants) {
-        plant.petalCount.a = snapCount(plant.petalCount.a)
-        plant.petalCount.b = snapCount(plant.petalCount.b)
+        plant.petalCount.a = snapCount(plant.petalCount.a) as import('../model/plant').PetalCount
+        plant.petalCount.b = snapCount(plant.petalCount.b) as import('../model/plant').PetalCount
       }
 
       const seen = new Set<string>()
@@ -121,6 +121,24 @@ console.log('migration 4', allPlants)
           lostCatalogEntries: lostEntries,
           compensation: lostEntries * COMPENSATION_PER_LOST_ENTRY,
         }
+      }
+    },
+  },
+  {
+    version: 6,
+    run(state) {
+      const allPlants = [
+        ...state.pots.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[],
+        ...state.showcase.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[],
+        ...state.catalog.map(e => e.plant),
+        ...state.seeds,
+      ]
+      for (const plant of allPlants) {
+        if ((plant.petalCount.a as number) === 7) plant.petalCount.a = 8
+        if ((plant.petalCount.b as number) === 7) plant.petalCount.b = 8
+      }
+      for (const entry of state.catalog) {
+        entry.key = catalogKey(entry.plant)
       }
     },
   },

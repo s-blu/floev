@@ -21,7 +21,7 @@ export type ChromaticL = 30 | 60 | 90
 export type StemTypes   = "two-leaved-stem"
 export type PetalShape  = 'round' | 'lanzett' | 'tropfen' | 'wavy' | 'zickzack'
 export type CenterType  = 'dot' | 'disc' | 'stamen'
-export type PetalCount  = 3 | 5 | 7
+export type PetalCount  = 3 | 5 | 8
 export type PlantPhase  = 1 | 2 | 3 | 4
 export type PetalEffect = 'none' | 'bicolor' | 'gradient' | 'shimmer' | 'iridescent'
 

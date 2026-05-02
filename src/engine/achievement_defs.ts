@@ -278,7 +278,7 @@ export function buildAchievements(): Achievement[] {
           current: cat.some(e =>
             expressedShape(e.plant.petalShape) === shape &&
             colorBucket(expressedColor(e.plant.petalHue, e.plant.petalLightness)) === bucket &&
-            expressedPetalCount(e.plant.petalCount) === 7
+            expressedPetalCount(e.plant.petalCount) === 8
           ) ? 1 : 0,
           total: 1,
         }),

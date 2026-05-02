@@ -60,7 +60,7 @@ export function randomPlant(): Plant {
   const stemA = MIN_STEM_HEIGHT + Math.random() * 0.65
   const stemB = MIN_STEM_HEIGHT + Math.random() * 0.65
 
-  const COUNT_POOL: PetalCount[] = [3, 3, 3, 5, 5, 7]
+  const COUNT_POOL: PetalCount[] = [3, 3, 3, 5, 5, 8]
   const countA = pick(COUNT_POOL)
   const countB = pick(COUNT_POOL)
 
@@ -107,7 +107,7 @@ export function plannedPlant(plantConfiguration: {
   return {
     id: uid(),
     stemHeight:     { a: config.stemHeight,  b: config.stemHeight  },
-    petalCount:     { a: config.petalCount,  b: config.petalCount  },
+    petalCount:     { a: config.petalCount as PetalCount,  b: config.petalCount as PetalCount  },
     petalShape:     { a: config.petalShape,  b: config.petalShape  },
     petalHue:       { a: config.hue,         b: config.hue         },
     petalLightness: { a: config.lightness,   b: config.lightness   },

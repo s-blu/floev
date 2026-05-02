@@ -660,7 +660,7 @@ discoveryIndexTitle: 'Discovery Index',
     `${shapes}/${totalShapes} forms · ${colors}/${totalColors} colours`,
 
 migrationNoticeTitle: 'Save updated',
-migrationNoticeText: 'Petal counts have been simplified to three tiers (3, 5, 7). Some duplicate catalogue entries have been removed as a result.',
+migrationNoticeText: 'Petal counts have been simplified to three tiers (3, 5, 8). Some duplicate catalogue entries have been removed as a result.',
 migrationNoticeDetails: (lost: number, coins: number) => `${lost} catalogue entr${lost === 1 ? 'y' : 'ies'} removed · +${coins} gold credited`,
 migrationNoticeOk: 'Got it',
 
@@ -668,27 +668,27 @@ petalNames: {
   round: {
     3: 'Sparse Orbella',
     5: 'Summer Orbella',
-    7: 'Full Orbella',
+    8: 'Full Orbella',
   },
   lanzett: {
     3: 'Needle Lancea',
     5: 'Bold Lancea',
-    7: 'Sky Lance',
+    8: 'Sky Lance',
   },
   tropfen: {
     3: 'Dew Lumaria',
     5: 'True Lumaria',
-    7: 'Sun Lumaria',
+    8: 'Sun Lumaria',
   },
   wavy: {
     3: 'Light Velora',
     5: 'Surging Velora',
-    7: 'Dancing Velora',
+    8: 'Dancing Velora',
   },
   zickzack: {
     3: 'Early Serrata',
     5: 'Sharp Wind Serrata',
-    7: 'Thunder Crown',
+    8: 'Thunder Crown',
   },
 }
 }

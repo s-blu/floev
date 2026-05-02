@@ -46,7 +46,7 @@ const EASY_POOL: OrderRequirement[] = [
 ]
 
 const MEDIUM_POOL: OrderRequirement[] = [
-  { trait: 'petalCount',    op: 'gte', value: 7,          difficulty: 'medium' },
+  { trait: 'petalCount',    op: 'gte', value: 8,          difficulty: 'medium' },
   { trait: 'petalCount',    op: 'eq',  value: 3,          difficulty: 'medium' },
   { trait: 'petalLightness', op: 'eq', value: 30,         difficulty: 'medium' },
   { trait: 'petalLightness', op: 'eq', value: 60,         difficulty: 'medium' },

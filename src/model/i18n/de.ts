@@ -660,7 +660,7 @@ discoveryIndexTitle: 'Entdeckungs-Index',
     `${shapes}/${totalShapes} Formen · ${colors}/${totalColors} Farben`,
 
 migrationNoticeTitle: 'Spielstand aktualisiert',
-migrationNoticeText: 'Die Blütenblatt-Anzahl wurde auf drei Stufen vereinfacht (3, 5, 7). Dadurch sind einige doppelte Katalogeinträge entfallen.',
+migrationNoticeText: 'Die Blütenblatt-Anzahl wurde auf drei Stufen vereinfacht (3, 5, 8). Dadurch sind einige doppelte Katalogeinträge entfallen.',
 migrationNoticeDetails: (lost: number, coins: number) => `${lost} Katalogeintrag${lost === 1 ? '' : 'e'} entfallen · +${coins} Gold gutgeschrieben`,
 migrationNoticeOk: 'Verstanden',
 
@@ -668,27 +668,27 @@ petalNames: {
   round: {
     3: 'Karge Orbella',
     5: 'Sommerorbella',
-    7: 'Volle Orbella',
+    8: 'Volle Orbella',
   },
   lanzett: {
     3: 'Nadel-Lancea',
     5: 'Kühne Lancea',
-    7: 'Himmelslanze',
+    8: 'Himmelslanze',
   },
   tropfen: {
     3: 'Tau-Lumaria',
     5: 'Echte Lumaria',
-    7: 'Sonnen-Lumaria',
+    8: 'Sonnen-Lumaria',
   },
   wavy: {
     3: 'Leichte Velora',
     5: 'Wogende Velora',
-    7: 'Tanzende Velora',
+    8: 'Tanzende Velora',
   },
   zickzack: {
     3: 'Frühe Serrata',
     5: 'Scharfwind-Serrata',
-    7: 'Donnerkranz',
+    8: 'Donnerkranz',
   },
 }
 }

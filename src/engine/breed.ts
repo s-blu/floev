@@ -123,7 +123,7 @@ export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
     .sort((x, y) => y.pct - x.pct)
   const possibleCounts = ([...PETAL_COUNTS] as PetalCount[]).filter(c => (countProbMap.get(c) ?? 0) > 0)
   const minP: PetalCount = possibleCounts[0] ?? 3
-  const maxP: PetalCount = possibleCounts[possibleCounts.length - 1] ?? 7
+  const maxP: PetalCount = possibleCounts[possibleCounts.length - 1] ?? 8
 
   const samples: Plant[] = Array.from({ length: 30 }, () => breedPlants(a, b))
   const expressed = samples.map(p => expressedColor(p.petalHue, p.petalLightness))

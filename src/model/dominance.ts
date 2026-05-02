@@ -20,4 +20,4 @@ export const PETAL_EFFECT_DOMINANCE: PetalEffect[] = [
 ];
 
 // ─── Petal count dominance: klein > mittel > viel ─────────────────────────────
-export const PETAL_COUNT_DOMINANCE: PetalCount[] = [3, 5, 7];
+export const PETAL_COUNT_DOMINANCE: PetalCount[] = [3, 5, 8];
