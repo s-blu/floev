@@ -1,6 +1,6 @@
 import type { GameState, ChromaticL, CatalogEntry } from '../model/plant'
 import { calcRarityScore, calcRarity } from './rarity'
-import { catalogKey } from './catalog'
+import { catalogKey, getPlantName } from './catalog'
 
 // Old gray sentinel values, kept only for migration purposes.
 const _LEGACY_GRAY_DARK  = -2
@@ -139,6 +139,14 @@ console.log('migration 4', allPlants)
       }
       for (const entry of state.catalog) {
         entry.key = catalogKey(entry.plant)
+      }
+    },
+  },
+  {
+    version: 7,
+    run(state) {
+      for (const entry of state.catalog) {
+        entry.plantname = getPlantName(entry.plant)
       }
     },
   },
