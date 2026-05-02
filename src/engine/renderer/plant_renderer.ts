@@ -1,5 +1,5 @@
 import type { ChromaticL, Plant } from '../../model/plant';
-import { expressedColor, expressedShape, expressedNumber, expressedCenter, expressedEffect } from '../genetic/genetic_utils';
+import { expressedColor, expressedShape, expressedPetalCount, expressedCenter, expressedEffect } from '../genetic/genetic_utils';
 import { renderCenter } from './center_renderer';
 import { buildPetalPath, petalToSVG } from './petal_renderer';
 import { renderStem } from './renderer';
@@ -9,7 +9,7 @@ import { resolvePetalEffect } from './petaleffect_renderer';
 export function renderFullBloom(plant: Plant, defs: string, cx: number, bloomY: number, body: string, context: string = '') {
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
   const shape = expressedShape(plant.petalShape);
-  const n = Math.round(expressedNumber(plant.petalCount));
+  const n = expressedPetalCount(plant.petalCount);
   const pr = 14 + (8 - n) * 0.8;
 
   const effect = expressedEffect(plant.petalEffect);

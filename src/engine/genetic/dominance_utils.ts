@@ -1,5 +1,5 @@
-import { PETAL_SHAPE_DOMINANCE, CENTER_TYPE_DOMINANCE, COLOR_BUCKET_DOMINANCE, LIGHTNESS_DOMINANCE, PETAL_EFFECT_DOMINANCE } from "../../model/dominance";
-import { PetalShape, CenterType, ChromaticL, PetalEffect } from "../../model/plant";
+import { PETAL_SHAPE_DOMINANCE, CENTER_TYPE_DOMINANCE, COLOR_BUCKET_DOMINANCE, LIGHTNESS_DOMINANCE, PETAL_EFFECT_DOMINANCE, PETAL_COUNT_DOMINANCE } from "../../model/dominance";
+import { PetalShape, CenterType, ChromaticL, PetalEffect, PetalCount } from "../../model/plant";
 import { hueBucket } from "./genetic_utils";
 
 
@@ -38,5 +38,12 @@ export function dominantLightness(a: ChromaticL, b: ChromaticL): ChromaticL {
 export function dominantEffect(a: PetalEffect, b: PetalEffect): PetalEffect {
   const ia = PETAL_EFFECT_DOMINANCE.indexOf(a);
   const ib = PETAL_EFFECT_DOMINANCE.indexOf(b);
+  return ia <= ib ? a : b;
+}
+
+/** Return the more dominant of two petal count alleles. 3 > 5 > 7 */
+export function dominantPetalCount(a: PetalCount, b: PetalCount): PetalCount {
+  const ia = PETAL_COUNT_DOMINANCE.indexOf(a);
+  const ib = PETAL_COUNT_DOMINANCE.indexOf(b);
   return ia <= ib ? a : b;
 }

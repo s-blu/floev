@@ -1,4 +1,4 @@
-import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedEffect } from '../engine/genetic/genetic_utils';
+import { expressedColor, expressedShape, expressedCenter, expressedPetalCount, expressedEffect } from '../engine/genetic/genetic_utils';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import type { CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
 import { RARITY_BADGE_STYLES, RARITY_COLORS, RARITY_ICON, type Rarity } from "../model/rarity_model";
@@ -111,7 +111,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
   const shape = expressedShape(plant.petalShape);
   const center = expressedCenter(plant.centerType);
-  const count = Math.round(expressedNumber(plant.petalCount));
+  const count = expressedPetalCount(plant.petalCount);
   const effect = expressedEffect(plant.petalEffect);
   const hasEffect = effect !== 'none' && (pc.s > 0 || pc.h === 2);
   const pcForEffect = hasEffect ? { ...pc, l: 60 as const } : pc;

@@ -1,5 +1,5 @@
 import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from '../engine/genetic/dominance_utils';
-import { isHomozygous, hueBucket } from '../engine/genetic/genetic_utils';
+import { isHomozygous, hueBucket, expressedPetalCount } from '../engine/genetic/genetic_utils';
 import { RARE_SHAPES, RARE_EFFECTS } from "../model/genetic_model";
 import { hasPotColor, hasPotShape, hasPotEffect, hasUpgrade } from '../engine/shop_engine';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY, PALETTE_S } from '../model/genetic_model';
@@ -104,12 +104,13 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
     && !isBucketFullyDiscovered(recHueBucket, discoveredColors)
     ? rareMarker : '';
 
-  // Petal count alleles (rounded)
-  const pcA = Math.round(plant.petalCount.a);
-  const pcB = Math.round(plant.petalCount.b);
+  const pcA = plant.petalCount.a;
+  const pcB = plant.petalCount.b;
+  const expressed = expressedPetalCount(plant.petalCount);
+  const recCount = expressed === pcA ? pcB: pcA;
   const petalCountValue = pcA === pcB
-    ? `${pcA}`
-    : `∅ ${((pcA + pcB) / 2).toFixed(1)} (${pcA} / ${pcB})`;
+    ? `${expressed}`
+    : `${expressed} · ${recCount}`;
 
   // Stem height alleles
   const shA = Math.round(plant.stemHeight.a * 100);
