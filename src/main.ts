@@ -86,6 +86,7 @@ app.innerHTML = `
         <span class="buffs-chevron">▾</span>
       </button>
     </div>
+    <div class="buffs-collapsed-preview"></div>
     <div class="buffs-body"></div>
   </section>
 

@@ -54,11 +54,41 @@ export function renderBuffsPanel(): void {
 
   panel.classList.toggle('buffs-panel--open', buffsPanelOpen)
 
+  const preview = panel.querySelector('.buffs-collapsed-preview') as HTMLElement | null
+  if (preview) {
+    if (!buffsPanelOpen) {
+      preview.innerHTML = renderBuffsCollapsedPreview()
+      preview.style.display = ''
+    } else {
+      preview.style.display = 'none'
+    }
+  }
+
   const body = panel.querySelector('.buffs-body') as HTMLElement | null
   if (!body) return
   if (!buffsPanelOpen) return
 
   body.innerHTML = renderBuffsItems()
+}
+
+function renderBuffsCollapsedPreview(): string {
+  const active = BUFFS.filter(def => {
+    if (def.unlock_required && !hasUpgrade(state, def.unlock_required)) return false;
+    return getBuffLevel(state, def.id) > 0;
+  });
+  if (active.length === 0) return '';
+  const items = active.map(def => {
+    const badge = buildEffectBadge(def.id, getBuffLevel(state, def.id));
+    return `<span class="buffs-active-item"><span>${def.icon}</span>${badge}</span>`;
+  }).join('');
+  return `<div class="buffs-active-row">${items}</div>`;
+}
+
+function buildEffectBadge(defId: string, currentLevel: number): string {
+  if (currentLevel <= 0) return '';
+  const pct = Math.round((getBuffDef(defId as BuffId)?.levels[currentLevel - 1]?.value ?? 0) * 100);
+  const label = t.buffBadge[defId]?.(pct);
+  return label ? `<span class="buff-level-badge">${label}</span>` : '';
 }
 
 function renderBuffsItems(): string {
@@ -67,17 +97,13 @@ function renderBuffsItems(): string {
     if (unlockReq && !hasUpgrade(state, unlockReq)) return '';
 
     const currentLevel = getBuffLevel(state, def.id);
-    const maxLevel = def.levels.length;
     const maxed = isBuffMaxed(state, def.id);
     const nextLevelDef = !maxed ? def.levels[currentLevel] : null;
-    const effectPct = Math.round((def.levels[Math.max(0, currentLevel - 1)]?.value ?? 0) * 100);
 
-    const levelBadge = currentLevel > 0
-      ? `<span class="buff-level-badge">${t.buffLevelLabel(currentLevel, maxLevel)}</span>`
-      : `<span class="buff-level-badge buff-level-badge--none">${t.buffNotYetLabel}</span>`;
+    const effectBadge = buildEffectBadge(def.id, currentLevel);
 
     const currentEffect = currentLevel > 0
-      ? `<span class="shop-item-desc">${t.buffDesc[def.id]?.(effectPct)}</span>`
+      ? `<span class="shop-item-desc">${t.buffDesc[def.id]?.(Math.round((def.levels[currentLevel - 1]?.value ?? 0) * 100))}</span>`
       : `<span class="shop-item-desc">${t.buffDesc[def.id]?.(Math.round((def.levels[0]?.value ?? 0) * 100))}</span>`;
 
     let actionArea: string;
@@ -103,7 +129,7 @@ function renderBuffsItems(): string {
         <div class="shop-item-info">
           <span class="shop-item-title">${t.buffTitle[def.id]}</span>
           ${currentEffect}
-          ${levelBadge}
+          ${effectBadge}
         </div>
         <div class="shop-item-action">${actionArea}</div>
       </div>`;
