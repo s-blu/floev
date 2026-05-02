@@ -718,7 +718,7 @@ details:not([open]) .catalog-section-heading .rarity-name::after {
 }
 
 .ci-matrix-col-hdr {
-  width: 14px;
+  width: 10px;
   text-align: center;
   font-size: 9px;
   color: var(--text3);
