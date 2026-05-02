@@ -1,3 +1,19 @@
+/* ── Buffs panel body ─────────────────────────────────────────────────────────── */
+
+.buffs-body {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem 0.75rem 0.75rem;
+}
+
+.buffs-panel--open .buffs-body {
+  display: flex;
+}
+
 /* ── Order book section wrapper ──────────────────────────────────────────────── */
 
 .order-section-wrapper {

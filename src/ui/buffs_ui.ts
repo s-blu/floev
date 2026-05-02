@@ -4,10 +4,25 @@ import { isBuffMaxed, getBuffDef, getNextBuffLevel, canFulfillRequirements, plan
 import { t } from '../model/i18n';
 import type { Plant } from '../model/plant';
 import { type BuffReqKind, BUFFS, type BuffId } from '../model/shop';
-import { renderShopSidebar } from './shop_ui';
 import { hasUpgrade, state, handleRedeemBuff } from './ui';
 
-// ─── Buffs section ────────────────────────────────────────────────────────────
+// ─── Panel open state (persisted in localStorage) ─────────────────────────────
+
+const BUFFS_PANEL_OPEN_KEY = 'buffsPanelOpen'
+
+function loadBuffsPanelOpen(): boolean {
+  const stored = localStorage.getItem(BUFFS_PANEL_OPEN_KEY)
+  return stored === null ? true : stored === 'true'
+}
+
+function saveBuffsPanelOpen(value: boolean): void {
+  localStorage.setItem(BUFFS_PANEL_OPEN_KEY, String(value))
+}
+
+let buffsPanelOpen = loadBuffsPanelOpen()
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function reqLabel(req: BuffReqKind): string {
   switch (req.kind) {
     case 'any': return t.buffReqAny;
@@ -23,8 +38,31 @@ function reqLabel(req: BuffReqKind): string {
     case 'combined': return t.buffReqCombined(req.predicates.map(p => reqLabel(p)));
   }
 }
-export function renderBuffsSection(): string {
-  const items = BUFFS.map(def => {
+
+// ─── Panel render ─────────────────────────────────────────────────────────────
+
+export function renderBuffsPanel(): void {
+  const panel = document.getElementById('buffs-panel')
+  if (!panel) return
+
+  const hasAnyBuff = BUFFS.some(def => !def.unlock_required || hasUpgrade(state, def.unlock_required))
+  panel.style.display = hasAnyBuff ? '' : 'none'
+  if (!hasAnyBuff) return
+
+  const chevron = panel.querySelector('.buffs-chevron') as HTMLElement | null
+  if (chevron) chevron.textContent = buffsPanelOpen ? '▴' : '▾'
+
+  panel.classList.toggle('buffs-panel--open', buffsPanelOpen)
+
+  const body = panel.querySelector('.buffs-body') as HTMLElement | null
+  if (!body) return
+  if (!buffsPanelOpen) return
+
+  body.innerHTML = renderBuffsItems()
+}
+
+function renderBuffsItems(): string {
+  return BUFFS.map(def => {
     const unlockReq = def.unlock_required;
     if (unlockReq && !hasUpgrade(state, unlockReq)) return '';
 
@@ -70,29 +108,34 @@ export function renderBuffsSection(): string {
         <div class="shop-item-action">${actionArea}</div>
       </div>`;
   }).join('');
-
-  if (!items.trim()) return '';
-
-  return `
-    <div class="shop-section">
-      <p class="shop-section-label">${t.shopSectionBuffs}</p>
-      <div class="shop-items-list">${items}</div>
-    </div>`;
 }
+
+// ─── Panel initialisation ─────────────────────────────────────────────────────
+
+export function initBuffsPanel(): void {
+  const panel = document.getElementById('buffs-panel')
+  if (!panel) return
+
+  panel.querySelector('.buffs-toggle-btn')?.addEventListener('click', () => {
+    buffsPanelOpen = !buffsPanelOpen
+    saveBuffsPanelOpen(buffsPanelOpen)
+    renderBuffsPanel()
+  })
+
+  panel.addEventListener('click', (e) => {
+    const el = (e.target as HTMLElement).closest('[data-action="redeem-buff"]') as HTMLElement | null
+    if (!el) return
+    const id = el.dataset.id as BuffId
+    if (id) openBuffRedeemOverlay(id)
+  })
+}
+
 // ─── Buff redeem overlay ──────────────────────────────────────────────────────
+
 let _buffOverlayId: BuffId | null = null;
 let _buffSelectedPotIds: number[] = [];
 let _buffSelectedSeedIds: string[] = [];
 
-export function initBuffShop(): void {
-  const body = document.getElementById('shop-sidebar-body');
-  body?.addEventListener('click', (e) => {
-    const el = (e.target as HTMLElement).closest('[data-action="redeem-buff"]') as HTMLElement | null;
-    if (!el) return;
-    const id = el.dataset.id as BuffId;
-    if (id) openBuffRedeemOverlay(id);
-  });
-}
 function openBuffRedeemOverlay(id: BuffId): void {
   document.getElementById('buff-redeem-overlay')?.remove();
   _buffOverlayId = id;
@@ -121,6 +164,7 @@ function openBuffRedeemOverlay(id: BuffId): void {
     if (sel) toggleBuffSeedSelection(sel.dataset.buffSeed!, id);
   });
 }
+
 function buildOverlayHtml(id: BuffId, nextLevel: number, requirements: import('../model/shop').BuffRequirement[]): string {
   const needsPot = requirements.some(r => r.source === 'pot');
   const needsSeed = requirements.some(r => r.source === 'seed_drawer');
@@ -160,6 +204,7 @@ function buildOverlayHtml(id: BuffId, nextLevel: number, requirements: import('.
       </div>
     </div>`;
 }
+
 function toggleBuffPotSelection(potId: number, id: BuffId): void {
   const idx = _buffSelectedPotIds.indexOf(potId);
   if (idx >= 0) {
@@ -169,6 +214,7 @@ function toggleBuffPotSelection(potId: number, id: BuffId): void {
   }
   updateBuffOverlayState(id);
 }
+
 function toggleBuffSeedSelection(seedId: string, id: BuffId): void {
   const idx = _buffSelectedSeedIds.indexOf(seedId);
   if (idx >= 0) {
@@ -178,6 +224,7 @@ function toggleBuffSeedSelection(seedId: string, id: BuffId): void {
   }
   updateBuffOverlayState(id);
 }
+
 function updateBuffOverlayState(id: BuffId): void {
   const def = getBuffDef(id);
   if (!def) return;
@@ -217,12 +264,14 @@ function updateBuffOverlayState(id: BuffId): void {
   const confirmBtn = document.getElementById('buff-redeem-confirm') as HTMLButtonElement | null;
   if (confirmBtn) confirmBtn.disabled = !fulfilled;
 }
+
 function confirmBuffRedeem(): void {
   if (!_buffOverlayId) return;
   handleRedeemBuff(_buffOverlayId, [..._buffSelectedPotIds], [..._buffSelectedSeedIds]);
   closeBuffOverlay();
-  renderShopSidebar();
+  renderBuffsPanel();
 }
+
 function closeBuffOverlay(): void {
   document.getElementById('buff-redeem-overlay')?.remove();
   _buffOverlayId = null;

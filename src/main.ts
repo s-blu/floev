@@ -3,7 +3,7 @@ import { initUI, showMigrationNotice } from './ui/ui'
 import { initHelp, showHelp } from './ui/help_ui'
 import { showGardenSettings } from './ui/garden_settings_ui'
 import { initShop, closeShop } from './ui/shop_ui'
-import { initBuffShop } from './ui/buffs_ui'
+import { initBuffsPanel } from './ui/buffs_ui'
 import { initOrderBookPanel } from './ui/orders_ui'
 import { initSeedDrawer } from './ui/seeds_ui'
 import { initNotificationFooter } from './ui/notification_log'
@@ -67,7 +67,7 @@ app.innerHTML = `
   <section class="order-section-wrapper" id="order-book-panel" style="display:none">
     <div class="ach-section-header">
       <p class="section-title" style="margin-bottom:0">
-        📖 ${t.orderBookTitle}
+        ${t.orderBookTitle}
         <span class="order-collapsed-summary"></span>
       </p>
       <button class="ach-toggle-btn order-toggle-btn" title="${t.orderBookTitle}">
@@ -75,6 +75,18 @@ app.innerHTML = `
       </button>
     </div>
     <div class="order-body"></div>
+  </section>
+
+  <section class="ach-section-wrapper" id="buffs-panel" style="display:none">
+    <div class="ach-section-header">
+      <p class="section-title" style="margin-bottom:0">
+        ${t.shopSectionBuffs}
+      </p>
+      <button class="ach-toggle-btn buffs-toggle-btn" title="${t.shopSectionBuffs}">
+        <span class="buffs-chevron">▾</span>
+      </button>
+    </div>
+    <div class="buffs-body"></div>
   </section>
 
   <section class="ach-section-wrapper" id="achievements-panel">
@@ -163,6 +175,7 @@ if (migrationNotice && migrationNotice.lostCatalogEntries) {
   showMigrationNotice(migrationNotice)
 }
 initOrderBookPanel()
+initBuffsPanel()
 
 // Help modal — show on first visit, bind ? button
 initHelp()
@@ -170,7 +183,6 @@ document.getElementById('help-btn')?.addEventListener('click', showHelp)
 
 // Shop sidebar
 initShop()
-initBuffShop()
 document.getElementById('shop-close-btn')?.addEventListener('click', closeShop)
 document.getElementById('shop-overlay')?.addEventListener('click', closeShop)
 

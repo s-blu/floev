@@ -35,6 +35,7 @@ import { checkAchievements } from '../engine/achievements'
 import { renderAchievements, queueAchievementToast, initAchievementsPanel } from './achievements_ui'
 import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
+import { renderBuffsPanel } from './buffs_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
 import { MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
 import { getEffectiveSurplusSeedChance, getEffectiveSelfPollinateSeedChance, getEffectiveCooldownMs } from '../engine/game_params'
@@ -97,6 +98,7 @@ export function render(): void {
   renderCoins()
   renderShopSidebar()
   renderOrderBook()
+  renderBuffsPanel()
   renderSeedDrawer()
 }
 

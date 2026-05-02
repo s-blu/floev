@@ -4,7 +4,6 @@ import { hasUpgrade, hasPotColor, hasPotShape, hasPotEffect, getExtraPotPrice, c
 import { renderPotShopPreview } from '../engine/renderer/pot_renderer'
 import { t } from '../model/i18n'
 import { COIN_ICON } from './icons'
-import { renderBuffsSection } from './buffs_ui'
 
 // ─── Shop sidebar ─────────────────────────────────────────────────────────────
 
@@ -57,7 +56,7 @@ export function renderShopSidebar(): void {
   if (!sidebarOpen) return
   const body = document.getElementById('shop-sidebar-body')
   if (!body) return
-  body.innerHTML = renderExtraPotsSection() + renderShowcaseSection() + renderUpgradesSection() + renderBuffsSection() + renderDecoSection()
+  body.innerHTML = renderExtraPotsSection() + renderShowcaseSection() + renderUpgradesSection() + renderDecoSection()
 }
 
 // ─── Upgrades section ─────────────────────────────────────────────────────────
