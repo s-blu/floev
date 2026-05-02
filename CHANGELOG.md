@@ -1,3 +1,22 @@
+# v1.7.0
+
+Improvements:
+
+- New purchasable feature: Completion Index
+- New feature: Move Pots to end button
+- Be able to swap swatches in genetic overlay with text on tap
+- Fully reworked petal count mechanic (see below for explanation)
+
+Bugs:
+
+- Point out correct cooldown duration in hint text
+- Fix wrong color of icons in seed storage for dark mode
+- Disable self-pollinate button if plant is already homozygous
+
+**Rework Petal Counts**
+
+Petal Counts were a bit of a special case in the whole inhertiance logic, one that was increasingly diffult to handle and that caused way, way too many possible combinations. Due to that, I reduced the former 6 possible Counts (3-8) to three (3, 5, 8) that are visually more distinct and now follow the same inhertiance rules like all the other properties. That inevitably lead to a update of existing plants and the encyclopedia - sorry for that! You'll get a little coin plus for every entry I've stolen from you.
+
 # v1.6.0
 
 Improvements:
