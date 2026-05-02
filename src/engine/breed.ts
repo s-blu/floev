@@ -117,6 +117,10 @@ export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
     .sort((x, y) => y.pct - x.pct)
 
   const countProbMap = discreteProbabilities(a.petalCount, b.petalCount, [...PETAL_COUNTS] as PetalCount[], dominantPetalCount)
+  const petalCountProbs: { count: PetalCount; pct: number }[] = ([...PETAL_COUNTS] as PetalCount[])
+    .map(c => ({ count: c, pct: Math.round((countProbMap.get(c) ?? 0) * 100) }))
+    .filter(x => x.pct > 0)
+    .sort((x, y) => y.pct - x.pct)
   const possibleCounts = ([...PETAL_COUNTS] as PetalCount[]).filter(c => (countProbMap.get(c) ?? 0) > 0)
   const minP: PetalCount = possibleCounts[0] ?? 3
   const maxP: PetalCount = possibleCounts[possibleCounts.length - 1] ?? 7
@@ -140,6 +144,7 @@ export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
     midH: avgH,
     minH: (avgH + 338) % 360,
     maxH: (avgH + 22)  % 360,
+    petalCountProbs,
     minP,
     maxP,
     likelyShape: shapeProbs[0]?.shape ?? expressedShape(a.petalShape),

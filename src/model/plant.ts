@@ -113,8 +113,11 @@ export interface BreedEstimate {
   avgS: number
   avgL: number
 
-  // Petal count range (expressed values with >0% probability)
+  // Petal count probabilities
+  petalCountProbs: { count: PetalCount; pct: number }[]
+  /** @deprecated use petalCountProbs instead */
   minP: PetalCount
+  /** @deprecated use petalCountProbs instead */
   maxP: PetalCount
 
   // Discrete trait probabilities

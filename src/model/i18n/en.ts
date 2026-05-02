@@ -86,6 +86,7 @@ export const en = {
 
   // Breed estimate
   estPetals: (min: number, max: number) => `Petals: ${min}–${max}`,
+  estGroupPetalCount: 'Petal count',
   estGroupColor: 'Color',
   estGroupLightness: 'Lightness',
   estGroupShape: 'Shape',
