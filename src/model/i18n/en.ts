@@ -643,6 +643,7 @@ export const en = {
 
 completionIndexTitle: 'Completion Index',
   completionIndexSummary: (found: number, total: number) => `${found}/${total} found`,
+  completionIndexUndiscovered: 'Undiscovered',
 
 discoveryIndexTitle: 'Discovery Index',
   discoveryIndexSectionShapes: 'Petal shapes',

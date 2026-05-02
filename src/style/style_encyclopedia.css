@@ -568,6 +568,11 @@ details:not([open]) .catalog-section-heading .rarity-name::after {
   opacity: 0.4;
 }
 
+.ci-row-label--undiscovered {
+  color: var(--text3, #888);
+  font-style: italic;
+}
+
 .ci-row-label {
   flex: 1;
   font-size: 13px;
@@ -639,7 +644,10 @@ details:not([open]) .catalog-section-heading .rarity-name::after {
 }
 
 .ci-status--empty    { border: 1.5px solid var(--border2); }
-.ci-status--partial  { background: hsl(40,85%,58%); }
+.ci-status--partial  {
+  background: linear-gradient(to right, hsl(40,85%,58%) 50%, transparent 50%);
+  border: 1.5px solid hsl(40,85%,58%);
+}
 .ci-status--complete { background: var(--green); opacity: 0.8; }
 
 /* ─ Swatch detail (Ebene 3) ── */

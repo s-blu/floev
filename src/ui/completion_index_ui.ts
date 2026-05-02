@@ -138,7 +138,7 @@ function swatchColorName(hue: number, l: number): string {
 function renderShapeList(sets: CatalogSets): string {
   return PETAL_SHAPES.map(shape => {
     if (!sets.knownShapes.has(shape)) {
-      return `<div class="ci-row ci-row--secret"><span class="ci-row-label">?</span></div>`;
+      return `<div class="ci-row ci-row--secret"><span class="ci-status ci-status--empty"></span><span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span></div>`;
     }
     const found = BUCKET_ORDER.reduce(
       (sum, b) => sum + huesForBucket(b).reduce((s, h) => s + foundCellsForHue(shape, h, sets), 0), 0
@@ -165,11 +165,13 @@ function renderHueList(shape: PetalShape, sets: CatalogSets): string {
 
   for (const bucket of BUCKET_ORDER) {
     const bucketKnown = !SECRET_BUCKETS.has(bucket) || sets.knownBuckets.has(bucket);
-    const bucketLabel = bucketKnown ? (t.colorBucketLabels[bucket] ?? bucket) : '?';
+    const bucketLabel = bucketKnown
+      ? (t.colorBucketLabels[bucket] ?? bucket)
+      : `<span class="ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span>`;
     parts.push(`<div class="ci-bucket-header">${bucketLabel}</div>`);
 
     if (!bucketKnown) {
-      parts.push(`<div class="ci-row ci-row--secret"><span class="ci-row-label">?</span></div>`);
+      parts.push(`<div class="ci-row ci-row--secret"><span class="ci-status ci-status--empty"></span><span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span></div>`);
       continue;
     }
 
@@ -177,7 +179,8 @@ function renderHueList(shape: PetalShape, sets: CatalogSets): string {
       if (!sets.knownHues.has(hue)) {
         parts.push(`<div class="ci-row ci-row--secret">
           <span class="ci-hue-swatch" style="background:${hueSwatchCss(hue)}"></span>
-          <span class="ci-row-label">?</span>
+          <span class="ci-status ci-status--empty"></span>
+          <span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span>
         </div>`);
         continue;
       }
@@ -271,7 +274,9 @@ function renderHueDetail(shape: PetalShape, hue: number, sets: CatalogSets): str
 
   for (const ef of DISPLAY_EFFECTS) {
     const effectKnown = sets.knownEffects.has(ef);
-    const label = effectKnown ? (t.effectLabels[ef] ?? ef) : '?';
+    const label = effectKnown
+      ? (t.effectLabels[ef] ?? ef)
+      : `<span class="ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span>`;
     const icon  = effectKnown ? renderEffectSwatch(ef) : '?';
     let found = 0;
     for (const cnt of PETAL_COUNTS)
