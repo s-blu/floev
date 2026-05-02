@@ -9,7 +9,7 @@ import {
   buildFoundBaseColorCells, buildFoundEffectCells, PETAL_COUNTS, DISPLAY_EFFECTS,
 } from '../engine/discovery_utils';
 import { SECRET_BUCKETS, BUCKET_ORDER } from './discovery_index_ui';
-import { CENTER_TYPE_ICONS, renderEffectSwatch } from './icons';
+import { CENTER_TYPE_ICONS, renderEffectSwatch, renderHueSwatchStrip } from './icons';
 
 // ─── Navigation state ─────────────────────────────────────────────────────────
 
@@ -115,12 +115,6 @@ function hueGroupName(hue: number): string {
   return (t.colorLabel as any)[hue]?.hueName ?? String(hue);
 }
 
-function hueSwatchCss(hue: number, lightness = 60): string {
-  if (hue === 1) return 'hsl(0,0%,97%)';
-  if (hue === 2) return `hsl(0,0%,${lightness}%)`;
-  return `hsl(${hue},${PALETTE_S}%,${lightness}%)`;
-}
-
 function swatchColorCss(hue: number, l: number): string {
   if (hue === 1) return 'hsl(0,0%,97%)';
   if (hue === 2) return `hsl(0,0%,${l}%)`;
@@ -178,7 +172,7 @@ function renderHueList(shape: PetalShape, sets: CatalogSets): string {
     for (const hue of huesForBucket(bucket)) {
       if (!sets.knownHues.has(hue)) {
         parts.push(`<div class="ci-row ci-row--secret">
-          <span class="ci-hue-swatch" style="background:${hueSwatchCss(hue)}"></span>
+          <div class="di-mini-swatches"><span class="di-mini-swatch di-mini-swatch--effect"></span></div>
           <span class="ci-status ci-status--empty"></span>
           <span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span>
         </div>`);
@@ -189,7 +183,7 @@ function renderHueList(shape: PetalShape, sets: CatalogSets): string {
       const cls   = statusCls(found, total);
       parts.push(`
         <button class="ci-row ci-row--nav" data-ci-action="select-hue" data-ci-hue="${hue}">
-          <span class="ci-hue-swatch" style="background:${hueSwatchCss(hue)}"></span>
+          ${renderHueSwatchStrip(hue)}
           <span class="ci-status ${cls}"></span>
           <span class="ci-row-label">${hueGroupName(hue)}</span>
           <span class="ci-row-counter">${found}/${total}</span>
@@ -264,7 +258,7 @@ function renderHueDetail(shape: PetalShape, hue: number, sets: CatalogSets): str
       for (const center of CENTER_TYPES)
         if (sets.baseColorCells.has(`${shape}_${hue}_${l}_${cnt}_${center}`)) found++;
     parts.push(renderSwatchBlock(
-      `<span class="ci-color-swatch" style="background:${css}"></span>`,
+      `<div class="di-mini-swatches"><span class="di-mini-swatch di-mini-swatch--effect" style="background:${css}"></span></div>`,
       name,
       found,
       (cnt, center) => sets.baseColorCells.has(`${shape}_${hue}_${l}_${cnt}_${center}`),
@@ -277,13 +271,15 @@ function renderHueDetail(shape: PetalShape, hue: number, sets: CatalogSets): str
     const label = effectKnown
       ? (t.effectLabels[ef] ?? ef)
       : `<span class="ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span>`;
-    const icon  = effectKnown ? renderEffectSwatch(ef) : '?';
+    const icon  = effectKnown
+      ? renderEffectSwatch(ef)
+      : `<div class="di-mini-swatches"><span class="di-mini-swatch di-mini-swatch--effect"></span></div>`;
     let found = 0;
     for (const cnt of PETAL_COUNTS)
       for (const center of CENTER_TYPES)
         if (sets.effectCells.has(`${shape}_${hue}_${ef}_${cnt}_${center}`)) found++;
     parts.push(renderSwatchBlock(
-      `<span class="ci-effect-swatch">${icon}</span>`,
+      icon,
       label,
       found,
       (cnt, center) => sets.effectCells.has(`${shape}_${hue}_${ef}_${cnt}_${center}`),

@@ -497,6 +497,12 @@ details:not([open]) .catalog-section-heading .rarity-name::after {
 
 /* ── Vollständigkeits-Index ──────────────────────────────────────────────── */
 
+.ci-panel .di-mini-swatches {
+  width: 20px;
+  min-width: 20px;
+  flex-shrink: 0;
+}
+
 .ci-panel {
   margin-bottom: 16px;
   border-radius: var(--radius-lg);
@@ -625,6 +631,9 @@ details:not([open]) .catalog-section-heading .rarity-name::after {
 /* ─ Bucket header ── */
 
 .ci-bucket-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
