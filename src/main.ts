@@ -129,14 +129,22 @@ document.body.insertAdjacentHTML('beforeend', `
 ;(function detectCoinEmoji() {
   try {
     const canvas = document.createElement('canvas')
-    canvas.width = canvas.height = 2
+    canvas.width = canvas.height = 20
     const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    ctx.fillText('🪙', -2, 2)
-    if (ctx.getImageData(0, 0, 1, 1).data[3] === 0)
-      document.documentElement.classList.add('no-emoji-coin')
-  } catch { 
-    /* canvas unavailable, assume outdated browser */ 
+    if (!ctx) { document.documentElement.classList.add('no-emoji-coin'); return }
+    ctx.font = '16px sans-serif'
+    ctx.fillText('🪙', 0, 16)
+    const data = ctx.getImageData(0, 0, 20, 20).data
+    // Colored pixels (R≠G or G≠B) indicate a real color emoji; gray pixels or alpha=0 = fallback box or missing glyph
+    let hasColor = false
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] > 0 && Math.max(Math.abs(data[i] - data[i+1]), Math.abs(data[i+1] - data[i+2])) > 8) {
+        hasColor = true
+        break
+      }
+    }
+    if (!hasColor) document.documentElement.classList.add('no-emoji-coin')
+  } catch {
     document.documentElement.classList.add('no-emoji-coin')
   }
 })()

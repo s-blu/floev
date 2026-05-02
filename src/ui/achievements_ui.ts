@@ -132,7 +132,7 @@ function buildDoneIcon(v: ReturnType<typeof getVisibleAchievements>[0]): HTMLEle
   const { achievement: a } = v
   const el = document.createElement('div')
   el.className = 'ach-done-icon'
-  el.title = `${a.title} — ${a.desc} (+${a.reward} ${COIN_ICON})`
+  el.title = `${a.title} — ${a.desc} (+${a.reward} 🪙)`
   el.innerHTML = `<span class="ach-done-icon-medal">🏅</span>`
   // Tooltip on hover via title; for better UX also show a small label below
   el.innerHTML = `
