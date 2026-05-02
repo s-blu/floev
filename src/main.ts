@@ -148,7 +148,7 @@ initNotificationFooter(t.welcomeMsg)
 initUI(state)
 
 const migrationNotice = state.pendingMigrationNotice
-if (migrationNotice) {
+if (migrationNotice && migrationNotice.lostCatalogEntries) {
   delete state.pendingMigrationNotice
   saveState(state)
   showMigrationNotice(migrationNotice)
