@@ -180,6 +180,16 @@ export function showAlleleOverlay(potId: number, card: HTMLElement, silent = fal
 
   openAlleleIds.add(potId);
   card.appendChild(overlay);
+
+  overlay.querySelectorAll<HTMLElement>('.allele-chips-row').forEach(row => {
+    if (allelesShowLabels()) row.classList.add('show-labels');
+    row.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const next = !row.classList.contains('show-labels');
+      overlay.querySelectorAll('.allele-chips-row').forEach(r => r.classList.toggle('show-labels', next));
+      localStorage.setItem(ALLELE_LABELS_KEY, String(next));
+    });
+  });
 }
 
 const potDesignCloseHandlers = new Map<number, (e: MouseEvent) => void>()
@@ -344,6 +354,12 @@ function lightnessLabel(l: ChromaticL): string {
   return l === 30 ? t.helpLightnessDark : l === 60 ? t.helpLightnessMid : t.helpLightnessLight;
 }
 
+const ALLELE_LABELS_KEY = 'floev.allelesShowLabels';
+
+export function allelesShowLabels(): boolean {
+  return localStorage.getItem(ALLELE_LABELS_KEY) === 'true';
+}
+
 export function renderChipPair(
   aVal: number | ChromaticL,
   bVal: number | ChromaticL,
@@ -358,10 +374,14 @@ export function renderChipPair(
       ? hueToCSS(val as number, l)
       : `hsl(0,0%,${(val as ChromaticL) === 30 ? 25 : (val as ChromaticL) === 60 ? 52 : 88}%)`;
   };
+  const labelOf = (val: number | ChromaticL): string =>
+    isHue ? hueLabel(val as number) : lightnessLabel(val as ChromaticL);
 
-  // Identical alleles → single chip, no dominance distinction needed
+  // Identical alleles → single chip
   if (aVal === bVal) {
-    return `<span class="allele-chip allele-chip--dom" style="background:${chipBg(aVal, lA, true)}"></span>`;
+    const chipsHtml = `<span class="allele-chip allele-chip--dom" style="background:${chipBg(aVal, lA, true)}"></span>`;
+    const labelsHtml = labelOf(aVal);
+    return `<span class="chips-view">${chipsHtml}</span><span class="chips-labels-view">${labelsHtml}</span>`;
   }
 
   const isDomA = isHue
@@ -373,8 +393,8 @@ export function renderChipPair(
     ? [{ val: aVal, l: lA, isDom: true }, { val: bVal, l: lB, isDom: false }]
     : [{ val: bVal, l: lB, isDom: true }, { val: aVal, l: lA, isDom: false }];
 
-  return chips.map(chip => {
-    const label = isHue ? hueLabel(chip.val as number) : lightnessLabel(chip.val as ChromaticL);
+  const chipsHtml = chips.map(chip => {
+    const label = labelOf(chip.val);
     const domLabel = chip.isDom ? t.estAlleleDominant : t.estAlleleRecessive;
     return `<span
       class="allele-chip ${chip.isDom ? 'allele-chip--dom' : 'allele-chip--rec'}"
@@ -382,4 +402,7 @@ export function renderChipPair(
       title="${label} — ${domLabel}"
     ></span>`;
   }).join('');
+
+  const labelsHtml = `${labelOf(chips[0].val)} · ${labelOf(chips[1].val)}`;
+  return `<span class="chips-view">${chipsHtml}</span><span class="chips-labels-view">${labelsHtml}</span>`;
 }

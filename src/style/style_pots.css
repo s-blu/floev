@@ -294,6 +294,27 @@
   display: flex;
   align-items: center;
   gap: 3px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.allele-chips-row .chips-view {
+  display: contents;
+}
+
+.allele-chips-row .chips-labels-view {
+  display: none;
+  font-size: 10px;
+  color: var(--text);
+  text-align: right;
+}
+
+.allele-chips-row.show-labels .chips-view {
+  display: none;
+}
+
+.allele-chips-row.show-labels .chips-labels-view {
+  display: inline;
 }
 
 /* Dominant chip: wider. Recessive chip: narrower. Size = dominance. */
