@@ -420,6 +420,132 @@
   background: var(--green);
 }
 
+/* ── Buff section ────────────────────────────────────────────────────────────── */
+
+.buff-level-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--green);
+  background: #E1F5EE;
+  padding: 1px 6px;
+  border-radius: 99px;
+  margin-top: 2px;
+  width: fit-content;
+}
+
+.buff-level-badge--none {
+  color: var(--text3);
+  background: var(--bg3);
+}
+
+@media (prefers-color-scheme: dark) {
+  .buff-level-badge { background: rgba(29,158,117,0.15); color: #34D399; }
+  .buff-level-badge--none { background: var(--bg3); color: var(--text3); }
+}
+
+.buff-action-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.buff-req-summary {
+  font-size: 9px;
+  color: var(--text3);
+  text-align: right;
+  max-width: 110px;
+  line-height: 1.3;
+}
+
+/* ── Buff redeem overlay ──────────────────────────────────────────────────────── */
+
+.dialog-box--wide {
+  max-width: 420px;
+  width: 90vw;
+}
+
+.buff-req-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.buff-req-row {
+  font-size: 12px;
+  color: var(--text2);
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 5px 10px;
+}
+
+.buff-pick-hint {
+  font-size: 11px;
+  color: var(--text3);
+  margin: 6px 0 4px;
+}
+
+.buff-plant-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.buff-no-plants {
+  font-size: 12px;
+  color: var(--text3);
+  font-style: italic;
+}
+
+.buff-plant-card {
+  width: 60px;
+  height: 72px;
+  padding: 0;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg2);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.12s, opacity 0.12s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buff-plant-card:hover:not(.buff-plant-card--ineligible) {
+  border-color: var(--border2);
+  transform: scale(1.04);
+}
+
+.buff-plant-card--selected {
+  border-color: var(--green) !important;
+  background: color-mix(in srgb, var(--green) 8%, var(--bg2));
+}
+
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .buff-plant-card--selected { background: var(--bg2); }
+}
+
+.buff-plant-card--ineligible {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.buff-progress-hint {
+  font-size: 11px;
+  color: var(--text3);
+  text-align: right;
+  margin-bottom: 4px;
+  min-height: 1em;
+}
+
 /* ── Responsive ──────────────────────────────────────────────────────────────── */
 
 @media (max-width: 480px) {

@@ -1,5 +1,8 @@
 // ─── Shop model ───────────────────────────────────────────────────────────────
 
+import type { PetalEffect, PetalShape, PetalCount } from './plant'
+import type { ColorBucket } from './genetic_model'
+
 export type UpgradeId =
   | 'unlock_lupe'
   | 'unlock_selfpollinate'
@@ -121,3 +124,124 @@ export const DEFAULT_POT_DESIGN: PotDesign = {
   colorId: 'terracotta',
   shape: 'standard',
 }
+
+// ─── Permanent Buffs ──────────────────────────────────────────────────────────
+
+export type BuffId = 'faster_growth' | 'seed_luck' | 'cooldown_reduction' | 'trade_skill'
+
+export type SinglePredicate =
+  | { kind: 'any' }
+  | { kind: 'rarity_min'; min: number }
+  | { kind: 'effect'; effect: PetalEffect }
+  | { kind: 'effect_or'; effects: PetalEffect[] }
+  | { kind: 'petal_count'; count: PetalCount }
+  | { kind: 'shape'; shape: PetalShape }
+  | { kind: 'shape_or'; shapes: PetalShape[] }
+  | { kind: 'color_bucket'; bucket: ColorBucket }
+  | { kind: 'color_bucket_or'; buckets: ColorBucket[] }
+  | { kind: 'coin_value_min'; min: number }
+
+export type BuffReqKind =
+  | SinglePredicate
+  | { kind: 'combined'; predicates: SinglePredicate[] }
+
+export interface BuffRequirement {
+  count: number
+  req: BuffReqKind
+  source: 'pot' | 'seed_drawer'
+}
+
+export interface BuffLevel {
+  value: number
+  requirements: BuffRequirement[]
+}
+
+export interface BuffDef {
+  id: BuffId
+  icon: string
+  unlock_required?: UpgradeId
+  levels: BuffLevel[]
+}
+
+export const BUFFS: BuffDef[] = [
+  {
+    id: 'faster_growth',
+    icon: '⚡',
+    levels: [
+      {
+        value: 0.15,
+        requirements: [{ count: 2, req: { kind: 'rarity_min', min: 3 }, source: 'pot' }],
+      },
+      {
+        value: 0.30,
+        requirements: [{ count: 1, req: { kind: 'combined', predicates: [{ kind: 'shape', shape: 'zickzack' }, { kind: 'petal_count', count: 8 }] }, source: 'pot' }],
+      },
+      {
+        value: 0.45,
+        requirements: [{ count: 3, req: { kind: 'rarity_min', min: 4 }, source: 'pot' }],
+      },
+    ],
+  },
+  {
+    id: 'seed_luck',
+    icon: '🍀',
+    unlock_required: 'unlock_seed_drawer',
+    levels: [
+      {
+        value: 0.05,
+        requirements: [{ count: 1, req: { kind: 'color_bucket', bucket: 'blue' }, source: 'pot' }],
+      },
+      {
+        value: 0.10,
+        requirements: [{ count: 1, req: { kind: 'rarity_min', min: 3 }, source: 'seed_drawer' }],
+      },
+      {
+        value: 0.15,
+        requirements: [{ count: 1, req: { kind: 'effect_or', effects: ['shimmer', 'iridescent'] }, source: 'pot' }],
+      },
+    ],
+  },
+  {
+    id: 'cooldown_reduction',
+    icon: '⏱',
+    unlock_required: 'unlock_seed_drawer',
+    levels: [
+      {
+        value: 0.25,
+        requirements: [{ count: 1, req: { kind: 'color_bucket_or', buckets: ['purple', 'blue', 'gray'] }, source: 'pot' }],
+      },
+      {
+        value: 0.50,
+        requirements: [{ count: 2, req: { kind: 'shape_or', shapes: ['wavy', 'zickzack'] }, source: 'pot' }],
+      },
+      {
+        value: 0.75,
+        requirements: [{ count: 1, req: { kind: 'effect', effect: 'gradient' }, source: 'pot' }],
+      },
+    ],
+  },
+  {
+    id: 'trade_skill',
+    icon: '💰',
+    levels: [
+      {
+        value: 0.10,
+        requirements: [{ count: 1, req: { kind: 'coin_value_min', min: 30 }, source: 'pot' }],
+      },
+      {
+        value: 0.20,
+        requirements: [
+          { count: 1, req: { kind: 'combined', predicates: [{ kind: 'shape', shape: 'wavy' }, { kind: 'color_bucket', bucket: 'red' }] }, source: 'pot' },
+          { count: 1, req: { kind: 'combined', predicates: [{ kind: 'shape', shape: 'wavy' }, { kind: 'color_bucket', bucket: 'yellowgreen' }] }, source: 'pot' },
+        ],
+      },
+      {
+        value: 0.30,
+        requirements: [
+          { count: 1, req: { kind: 'rarity_min', min: 4 }, source: 'pot' },
+          { count: 1, req: { kind: 'rarity_min', min: 3 }, source: 'pot' },
+        ],
+      },
+    ],
+  },
+]

@@ -36,7 +36,10 @@ import { renderAchievements, queueAchievementToast, initAchievementsPanel } from
 import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
-import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT, SEED_CRAFT_COOLDOWN_MS, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
+import { MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
+import { getEffectiveSurplusSeedChance, getEffectiveSelfPollinateSeedChance, getEffectiveCooldownMs } from '../engine/game_params'
+import { redeemBuff, canRedeemBuff } from '../engine/shop_engine'
+import type { BuffId } from '../model/shop'
 import { renderSeedDrawer } from './seeds_ui'
 import { COIN_ICON } from './icons'
 import { renderSeedIcon } from '../engine/renderer/seed_renderer'
@@ -388,7 +391,7 @@ function executeSelfPollinate(potId: number, sourceBtn?: HTMLElement | null): vo
 
   if (
     hasUpgrade(state, 'unlock_seed_drawer') &&
-    Math.random() < SELF_POLLINATE_SURPLUS_SEED_CHANCE &&
+    Math.random() < getEffectiveSelfPollinateSeedChance(state) &&
     state.seeds.length < MAX_SEED_STORAGE
   ) {
     const surplusSeed = selfPollinateePlant(pot.plant)
@@ -456,7 +459,7 @@ function executeCraftSingleSeed(): void {
 
   potA.plant.surplusSeedsProduced = (potA.plant.surplusSeedsProduced ?? 0) + 1
   potB.plant.surplusSeedsProduced = (potB.plant.surplusSeedsProduced ?? 0) + 1
-  const cooldownUntil = Date.now() + SEED_CRAFT_COOLDOWN_MS
+  const cooldownUntil = Date.now() + getEffectiveCooldownMs(state)
   potA.plant.breedCooldownUntil = cooldownUntil
   potB.plant.breedCooldownUntil = cooldownUntil
 
@@ -543,7 +546,7 @@ function handleBreed(): void {
 
   if (
     hasUpgrade(state, 'unlock_seed_drawer') &&
-    Math.random() < SURPLUS_SEED_CHANCE &&
+    Math.random() < getEffectiveSurplusSeedChance(state) &&
     state.seeds.length < MAX_SEED_STORAGE &&
     (potA.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT &&
     (potB.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT
@@ -621,5 +624,12 @@ export function showMigrationNotice(notice: { lostCatalogEntries: number; compen
 export function formatDate(ts: number): string {
   const d = new Date(ts);
   return d.toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+export function handleRedeemBuff(id: BuffId, potIds: number[], seedIds: string[]): void {
+  if (!canRedeemBuff(state, id, potIds, seedIds)) return
+  redeemBuff(state, id, potIds, seedIds)
+  checkAchAndSave(state)
+  render()
 }
 

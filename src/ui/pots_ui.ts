@@ -1,4 +1,5 @@
-import { getPhaseProgress, PHASE_DURATION_MS } from '../engine/game';
+import { getPhaseProgress } from '../engine/game';
+import { getEffectivePhaseDurations, getEffectiveCoinMultiplier } from '../engine/game_params';
 import { COIN_ICON } from './icons';
 import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, handleSwapGardenPot, handlePushPotToEnd, openAlleleIds, hasUpgrade, openPotDesignIds, swapGardenPotId, isOnCooldown } from './ui';
 import { openSeedDrawer } from './seeds_ui';
@@ -134,12 +135,13 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
   let progressHtml = '';
   let belowSillContent = '';
   if (pot.plant && pot.plant.phase < 4) {
-    const progress = getPhaseProgress(pot);
+    const durations = getEffectivePhaseDurations(state);
+    const progress = getPhaseProgress(pot, durations);
     const pct = (progress * 100).toFixed(2);
-    const currentPhaseRemainingMs = PHASE_DURATION_MS[pot.plant.phase] * (1 - progress);
-    const laterPhasesMs = Object.entries(PHASE_DURATION_MS)
+    const currentPhaseRemainingMs = durations[pot.plant.phase] * (1 - progress);
+    const laterPhasesMs = Object.entries(durations)
       .filter(([p]) => Number(p) > pot.plant!.phase)
-      .reduce((sum, [, dur]) => sum + dur, 0);
+      .reduce((sum, [, dur]) => sum + (dur as number), 0);
     const remainingMs = currentPhaseRemainingMs + laterPhasesMs;
     const remainingMin = Math.floor(remainingMs / 60_000);
     const timeLabel = remainingMin < 1 ? t.phaseAlmostDone : t.phaseTimeLeft(remainingMin);
@@ -158,7 +160,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
       </div>`;
   } else if (isBlooming) {
     const isBreedSelected = pot.id === selA || pot.id === selB;
-    const coinVal = coinValueForScore(calcCoinScore(pot.plant));
+    const coinVal = coinValueForScore(calcCoinScore(pot.plant), getEffectiveCoinMultiplier(state));
     const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
     const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
     const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);

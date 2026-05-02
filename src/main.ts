@@ -2,7 +2,7 @@ import { loadState, saveState } from './engine/game'
 import { initUI, showMigrationNotice } from './ui/ui'
 import { initHelp, showHelp } from './ui/help_ui'
 import { showGardenSettings } from './ui/garden_settings_ui'
-import { initShop, closeShop } from './ui/shop_ui'
+import { initShop, initBuffShop, closeShop } from './ui/shop_ui'
 import { initOrderBookPanel } from './ui/orders_ui'
 import { initSeedDrawer } from './ui/seeds_ui'
 import { initNotificationFooter } from './ui/notification_log'
@@ -169,6 +169,7 @@ document.getElementById('help-btn')?.addEventListener('click', showHelp)
 
 // Shop sidebar
 initShop()
+initBuffShop()
 document.getElementById('shop-close-btn')?.addEventListener('click', closeShop)
 document.getElementById('shop-overlay')?.addEventListener('click', closeShop)
 

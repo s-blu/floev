@@ -4,6 +4,7 @@ import { addToCatalog } from './catalog'
 import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLANTS, DEBUG_SEEDS, USE_FIXED_SEEDS } from '../dev.config'
 import { MAX_SEED_STORAGE, SAATENSCHUBLADE_SLOTS } from '../model/genetic_model'
 import { runMigrations, LATEST_MIGRATION_VERSION } from './migrations'
+import { getEffectivePhaseDurations } from './game_params'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -18,8 +19,8 @@ export const PHASE_DURATION_MS: Record<number, number> = import.meta.env.DEV
 
 
 /** Maps a 1–100 rarity score to coins. Roughly exponential. */
-export function coinValueForScore(score: number): number {
-  return Math.max(3, Math.round(Math.pow(score / 10, 1.8)))
+export function coinValueForScore(score: number, multiplier = 1.0): number {
+  return Math.max(3, Math.round(Math.pow(score / 10, 1.8) * multiplier))
 }
 
 const useDebugPlants = import.meta.env.DEV && USE_FIXED_PLANTS;
@@ -120,9 +121,9 @@ export function resetState(): GameState {
 
 // ─── Phase management ────────────────────────────────────────────────────────
 
-export function getPhaseProgress(pot: Pot): number {
+export function getPhaseProgress(pot: Pot, phaseDurations: Record<number, number> = PHASE_DURATION_MS): number {
   if (!pot.plant || pot.plant.phase >= 4) return 1
-  const dur = PHASE_DURATION_MS[pot.plant.phase]
+  const dur = phaseDurations[pot.plant.phase]
   if (!dur || !pot.phaseStart) return 1
   return Math.min(1, (Date.now() - pot.phaseStart) / dur)
 }
@@ -131,11 +132,12 @@ export function advancePhases(
   state: GameState,
   onBloom?: (plant: Plant) => void,
 ): boolean {
+  const durations = getEffectivePhaseDurations(state)
   let changed = false
   for (const pot of state.pots) {
     if (!pot.plant || pot.plant.phase >= 4) continue
-    while (pot.plant.phase < 4 && getPhaseProgress(pot) >= 1) {
-      const dur = PHASE_DURATION_MS[pot.plant.phase]
+    while (pot.plant.phase < 4 && getPhaseProgress(pot, durations) >= 1) {
+      const dur = durations[pot.plant.phase]
       const phaseEnd = (pot.phaseStart ?? Date.now()) + dur
       pot.plant.phase = (pot.plant.phase + 1) as Plant['phase']
       pot.phaseStart  = phaseEnd

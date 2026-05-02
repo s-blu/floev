@@ -100,6 +100,7 @@ export interface GameState {
   orderBook?: OrderBookState
   migrationVersion?: number
   pendingMigrationNotice?: { lostCatalogEntries: number; compensation: number }
+  buffs?: Record<string, number>
 }
 
 

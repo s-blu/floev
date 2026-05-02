@@ -142,6 +142,12 @@ console.log('migration 4', allPlants)
       }
     },
   },
+  {
+    version: 7,
+    run(state) {
+      state.buffs ??= {}
+    },
+  },
 ]
 
 export const LATEST_MIGRATION_VERSION = migrations.length > 0
