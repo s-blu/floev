@@ -641,6 +641,9 @@ export const de = {
   },
 },
 
+completionIndexTitle: 'Vollständigkeits-Index',
+  completionIndexSummary: (found: number, total: number) => `${found}/${total} entdeckt`,
+
 discoveryIndexTitle: 'Entdeckungs-Index',
   discoveryIndexSectionShapes: 'Blütenformen',
   discoveryIndexMatrixCount: 'Anzahl',

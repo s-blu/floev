@@ -6,6 +6,7 @@ import { formatDate, state } from './ui';
 import { t } from '../model/i18n';
 import { hasUpgrade } from '../engine/shop_engine';
 import { renderDiscoveryIndex } from './discovery_index_ui';
+import { renderCompletionIndex } from './completion_index_ui';
 import { buildFamilySwatchStyle } from './swatch_utils';
 
 // ─── Catalog helpers ──────────────────────────────────────────────────────────
@@ -62,12 +63,14 @@ export function renderCatalog(): void {
   entryIndex = new Map<string, number>();
   allSorted.forEach((e, i) => entryIndex.set(e.plant.id, i + 1));
 
-  const discoveryIndexOpen = (document.getElementById('discovery-index') as HTMLDetailsElement | null)?.open ?? false;
+  const discoveryIndexOpen  = (document.getElementById('discovery-index')  as HTMLDetailsElement | null)?.open ?? false;
+  const completionIndexOpen = (document.getElementById('completion-index') as HTMLDetailsElement | null)?.open ?? false;
   const persistedStates = loadRarityOpenStates();
 
   container.innerHTML = '';
   if (hasUpgrade(state, 'unlock_discovery_index')) {
     container.appendChild(renderDiscoveryIndex(state.catalog, discoveryIndexOpen));
+    container.appendChild(renderCompletionIndex(state.catalog, completionIndexOpen));
   }
 
   for (const rarity of [4, 3, 2, 1, 0] as Rarity[]) {

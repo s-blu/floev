@@ -59,6 +59,35 @@ export function buildDiscoveredColors(catalog: CatalogEntry[]): Set<string> {
   return set;
 }
 
+// ─── Completion index cell builders ──────────────────────────────────────────
+
+export function buildFoundBaseColorCells(catalog: CatalogEntry[]): Set<string> {
+  const set = new Set<string>();
+  for (const e of catalog) {
+    if (expressedEffect(e.plant.petalEffect) !== 'none') continue;
+    const shape  = expressedShape(e.plant.petalShape);
+    const color  = expressedColor(e.plant.petalHue, e.plant.petalLightness);
+    const count  = Math.round(expressedNumber(e.plant.petalCount));
+    const center = expressedCenter(e.plant.centerType);
+    set.add(`${shape}_${color.h}_${color.l}_${count}_${center}`);
+  }
+  return set;
+}
+
+export function buildFoundEffectCells(catalog: CatalogEntry[]): Set<string> {
+  const set = new Set<string>();
+  for (const e of catalog) {
+    const effect = expressedEffect(e.plant.petalEffect);
+    if (effect === 'none') continue;
+    const shape  = expressedShape(e.plant.petalShape);
+    const color  = expressedColor(e.plant.petalHue, e.plant.petalLightness);
+    const count  = Math.round(expressedNumber(e.plant.petalCount));
+    const center = expressedCenter(e.plant.centerType);
+    set.add(`${shape}_${color.h}_${effect}_${count}_${center}`);
+  }
+  return set;
+}
+
 // ─── Bucket key helpers (shared with discovery index UI) ─────────────────────
 
 export function getBucketKeys(bucket: ColorBucket): string[] {

@@ -641,6 +641,9 @@ export const en = {
   },
 },
 
+completionIndexTitle: 'Completion Index',
+  completionIndexSummary: (found: number, total: number) => `${found}/${total} found`,
+
 discoveryIndexTitle: 'Discovery Index',
   discoveryIndexSectionShapes: 'Petal shapes',
   discoveryIndexMatrixCount: 'Count',
