@@ -1,7 +1,7 @@
 import { Plant, CenterType, PetalShape, PetalEffect, GameState, Pot } from "../model/plant"
 import { Rarity } from "../model/rarity_model"
 import { getCatalogEntryForPlant } from "./catalog"
-import { expressedCenter, expressedColor, expressedEffect, expressedNumber, expressedShape, colorBucket } from "./genetic/genetic_utils"
+import { expressedCenter, expressedColor, expressedEffect, expressedNumber, expressedPetalCount, expressedShape, colorBucket } from "./genetic/genetic_utils"
 
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 
@@ -37,7 +37,7 @@ export function calcRarityScore(plant: Plant): number {
   const color  = expressedColor(plant.petalHue, plant.petalLightness)
   const center = expressedCenter(plant.centerType)
   const effect = expressedEffect(plant.petalEffect)
-  const count  = Math.round(expressedNumber(plant.petalCount))
+  const count  = expressedPetalCount(plant.petalCount)
 
   let score = 0
   score += SHAPE_SCORE[shape]

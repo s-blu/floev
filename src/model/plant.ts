@@ -18,9 +18,10 @@ export interface AllelePair<T> {
 /** The three discrete lightness levels used as alleles. */
 export type ChromaticL = 30 | 60 | 90
 
-export type StemTypes = "two-leaved-stem"
+export type StemTypes   = "two-leaved-stem"
 export type PetalShape  = 'round' | 'lanzett' | 'tropfen' | 'wavy' | 'zickzack'
 export type CenterType  = 'dot' | 'disc' | 'stamen'
+export type PetalCount  = 3 | 5 | 8
 export type PlantPhase  = 1 | 2 | 3 | 4
 export type PetalEffect = 'none' | 'bicolor' | 'gradient' | 'shimmer' | 'iridescent'
 
@@ -32,7 +33,7 @@ export interface Plant {
   // Numeric loci (continuous, incomplete dominance → average)
   stemHeight:     AllelePair<number>
   stem:           AllelePair<StemTypes>
-  petalCount:     AllelePair<number>
+  petalCount:     AllelePair<PetalCount>
 
   // Discrete loci (Mendelian dominance)
   petalShape:     AllelePair<PetalShape>
@@ -98,6 +99,7 @@ export interface GameState {
   lastSave:   number
   orderBook?: OrderBookState
   migrationVersion?: number
+  pendingMigrationNotice?: { lostCatalogEntries: number; compensation: number }
 }
 
 
@@ -111,9 +113,12 @@ export interface BreedEstimate {
   avgS: number
   avgL: number
 
-  // Petal count range
-  minP: number
-  maxP: number
+  // Petal count probabilities
+  petalCountProbs: { count: PetalCount; pct: number }[]
+  /** @deprecated use petalCountProbs instead */
+  minP: PetalCount
+  /** @deprecated use petalCountProbs instead */
+  maxP: PetalCount
 
   // Discrete trait probabilities
   likelyShape: PetalShape

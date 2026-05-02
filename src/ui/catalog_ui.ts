@@ -1,4 +1,4 @@
-import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedEffect } from '../engine/genetic/genetic_utils';
+import { expressedColor, expressedShape, expressedCenter, expressedPetalCount, expressedEffect } from '../engine/genetic/genetic_utils';
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer';
 import type { CatalogEntry, HSLColor, PetalEffect } from '../model/plant';
 import { RARITY_BADGE_STYLES, RARITY_COLORS, RARITY_ICON, type Rarity } from "../model/rarity_model";
@@ -6,6 +6,7 @@ import { formatDate, state } from './ui';
 import { t } from '../model/i18n';
 import { hasUpgrade } from '../engine/shop_engine';
 import { renderDiscoveryIndex } from './discovery_index_ui';
+import { renderCompletionIndex } from './completion_index_ui';
 import { buildFamilySwatchStyle } from './swatch_utils';
 
 // ─── Catalog helpers ──────────────────────────────────────────────────────────
@@ -62,12 +63,16 @@ export function renderCatalog(): void {
   entryIndex = new Map<string, number>();
   allSorted.forEach((e, i) => entryIndex.set(e.plant.id, i + 1));
 
-  const discoveryIndexOpen = (document.getElementById('discovery-index') as HTMLDetailsElement | null)?.open ?? false;
+  const discoveryIndexOpen  = (document.getElementById('discovery-index')  as HTMLDetailsElement | null)?.open ?? false;
+  const completionIndexOpen = (document.getElementById('completion-index') as HTMLDetailsElement | null)?.open ?? false;
   const persistedStates = loadRarityOpenStates();
 
   container.innerHTML = '';
   if (hasUpgrade(state, 'unlock_discovery_index')) {
     container.appendChild(renderDiscoveryIndex(state.catalog, discoveryIndexOpen));
+  }
+  if (hasUpgrade(state, 'unlock_completion_index')) {
+    container.appendChild(renderCompletionIndex(state.catalog, completionIndexOpen));
   }
 
   for (const rarity of [4, 3, 2, 1, 0] as Rarity[]) {
@@ -106,7 +111,7 @@ function buildEncyclopediaEntry(entry: CatalogEntry, num: number): HTMLElement {
   const pc = expressedColor(plant.petalHue, plant.petalLightness);
   const shape = expressedShape(plant.petalShape);
   const center = expressedCenter(plant.centerType);
-  const count = Math.round(expressedNumber(plant.petalCount));
+  const count = expressedPetalCount(plant.petalCount);
   const effect = expressedEffect(plant.petalEffect);
   const hasEffect = effect !== 'none' && (pc.s > 0 || pc.h === 2);
   const pcForEffect = hasEffect ? { ...pc, l: 60 as const } : pc;

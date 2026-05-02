@@ -9,7 +9,7 @@ import {
   expressedCenter,
   expressedEffect,
   expressedLightness,
-  expressedNumber,
+  expressedPetalCount,
   expressedHue,
   hueBucket,
 } from './genetic/genetic_utils'
@@ -40,15 +40,14 @@ const EASY_POOL: OrderRequirement[] = [
   { trait: 'colorBucket', op: 'eq',  value: 'blue',        difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'yellowgreen', difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'purple',      difficulty: 'easy' },
-  { trait: 'petalCount',  op: 'gte', value: 4,             difficulty: 'easy' },
+  { trait: 'petalCount',  op: 'gte', value: 5,             difficulty: 'easy' },
   { trait: 'centerType',  op: 'eq',  value: 'dot',         difficulty: 'easy' },
   { trait: 'centerType',  op: 'eq',  value: 'disc',        difficulty: 'easy' },
 ]
 
 const MEDIUM_POOL: OrderRequirement[] = [
-  { trait: 'petalCount',    op: 'gte', value: 5,          difficulty: 'medium' },
-  { trait: 'petalCount',    op: 'gte', value: 6,          difficulty: 'medium' },
-  { trait: 'petalCount',    op: 'lte', value: 3,          difficulty: 'medium' },
+  { trait: 'petalCount',    op: 'gte', value: 8,          difficulty: 'medium' },
+  { trait: 'petalCount',    op: 'eq',  value: 3,          difficulty: 'medium' },
   { trait: 'petalLightness', op: 'eq', value: 30,         difficulty: 'medium' },
   { trait: 'petalLightness', op: 'eq', value: 60,         difficulty: 'medium' },
   { trait: 'petalLightness', op: 'eq', value: 90,         difficulty: 'medium' },
@@ -194,7 +193,7 @@ function requirementMet(plant: Plant, req: OrderRequirement): boolean {
       return hueBucket(expressedHue(plant.petalHue)) === req.value
 
     case 'petalCount': {
-      const count = Math.round(expressedNumber(plant.petalCount))
+      const count = expressedPetalCount(plant.petalCount)
       if (req.op === 'gte') return count >= (req.value as number)
       if (req.op === 'lte') return count <= (req.value as number)
       return count === (req.value as number)

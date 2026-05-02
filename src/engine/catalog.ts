@@ -1,5 +1,5 @@
 import type { CatalogEntry, GameState, Plant } from '../model/plant';
-import { expressedColor, expressedShape, expressedCenter, expressedNumber, expressedStem, expressedEffect } from './genetic/genetic_utils';
+import { expressedColor, expressedShape, expressedCenter, expressedPetalCount, expressedStem, expressedEffect } from './genetic/genetic_utils';
 import { calcRarityScore, calcRarity } from './rarity';
 import { t } from '../model/i18n'
 
@@ -12,7 +12,7 @@ export function catalogKey(plant: Plant): string {
   const center = expressedCenter(plant.centerType)
   const petalEffect = expressedEffect(plant.petalEffect);
 
-  const count = Math.round(expressedNumber(plant.petalCount))
+  const count = expressedPetalCount(plant.petalCount)
   const stem = expressedStem(plant.stem)
 
   return `${count}-${shape}-${center}-${stem}-${color.h}-${color.s}-${color.l}-${petalEffect}`
@@ -43,7 +43,7 @@ export function addToCatalog(state: GameState, plant: Plant): boolean {
 }
 
 function getPlantName(plant: Plant) {
-  const count = Math.round(expressedNumber(plant.petalCount))  as 3 | 4 | 5 | 6 | 7 | 8;
+  const count = expressedPetalCount(plant.petalCount);
   const shape = expressedShape(plant.petalShape);
 
   return t.petalNames[shape]?.[count]

@@ -1,6 +1,6 @@
 import type {
   Plant, HSLColor, PetalShape, PlantPhase, ChromaticL,
-  CenterType, PetalEffect,
+  CenterType, PetalEffect, PetalCount,
 } from '../../model/plant'
 import type { ColorBucket } from "../../model/genetic_model"
 import { pick, uid } from "./genetic_utils"
@@ -60,8 +60,9 @@ export function randomPlant(): Plant {
   const stemA = MIN_STEM_HEIGHT + Math.random() * 0.65
   const stemB = MIN_STEM_HEIGHT + Math.random() * 0.65
 
-  const countA = 3 + Math.floor(Math.random() * 6)
-  const countB = 3 + Math.floor(Math.random() * 6)
+  const COUNT_POOL: PetalCount[] = [3, 3, 3, 5, 5, 8]
+  const countA = pick(COUNT_POOL)
+  const countB = pick(COUNT_POOL)
 
   return {
     id: uid(),
@@ -97,7 +98,7 @@ export function plannedPlant(plantConfiguration: {
     petalShape:  'round' as PetalShape,
     petalEffect: 'none' as PetalEffect,
     stemHeight:  MIN_STEM_HEIGHT + Math.random() * 0.65,
-    petalCount:  3 + Math.floor(Math.random() * 6),
+    petalCount:  3 as PetalCount,
     centerType:  'dot' as CenterType,
     plantPhase:  4 as PlantPhase,
     ...plantConfiguration,
@@ -106,7 +107,7 @@ export function plannedPlant(plantConfiguration: {
   return {
     id: uid(),
     stemHeight:     { a: config.stemHeight,  b: config.stemHeight  },
-    petalCount:     { a: config.petalCount,  b: config.petalCount  },
+    petalCount:     { a: config.petalCount as PetalCount,  b: config.petalCount as PetalCount  },
     petalShape:     { a: config.petalShape,  b: config.petalShape  },
     petalHue:       { a: config.hue,         b: config.hue         },
     petalLightness: { a: config.lightness,   b: config.lightness   },

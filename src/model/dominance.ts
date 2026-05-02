@@ -1,5 +1,5 @@
 import { ColorBucket } from "./genetic_model";
-import { PetalShape, CenterType, ChromaticL, PetalEffect } from "./plant";
+import { PetalShape, CenterType, ChromaticL, PetalEffect, PetalCount } from "./plant";
 
 // ─── Dominance helpers ────────────────────────────────────────────────────────
 
@@ -18,3 +18,6 @@ export const LIGHTNESS_DOMINANCE: ChromaticL[] = [90, 60, 30];
 export const PETAL_EFFECT_DOMINANCE: PetalEffect[] = [
   'none', 'bicolor', 'gradient', 'shimmer', 'iridescent',
 ];
+
+// ─── Petal count dominance: klein > mittel > viel ─────────────────────────────
+export const PETAL_COUNT_DOMINANCE: PetalCount[] = [3, 5, 8];

@@ -23,6 +23,7 @@ import {
   placeSeedInSpecificPot
 } from '../engine/pot_engine'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
+import { isHomozygous } from '../engine/genetic/genetic_utils'
 import { buyUpgrade, buyPotColor, buyPotShape, buyPotEffect, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
 import { renderShowcase } from './showcase_ui'
@@ -209,6 +210,15 @@ export function handleMoveFromShowcase(showcasePotId: number): void {
   }
 }
 
+export function handlePushPotToEnd(potId: number): void {
+  const idx = state.pots.findIndex(p => p.id === potId)
+  if (idx < 0 || idx === state.pots.length - 1) return
+  const [pot] = state.pots.splice(idx, 1)
+  state.pots.push(pot)
+  checkAchAndSave(state)
+  render()
+}
+
 export function handleSwapGardenPot(potId: number): void {
   if (swapGardenPotId === null) {
     swapGardenPotId = potId
@@ -328,6 +338,7 @@ export function handleSelfPollinate(potId: number): void {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot?.plant || pot.plant.phase < 4) return
   if (isOnCooldown(pot.plant)) return
+  if (isHomozygous(pot.plant)) return
 
   showSelfPollinateDialog(potId)
 }
@@ -586,7 +597,28 @@ function checkAchAndSave(state: GameState) {
 
 function bindStaticEvents(): void {
   document.getElementById('breed-btn')?.addEventListener('click', handleBreed)
-}export function formatDate(ts: number): string {
+}
+
+export function showMigrationNotice(notice: { lostCatalogEntries: number; compensation: number }): void {
+  document.getElementById('migration-notice-dialog')?.remove()
+  const overlay = document.createElement('div')
+  overlay.id = 'migration-notice-dialog'
+  overlay.className = 'dialog-overlay'
+  overlay.innerHTML = `
+    <div class="dialog-box">
+      <p class="dialog-title">${t.migrationNoticeTitle}</p>
+      <p class="dialog-text">${t.migrationNoticeText}</p>
+      <p class="dialog-text">${t.migrationNoticeDetails(notice.lostCatalogEntries, notice.compensation)}</p>
+      <div class="dialog-actions">
+        <button class="btn btn-confirm" id="migration-notice-ok">${t.migrationNoticeOk}</button>
+      </div>
+    </div>`
+  document.body.appendChild(overlay)
+  document.getElementById('migration-notice-ok')?.addEventListener('click', () => overlay.remove())
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove() })
+}
+
+export function formatDate(ts: number): string {
   const d = new Date(ts);
   return d.toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'short', year: 'numeric' });
 }

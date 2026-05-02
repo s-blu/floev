@@ -121,8 +121,11 @@ export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): 
     .map(x => renderBar(t.effectLabels[x.effect] ?? x.effect, x.pct))
     .join('');
 
+  const petalCountBars = e.petalCountProbs
+    .map(x => renderBar(`${x.count}`, x.pct))
+    .join('');
+
   return `
-    <div class="est-row" style="margin-bottom:4px">${t.estPetals(e.minP, e.maxP)}</div>
     <div class="prob-group">
       <div class="prob-group-label">${t.estGroupColor}</div>
       ${colorBars}
@@ -130,6 +133,10 @@ export function formatEstimate(e: BreedEstimate, plantA: Plant, plantB: Plant): 
     <div class="prob-group">
       <div class="prob-group-label">${t.estGroupLightness}</div>
       ${lightBars}
+    </div>
+    <div class="prob-group">
+      <div class="prob-group-label">${t.estGroupPetalCount}</div>
+      ${petalCountBars}
     </div>
     ${nonNoneEffects.length > 0 ? `<div class="prob-group">
       <div class="prob-group-label">${t.estGroupEffect}</div>

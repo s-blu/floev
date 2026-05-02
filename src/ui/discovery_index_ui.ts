@@ -11,8 +11,8 @@ import {
 } from '../engine/discovery_utils';
 import { CENTER_TYPE_ICONS, renderEffectSwatch, renderBucketSwatchStrip } from './icons';
 
-const SECRET_BUCKETS = new Set<ColorBucket>(['purple', 'blue', 'gray']);
-const BUCKET_ORDER: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray', 'white'];
+export const SECRET_BUCKETS = new Set<ColorBucket>(['purple', 'blue', 'gray']);
+export const BUCKET_ORDER: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray', 'white'];
 
 // ─── Shape section (count / center / effect) — three responsive sub-grids ────
 

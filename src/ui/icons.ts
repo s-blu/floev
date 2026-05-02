@@ -1,5 +1,5 @@
 import type { ColorBucket } from '../model/genetic_model'
-import { PALETTE_HUES_BUCKETS, PALETTE_S } from '../model/genetic_model'
+import { PALETTE_HUES_BUCKETS, PALETTE_S, PALETTE_L } from '../model/genetic_model'
 import type { PetalShape, CenterType } from '../model/plant'
 
 export const COIN_ICON = '<span class="coin-icon" aria-label="Münze">🪙</span>'
@@ -57,6 +57,18 @@ export function renderBucketSwatchStrip(bucket: ColorBucket): string {
   const swatches = hues.map(hue =>
     `<span class="di-mini-swatch" style="background:hsl(${hue},${PALETTE_S}%,${BUCKET_SWATCH_L}%)"></span>`
   ).join('')
+  return `<div class="di-mini-swatches">${swatches}</div>`
+}
+
+// ─── Hue swatch strip ────────────────────────────────────────────────────────
+
+export function renderHueSwatchStrip(hue: number): string {
+  if (hue === 1) {
+    return `<div class="di-mini-swatches"><span class="di-mini-swatch di-mini-swatch--effect" style="background:hsl(0,0%,97%)"></span></div>`
+  }
+  const lightnesses = hue === 2 ? [30, 60, 90] : [...(PALETTE_L as readonly number[])]
+  const hslFn = (l: number) => hue === 2 ? `hsl(0,0%,${l}%)` : `hsl(${hue},${PALETTE_S}%,${l}%)`
+  const swatches = lightnesses.map(l => `<span class="di-mini-swatch" style="background:${hslFn(l)}"></span>`).join('')
   return `<div class="di-mini-swatches">${swatches}</div>`
 }
 

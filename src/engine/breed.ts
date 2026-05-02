@@ -1,10 +1,11 @@
-import { uid, clamp } from './genetic/genetic_utils';
+import { uid } from './genetic/genetic_utils';
 import { MIN_STEM_HEIGHT, CENTER_TYPES, MUTATION_CHANCE, PETAL_EFFECTS } from '../model/genetic_model';
 import { PETAL_SHAPES } from '../model/genetic_model';
 import { inheritHue, inheritLightness, inheritEffect, inheritNumber, inheritDiscrete } from './genetic/inheritance';
-import { type Plant, type PlantPhase, type BreedEstimate, type PetalShape, type CenterType, type PetalEffect } from '../model/plant';
-import { expressedColor, expressedNumber, expressedShape } from "./genetic/genetic_utils";
-import { dominantShape, dominantCenter, dominantEffect } from "./genetic/dominance_utils";
+import { type Plant, type PlantPhase, type BreedEstimate, type PetalShape, type CenterType, type PetalEffect, type PetalCount } from '../model/plant';
+import { expressedColor, expressedShape } from "./genetic/genetic_utils";
+import { dominantShape, dominantCenter, dominantEffect, dominantPetalCount } from "./genetic/dominance_utils";
+import { PETAL_COUNTS } from './discovery_utils';
 
 // ─── Cross-breeding ───────────────────────────────────────────────────────────
 
@@ -12,10 +13,7 @@ export function breedPlants(a: Plant, b: Plant): Plant {
   return {
     id: uid(),
     stemHeight: inheritNumber(a.stemHeight, b.stemHeight, MIN_STEM_HEIGHT, 1.0, 0.08),
-    petalCount: {
-      a: clamp(Math.round(inheritNumber(a.petalCount, b.petalCount, 3, 8, 0.8).a), 3, 8),
-      b: clamp(Math.round(inheritNumber(a.petalCount, b.petalCount, 3, 8, 0.8).b), 3, 8),
-    },
+    petalCount:     inheritDiscrete(a.petalCount, b.petalCount, [...PETAL_COUNTS] as PetalCount[]),
     petalShape:     inheritDiscrete(a.petalShape, b.petalShape, PETAL_SHAPES),
     petalHue:       inheritHue(a.petalHue, b.petalHue),
     petalLightness: inheritLightness(a.petalLightness, b.petalLightness),
@@ -34,10 +32,7 @@ export function selfPollinateePlant(plant: Plant): Plant {
   return {
     id: uid(),
     stemHeight: inheritNumber(plant.stemHeight, plant.stemHeight, MIN_STEM_HEIGHT, 1.0, 0.08),
-    petalCount: {
-      a: clamp(Math.round(inheritNumber(plant.petalCount, plant.petalCount, 3, 8, 0.8).a), 3, 8),
-      b: clamp(Math.round(inheritNumber(plant.petalCount, plant.petalCount, 3, 8, 0.8).b), 3, 8),
-    },
+    petalCount:     inheritDiscrete(plant.petalCount, plant.petalCount, [...PETAL_COUNTS] as PetalCount[]),
     petalShape:     inheritDiscrete(plant.petalShape,  plant.petalShape,  PETAL_SHAPES),
     petalHue:       inheritHue(plant.petalHue, plant.petalHue),
     petalLightness: inheritLightness(plant.petalLightness, plant.petalLightness),
@@ -121,9 +116,14 @@ export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
     .filter(x => x.pct > 0)
     .sort((x, y) => y.pct - x.pct)
 
-  const midCount = (expressedNumber(a.petalCount) + expressedNumber(b.petalCount)) / 2
-  const minP = Math.max(3, Math.round(midCount - 1.5))
-  const maxP = Math.min(8, Math.round(midCount + 1.5))
+  const countProbMap = discreteProbabilities(a.petalCount, b.petalCount, [...PETAL_COUNTS] as PetalCount[], dominantPetalCount)
+  const petalCountProbs: { count: PetalCount; pct: number }[] = ([...PETAL_COUNTS] as PetalCount[])
+    .map(c => ({ count: c, pct: Math.round((countProbMap.get(c) ?? 0) * 100) }))
+    .filter(x => x.pct > 0)
+    .sort((x, y) => y.pct - x.pct)
+  const possibleCounts = ([...PETAL_COUNTS] as PetalCount[]).filter(c => (countProbMap.get(c) ?? 0) > 0)
+  const minP: PetalCount = possibleCounts[0] ?? 3
+  const maxP: PetalCount = possibleCounts[possibleCounts.length - 1] ?? 8
 
   const samples: Plant[] = Array.from({ length: 30 }, () => breedPlants(a, b))
   const expressed = samples.map(p => expressedColor(p.petalHue, p.petalLightness))
@@ -144,6 +144,7 @@ export function computeBreedEstimate(a: Plant, b: Plant): BreedEstimate {
     midH: avgH,
     minH: (avgH + 338) % 360,
     maxH: (avgH + 22)  % 360,
+    petalCountProbs,
     minP,
     maxP,
     likelyShape: shapeProbs[0]?.shape ?? expressedShape(a.petalShape),

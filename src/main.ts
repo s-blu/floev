@@ -1,5 +1,5 @@
-import { loadState } from './engine/game'
-import { initUI } from './ui/ui'
+import { loadState, saveState } from './engine/game'
+import { initUI, showMigrationNotice } from './ui/ui'
 import { initHelp, showHelp } from './ui/help_ui'
 import { showGardenSettings } from './ui/garden_settings_ui'
 import { initShop, closeShop } from './ui/shop_ui'
@@ -129,14 +129,22 @@ document.body.insertAdjacentHTML('beforeend', `
 ;(function detectCoinEmoji() {
   try {
     const canvas = document.createElement('canvas')
-    canvas.width = canvas.height = 2
+    canvas.width = canvas.height = 20
     const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    ctx.fillText('🪙', -2, 2)
-    if (ctx.getImageData(0, 0, 1, 1).data[3] === 0)
-      document.documentElement.classList.add('no-emoji-coin')
-  } catch { 
-    /* canvas unavailable, assume outdated browser */ 
+    if (!ctx) { document.documentElement.classList.add('no-emoji-coin'); return }
+    ctx.font = '16px sans-serif'
+    ctx.fillText('🪙', 0, 16)
+    const data = ctx.getImageData(0, 0, 20, 20).data
+    // Colored pixels (R≠G or G≠B) indicate a real color emoji; gray pixels or alpha=0 = fallback box or missing glyph
+    let hasColor = false
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] > 0 && Math.max(Math.abs(data[i] - data[i+1]), Math.abs(data[i+1] - data[i+2])) > 8) {
+        hasColor = true
+        break
+      }
+    }
+    if (!hasColor) document.documentElement.classList.add('no-emoji-coin')
+  } catch {
     document.documentElement.classList.add('no-emoji-coin')
   }
 })()
@@ -146,6 +154,13 @@ document.body.insertAdjacentHTML('beforeend', `
 const state = loadState()
 initNotificationFooter(t.welcomeMsg)
 initUI(state)
+
+const migrationNotice = state.pendingMigrationNotice
+if (migrationNotice && migrationNotice.lostCatalogEntries) {
+  delete state.pendingMigrationNotice
+  saveState(state)
+  showMigrationNotice(migrationNotice)
+}
 initOrderBookPanel()
 
 // Help modal — show on first visit, bind ? button

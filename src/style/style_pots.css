@@ -31,10 +31,18 @@
   border-bottom: none;
 }
 
-.pot-swap-btn {
+.pot-right-btns {
   position: absolute;
   top: 6px;
   right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.pot-swap-btn,
+.pot-push-end-btn {
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -54,8 +62,10 @@
   color: #4a72a0;
 }
 
-.pot-card:hover .pot-swap-btn { opacity: 1; }
-.pot-swap-btn:hover { opacity: 1; background: var(--bg3); }
+.pot-card:hover .pot-swap-btn,
+.pot-card:hover .pot-push-end-btn { opacity: 1; }
+.pot-swap-btn:hover,
+.pot-push-end-btn:hover { opacity: 1; background: var(--bg3); }
 .pot-swap-btn.active {
   opacity: 1;
   background: rgba(74, 144, 217, 0.18);
@@ -64,7 +74,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .pot-swap-btn { color: #7ab0e0; }
+  .pot-swap-btn,
+  .pot-push-end-btn { color: #7ab0e0; }
   .pot-swap-btn.active {
     background: rgba(74, 144, 217, 0.22);
     color: #a8d0f0;
@@ -194,6 +205,9 @@
   font-size: 11px;
   color: var(--text2);
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
 /* ── Allele overlay ──────────────────────────────────────────────────────── */
@@ -280,6 +294,27 @@
   display: flex;
   align-items: center;
   gap: 3px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.allele-chips-row .chips-view {
+  display: contents;
+}
+
+.allele-chips-row .chips-labels-view {
+  display: none;
+  font-size: 10px;
+  color: var(--text);
+  text-align: right;
+}
+
+.allele-chips-row.show-labels .chips-view {
+  display: none;
+}
+
+.allele-chips-row.show-labels .chips-labels-view {
+  display: inline;
 }
 
 /* Dominant chip: wider. Recessive chip: narrower. Size = dominance. */
@@ -454,7 +489,8 @@
 
   .plant-magnifier,
   .pot-design-btn,
-  .pot-swap-btn {
+  .pot-swap-btn,
+  .pot-push-end-btn {
     width: 28px;
     height: 28px;
     font-size: 14px;
