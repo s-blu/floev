@@ -155,6 +155,7 @@ export const en = {
   // Pot swap
   btnSwapPotTitle: 'Swap position with another pot',
   btnSwapPotCancel: 'Cancel selection',
+  btnPushToEndTitle: 'Push pot to end',
 
   // Sell
   btnSell: 'Sell',

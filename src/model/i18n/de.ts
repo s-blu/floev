@@ -155,6 +155,7 @@ export const de = {
   // Pot swap
   btnSwapPotTitle: 'Position mit einem anderen Topf tauschen',
   btnSwapPotCancel: 'Auswahl aufheben',
+  btnPushToEndTitle: 'Topf ans Ende schieben',
 
   // Sell
   btnSell: 'Verkaufen',

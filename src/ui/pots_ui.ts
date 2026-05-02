@@ -1,6 +1,6 @@
 import { getPhaseProgress, PHASE_DURATION_MS } from '../engine/game';
 import { COIN_ICON } from './icons';
-import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, handleSwapGardenPot, openAlleleIds, hasUpgrade, openPotDesignIds, swapGardenPotId, isOnCooldown } from './ui';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, handleSwapGardenPot, handlePushPotToEnd, openAlleleIds, hasUpgrade, openPotDesignIds, swapGardenPotId, isOnCooldown } from './ui';
 import { openSeedDrawer } from './seeds_ui';
 import { t } from '../model/i18n';
 import type { Pot } from '../model/plant';
@@ -121,7 +121,11 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     isBlooming ? `rarity-${r}` : ''
   ].filter(Boolean).join(' ');
 
-  const swapBtnHtml = `<button class="pot-swap-btn${isSwapSelected ? ' active' : ''}" data-action="swap" data-pot="${pot.id}" title="${isSwapSelected ? t.btnSwapPotCancel : t.btnSwapPotTitle}">⇄</button>`;
+  const isLast = state.pots[state.pots.length - 1]?.id === pot.id;
+  const swapBtnHtml = `<div class="pot-right-btns">
+    <button class="pot-swap-btn${isSwapSelected ? ' active' : ''}" data-action="swap" data-pot="${pot.id}" title="${isSwapSelected ? t.btnSwapPotCancel : t.btnSwapPotTitle}">⇄</button>
+    ${!isLast ? `<button class="pot-push-end-btn" data-action="push-to-end" data-pot="${pot.id}" title="${t.btnPushToEndTitle}">↓</button>` : ''}
+  </div>`;
   const visualAreaHtml = buildPotVisualArea(pot, state, swapBtnHtml);
   const sillHtml = buildPotSill();
 
@@ -216,6 +220,7 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
       }
     }
     else if (action === 'swap')           handleSwapGardenPot(potId);
+    else if (action === 'push-to-end')    handlePushPotToEnd(potId);
     else if (action === 'allele-inspect') showAlleleOverlay(potId, card);
     else if (action === 'pot-design')     showPotDesignRing(potId, card);
   });

@@ -209,6 +209,15 @@ export function handleMoveFromShowcase(showcasePotId: number): void {
   }
 }
 
+export function handlePushPotToEnd(potId: number): void {
+  const idx = state.pots.findIndex(p => p.id === potId)
+  if (idx < 0 || idx === state.pots.length - 1) return
+  const [pot] = state.pots.splice(idx, 1)
+  state.pots.push(pot)
+  checkAchAndSave(state)
+  render()
+}
+
 export function handleSwapGardenPot(potId: number): void {
   if (swapGardenPotId === null) {
     swapGardenPotId = potId
