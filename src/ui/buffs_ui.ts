@@ -157,6 +157,7 @@ function openBuffRedeemOverlay(id: BuffId): void {
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeBuffOverlay(); });
   document.getElementById('buff-redeem-cancel')?.addEventListener('click', closeBuffOverlay);
   document.getElementById('buff-redeem-confirm')?.addEventListener('click', confirmBuffRedeem);
+  updateBuffOverlayState(id);
   overlay.addEventListener('click', (e) => {
     const el = (e.target as HTMLElement).closest('[data-buff-pot]') as HTMLElement | null;
     if (el) toggleBuffPotSelection(Number(el.dataset.buffPot), id);

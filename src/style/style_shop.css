@@ -534,7 +534,7 @@
 
 .buff-plant-card--ineligible {
   opacity: 0.3;
-  cursor: not-allowed;
+  pointer-events: none;
   transform: none !important;
 }
 
