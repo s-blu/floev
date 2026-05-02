@@ -541,6 +541,10 @@ details:not([open]) .catalog-section-heading .rarity-name::after {
   margin-left: auto;
 }
 
+.ci-panel[open] .ci-summary-pct {
+  display: none;
+}
+
 .ci-body {
   padding: 4px 0 8px;
 }
@@ -564,6 +568,41 @@ details:not([open]) .catalog-section-heading .rarity-name::after {
 
 .ci-row--nav {
   cursor: pointer;
+}
+
+.ci-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px 2px;
+}
+
+.ci-progress-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ci-progress-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.ci-progress-fill--done {
+  background: var(--green);
+}
+
+.ci-progress-pct {
+  font-size: 9px;
+  color: var(--text3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 26px;
+  text-align: right;
 }
 
 .ci-row--nav:hover {

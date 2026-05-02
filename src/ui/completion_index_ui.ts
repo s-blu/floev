@@ -127,10 +127,27 @@ function swatchColorName(hue: number, l: number): string {
   return (t.colorLabel as any)[hue]?.[PALETTE_S]?.[l] ?? '';
 }
 
+// ─── Progress bar ────────────────────────────────────────────────────────────
+
+function renderProgressBar(found: number, total: number): string {
+  const pct = total > 0 ? Math.round(found / total * 100) : 0;
+  const doneCls = pct >= 100 ? ' ci-progress-fill--done' : '';
+  return `<div class="ci-progress-row">
+    <div class="ci-progress-bar"><div class="ci-progress-fill${doneCls}" style="width:${pct}%"></div></div>
+    <span class="ci-progress-pct">${pct}%</span>
+  </div>`;
+}
+
 // ─── Ebene 1: Shape list ──────────────────────────────────────────────────────
 
 function renderShapeList(sets: CatalogSets): string {
-  return PETAL_SHAPES.map(shape => {
+  const totalFound = PETAL_SHAPES.reduce(
+    (sum, shape) => sum + BUCKET_ORDER.reduce(
+      (s, b) => s + huesForBucket(b).reduce((ss, h) => ss + foundCellsForHue(shape, h, sets), 0), 0
+    ), 0
+  );
+  const totalCells = CELLS_PER_SHAPE * PETAL_SHAPES.length;
+  const rows = PETAL_SHAPES.map(shape => {
     if (!sets.knownShapes.has(shape)) {
       return `<div class="ci-row ci-row--secret"><span class="ci-status ci-status--empty"></span><span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span></div>`;
     }
@@ -147,14 +164,19 @@ function renderShapeList(sets: CatalogSets): string {
         <span class="ci-row-arrow">›</span>
       </button>`;
   }).join('');
+  return renderProgressBar(totalFound, totalCells) + rows;
 }
 
 // ─── Ebene 2: Hue list ────────────────────────────────────────────────────────
 
 function renderHueList(shape: PetalShape, sets: CatalogSets): string {
   const shapeLabel = t.shapeLabels[shape] ?? shape;
+  const shapeFound = BUCKET_ORDER.reduce(
+    (sum, b) => sum + huesForBucket(b).reduce((s, h) => s + foundCellsForHue(shape, h, sets), 0), 0
+  );
   const parts: string[] = [
     `<button class="ci-back-btn" data-ci-action="back-to-shapes">← ${shapeLabel}</button>`,
+    renderProgressBar(shapeFound, CELLS_PER_SHAPE),
   ];
 
   for (const bucket of BUCKET_ORDER) {
@@ -246,8 +268,11 @@ function renderSwatchBlock(
 function renderHueDetail(shape: PetalShape, hue: number, sets: CatalogSets): string {
   const shapeLabel = t.shapeLabels[shape] ?? shape;
   const hueName    = hueGroupName(hue);
+  const hueFound   = foundCellsForHue(shape, hue, sets);
+  const hueTotal   = totalCellsForHue(hue);
   const parts: string[] = [
     `<button class="ci-back-btn" data-ci-action="back-to-hues">← ${shapeLabel} › ${hueName}</button>`,
+    renderProgressBar(hueFound, hueTotal),
   ];
 
   for (const l of lightnessesForHue(hue)) {
@@ -333,11 +358,12 @@ export function renderCompletionIndex(catalog: CatalogEntry[], open = false): HT
       (s, b) => s + huesForBucket(b).reduce((ss, h) => ss + foundCellsForHue(shape, h, sets), 0), 0
     ), 0
   );
+  const totalPct = totalCells > 0 ? Math.round(totalFound / totalCells * 100) : 0;
 
   el.innerHTML = `
     <summary class="ci-summary">
       <span class="ci-summary-title">${t.completionIndexTitle}</span>
-      <span class="ci-summary-stats">${t.completionIndexSummary(totalFound, totalCells)}</span>
+      <span class="ci-summary-stats"><span class="ci-summary-pct">${totalPct}% · </span>${t.completionIndexSummary(totalFound, totalCells)}</span>
     </summary>
     <div class="ci-body">${renderCurrentView(catalog)}</div>`;
 
