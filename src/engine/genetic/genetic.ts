@@ -60,8 +60,9 @@ export function randomPlant(): Plant {
   const stemA = MIN_STEM_HEIGHT + Math.random() * 0.65
   const stemB = MIN_STEM_HEIGHT + Math.random() * 0.65
 
-  const countA = 3 + Math.floor(Math.random() * 6)
-  const countB = 3 + Math.floor(Math.random() * 6)
+  const COUNT_POOL = [3, 3, 3, 5, 5, 7] as const
+  const countA = pick([...COUNT_POOL])
+  const countB = pick([...COUNT_POOL])
 
   return {
     id: uid(),
@@ -97,7 +98,7 @@ export function plannedPlant(plantConfiguration: {
     petalShape:  'round' as PetalShape,
     petalEffect: 'none' as PetalEffect,
     stemHeight:  MIN_STEM_HEIGHT + Math.random() * 0.65,
-    petalCount:  3 + Math.floor(Math.random() * 6),
+    petalCount:  3,
     centerType:  'dot' as CenterType,
     plantPhase:  4 as PlantPhase,
     ...plantConfiguration,

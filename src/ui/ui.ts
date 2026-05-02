@@ -595,7 +595,28 @@ function checkAchAndSave(state: GameState) {
 
 function bindStaticEvents(): void {
   document.getElementById('breed-btn')?.addEventListener('click', handleBreed)
-}export function formatDate(ts: number): string {
+}
+
+export function showMigrationNotice(notice: { lostCatalogEntries: number; compensation: number }): void {
+  document.getElementById('migration-notice-dialog')?.remove()
+  const overlay = document.createElement('div')
+  overlay.id = 'migration-notice-dialog'
+  overlay.className = 'dialog-overlay'
+  overlay.innerHTML = `
+    <div class="dialog-box">
+      <p class="dialog-title">${t.migrationNoticeTitle}</p>
+      <p class="dialog-text">${t.migrationNoticeText}</p>
+      <p class="dialog-text">${t.migrationNoticeDetails(notice.lostCatalogEntries, notice.compensation)}</p>
+      <div class="dialog-actions">
+        <button class="btn btn-confirm" id="migration-notice-ok">${t.migrationNoticeOk}</button>
+      </div>
+    </div>`
+  document.body.appendChild(overlay)
+  document.getElementById('migration-notice-ok')?.addEventListener('click', () => overlay.remove())
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove() })
+}
+
+export function formatDate(ts: number): string {
   const d = new Date(ts);
   return d.toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'short', year: 'numeric' });
 }

@@ -1,4 +1,4 @@
-import type { GameState, ChromaticL } from '../model/plant'
+import type { GameState, ChromaticL, CatalogEntry } from '../model/plant'
 import { calcRarityScore, calcRarity } from './rarity'
 import { catalogKey } from './catalog'
 
@@ -79,6 +79,48 @@ console.log('migration 4', allPlants)
       }
       for (const entry of state.catalog) {
         entry.key = catalogKey(entry.plant)
+      }
+    },
+  },
+  {
+    version: 5,
+    run(state) {
+      const COMPENSATION_PER_LOST_ENTRY = 10
+
+      function snapCount(n: number): number {
+        if (n <= 3.5) return 3
+        if (n <= 6)   return 5
+        return 7
+      }
+
+      const allPlants = [
+        ...state.pots.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[],
+        ...state.showcase.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[],
+        ...state.catalog.map(e => e.plant),
+        ...state.seeds,
+      ]
+      for (const plant of allPlants) {
+        plant.petalCount.a = snapCount(plant.petalCount.a)
+        plant.petalCount.b = snapCount(plant.petalCount.b)
+      }
+
+      const seen = new Set<string>()
+      const deduped: CatalogEntry[] = []
+      let lostEntries = 0
+      for (const entry of state.catalog) {
+        entry.key = catalogKey(entry.plant)
+        if (!seen.has(entry.key)) { seen.add(entry.key); deduped.push(entry) }
+        else lostEntries++
+      }
+      state.catalog = deduped
+      state.catalog.sort((a, b) => b.rarityScore - a.rarityScore)
+      state.coins += lostEntries * COMPENSATION_PER_LOST_ENTRY
+
+      if (lostEntries > 0) {
+        state.pendingMigrationNotice = {
+          lostCatalogEntries: lostEntries,
+          compensation: lostEntries * COMPENSATION_PER_LOST_ENTRY,
+        }
       }
     },
   },

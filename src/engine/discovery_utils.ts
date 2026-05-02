@@ -4,7 +4,7 @@ import type { CatalogEntry, Plant } from '../model/plant';
 import type { ColorBucket } from '../model/genetic_model';
 import type { PetalEffect } from '../model/plant';
 
-export const PETAL_COUNTS = [3, 4, 5, 6, 7, 8] as const;
+export const PETAL_COUNTS = [3, 5, 7] as const;
 export const DISPLAY_EFFECTS = PETAL_EFFECTS.filter(e => e !== 'none') as PetalEffect[];
 export const RARE_BUCKETS = new Set<ColorBucket>(['purple', 'blue', 'gray']);
 

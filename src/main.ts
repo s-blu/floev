@@ -1,5 +1,5 @@
-import { loadState } from './engine/game'
-import { initUI } from './ui/ui'
+import { loadState, saveState } from './engine/game'
+import { initUI, showMigrationNotice } from './ui/ui'
 import { initHelp, showHelp } from './ui/help_ui'
 import { showGardenSettings } from './ui/garden_settings_ui'
 import { initShop, closeShop } from './ui/shop_ui'
@@ -146,6 +146,13 @@ document.body.insertAdjacentHTML('beforeend', `
 const state = loadState()
 initNotificationFooter(t.welcomeMsg)
 initUI(state)
+
+const migrationNotice = state.pendingMigrationNotice
+if (migrationNotice) {
+  delete state.pendingMigrationNotice
+  saveState(state)
+  showMigrationNotice(migrationNotice)
+}
 initOrderBookPanel()
 
 // Help modal — show on first visit, bind ? button

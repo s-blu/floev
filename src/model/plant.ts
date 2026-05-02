@@ -98,6 +98,7 @@ export interface GameState {
   lastSave:   number
   orderBook?: OrderBookState
   migrationVersion?: number
+  pendingMigrationNotice?: { lostCatalogEntries: number; compensation: number }
 }
 
 
