@@ -119,7 +119,7 @@ export const en = {
   // Seed crafting
   craftSingleSeedBtn: 'Craft 1 Seed',
   craftSingleSeedTitle: 'Craft 1 seed — uses one surplus slot from each plant & 24 h rest period',
-   craftSingleSeedWarningShort: '⚠ Both plants rest for 24h',
+   craftSingleSeedWarningShort: '⚠ Both plants rest for 20h',
   craftSingleSeedConfirm: 'Craft',
   craftSingleSeedCancel: 'Cancel',
   craftMultiSeedBtn: 'Craft 3–5 Seeds',

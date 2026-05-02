@@ -119,7 +119,7 @@ export const de = {
   // Seed crafting
   craftSingleSeedBtn: '1 Samen herstellen',
   craftSingleSeedTitle: '1 Samen herstellen — verbraucht je einen Überschuss-Slot beider Pflanzen & 24 Std. Ruhezeit',
-  craftSingleSeedWarningShort: '⚠ Beide Pflanzen 24h Ruhezeit',
+  craftSingleSeedWarningShort: '⚠ Beide Pflanzen 20h Ruhezeit',
   craftSingleSeedConfirm: 'Herstellen',
   craftSingleSeedCancel: 'Abbrechen',
   craftMultiSeedBtn: '3–5 Samen herstellen',
