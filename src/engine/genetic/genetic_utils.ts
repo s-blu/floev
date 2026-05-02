@@ -1,6 +1,6 @@
 import { ColorBucket, PALETTE_HUE_RANGES } from "../../model/genetic_model";
-import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL, PetalEffect, StemTypes } from "../../model/plant";
-import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect } from "./dominance_utils";
+import { PetalShape, CenterType, HSLColor, AllelePair, ChromaticL, PetalEffect, StemTypes, PetalCount } from "../../model/plant";
+import { dominantShape, dominantCenter, dominantHue, dominantLightness, dominantEffect, dominantPetalCount } from "./dominance_utils";
 import { PALETTE_S } from '../../model/genetic_model';
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY } from '../../model/genetic_model';
 
@@ -70,6 +70,11 @@ export function expressedNumber(pair: AllelePair<number>): number {
   return (pair.a + pair.b) / 2
 }
 
+/** Expressed petal count: kleinste Zahl dominiert (3 > 5 > 7). */
+export function expressedPetalCount(pair: AllelePair<PetalCount>): PetalCount {
+  return dominantPetalCount(pair.a, pair.b)
+}
+
 /** Returns the expressed petal effect (most dominant allele wins). */
 export function expressedEffect(pair: AllelePair<PetalEffect>): PetalEffect {
   if (!pair) return 'none';
@@ -101,9 +106,10 @@ export function isHomozygous(plant: import('../../model/plant').Plant): boolean 
   if (plant.petalLightness.a !== plant.petalLightness.b) return false
   if (plant.petalEffect.a    !== plant.petalEffect.b)    return false
 
+  if (plant.petalCount.a !== plant.petalCount.b) return false
+
   const NUM_TOL = 0.12
   if (Math.abs(plant.stemHeight.a - plant.stemHeight.b) > NUM_TOL) return false
-  if (Math.abs(plant.petalCount.a - plant.petalCount.b) > 1.0)     return false
 
   return true
 }

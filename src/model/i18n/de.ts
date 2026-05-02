@@ -86,6 +86,7 @@ export const de = {
 
   // Breed estimate
   estPetals: (min: number, max: number) => `Blätter: ${min}–${max}`,
+  estGroupPetalCount: 'Blattanzahl',
   estGroupColor: 'Farbe',
   estGroupLightness: 'Helligkeit',
   estGroupShape: 'Blütenform',
@@ -110,6 +111,7 @@ export const de = {
 
   // Self-pollination
   selfPollinateTitle: 'Selbstbestäuben — verbraucht die Pflanze, erzeugt reinerbigeren Samen',
+  selfPollinateHomozygousTitle: 'Bereits reinerbig — Selbstbestäubung hätte keinen Effekt',
   selfPollinateConfirmTitle: 'Selbstbestäubung',
   selfPollinateConfirmText: 'Die Blüte bestäubt sich selbst. Der entstandene Samen ist reinerbiger als die Elternpflanze.',
   selfPollinateWarning: 'Die Pflanze wird dabei entfernt.',
@@ -658,45 +660,35 @@ discoveryIndexTitle: 'Entdeckungs-Index',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
     `${shapes}/${totalShapes} Formen · ${colors}/${totalColors} Farben`,
 
+migrationNoticeTitle: 'Spielstand aktualisiert',
+migrationNoticeText: 'Die Blütenblatt-Mechanik wurde überarbeitet und auf drei Stufen vereinfacht (3, 5, 8). Dadurch sind einige Katalogeinträge entfallen und bestehende Blüten wurden neu berechnet.',
+migrationNoticeDetails: (lost: number, coins: number) => `${lost} ${lost === 1 ? 'Katalogeintrag' : 'Katalogeinträge'} entfallen. +${coins} Münzen als Entschädigung gutgeschrieben`,
+migrationNoticeOk: 'Verstanden',
+
 petalNames: {
   round: {
     3: 'Karge Orbella',
-    4: 'Kleine Orbella',
-    5: 'Gemeine Orbella',
-    6: 'Sommerorbella',
-    7: 'Reiche Orbella',
+    5: 'Sommerorbella',
     8: 'Volle Orbella',
   },
   lanzett: {
     3: 'Nadel-Lancea',
-    4: 'Schlanke Lancea',
-    5: 'Gemeine Lancea',
-    6: 'Kühne Lancea',
-    7: 'Wilde Lancea',
+    5: 'Kühne Lancea',
     8: 'Himmelslanze',
   },
   tropfen: {
     3: 'Tau-Lumaria',
-    4: 'Junge Lumaria',
     5: 'Echte Lumaria',
-    6: 'Tränen-Lumaria',
-    7: 'Reiche Lumaria',
     8: 'Sonnen-Lumaria',
   },
   wavy: {
     3: 'Leichte Velora',
-    4: 'Sanfte Velora',
-    5: 'Echte Velora',
-    6: 'Wogende Velora',
-    7: 'Tanzende Velora',
-    8: 'Große Velora',
+    5: 'Wogende Velora',
+    8: 'Tanzende Velora',
   },
   zickzack: {
-    3: 'Splitterhauch',
-    4: 'Frühe Serrata',
-    5: 'Echte Serrata',
-    6: 'Scharfwind-Serrata',
-    7: 'Wilde Serrata',
+    3: 'Frühe Serrata',
+    5: 'Scharfwind-Serrata',
     8: 'Donnerkranz',
   },
 }

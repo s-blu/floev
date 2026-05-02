@@ -1,7 +1,7 @@
 // ─── Order book UI ────────────────────────────────────────────────────────────
 
 import type { Order, OrderRequirement } from '../model/orders'
-import type { Plant, PetalShape, CenterType, ChromaticL, PetalEffect } from '../model/plant'
+import type { Plant, PetalShape, CenterType, ChromaticL, PetalEffect, PetalCount } from '../model/plant'
 import { state } from './ui'
 import { t } from '../model/i18n'
 import { hasUpgrade } from '../engine/shop_engine'
@@ -76,7 +76,7 @@ const PREVIEW_RENDER_SIZE = 80
 
 function previewPlantForOrder(order: Order): Plant {
   let shape: PetalShape   = 'round'
-  let count               = 3
+  let count: PetalCount   = 3
   let center: CenterType  = 'dot'
   let hue                 = ACHROMATIC_HUE_WHITE
   let lightness: ChromaticL = 90
@@ -88,7 +88,7 @@ function previewPlantForOrder(order: Order): Plant {
       case 'petalShape':    shape   = req.value as PetalShape;   break
       case 'colorBucket':  hue     = BUCKET_HUE[req.value as string] ?? ACHROMATIC_HUE_WHITE; break
       case 'petalLightness': lightness = req.value as ChromaticL; lightnessExplicit = true; break
-      case 'petalCount':   if (req.op === 'gte') count = req.value as number; break
+      case 'petalCount':   if (req.op === 'gte') count = req.value as PetalCount; break
       case 'centerType':   center  = req.value as CenterType;    break
       case 'petalEffect':  effect  = req.value as PetalEffect;   break
     }

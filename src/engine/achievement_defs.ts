@@ -2,7 +2,7 @@ import type { CatalogEntry } from '../model/plant'
 import type { Achievement } from '../model/achievements'
 import {
   expressedColor, expressedShape, expressedCenter,
-  expressedNumber, colorBucket,
+  expressedPetalCount, colorBucket,
   isHomozygous,
   expressedEffect,
 } from './genetic/genetic_utils'
@@ -278,7 +278,7 @@ export function buildAchievements(): Achievement[] {
           current: cat.some(e =>
             expressedShape(e.plant.petalShape) === shape &&
             colorBucket(expressedColor(e.plant.petalHue, e.plant.petalLightness)) === bucket &&
-            Math.round(expressedNumber(e.plant.petalCount)) === 8
+            expressedPetalCount(e.plant.petalCount) === 8
           ) ? 1 : 0,
           total: 1,
         }),
@@ -382,9 +382,9 @@ export function buildAchievements(): Achievement[] {
     reward: 30,
     progress: cat => {
       const counts = new Set<number>()
-      for (const e of cat) counts.add(Math.round(expressedNumber(e.plant.petalCount)))
-      const TARGET = new Set([3, 4, 5, 6, 7, 8])
-      return { current: [...TARGET].filter(n => counts.has(n)).length, total: 6 }
+      for (const e of cat) counts.add(expressedPetalCount(e.plant.petalCount))
+      const TARGET = new Set([3, 5, 7])
+      return { current: [...TARGET].filter(n => counts.has(n)).length, total: 3 }
     },
   })
   for (let i = 0; i < PETAL_SHAPES.length; i++) {
@@ -399,14 +399,14 @@ export function buildAchievements(): Achievement[] {
       desc: t.achAllCountsShapeDesc(shapeLabel),
       reward: [15, 20, 30, 40, 60][i],
       progress: cat => {
-        const TARGET = new Set([3, 4, 5, 6, 7, 8])
+        const TARGET = new Set([3, 5, 7])
         const found = [...TARGET].filter(n =>
           cat.some(e =>
             expressedShape(e.plant.petalShape) === shape &&
-            Math.round(expressedNumber(e.plant.petalCount)) === n
+            expressedPetalCount(e.plant.petalCount) === n
           )
         ).length
-        return { current: found, total: 6 }
+        return { current: found, total: 3 }
       },
     })
   }

@@ -86,6 +86,7 @@ export const en = {
 
   // Breed estimate
   estPetals: (min: number, max: number) => `Petals: ${min}–${max}`,
+  estGroupPetalCount: 'Petal count',
   estGroupColor: 'Color',
   estGroupLightness: 'Lightness',
   estGroupShape: 'Shape',
@@ -110,6 +111,7 @@ export const en = {
 
   // Self-pollination
   selfPollinateTitle: 'Self-pollinate — consumes the plant, produces more homozygous seeds',
+  selfPollinateHomozygousTitle: 'Already homozygous — self-pollination would have no effect',
   selfPollinateConfirmTitle: 'Self-pollination',
   selfPollinateConfirmText: 'The bloom pollinates itself. The resulting seed is more homozygous than the parent plant.',
   selfPollinateWarning: 'The parent plant will be used up and removed.',
@@ -658,45 +660,35 @@ discoveryIndexTitle: 'Discovery Index',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
     `${shapes}/${totalShapes} forms · ${colors}/${totalColors} colours`,
 
+migrationNoticeTitle: 'Save updated',
+migrationNoticeText: 'The petal mechanics have been revised and simplified into three levels (3, 5, 8). As a result, some catalog entries have been removed and existing flowers have been recalculated.',
+migrationNoticeDetails: (lost: number, coins: number) => `${lost} catalogue entr${lost === 1 ? 'y' : 'ies'} removed. +${coins} gold credited`,
+migrationNoticeOk: 'Got it',
+
 petalNames: {
   round: {
     3: 'Sparse Orbella',
-    4: 'Small Orbella',
-    5: 'Common Orbella',
-    6: 'Summer Orbella',
-    7: 'Rich Orbella',
+    5: 'Summer Orbella',
     8: 'Full Orbella',
   },
   lanzett: {
     3: 'Needle Lancea',
-    4: 'Slender Lancea',
-    5: 'Common Lancea',
-    6: 'Bold Lancea',
-    7: 'Wild Lancea',
+    5: 'Bold Lancea',
     8: 'Sky Lance',
   },
   tropfen: {
     3: 'Dew Lumaria',
-    4: 'Young Lumaria',
     5: 'True Lumaria',
-    6: 'Tear Lumaria',
-    7: 'Rich Lumaria',
     8: 'Sun Lumaria',
   },
   wavy: {
     3: 'Light Velora',
-    4: 'Gentle Velora',
-    5: 'True Velora',
-    6: 'Surging Velora',
-    7: 'Dancing Velora',
-    8: 'Grand Velora',
+    5: 'Surging Velora',
+    8: 'Dancing Velora',
   },
   zickzack: {
-    3: 'Splinter Wisp',
-    4: 'Early Serrata',
-    5: 'True Serrata',
-    6: 'Sharp Wind Serrata',
-    7: 'Wild Serrata',
+    3: 'Early Serrata',
+    5: 'Sharp Wind Serrata',
     8: 'Thunder Crown',
   },
 }

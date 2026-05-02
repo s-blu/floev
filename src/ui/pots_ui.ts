@@ -8,6 +8,7 @@ import { coinValueForScore } from '../engine/game';
 import { calcCoinScore, getRarityForPot } from '../engine/rarity';
 import { attachPotDesignRing, showAlleleOverlay, showPotDesignRing } from './pots_overlay_ui';
 import { buildPotVisualArea, buildPotSill } from './pots_utils';
+import { isHomozygous } from '../engine/genetic/genetic_utils';
 
 const SELL_CONFIRM_TIMEOUT_MS = 2500;
 const sellPendingPots = new Set<number>();
@@ -38,7 +39,7 @@ function cancelSellPending(potId: number): void {
   sellPendingPots.delete(potId);
 }
 
-function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boolean, showcaseAvail: boolean, selfPollinateOnCooldown = false): void {
+function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boolean, showcaseAvail: boolean, selfPollinateOnCooldown = false, selfPollinateIsHomozygous = false): void {
   const wrap = card.querySelector('.overflow-wrap') as HTMLElement | null;
   if (!wrap) return;
   const menu = document.createElement('div');
@@ -48,9 +49,9 @@ function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boole
     b.className = 'btn-sm btn-icon';
     b.dataset.action = 'selfpollinate';
     b.dataset.pot = String(potId);
-    b.title = selfPollinateOnCooldown ? t.craftRestingLabel : t.selfPollinateTitle;
+    b.title = selfPollinateIsHomozygous ? t.selfPollinateHomozygousTitle : selfPollinateOnCooldown ? t.craftRestingLabel : t.selfPollinateTitle;
     b.textContent = '↺';
-    if (selfPollinateOnCooldown) b.disabled = true;
+    if (selfPollinateOnCooldown || selfPollinateIsHomozygous) b.disabled = true;
     menu.appendChild(b);
   }
   if (showcaseAvail) {
@@ -98,7 +99,7 @@ export function renderPots(selA: number | null, selB: number | null): void {
       const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
       const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
       if (selfPurchased && showcaseHasSpace) {
-        showOverflowMenu(pot.id, card, true, true, isOnCooldown(pot.plant!));
+        showOverflowMenu(pot.id, card, true, true, isOnCooldown(pot.plant!), isHomozygous(pot.plant!));
       } else {
         overflowOpenPots.delete(pot.id);
       }
@@ -163,10 +164,13 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
     const hasBothSecondary = selfPurchased && showcaseHasSpace;
     const onCooldown = selfPurchased && isOnCooldown(pot.plant!);
+    const selfIsHomozygous = selfPurchased && isHomozygous(pot.plant!);
+    const selfDisabled = onCooldown || selfIsHomozygous;
+    const selfTitle = selfIsHomozygous ? t.selfPollinateHomozygousTitle : onCooldown ? t.craftRestingLabel : t.selfPollinateTitle;
     const secondaryHtml = hasBothSecondary
       ? `<div class="overflow-wrap"><button class="btn-sm btn-icon" data-action="overflow-toggle" data-pot="${pot.id}" data-selfpollinate="1" data-showcase="1" title="${t.btnOverflowTitle}">···</button></div>`
       : selfPurchased
-        ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${onCooldown ? t.craftRestingLabel : t.selfPollinateTitle}"${onCooldown ? ' disabled' : ''}>↺</button>`
+        ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${selfTitle}"${selfDisabled ? ' disabled' : ''}>↺</button>`
         : showcaseHasSpace
           ? `<button class="btn-sm btn-icon" data-action="showcase" data-pot="${pot.id}" title="${t.btnMoveToShowcaseTitle}">${t.btnMoveToShowcase}</button>`
           : '';
@@ -216,7 +220,8 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
         closeAllOverflowMenus();
         const plant = state.pots.find(p => p.id === potId)?.plant;
         const selfOnCooldown = !!btn.dataset.selfpollinate && !!plant && isOnCooldown(plant);
-        showOverflowMenu(potId, card, !!btn.dataset.selfpollinate, !!btn.dataset.showcase, selfOnCooldown);
+        const selfHomo = !!btn.dataset.selfpollinate && !!plant && isHomozygous(plant);
+        showOverflowMenu(potId, card, !!btn.dataset.selfpollinate, !!btn.dataset.showcase, selfOnCooldown, selfHomo);
       }
     }
     else if (action === 'swap')           handleSwapGardenPot(potId);
