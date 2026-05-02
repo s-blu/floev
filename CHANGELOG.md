@@ -1,3 +1,10 @@
+# v1.7.1
+
+Bugs:
+
+- Catalog entry had wrong names
+- Swap pot button on showcase was misplaced
+
 # v1.7.0
 
 Improvements:
