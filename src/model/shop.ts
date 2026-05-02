@@ -8,6 +8,7 @@ export type UpgradeId =
   | 'unlock_showcase'
   | 'unlock_order_book'
   | 'unlock_seed_drawer'
+  | 'unlock_completion_index'
 
 export interface Upgrade {
   id: UpgradeId
@@ -17,12 +18,13 @@ export interface Upgrade {
 
 export const UPGRADES: Upgrade[] = [
   { id: 'unlock_lupe',             price:  20, icon: '🔍' },
-  { id: 'unlock_order_book',       price: 40, icon: '📖' },
-  { id: 'unlock_selfpollinate',    price:  60, icon: '↺'  },
+  { id: 'unlock_order_book',       price:  40, icon: '📖' },
+  { id: 'unlock_selfpollinate',    price:  50, icon: '↺'  },
   { id: 'unlock_rare_radar',       price:  50, icon: '✦'  },
   { id: 'unlock_discovery_index',  price:  80, icon: '📊' },
   { id: 'unlock_showcase',         price: 100, icon: '🪟' },
   { id: 'unlock_seed_drawer',      price: 300, icon: '🌱' },
+  { id: 'unlock_completion_index', price: 1000, icon: '💯' },
 ]
 
 // ─── Showcase ─────────────────────────────────────────────────────────────────

@@ -70,6 +70,8 @@ export function renderCatalog(): void {
   container.innerHTML = '';
   if (hasUpgrade(state, 'unlock_discovery_index')) {
     container.appendChild(renderDiscoveryIndex(state.catalog, discoveryIndexOpen));
+  }
+  if (hasUpgrade(state, 'unlock_completion_index')) {
     container.appendChild(renderCompletionIndex(state.catalog, completionIndexOpen));
   }
 

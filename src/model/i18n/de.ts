@@ -189,6 +189,7 @@ export const de = {
     unlock_showcase:         'Schaukasten',
     unlock_order_book:       'Auftragsbuch',
     unlock_seed_drawer:      'Saatenschublade',
+    unlock_completion_index: 'Vollständigkeits-Index',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Zeigt dir die versteckten Allele jeder blühenden Pflanze.',
@@ -198,6 +199,7 @@ export const de = {
     unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
     unlock_order_book:       'Täglich 3 Aufträge: Züchte und verkaufe Blüten mit bestimmten Merkmalen für Bonus-Münzen.',
     unlock_seed_drawer:      'Eine Schublade mit 20 Fächern für bis zu 100 Saaten. Beim Kreuzen besteht eine Chance auf einen Überschuss-Samen.',
+    unlock_completion_index: 'Ein detaillierter Vollständigkeits-Tracker für die richtig ambitionierten Komplettisten. Sieh genau, welche Kombinationen du im Katalog hast und welche du noch entdecken kannst.',
   } as Record<string, string>,
 
   // Saatenschublade

@@ -189,6 +189,7 @@ export const en = {
     unlock_showcase:         'Showcase',
     unlock_order_book:       'Order Book',
     unlock_seed_drawer:      'Seed Drawer',
+    unlock_completion_index: 'Completion Index',
   } as Record<string, string>,
   upgradeDesc: {
     unlock_lupe:             'Shows you the hidden alleles of every blooming plant.',
@@ -198,6 +199,7 @@ export const en = {
     unlock_showcase:         'A showcase with 3 display slots for your most beautiful blooms. Displayed plants cannot be sold or used for breeding.',
     unlock_order_book:       'Three daily orders: breed and sell blooms with specific traits for bonus coins.',
     unlock_seed_drawer:      'A drawer with 20 compartments for up to 100 seeds. Crossing plants gives a chance to receive a surplus seed.',
+    unlock_completion_index: 'A detailed collection tracker for the truly ambitious completists. See exactly which combinations you have in your collection and which ones you can still discover.',
   } as Record<string, string>,
 
   // Seed drawer
