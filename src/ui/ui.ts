@@ -23,6 +23,7 @@ import {
   placeSeedInSpecificPot
 } from '../engine/pot_engine'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
+import { isHomozygous } from '../engine/genetic/genetic_utils'
 import { buyUpgrade, buyPotColor, buyPotShape, buyPotEffect, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
 import { renderShowcase } from './showcase_ui'
@@ -337,6 +338,7 @@ export function handleSelfPollinate(potId: number): void {
   const pot = state.pots.find(p => p.id === potId)
   if (!pot?.plant || pot.plant.phase < 4) return
   if (isOnCooldown(pot.plant)) return
+  if (isHomozygous(pot.plant)) return
 
   showSelfPollinateDialog(potId)
 }

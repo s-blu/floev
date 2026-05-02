@@ -111,6 +111,7 @@ export const en = {
 
   // Self-pollination
   selfPollinateTitle: 'Self-pollinate — consumes the plant, produces more homozygous seeds',
+  selfPollinateHomozygousTitle: 'Already homozygous — self-pollination would have no effect',
   selfPollinateConfirmTitle: 'Self-pollination',
   selfPollinateConfirmText: 'The bloom pollinates itself. The resulting seed is more homozygous than the parent plant.',
   selfPollinateWarning: 'The parent plant will be used up and removed.',
@@ -660,8 +661,8 @@ discoveryIndexTitle: 'Discovery Index',
     `${shapes}/${totalShapes} forms · ${colors}/${totalColors} colours`,
 
 migrationNoticeTitle: 'Save updated',
-migrationNoticeText: 'Petal counts have been simplified to three tiers (3, 5, 8). Some duplicate catalogue entries have been removed as a result.',
-migrationNoticeDetails: (lost: number, coins: number) => `${lost} catalogue entr${lost === 1 ? 'y' : 'ies'} removed · +${coins} gold credited`,
+migrationNoticeText: 'The petal mechanics have been revised and simplified into three levels (3, 5, 8). As a result, some catalog entries have been removed and existing flowers have been recalculated.',
+migrationNoticeDetails: (lost: number, coins: number) => `${lost} catalogue entr${lost === 1 ? 'y' : 'ies'} removed. +${coins} gold credited`,
 migrationNoticeOk: 'Got it',
 
 petalNames: {

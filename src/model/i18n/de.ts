@@ -111,6 +111,7 @@ export const de = {
 
   // Self-pollination
   selfPollinateTitle: 'Selbstbestäuben — verbraucht die Pflanze, erzeugt reinerbigeren Samen',
+  selfPollinateHomozygousTitle: 'Bereits reinerbig — Selbstbestäubung hätte keinen Effekt',
   selfPollinateConfirmTitle: 'Selbstbestäubung',
   selfPollinateConfirmText: 'Die Blüte bestäubt sich selbst. Der entstandene Samen ist reinerbiger als die Elternpflanze.',
   selfPollinateWarning: 'Die Pflanze wird dabei entfernt.',
@@ -660,8 +661,8 @@ discoveryIndexTitle: 'Entdeckungs-Index',
     `${shapes}/${totalShapes} Formen · ${colors}/${totalColors} Farben`,
 
 migrationNoticeTitle: 'Spielstand aktualisiert',
-migrationNoticeText: 'Die Blütenblatt-Anzahl wurde auf drei Stufen vereinfacht (3, 5, 8). Dadurch sind einige doppelte Katalogeinträge entfallen.',
-migrationNoticeDetails: (lost: number, coins: number) => `${lost} Katalogeintrag${lost === 1 ? '' : 'e'} entfallen · +${coins} Gold gutgeschrieben`,
+migrationNoticeText: 'Die Blütenblatt-Mechanik wurde überarbeitet und auf drei Stufen vereinfacht (3, 5, 8). Dadurch sind einige Katalogeinträge entfallen und bestehende Blüten wurden neu berechnet.',
+migrationNoticeDetails: (lost: number, coins: number) => `${lost} ${lost === 1 ? 'Katalogeintrag' : 'Katalogeinträge'} entfallen. +${coins} Münzen als Entschädigung gutgeschrieben`,
 migrationNoticeOk: 'Verstanden',
 
 petalNames: {
