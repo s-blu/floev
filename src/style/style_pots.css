@@ -194,6 +194,9 @@
   font-size: 11px;
   color: var(--text2);
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
 /* ── Allele overlay ──────────────────────────────────────────────────────── */
