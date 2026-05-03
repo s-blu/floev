@@ -124,7 +124,7 @@ function buildShine(cx: number, cy: number, size: number, shape: PetalShape): st
 // Common   (< 30): no markings
 // Uncommon (30+):  single central ridge
 // Rare     (50+):  three ridges (center + two flanking)
-// Epic     (75+):  ridges + prominent purple dots
+// Epic     (75+):  thicker purple-shimmering side ridges (no dots)
 // Legendary(90+):  golden outline (above) + golden ridge + golden dots
 
 function buildMarkings(score: number, cx: number, cy: number, size: number, shape: PetalShape): string {
@@ -145,25 +145,39 @@ function buildMarkings(score: number, cx: number, cy: number, size: number, shap
   if (score < 50) return centerRidge
 
   const off = size * 0.092
-  const sideStroke = isLegendary ? 'rgba(218,162,40,0.52)' : 'rgba(48,20,6,0.36)'
-  const sideSw = Math.max(0.9, size * 0.032)
-  const sideRidges = `
-    <path d="M ${cx+off} ${cy-h*0.70} Q ${cx+off*1.28} ${cy} ${cx+off} ${cy+h*0.70}"
-      stroke="${sideStroke}" stroke-width="${sideSw}" fill="none" stroke-linecap="round"/>
-    <path d="M ${cx-off} ${cy-h*0.70} Q ${cx-off*1.28} ${cy} ${cx-off} ${cy+h*0.70}"
-      stroke="${sideStroke}" stroke-width="${sideSw}" fill="none" stroke-linecap="round"/>`
 
-  if (!isEpic) return centerRidge + sideRidges
+  let sideRidges: string
+  if (isEpic && !isLegendary) {
+    const epicSw = Math.max(1.5, size * 0.052)
+    const epicGlowSw = epicSw * 2.6
+    sideRidges = `
+      <path d="M ${cx+off} ${cy-h*0.70} Q ${cx+off*1.28} ${cy} ${cx+off} ${cy+h*0.70}"
+        stroke="rgba(148,72,215,0.3)" stroke-width="${epicGlowSw}" fill="none" stroke-linecap="round"/>
+      <path d="M ${cx-off} ${cy-h*0.70} Q ${cx-off*1.28} ${cy} ${cx-off} ${cy+h*0.70}"
+        stroke="rgba(148,72,215,0.3)" stroke-width="${epicGlowSw}" fill="none" stroke-linecap="round"/>
+      <path d="M ${cx+off} ${cy-h*0.70} Q ${cx+off*1.28} ${cy} ${cx+off} ${cy+h*0.70}"
+        stroke="rgba(181, 100, 252, 0.9)" stroke-width="${epicSw}" fill="none" stroke-linecap="round"/>
+      <path d="M ${cx-off} ${cy-h*0.70} Q ${cx-off*1.28} ${cy} ${cx-off} ${cy+h*0.70}"
+        stroke="rgba(181, 100, 252, 0.9)" stroke-width="${epicSw}" fill="none" stroke-linecap="round"/>`
+  } else {
+    const sideStroke = isLegendary ? 'rgba(218,162,40,0.52)' : 'rgba(48,20,6,0.36)'
+    const sideSw = Math.max(0.9, size * 0.032)
+    sideRidges = `
+      <path d="M ${cx+off} ${cy-h*0.70} Q ${cx+off*1.28} ${cy} ${cx+off} ${cy+h*0.70}"
+        stroke="${sideStroke}" stroke-width="${sideSw}" fill="none" stroke-linecap="round"/>
+      <path d="M ${cx-off} ${cy-h*0.70} Q ${cx-off*1.28} ${cy} ${cx-off} ${cy+h*0.70}"
+        stroke="${sideStroke}" stroke-width="${sideSw}" fill="none" stroke-linecap="round"/>`
+  }
+
+  if (!isLegendary) return centerRidge + sideRidges
 
   const r = Math.max(2.4, size * 0.060)
-  const dotFill = isLegendary ? 'rgba(218,162,40,0.92)' : 'rgba(148,72,215,0.82)'
-  const dotGlow = isLegendary ? 'rgba(218,162,40,0.30)' : 'rgba(148,72,215,0.25)'
   const glowR = r * 1.8
   const dots = `
-    <circle cx="${cx}" cy="${cy - h*0.42}" r="${glowR}" fill="${dotGlow}"/>
-    <circle cx="${cx}" cy="${cy - h*0.42}" r="${r}" fill="${dotFill}"/>
-    <circle cx="${cx}" cy="${cy + h*0.42}" r="${glowR * 0.65}" fill="${dotGlow}"/>
-    <circle cx="${cx}" cy="${cy + h*0.42}" r="${r * 0.62}" fill="${dotFill}"/>`
+    <circle cx="${cx}" cy="${cy - h*0.42}" r="${glowR}" fill="rgba(218,162,40,0.30)"/>
+    <circle cx="${cx}" cy="${cy - h*0.42}" r="${r}" fill="rgba(218,162,40,0.92)"/>
+    <circle cx="${cx}" cy="${cy + h*0.42}" r="${glowR * 0.65}" fill="rgba(218,162,40,0.30)"/>
+    <circle cx="${cx}" cy="${cy + h*0.42}" r="${r * 0.62}" fill="rgba(218,162,40,0.92)"/>`
 
   return centerRidge + sideRidges + dots
 }
