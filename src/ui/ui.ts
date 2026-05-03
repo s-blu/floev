@@ -38,6 +38,7 @@ import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
 import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT, SEED_CRAFT_COOLDOWN_MS, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
 import { renderSeedDrawer } from './seeds_ui'
+import { getCatalogEntryForPlant } from '../engine/catalog'
 import { COIN_ICON } from './icons'
 import { renderSeedIcon } from '../engine/renderer/seed_renderer'
 import { gardenSettings } from '../model/garden_settings'
@@ -77,8 +78,12 @@ export function initUI(gameState: GameState): void {
 }
 
 function tick(): void {
-  const changed = advancePhases(state, plant => {
-    showMsg(t.msgNewBloom(plant.generation))
+  const changed = advancePhases(state, (plant, potIndex, isNew) => {
+    const entry = getCatalogEntryForPlant(state, plant)
+    const catalogNr = entry
+      ? [...state.catalog].sort((a, b) => a.discovered - b.discovered).indexOf(entry) + 1
+      : 0
+    showMsg(t.msgNewBloom(potIndex, catalogNr, isNew, entry?.rarity ?? 0))
   })
   if (changed) checkAchAndSave(state)
   render()

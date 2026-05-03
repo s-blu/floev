@@ -301,7 +301,12 @@ export const de = {
 
   // Messages
   msgPotCleared: 'Topf geleert.',
-  msgNewBloom: (gen: number) => `Eine neue Blüte ist aufgegangen! (Gen. ${gen})`,
+  msgNewBloom: (potIndex: number, catalogNr: number, isNew: boolean, rarity: number) => {
+    const labels = ['gewöhnliche', 'ungewöhnliche', 'seltene', 'epische', 'legendäre']
+    const rarityLabel = labels[rarity] ?? ''
+    const tag = isNew ? '(Neu! ' : '('
+    return `Eine ${rarityLabel} Blüte ist in Topf ${potIndex} erblüht! ${tag}Katalog Nr. ${catalogNr})`
+  },
 
   // ─── Help modal ─────────────────────────────────────────────────────────────
 
