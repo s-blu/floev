@@ -229,7 +229,8 @@ export function matchingOrderIndices(plant: Plant, orders: Order[]): number[] {
 
 function resetDailyState(orderBook: OrderBookState, newDate: string): void {
   for (const order of orderBook.orders) {
-    order.completedToday = false
+    order.completedToday    = false
+    order.completedByPlant  = undefined
   }
   orderBook.dailyRefreshUsed  = false
   orderBook.lastEffectiveDate = newDate
@@ -296,8 +297,9 @@ export function applyOrdersOnSell(state: GameState, plant: Plant): number {
   for (const order of state.orderBook.orders) {
     if (order.completedToday) continue
     if (plantMatchesOrder(plant, order)) {
-      order.completedToday = true
-      order.pinned = false
+      order.completedToday    = true
+      order.completedByPlant  = plant
+      order.pinned            = false
       bonus += order.reward
     }
   }
