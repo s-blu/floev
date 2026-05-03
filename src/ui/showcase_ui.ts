@@ -47,7 +47,7 @@ function buildShowcasePotCard(pot: Pot): HTMLElement {
     isBlooming ? `rarity-${r}` : '',
   ].filter(Boolean).join(' ')
 
-  const swapBtnHtml = `<button class="pot-swap-btn${isSwapSelected ? ' active' : ''}" data-action="swap" data-pot="${pot.id}" title="${isSwapSelected ? t.btnSwapPotCancel : t.btnSwapPotTitle}">⇄</button>`
+  const swapBtnHtml = `<div class="pot-right-btns"><button class="pot-swap-btn${isSwapSelected ? ' active' : ''}" data-action="swap" data-pot="${pot.id}" title="${isSwapSelected ? t.btnSwapPotCancel : t.btnSwapPotTitle}">⇄</button></div>`
   const visualAreaHtml = buildPotVisualArea(pot, state, swapBtnHtml)
   const sillHtml = buildPotSill()
 

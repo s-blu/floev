@@ -689,8 +689,8 @@ petalNames: {
   },
   wavy: {
     3: 'Light Velora',
-    5: 'Surging Velora',
-    8: 'Dancing Velora',
+    5: 'Dancing Velora',
+    8: 'Big Velora',
   },
   zickzack: {
     3: 'Early Serrata',

@@ -1,3 +1,10 @@
+# v1.7.1
+
+Bugs:
+
+- Catalog entry had wrong names
+- Swap pot button on showcase was misplaced
+
 # v1.7.0
 
 Improvements:
@@ -22,6 +29,7 @@ Petal Counts were a bit of a special case in the whole inhertiance logic, one th
 Improvements:
 
 - New purchasable: Pot finished (+2 pot designs)
+- New feature: Garden settings (eases pot handling)
 - Improve petal effects for white
 - Improve cooldown display
 - Allow collapsing catalog sections
