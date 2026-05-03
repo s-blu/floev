@@ -68,7 +68,7 @@ export const DEBUG_PLANTS = [
 
 export const USE_FIXED_SEEDS = true;
 const sharedSeedConfig = {
-  hue: -4,
+  hue: -2,
   petalCount: 6,
   plantPhase: 3 as PlantPhase,
 }

@@ -1,3 +1,20 @@
+# v1.8.0
+
+Improvements:
+
+- New feature: Permanent Buffs (did I merge that?)
+- Add some useful infos to the "a new bloom" message
+- Migrate Gray-violet to a tad more violet-ish tone
+- Expand orders book if there are new orders available
+- Show the plant that fulfilled a order on the order
+- Enhance seed rendering, add a occassional visible color hint to them
+
+Bugs:
+- Don't show equal-petal-count requirement as "min. X"
+- Fix label menu on dark color scheme
+- Discovery index summary now counts all combinations
+
+
 # v1.7.1
 
 Bugs:
