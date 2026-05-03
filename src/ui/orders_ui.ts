@@ -11,6 +11,7 @@ import {
   refreshOrders,
   toggleOrderPin,
   matchingOrderIndices,
+  getEffectiveDate,
 } from '../engine/orders_engine'
 import { saveState } from '../engine/game'
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer'
@@ -190,6 +191,12 @@ export function renderOrderBook(): void {
   const hasBook = hasUpgrade(state, 'unlock_order_book')
   panel.style.display = hasBook ? '' : 'none'
   if (!hasBook) return
+
+  const isDailyReset = !!state.orderBook && state.orderBook.lastEffectiveDate !== getEffectiveDate()
+  if (isDailyReset) {
+    panelOpen = true
+    savePanelOpen(true)
+  }
 
   initOrderBook(state)
 
