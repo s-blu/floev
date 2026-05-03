@@ -2,6 +2,7 @@ import { t } from '../model/i18n';
 import { expressedColor, colorBucket } from '../engine/genetic/genetic_utils';
 import {
   PETAL_SHAPES, PALETTE_HUES_BUCKETS, PALETTE_S, PALETTE_L, CENTER_TYPES,
+  PETAL_EFFECTS,
 } from '../model/genetic_model';
 import type { CatalogEntry } from '../model/plant';
 import type { ColorBucket } from '../model/genetic_model';
@@ -263,13 +264,13 @@ function renderShapeColorSection(catalog: CatalogEntry[]): string {
 // ─── Summary ──────────────────────────────────────────────────────────────────
 
 function buildSummaryStats(catalog: CatalogEntry[]): string {
-  const shapeCounts = buildDiscoveredShapeCounts(catalog);
+  const shapeCounts = buildDiscoveredShapeCounts(catalog).size + buildDiscoveredShapeCenters(catalog).size + buildDiscoveredShapeEffects(catalog).size;
   const colors = buildDiscoveredColors(catalog);
-  const totalShapeCounts = PETAL_SHAPES.length * PETAL_COUNTS.length;
+  const totalShapeCounts = PETAL_SHAPES.length * (PETAL_COUNTS.length + CENTER_TYPES.length + PETAL_EFFECTS.length - 1);
   const totalColors =
     1 + 3 +
     Object.values(PALETTE_HUES_BUCKETS).reduce((sum, hues) => sum + hues.length * PALETTE_L.length, 0);
-  return t.discoveryIndexSummary(shapeCounts.size, totalShapeCounts, colors.size, totalColors);
+  return t.discoveryIndexSummary(shapeCounts, totalShapeCounts, colors.size, totalColors);
 }
 
 // ─── Main render ──────────────────────────────────────────────────────────────

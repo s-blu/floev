@@ -664,7 +664,7 @@ discoveryIndexTitle: 'Entdeckungs-Index',
   discoveryIndexSectionColors: 'Farben',
   discoveryIndexSectionShapeColors: 'Farbe × Form',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
-    `${shapes}/${totalShapes} Formen · ${colors}/${totalColors} Farben`,
+    `${shapes}/${totalShapes} Kombinationen · ${colors}/${totalColors} Farben`,
 
 migrationNoticeTitle: 'Spielstand aktualisiert',
 migrationNoticeText: 'Die Blütenblatt-Mechanik wurde überarbeitet und auf drei Stufen vereinfacht (3, 5, 8). Dadurch sind einige Katalogeinträge entfallen und bestehende Blüten wurden neu berechnet.',

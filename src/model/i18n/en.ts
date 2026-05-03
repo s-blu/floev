@@ -664,7 +664,7 @@ discoveryIndexTitle: 'Discovery Index',
   discoveryIndexSectionColors: 'Colours',
   discoveryIndexSectionShapeColors: 'Colour × Shape',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
-    `${shapes}/${totalShapes} forms · ${colors}/${totalColors} colours`,
+    `${shapes}/${totalShapes} combinations · ${colors}/${totalColors} colours`,
 
 migrationNoticeTitle: 'Save updated',
 migrationNoticeText: 'The petal mechanics have been revised and simplified into three levels (3, 5, 8). As a result, some catalog entries have been removed and existing flowers have been recalculated.',
