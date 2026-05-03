@@ -142,6 +142,18 @@ console.log('migration 4', allPlants)
       }
     },
   },
+    {
+    version: 7,
+    run(state) {
+      const potPlants = state.pots.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[]
+      const showcasePlants = state.showcase.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[]
+      const catalogPlants = state.catalog.map(e => e.plant)
+      migrateAllPlantHues([...potPlants, ...showcasePlants, ...catalogPlants, ...state.seeds], 250, 255)
+      for (const entry of state.catalog) {
+        entry.key = catalogKey(entry.plant)
+      }
+    },
+  },
 ]
 
 export const LATEST_MIGRATION_VERSION = migrations.length > 0

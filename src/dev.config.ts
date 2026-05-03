@@ -14,7 +14,7 @@ export const DEV_STARTING_COINS = 200;
 
 export const USE_FIXED_PLANTS = true;
 const sharedDebugConfig = {
-  hue: -4,
+  hue: 255,
   petalCount: 6,
   petalEffect: 'shimmer' as PetalEffect,
   plantPhase: 3 as PlantPhase,

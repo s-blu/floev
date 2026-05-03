@@ -67,7 +67,7 @@ const BUCKET_HUE: Record<string, number> = {
   yellowgreen: 60,
   red:         0,
   blue:        200,
-  purple:      250,
+  purple:      270,
   pink:        310,
   gray:        ACHROMATIC_HUE_GRAY,
 }

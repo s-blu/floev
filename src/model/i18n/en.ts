@@ -604,7 +604,7 @@ export const en = {
       90: "Distant blue",
     },
   },
-  250: {
+  255: {
     hueName: `Gray-violet (group)`,
     90: {
       30: "Indigo",

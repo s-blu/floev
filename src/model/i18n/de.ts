@@ -604,7 +604,7 @@ export const de = {
       90: "Fernblau",
     },
   },
-  250: {
+  255: {
     hueName: `Grauviolett (Gruppe)`,
     90: {
       30: "Indigo",
