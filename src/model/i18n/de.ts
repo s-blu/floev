@@ -287,6 +287,7 @@ export const de = {
   orderReqShape:      (name: string) => `Form: ${name}`,
   orderReqColor:      (name: string) => `Farbbereich: ${name}`,
   orderReqLightness:  (name: string) => `Helligkeit: ${name}`,
+  orderReqCountEq:   (n: number)    => `${n} Blütenbl.`,
   orderReqCountGte:   (n: number)    => `Min. ${n} Blütenbl.`,
   orderReqCountLte:   (n: number)    => `Max. ${n} Blütenbl.`,
   orderReqCenter:     (name: string) => `Mitte: ${name}`,

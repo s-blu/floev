@@ -287,6 +287,7 @@ export const en = {
   orderReqShape:      (name: string) => `Shape: ${name}`,
   orderReqColor:      (name: string) => `Bucket: ${name}`,
   orderReqLightness:  (name: string) => `Lightness: ${name}`,
+  orderReqCountEq:   (n: number)    => `${n} petals`,
   orderReqCountGte:   (n: number)    => `Min. ${n} petals`,
   orderReqCountLte:   (n: number)    => `Max. ${n} petals`,
   orderReqCenter:     (name: string) => `Center: ${name}`,

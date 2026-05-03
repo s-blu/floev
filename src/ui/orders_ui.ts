@@ -126,7 +126,7 @@ function requirementLabel(req: OrderRequirement): string {
     case 'petalCount':
       if (req.op === 'gte') return t.orderReqCountGte(req.value as number)
       if (req.op === 'lte') return t.orderReqCountLte(req.value as number)
-      return t.orderReqCountGte(req.value as number)
+      return t.orderReqCountEq(req.value as number)
     case 'centerType':
       return t.orderReqCenter(t.centerTypeLabels[req.value as string] ?? String(req.value))
     case 'petalEffect':
