@@ -1,6 +1,8 @@
 import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, SHOWCASE_MAX_SLOTS } from '../model/shop'
-import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleBuyPotEffect, handleBuyExtraPot, handleBuyExtraShowcaseSlot } from './ui'
-import { hasUpgrade, hasPotColor, hasPotShape, hasPotEffect, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot, getShowcaseSlotPrice } from '../engine/shop_engine'
+import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleBuyPotEffect, handleBuyExtraPot, handleBuyExtraShowcaseSlot, handleBuyExtraSeedRow } from './ui'
+import { hasUpgrade, hasPotColor, hasPotShape, hasPotEffect, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot, getShowcaseSlotPrice, canBuyExtraSeedRow } from '../engine/shop_engine'
+import { getSeedSlotCount } from '../engine/seed_storage_engine'
+import { MAX_EXTRA_SEED_ROWS, SEEDS_PER_SLOT, EXTRA_SEED_ROW_PRICE } from '../model/genetic_model'
 import { renderPotShopPreview } from '../engine/renderer/pot_renderer'
 import { t } from '../model/i18n'
 import { COIN_ICON } from './icons'
@@ -29,6 +31,7 @@ export function initShop(): void {
       else if (action === 'buy-effect')    handleBuyPotEffect(id)
       else if (action === 'buy-extra-pot')          handleBuyExtraPot()
       else if (action === 'buy-extra-showcase-slot') handleBuyExtraShowcaseSlot()
+      else if (action === 'buy-extra-seed-row')      handleBuyExtraSeedRow()
     })
     _eventsInitialized = true
   }
@@ -56,7 +59,7 @@ export function renderShopSidebar(): void {
   if (!sidebarOpen) return
   const body = document.getElementById('shop-sidebar-body')
   if (!body) return
-  body.innerHTML =  renderExtraPotsSection() + renderShowcaseSection() + renderUpgradesSection() +  renderDecoSection() 
+  body.innerHTML =  renderExtraPotsSection() + renderShowcaseSection() + renderSeedSlotsSection() + renderUpgradesSection() +  renderDecoSection()
 }
 
 // ─── Upgrades section ─────────────────────────────────────────────────────────
@@ -150,6 +153,40 @@ function renderShowcaseSection(): string {
         <div class="shop-item-info">
           <span class="shop-item-title">${t.upgradeTitle['unlock_showcase']}</span>
           <span class="shop-item-desc">${t.shopShowcaseSlotsDesc(slotCount, SHOWCASE_MAX_SLOTS)}</span>
+        </div>
+        <div class="shop-item-action">${actionArea}</div>
+      </div>
+    </div>`
+}
+
+// ─── Seed slots section ───────────────────────────────────────────────────────
+
+function renderSeedSlotsSection(): string {
+  if (!hasUpgrade(state, 'unlock_seed_drawer')) return ''
+
+  const currentRows = state.extraSeedRows ?? 0
+  const currentSlots = getSeedSlotCount(state)
+  const currentCapacity = currentSlots * SEEDS_PER_SLOT
+  const atMax = !canBuyExtraSeedRow(state)
+  const canAfford = state.coins >= EXTRA_SEED_ROW_PRICE
+
+  const actionArea = atMax
+    ? `<span class="shop-item-owned-badge">${t.shopSeedSlotsMax}</span>`
+    : `<button
+         class="shop-buy-btn ${!canAfford ? 'shop-buy-btn--locked' : ''}"
+         data-action="buy-extra-seed-row"
+         ${!canAfford ? 'disabled' : ''}>
+         ${COIN_ICON} ${EXTRA_SEED_ROW_PRICE}
+       </button>`
+
+  return `
+    <div class="shop-section">
+      <p class="shop-section-label">${t.shopSectionSeedSlots}</p>
+      <div class="shop-item">
+        <span class="shop-item-icon">🌱</span>
+        <div class="shop-item-info">
+          <span class="shop-item-title">${t.shopSeedSlotsTitle}</span>
+          <span class="shop-item-desc">${t.shopSeedSlotsDesc(currentSlots, currentCapacity, MAX_EXTRA_SEED_ROWS - currentRows)}</span>
         </div>
         <div class="shop-item-action">${actionArea}</div>
       </div>

@@ -3,6 +3,8 @@ import type { UpgradeId, PotDesign } from '../model/shop'
 import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID, SHOWCASE_EXTRA_SLOT_PRICE, SHOWCASE_PREMIUM_SLOT_THRESHOLD, SHOWCASE_PREMIUM_SLOT_PRICE } from '../model/shop'
 import { INITIAL_POT_COUNT } from './game'
 import { gardenSettings } from '../model/garden_settings'
+import { MAX_EXTRA_SEED_ROWS, EXTRA_SEED_ROW_PRICE, SEEDS_PER_SLOT } from '../model/genetic_model'
+import { getSeedSlotCount } from './seed_storage_engine'
 
 // ─── Upgrade helpers ──────────────────────────────────────────────────────────
 
@@ -138,5 +140,23 @@ export function buyExtraShowcaseSlot(state: GameState): boolean {
   if (state.coins < price) return false
   state.coins -= price
   state.showcase.push({ id: SHOWCASE_POT_BASE_ID + state.showcase.length, plant: null, phaseStart: null })
+  return true
+}
+
+// ─── Extra seed row purchasing ────────────────────────────────────────────────
+
+export function canBuyExtraSeedRow(state: GameState): boolean {
+  return (state.extraSeedRows ?? 0) < MAX_EXTRA_SEED_ROWS
+}
+
+export function buyExtraSeedRow(state: GameState): boolean {
+  if (!canBuyExtraSeedRow(state)) return false
+  if (state.coins < EXTRA_SEED_ROW_PRICE) return false
+  state.coins -= EXTRA_SEED_ROW_PRICE
+  state.extraSeedRows = (state.extraSeedRows ?? 0) + 1
+  const newSlots = getSeedSlotCount(state)
+  const targetLayoutLength = newSlots * SEEDS_PER_SLOT
+  while (state.seedLayout.length < targetLayoutLength) state.seedLayout.push('')
+  while (state.seedSlotLabels.length < newSlots) state.seedSlotLabels.push([])
   return true
 }

@@ -247,6 +247,13 @@ export const de = {
   shopShowcaseSlotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Stellplätzen.`,
   shopShowcaseSlotsMax: 'Maximale Stellplätze erreicht',
 
+  // Shop — Saatenschublade erweitern
+  shopSectionSeedSlots: 'Saatenschublade erweitern',
+  shopSeedSlotsTitle: 'Neue Fach-Reihe kaufen',
+  shopSeedSlotsDesc: (slots: number, capacity: number, remaining: number) =>
+    `Aktuell ${slots} Fächer (${capacity} Samenplätze). Noch ${remaining} Reihe${remaining !== 1 ? 'n' : ''} kaufbar.`,
+  shopSeedSlotsMax: 'Maximale Fachanzahl erreicht',
+
   // Shop — Topf-Kosmetik-Bezeichnungen
   potColorLabels: {
     terracotta: 'Terrakotta',

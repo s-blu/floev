@@ -13,7 +13,8 @@ import {
   addSeedToStorage,
   removeSeedFromStorage,
   moveSeedToSlot,
-  sellSeedFromStorage
+  sellSeedFromStorage,
+  getSeedCapacity,
 } from '../engine/seed_storage_engine'
 import {
   plantSeed,
@@ -24,7 +25,7 @@ import {
 } from '../engine/pot_engine'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
 import { isHomozygous } from '../engine/genetic/genetic_utils'
-import { buyUpgrade, buyPotColor, buyPotShape, buyPotEffect, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot } from '../engine/shop_engine'
+import { buyUpgrade, buyPotColor, buyPotShape, buyPotEffect, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot, buyExtraSeedRow } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
 import { renderShowcase } from './showcase_ui'
 import { renderBreedPanel } from './breedpanel_ui'
@@ -36,7 +37,7 @@ import { renderAchievements, queueAchievementToast, initAchievementsPanel } from
 import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
-import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SEED_STORAGE, MAX_SURPLUS_SEEDS_PER_PLANT, SEED_CRAFT_COOLDOWN_MS, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
+import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SURPLUS_SEEDS_PER_PLANT, SEED_CRAFT_COOLDOWN_MS, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
 import { renderSeedDrawer } from './seeds_ui'
 import { getCatalogEntryForPlant } from '../engine/catalog'
 import { COIN_ICON } from './icons'
@@ -153,6 +154,13 @@ export function handleSetShowcasePotDesign(potId: number, partial: { colorId?: s
 
 export function handleBuyExtraShowcaseSlot(): void {
   if (buyExtraShowcaseSlot(state)) {
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleBuyExtraSeedRow(): void {
+  if (buyExtraSeedRow(state)) {
     checkAchAndSave(state)
     render()
   }
@@ -394,7 +402,7 @@ function executeSelfPollinate(potId: number, sourceBtn?: HTMLElement | null): vo
   if (
     hasUpgrade(state, 'unlock_seed_drawer') &&
     Math.random() < SELF_POLLINATE_SURPLUS_SEED_CHANCE &&
-    state.seeds.length < MAX_SEED_STORAGE
+    state.seeds.length < getSeedCapacity(state)
   ) {
     const surplusSeed = selfPollinateePlant(pot.plant)
     surplusSeed.selfed = true
@@ -423,7 +431,7 @@ export function handleSeedHomozygous(potId: number): void {
   if (!hasUpgrade(state, 'unlock_seed_drawer')) return
   if (isOnCooldown(pot.plant)) return
   if ((pot.plant.surplusSeedsProduced ?? 0) >= MAX_SURPLUS_SEEDS_PER_PLANT) return
-  if (state.seeds.length >= MAX_SEED_STORAGE) return
+  if (state.seeds.length >= getSeedCapacity(state)) return
 
   showSeedHomozygousDialog(potId)
 }
@@ -500,7 +508,7 @@ export function handleCraftSingleSeed(): void {
   if (isOnCooldown(potA.plant) || isOnCooldown(potB.plant)) return
   if ((potA.plant.surplusSeedsProduced ?? 0) >= MAX_SURPLUS_SEEDS_PER_PLANT) return
   if ((potB.plant.surplusSeedsProduced ?? 0) >= MAX_SURPLUS_SEEDS_PER_PLANT) return
-  if (state.seeds.length >= MAX_SEED_STORAGE) return
+  if (state.seeds.length >= getSeedCapacity(state)) return
 
   executeCraftSingleSeed()
 }
@@ -531,7 +539,7 @@ export function handleCraftMultipleSeeds(): void {
   const potB = state.pots.find(p => p.id === breedState.breedSelB)
   if (!potA?.plant || !potB?.plant) return
   if (isOnCooldown(potA.plant) || isOnCooldown(potB.plant)) return
-  if (state.seeds.length + MULTI_SEED_COUNT_MIN > MAX_SEED_STORAGE) return
+  if (state.seeds.length + MULTI_SEED_COUNT_MIN > getSeedCapacity(state)) return
 
   showCraftMultiSeedDialog()
 }
@@ -570,7 +578,7 @@ function executeCraftMultipleSeeds(): void {
 
   const count = MULTI_SEED_COUNT_MIN + Math.floor(Math.random() * (MULTI_SEED_COUNT_MAX - MULTI_SEED_COUNT_MIN + 1))
   for (let i = 0; i < count; i++) {
-    if (state.seeds.length >= MAX_SEED_STORAGE) break
+    if (state.seeds.length >= getSeedCapacity(state)) break
     addSeedToStorage(state, breedPlants(potA.plant, potB.plant))
   }
 
@@ -604,7 +612,7 @@ function handleBreed(): void {
   if (
     hasUpgrade(state, 'unlock_seed_drawer') &&
     Math.random() < SURPLUS_SEED_CHANCE &&
-    state.seeds.length < MAX_SEED_STORAGE &&
+    state.seeds.length < getSeedCapacity(state) &&
     (potA.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT &&
     (potB.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT
   ) {
