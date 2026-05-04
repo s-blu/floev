@@ -120,6 +120,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-height: 45px;
 }
 
 .seed-drawer-capacity {
@@ -135,7 +136,7 @@
   padding: 6px 10px;
   background: rgba(29, 158, 117, 0.08);
   border-radius: var(--radius-md);
-  min-height: 1.5em;
+  min-height: 2.5m;
 }
 
 .seed-drawer-mode-hint--hidden {

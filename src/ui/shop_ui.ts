@@ -183,7 +183,7 @@ function renderSeedSlotsSection(): string {
     <div class="shop-section">
       <p class="shop-section-label">${t.shopSectionSeedSlots}</p>
       <div class="shop-item">
-        <span class="shop-item-icon">🌱</span>
+        <span class="shop-item-icon">🗄️</span>
         <div class="shop-item-info">
           <span class="shop-item-title">${t.shopSeedSlotsTitle}</span>
           <span class="shop-item-desc">${t.shopSeedSlotsDesc(currentSlots, currentCapacity, MAX_EXTRA_SEED_ROWS - currentRows)}</span>

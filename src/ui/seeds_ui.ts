@@ -397,8 +397,7 @@ export function renderSeedDrawerBody(): void {
 
   body.innerHTML = `
     ${hint}
-    <div class="seed-drawer-header-row">${capacity}${labelBtn}</div>
-    ${sellZone}
+    <div class="seed-drawer-header-row">${capacity}${sellZone}${labelBtn}</div>
     ${seeds.length === 0
       ? `<p class="seed-drawer-empty">${t.seedDrawerEmpty}</p>`
       : `<div class="seed-slots-grid">${slots}</div>`
