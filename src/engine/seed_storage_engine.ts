@@ -1,4 +1,4 @@
-import { MAX_SEED_STORAGE, SEED_SELL_VALUE, SEEDS_PER_SLOT, SAATENSCHUBLADE_SLOTS, SEED_SLOTS_PER_ROW } from '../model/genetic_model';
+import { SEED_SELL_VALUE, SEEDS_PER_SLOT, SAATENSCHUBLADE_SLOTS, SEED_SLOTS_PER_ROW } from '../model/genetic_model';
 import type { GameState, Plant } from '../model/plant';
 
 // ─── Slot/capacity helpers ────────────────────────────────────────────────────
