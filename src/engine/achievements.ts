@@ -60,6 +60,28 @@ const result: VisibleAchievement[] = []
     }
   }
 
+  if (result.length === 0) {
+    // Always show at least one achievement: pick the most-progressed hidden candidate
+    let best: { achievement: Achievement; progress: { current: number; total: number }; fraction: number } | null = null
+    for (const [, stack] of groups) {
+      const candidate = stack.find(a => !unlocked.has(a.id))
+      if (!candidate) continue
+      const prog = candidate.progress(state.catalog)
+      const fraction = prog.total > 0 ? prog.current / prog.total : 0
+      if (!best || fraction > best.fraction) {
+        best = { achievement: candidate, progress: prog, fraction }
+      }
+    }
+    if (best) {
+      result.push({
+        achievement: best.achievement,
+        progress: best.progress,
+        unlocked: false,
+        newlyUnlocked: false,
+      })
+    }
+  }
+
   return result
 }
 

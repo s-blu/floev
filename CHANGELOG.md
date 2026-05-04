@@ -10,12 +10,12 @@ Improvements:
 - Expand orders book if there are new orders available
 - Show the plant that fulfilled a order on the order
 - Enhance seed rendering, add a occassional visible color hint to them
+- Always show at least one open achievement
 
 Bugs:
 - Don't show equal-petal-count requirement as "min. X"
 - Fix label menu on dark color scheme
 - Discovery index summary now counts all combinations
-
 
 # v1.7.1
 
