@@ -2,7 +2,6 @@
 
 Improvements:
 
-- New feature: Permanent Buffs (did I merge that?)
 - New purchasable: More seed slots
 - Be able to obtain seeds from a single homozygous plant
 - Add some useful infos to the "a new bloom" message
