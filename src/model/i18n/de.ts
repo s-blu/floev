@@ -111,7 +111,18 @@ export const de = {
 
   // Self-pollination
   selfPollinateTitle: 'Selbstbestäuben — verbraucht die Pflanze, erzeugt reinerbigeren Samen',
-  selfPollinateHomozygousTitle: 'Bereits reinerbig — Selbstbestäubung hätte keinen Effekt',
+  selfPollinateHomozygousTitle: 'Bereits reinerbig — nutze den Samen-Button, um einen Samen zu lagern',
+
+  // Samen aus reinerbiger Pflanze
+  seedHomozygousTitle: 'Samen erhalten — verbraucht einen Samen-Slot & versetzt in Ruhezeit',
+  seedHomozygousNoDrawer: 'Saatenschublade freischalten, um reinerbige Samen zu erhalten',
+  seedHomozygousCapped: 'Samen-Limit erreicht — diese Pflanze kann keine weiteren Samen produzieren',
+  seedHomozygousStorageFull: 'Saatenschublade ist voll',
+  seedHomozygousConfirmTitle: 'Samen erhalten',
+  seedHomozygousConfirmText: 'Die Pflanze produziert einen identischen Samen, der in der Saatenschublade landet.',
+  seedHomozygousWarning: 'Die Pflanze geht in die Ruhezeit und kann währenddessen nicht für Züchtungen verwendet werden.',
+  seedHomozygousConfirm: 'Samen erhalten',
+  seedHomozygousCancel: 'Abbrechen',
   selfPollinateConfirmTitle: 'Selbstbestäubung',
   selfPollinateConfirmText: 'Die Blüte bestäubt sich selbst. Der entstandene Samen ist reinerbiger als die Elternpflanze.',
   selfPollinateWarning: 'Die Pflanze wird dabei entfernt.',

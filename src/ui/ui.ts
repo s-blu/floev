@@ -416,6 +416,61 @@ function executeSelfPollinate(potId: number, sourceBtn?: HTMLElement | null): vo
   render()
 }
 
+export function handleSeedHomozygous(potId: number): void {
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot?.plant || pot.plant.phase < 4) return
+  if (!isHomozygous(pot.plant)) return
+  if (!hasUpgrade(state, 'unlock_seed_drawer')) return
+  if (isOnCooldown(pot.plant)) return
+  if ((pot.plant.surplusSeedsProduced ?? 0) >= MAX_SURPLUS_SEEDS_PER_PLANT) return
+  if (state.seeds.length >= MAX_SEED_STORAGE) return
+
+  showSeedHomozygousDialog(potId)
+}
+
+function showSeedHomozygousDialog(potId: number): void {
+  document.getElementById('seed-homozygous-dialog')?.remove()
+
+  const overlay = document.createElement('div')
+  overlay.id = 'seed-homozygous-dialog'
+  overlay.className = 'dialog-overlay'
+  overlay.innerHTML = `
+    <div class="dialog-box">
+      <p class="dialog-title">${t.seedHomozygousConfirmTitle}</p>
+      <p class="dialog-text">${t.seedHomozygousConfirmText}</p>
+      <p class="dialog-warning">⚠ ${t.seedHomozygousWarning}</p>
+      <div class="dialog-actions">
+        <button class="btn" id="seed-homozygous-cancel">${t.seedHomozygousCancel}</button>
+        <button class="btn btn-confirm" id="seed-homozygous-confirm">${t.seedHomozygousConfirm}</button>
+      </div>
+    </div>`
+
+  document.body.appendChild(overlay)
+
+  document.getElementById('seed-homozygous-cancel')?.addEventListener('click', () => overlay.remove())
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove() })
+  document.getElementById('seed-homozygous-confirm')?.addEventListener('click', () => {
+    overlay.remove()
+    executeSeedHomozygous(potId)
+  })
+}
+
+function executeSeedHomozygous(potId: number): void {
+  const pot = state.pots.find(p => p.id === potId)
+  if (!pot?.plant) return
+
+  const seed = selfPollinateePlant(pot.plant)
+  seed.selfed = true
+  addSeedToStorage(state, seed)
+
+  pot.plant.surplusSeedsProduced = (pot.plant.surplusSeedsProduced ?? 0) + 1
+  pot.plant.breedCooldownUntil = Date.now() + SEED_CRAFT_COOLDOWN_MS
+
+  showMsg(t.craftSeedObtained(1))
+  checkAchAndSave(state)
+  render()
+}
+
 export function formatCooldownRemaining(until: number): string {
   const ms = until - Date.now()
   if (ms <= 0) return ''

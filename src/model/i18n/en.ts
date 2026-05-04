@@ -111,7 +111,18 @@ export const en = {
 
   // Self-pollination
   selfPollinateTitle: 'Self-pollinate — consumes the plant, produces more homozygous seeds',
-  selfPollinateHomozygousTitle: 'Already homozygous — self-pollination would have no effect',
+  selfPollinateHomozygousTitle: 'Already homozygous — use the seed button to store a seed',
+
+  // Seed from homozygous plant
+  seedHomozygousTitle: 'Obtain seed — uses one seed slot & triggers rest period',
+  seedHomozygousNoDrawer: 'Unlock the seed drawer to receive homozygous seed',
+  seedHomozygousCapped: 'Seed cap reached — this plant can produce no more seeds',
+  seedHomozygousStorageFull: 'Seed drawer is full',
+  seedHomozygousConfirmTitle: 'Obtain Seed',
+  seedHomozygousConfirmText: 'The plant produces an identical seed that is stored in the seed drawer.',
+  seedHomozygousWarning: 'The plant enters the rest period and cannot be used for breeding in that time.',
+  seedHomozygousConfirm: 'Obtain Seed',
+  seedHomozygousCancel: 'Cancel',
   selfPollinateConfirmTitle: 'Self-pollination',
   selfPollinateConfirmText: 'The bloom pollinates itself. The resulting seed is more homozygous than the parent plant.',
   selfPollinateWarning: 'The parent plant will be used up and removed.',
