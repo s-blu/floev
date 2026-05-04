@@ -1,3 +1,9 @@
+# v1.9.0
+
+Improvements:
+
+- Allow up to 12 showcase pots
+
 # v1.8.0
 
 Improvements:
