@@ -6,14 +6,14 @@ import { expressedCenter, expressedColor, expressedEffect, expressedNumber, expr
 // ─── Rarity ──────────────────────────────────────────────────────────────────
 
 const SHAPE_SCORE: Record<PetalShape, number> = {
-  round: 0, lanzett: 8, tropfen: 16, wavy: 25, zickzack: 45,
+  round: 0, lanzett: 4, tropfen: 16, wavy: 25, zickzack: 45,
 }
 
 const COLOR_SCORE: Record<string, number> = {
   white: 0, yellowgreen: 5, red: 12, pink: 16, purple: 20, blue: 24, gray: 35,
 }
 
-const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 8, stamen: 20 }
+const CENTER_SCORE: Record<CenterType, number> = { dot: 0, disc: 6, stamen: 20 }
 
 /**
  * Effect score — contributes to rarity.
@@ -25,7 +25,7 @@ const EFFECT_SCORE: Record<PetalEffect, number> = {
   bicolor:     8,
   gradient:   15,
   shimmer:    22,
-  iridescent:  35,
+  iridescent:  30,
 }
 
 const PETAL_COUNT_SCORE: Record<number, number> = {
