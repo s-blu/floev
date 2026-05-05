@@ -321,10 +321,10 @@ export const en = {
   // Messages
   msgPotCleared: 'Pot cleared.',
   msgNewBloom: (potIndex: number, catalogNr: number, isNew: boolean, rarity: number) => {
-    const labels = ['common', 'uncommon', 'rare', 'epic', 'legendary']
+    const labels = ['▪', '●', '♦', '★', '👑']
     const rarityLabel = labels[rarity] ?? ''
     const tag = isNew ? '(New! ' : '('
-    return `A ${rarityLabel} bloom in pot ${potIndex} has opened! ${tag}Catalog #${catalogNr})`
+    return `A bloom ${rarityLabel} in pot ${potIndex} has opened! ${tag}📖 #${catalogNr})`
   },
 
   // ─── Help modal ─────────────────────────────────────────────────────────────

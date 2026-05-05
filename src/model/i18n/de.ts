@@ -321,10 +321,10 @@ export const de = {
   // Messages
   msgPotCleared: 'Topf geleert.',
   msgNewBloom: (potIndex: number, catalogNr: number, isNew: boolean, rarity: number) => {
-    const labels = ['gewöhnliche', 'ungewöhnliche', 'seltene', 'epische', 'legendäre']
+    const labels = ['▪', '●', '♦', '★', '👑']
     const rarityLabel = labels[rarity] ?? ''
     const tag = isNew ? '(Neu! ' : '('
-    return `Eine ${rarityLabel} Blüte ist in Topf ${potIndex} erblüht! ${tag}Katalog Nr. ${catalogNr})`
+    return `Eine Blüte ${rarityLabel} ist in Topf ${potIndex} erblüht! ${tag}📖 Nr. ${catalogNr})`
   },
 
   // ─── Help modal ─────────────────────────────────────────────────────────────
