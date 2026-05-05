@@ -2,6 +2,7 @@ import type { CatalogEntry, GameState, Plant } from '../model/plant';
 import { expressedColor, expressedShape, expressedCenter, expressedPetalCount, expressedStem, expressedEffect } from './genetic/genetic_utils';
 import { calcRarityScore, calcRarity } from './rarity';
 import { t } from '../model/i18n'
+import { checkResearchOnCatalog } from './research_engine'
 
 
 // ─── Catalog key ──────────────────────────────────────────────────────────────
@@ -25,9 +26,9 @@ export function getCatalogEntryForPlant(state: GameState, plant: Plant): Catalog
   return state.catalog.find(e => e.key === key) ?? null;
 }
 
-export function addToCatalog(state: GameState, plant: Plant): boolean {
+export function addToCatalog(state: GameState, plant: Plant): { isNew: boolean; researchTaskIndex: number } {
   const key = catalogKey(plant)
-  if (state.catalog.find(e => e.key === key)) return false
+  if (state.catalog.find(e => e.key === key)) return { isNew: false, researchTaskIndex: -1 }
   const rarityScore = calcRarityScore(plant)
   const entry: CatalogEntry = {
     key,
@@ -39,7 +40,8 @@ export function addToCatalog(state: GameState, plant: Plant): boolean {
   }
   state.catalog.push(entry)
   state.catalog.sort((a, b) => b.rarityScore - a.rarityScore)
-  return true
+  const researchTaskIndex = checkResearchOnCatalog(state, plant)
+  return { isNew: true, researchTaskIndex }
 }
 
 export function getPlantName(plant: Plant) {

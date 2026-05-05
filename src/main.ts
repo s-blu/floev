@@ -5,6 +5,7 @@ import { showGardenSettings } from './ui/garden_settings_ui'
 import { initShop, closeShop } from './ui/shop_ui'
 import { initBuffsPanel } from './ui/buffs_ui'
 import { initOrderBookPanel } from './ui/orders_ui'
+import { initResearchPanel } from './ui/research_ui'
 import { initSeedDrawer } from './ui/seeds_ui'
 import { initNotificationFooter } from './ui/notification_log'
 import { t } from './model/i18n'
@@ -75,6 +76,19 @@ app.innerHTML = `
       </button>
     </div>
     <div class="order-body"></div>
+  </section>
+
+  <section class="order-section-wrapper" id="research-book-panel" style="display:none">
+    <div class="ach-section-header">
+      <p class="section-title" style="margin-bottom:0">
+        ${t.researchBookTitle}
+        <span class="research-collapsed-summary"></span>
+      </p>
+      <button class="ach-toggle-btn research-toggle-btn" title="${t.researchBookTitle}">
+        <span class="research-chevron">▾</span>
+      </button>
+    </div>
+    <div class="research-body"></div>
   </section>
 
   <section class="ach-section-wrapper" id="buffs-panel" style="display:none">
@@ -176,6 +190,7 @@ if (migrationNotice && migrationNotice.lostCatalogEntries) {
   showMigrationNotice(migrationNotice)
 }
 initOrderBookPanel()
+initResearchPanel()
 initBuffsPanel()
 
 // Help modal — show on first visit, bind ? button

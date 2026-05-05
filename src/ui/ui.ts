@@ -37,11 +37,13 @@ import { renderAchievements, queueAchievementToast, initAchievementsPanel } from
 import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
 import { renderBuffsPanel } from './buffs_ui'
+import { renderResearchPanel } from './research_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
 import { MAX_SURPLUS_SEEDS_PER_PLANT, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX, SEED_CRAFT_COOLDOWN_MS } from '../model/genetic_model'
 import { getEffectiveSurplusSeedChance, getEffectiveSelfPollinateSeedChance, getEffectiveCooldownMs } from '../engine/game_params'
-import { redeemBuff, canRedeemBuff } from '../engine/buffs_engine'
+import { buyBuff, canBuyBuff } from '../engine/buffs_engine'
 import type { BuffId } from '../model/shop'
+import { initResearchBook } from '../engine/research_engine'
 import { renderSeedDrawer } from './seeds_ui'
 import { getCatalogEntryForPlant } from '../engine/catalog'
 import { COIN_ICON } from './icons'
@@ -72,6 +74,7 @@ export let swapShowcasePotId: number | null = null
 export function initUI(gameState: GameState): void {
   state = gameState
   initOrderBook(state)
+  initResearchBook(state)
   bindStaticEvents()
   initAchievementsPanel()
   render()
@@ -83,12 +86,15 @@ export function initUI(gameState: GameState): void {
 }
 
 function tick(): void {
-  const changed = advancePhases(state, (plant, potIndex, isNew) => {
+  const changed = advancePhases(state, (plant, potIndex, isNew, researchTaskIndex) => {
     const entry = getCatalogEntryForPlant(state, plant)
     const catalogNr = entry
       ? [...state.catalog].sort((a, b) => a.discovered - b.discovered).indexOf(entry) + 1
       : 0
     showMsg(t.msgNewBloom(potIndex, catalogNr, isNew, entry?.rarity ?? 0))
+    if (researchTaskIndex >= 0) {
+      addNotification(t.msgResearchTaskDone(researchTaskIndex + 1))
+    }
   })
   if (changed) checkAchAndSave(state)
   render()
@@ -104,6 +110,7 @@ export function render(): void {
   renderCoins()
   renderShopSidebar()
   renderOrderBook()
+  renderResearchPanel()
   renderBuffsPanel()
   renderSeedDrawer()
 }
@@ -696,9 +703,9 @@ export function formatDate(ts: number): string {
   return d.toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-export function handleRedeemBuff(id: BuffId, potIds: number[], seedIds: string[]): void {
-  if (!canRedeemBuff(state, id, potIds, seedIds)) return
-  redeemBuff(state, id, potIds, seedIds)
+export function handleBuyBuff(id: BuffId): void {
+  if (!canBuyBuff(state, id)) return
+  buyBuff(state, id)
   checkAchAndSave(state)
   render()
 }

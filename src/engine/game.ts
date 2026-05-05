@@ -135,7 +135,7 @@ export function getPhaseProgress(pot: Pot, phaseDurations: Record<number, number
 
 export function advancePhases(
   state: GameState,
-  onBloom?: (plant: Plant, potIndex: number, isNew: boolean) => void,
+  onBloom?: (plant: Plant, potIndex: number, isNew: boolean, researchTaskIndex: number) => void,
 ): boolean {
   const durations = getEffectivePhaseDurations(state)
   let changed = false
@@ -147,9 +147,9 @@ export function advancePhases(
       pot.plant.phase = (pot.plant.phase + 1) as Plant['phase']
       pot.phaseStart  = phaseEnd
       if (pot.plant.phase === 4) {
-        const isNew = addToCatalog(state, pot.plant)
+        const { isNew, researchTaskIndex } = addToCatalog(state, pot.plant)
         const potIndex = state.pots.indexOf(pot) + 1
-        onBloom?.(pot.plant, potIndex, isNew)
+        onBloom?.(pot.plant, potIndex, isNew, researchTaskIndex)
       }
       changed = true
     }

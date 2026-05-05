@@ -248,6 +248,7 @@ export const de = {
     unlock_showcase:         'Schaukasten',
     unlock_order_book:       'Auftragsbuch',
     unlock_seed_drawer:      'Saatenschublade',
+    unlock_research_book:    'Forschungsbuch',
     unlock_completion_index: 'Vollständigkeits-Index',
   } as Record<string, string>,
   upgradeDesc: {
@@ -258,6 +259,7 @@ export const de = {
     unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
     unlock_order_book:       'Täglich 3 Aufträge: Züchte und verkaufe Blüten mit bestimmten Merkmalen für Bonus-Münzen.',
     unlock_seed_drawer:      'Eine Schublade mit 20 Fächern für bis zu 100 Saaten. Beim Kreuzen besteht eine Chance auf einen Überschuss-Samen.',
+    unlock_research_book:    'Täglich 3 Forschungsaufgaben: Entdecke neue Blüten für Forschungspunkte. Nutze Punkte für dauerhafte Verbesserungen.',
     unlock_completion_index: 'Ein detaillierter Vollständigkeits-Tracker für die richtig ambitionierten Komplettisten. Sieh genau, welche Kombinationen du im Katalog hast und welche du noch entdecken kannst.',
   } as Record<string, string>,
 
@@ -331,6 +333,29 @@ export const de = {
     diagonal: 'Diagonal',
     dots:     'Punkte',
   } as Record<string, string>,
+
+  // Research book panel
+  researchBookTitle:       'Forschungsbuch',
+  researchTaskLabel:       (n: number) => `Forschung ${n}`,
+  researchTaskDone:        'Erforscht',
+  researchPointsBadge:     (n: number) => `🔬 ${n}`,
+  researchUnknownTrait:    'Merkmal unbekannt',
+  researchTaskGrayedHint:  'Unbekannte Merkmale — forsche weiter, um diese Aufgabe zu sehen',
+  msgResearchTaskDone:     (n: number) => `Forschungsaufgabe ${n} erfüllt! +1 Forschungspunkt 🔬`,
+
+  // Research — trait badge labels
+  researchBadgeShape:      (name: string) => name,
+  researchBadgeCount:      (n: number) => `${n} Blütenbl.`,
+  researchBadgeColor:      (name: string) => name,
+  researchBadgeLightness:  (name: string) => name,
+  researchBadgeCenter:     (name: string) => name,
+  researchBadgeEffect:     (name: string) => name,
+
+  // Buff panel (research-point based)
+  buffBuyBtn:              'Kaufen',
+  buffCost:                (n: number) => `${n} 🔬`,
+  buffLevelLabel:          (n: number) => `Stufe ${n}`,
+  buffNoResearchBook:      'Forschungsbuch kaufen, um Forschungspunkte zu sammeln',
 
   // Order book panel
   orderBookTitle:       'Auftragsbuch',

@@ -248,6 +248,7 @@ export const en = {
     unlock_showcase:         'Showcase',
     unlock_order_book:       'Order Book',
     unlock_seed_drawer:      'Seed Drawer',
+    unlock_research_book:    'Research Book',
     unlock_completion_index: 'Completion Index',
   } as Record<string, string>,
   upgradeDesc: {
@@ -258,6 +259,7 @@ export const en = {
     unlock_showcase:         'A showcase with 3 display slots for your most beautiful blooms. Displayed plants cannot be sold or used for breeding.',
     unlock_order_book:       'Three daily orders: breed and sell blooms with specific traits for bonus coins.',
     unlock_seed_drawer:      'A drawer with 20 compartments for up to 100 seeds. Crossing plants gives a chance to receive a surplus seed.',
+    unlock_research_book:    'Three daily research tasks: catalog new blooms to earn research points. Spend points on permanent upgrades.',
     unlock_completion_index: 'A detailed collection tracker for the truly ambitious completists. See exactly which combinations you have in your collection and which ones you can still discover.',
   } as Record<string, string>,
 
@@ -331,6 +333,29 @@ export const en = {
     diagonal: 'Diagonal',
     dots:     'Dots',
   } as Record<string, string>,
+
+  // Research book panel
+  researchBookTitle:       'Research Book',
+  researchTaskLabel:       (n: number) => `Research ${n}`,
+  researchTaskDone:        'Researched',
+  researchPointsBadge:     (n: number) => `🔬 ${n}`,
+  researchUnknownTrait:    'Unknown trait',
+  researchTaskGrayedHint:  'Unknown traits — keep researching to unlock this task',
+  msgResearchTaskDone:     (n: number) => `Research task ${n} done! +1 research point 🔬`,
+
+  // Research — trait badge labels
+  researchBadgeShape:      (name: string) => name,
+  researchBadgeCount:      (n: number) => `${n} petals`,
+  researchBadgeColor:      (name: string) => name,
+  researchBadgeLightness:  (name: string) => name,
+  researchBadgeCenter:     (name: string) => name,
+  researchBadgeEffect:     (name: string) => name,
+
+  // Buff panel (research-point based)
+  buffBuyBtn:              'Buy',
+  buffCost:                (n: number) => `${n} 🔬`,
+  buffLevelLabel:          (n: number) => `Level ${n}`,
+  buffNoResearchBook:      'Buy the Research Book to collect research points',
 
   // Order book panel
   orderBookTitle:       'Order Book',
