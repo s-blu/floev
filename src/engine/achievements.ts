@@ -60,8 +60,9 @@ const result: VisibleAchievement[] = []
     }
   }
 
-  if (result.length === 0) {
-    // Always show at least one achievement: pick the most-progressed hidden candidate
+  const hasOpenCandidate = result.some(r => !r.unlocked)
+  if (!hasOpenCandidate) {
+    // No in-progress achievement visible — show the most-progressed remaining hidden candidate
     let best: { achievement: Achievement; progress: { current: number; total: number }; fraction: number } | null = null
     for (const [, stack] of groups) {
       const candidate = stack.find(a => !unlocked.has(a.id))
