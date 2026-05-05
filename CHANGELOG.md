@@ -3,6 +3,12 @@
 Improvements:
 
 - Allow up to 12 showcase pots
+- Add achievements based on completion index
+- Shorten the "new bloom" message a bit
+
+Bugs:
+- Middle-difficult lanzett flowers were scored too high on rarity
+
 
 # v1.8.0
 
