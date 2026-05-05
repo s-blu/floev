@@ -537,6 +537,14 @@ export const de = {
   achRichHarvestTitle: (coins: number) => `${coins} Münzen wert`,
   achRichHarvestDesc: (coins: number) => `Besitze eine einzelne Blüte die mindestens ${coins} Münzen wert ist.`,
 
+  // Vollständigkeits-Index Meilensteine
+  achCiPctTitle: (pct: number) => pct === 100 ? 'Vollständig!' : `${pct}% vollständig`,
+  achCiPctDesc: (pct: number) => `Entdecke ${pct}% aller Kombinationen im Vollständigkeits-Index.`,
+
+  // Matrix-Vervollständigung (Form × Farbe × alle Blattanzahlen × alle Mittentypen)
+  achMatrixTitle: (shapeLabel: string, colorLabel: string) => `${shapeLabel} × ${colorLabel}: Matrix`,
+  achMatrixDesc: (shapeLabel: string, colorLabel: string) => `Entdecke alle Kombinationen aus Blattanzahl (3, 5, 8) und Blütenmitte für eine ${shapeLabel}-Blüte in ${colorLabel}.`,
+
   // Shared label maps
   shapeLabels: {
     round: 'Rund', lanzett: 'Lanzett', tropfen: 'Tropfen', wavy: 'Wellig', zickzack: 'Zickzack',

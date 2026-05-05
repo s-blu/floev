@@ -537,6 +537,14 @@ export const en = {
   achRichHarvestTitle: (coins: number) => `Worth ${coins} coins`,
   achRichHarvestDesc: (coins: number) => `Own a single bloom worth at least ${coins} coins.`,
 
+  // Completion Index milestones
+  achCiPctTitle: (pct: number) => pct === 100 ? 'Complete!' : `${pct}% complete`,
+  achCiPctDesc: (pct: number) => `Discover ${pct}% of all combinations in the Completion Index.`,
+
+  // Matrix completion (shape × color × all petal counts × all center types)
+  achMatrixTitle: (shapeLabel: string, colorLabel: string) => `${shapeLabel} × ${colorLabel}: Matrix`,
+  achMatrixDesc: (shapeLabel: string, colorLabel: string) => `Discover all combinations of petal count (3, 5, 8) and center type for a ${shapeLabel} bloom in ${colorLabel}.`,
+
   // Shared label maps
   shapeLabels: {
     round: 'Round', lanzett: 'Lanceolate', tropfen: 'Teardrop', wavy: 'Wavy', zickzack: 'Zigzag',
