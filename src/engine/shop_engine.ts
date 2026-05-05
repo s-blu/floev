@@ -1,8 +1,10 @@
 import type { GameState } from '../model/plant'
 import type { UpgradeId, PotDesign } from '../model/shop'
-import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID, SHOWCASE_EXTRA_SLOT_PRICE, SHOWCASE_PREMIUM_SLOT_THRESHOLD, SHOWCASE_PREMIUM_SLOT_PRICE } from '../model/shop'
+import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID} from '../model/shop'
 import { INITIAL_POT_COUNT } from './game'
 import { gardenSettings } from '../model/garden_settings'
+import { MAX_EXTRA_SEED_ROWS, EXTRA_SEED_ROW_PRICE, SEEDS_PER_SLOT } from '../model/genetic_model'
+import { getSeedSlotCount } from './seed_storage_engine'
 
 // ─── Upgrade helpers ──────────────────────────────────────────────────────────
 
@@ -123,9 +125,16 @@ export function setShowcasePotDesign(state: GameState, potId: number, design: Pa
 // ─── Extra showcase slot purchasing ──────────────────────────────────────────
 
 export function getShowcaseSlotPrice(state: GameState): number {
-  return state.showcase.length >= SHOWCASE_PREMIUM_SLOT_THRESHOLD
-    ? SHOWCASE_PREMIUM_SLOT_PRICE
-    : SHOWCASE_EXTRA_SLOT_PRICE
+  const treshholdPrices = [
+    {from: 1, to: 6, price: 50},
+    {from: 6, to: 9, price: 200},
+    {from: 9, to: 12, price: 300},
+  ]
+
+  const currSlots = state.showcase.length;
+  const treshold = treshholdPrices.find(t => t.from <= currSlots && currSlots < t.to)
+
+  return treshold?.price ?? 200
 }
 
 export function canBuyExtraShowcaseSlot(state: GameState): boolean {
@@ -142,3 +151,20 @@ export function buyExtraShowcaseSlot(state: GameState): boolean {
 }
 
 
+// ─── Extra seed row purchasing ────────────────────────────────────────────────
+
+export function canBuyExtraSeedRow(state: GameState): boolean {
+  return (state.extraSeedRows ?? 0) < MAX_EXTRA_SEED_ROWS
+}
+
+export function buyExtraSeedRow(state: GameState): boolean {
+  if (!canBuyExtraSeedRow(state)) return false
+  if (state.coins < EXTRA_SEED_ROW_PRICE) return false
+  state.coins -= EXTRA_SEED_ROW_PRICE
+  state.extraSeedRows = (state.extraSeedRows ?? 0) + 1
+  const newSlots = getSeedSlotCount(state)
+  const targetLayoutLength = newSlots * SEEDS_PER_SLOT
+  while (state.seedLayout.length < targetLayoutLength) state.seedLayout.push('')
+  while (state.seedSlotLabels.length < newSlots) state.seedSlotLabels.push([])
+  return true
+}

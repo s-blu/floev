@@ -8,6 +8,7 @@ import {
 } from './genetic/genetic_utils'
 import { PALETTE_HUE_RANGES, PALETTE_HUES, PALETTE_L, PETAL_SHAPES, CENTER_TYPES, PETAL_EFFECTS } from '../model/genetic_model'
 import type { ColorBucket } from '../model/genetic_model'
+import { PETAL_COUNTS, calcCompletionProgress } from './discovery_utils'
 import type { Rarity } from "../model/rarity_model"
 import { t } from '../model/i18n'
 import { coinValueForScore } from './game'
@@ -81,6 +82,10 @@ function countShadesInBucket(catalog: CatalogEntry[], bucket: ColorBucket): { cu
 // ─── CHROMATIC buckets only (no white/gray for combo achievements) ────────────
 const CHROMATIC_BUCKETS: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray']
 const CHROMATIC_RARE_BUCKETS: ColorBucket[] = ['purple', 'blue', 'gray']
+
+// ─── All buckets incl. white for matrix achievements ─────────────────────────
+const MATRIX_BUCKETS: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray', 'white']
+const MATRIX_CELLS_TOTAL = PETAL_COUNTS.length * CENTER_TYPES.length
 
 // ─── Achievement list ─────────────────────────────────────────────────────────
 
@@ -487,6 +492,53 @@ export function buildAchievements(): Achievement[] {
         return { current: Math.min(seen.size, PETAL_SHAPES.length), total: PETAL_SHAPES.length }
       },
     })
+  }
+
+  // ── 22. Completion Index milestones at every 10 % ────────────────────────────
+  const ciRewards = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+  for (let i = 0; i < 10; i++) {
+    const pct = (i + 1) * 10
+    list.push({
+      id: `ci_pct_${pct}`,
+      groupKey: 'ci_completion',
+      stackIndex: i,
+      hidden: true,
+      title: t.achCiPctTitle(pct),
+      desc: t.achCiPctDesc(pct),
+      reward: ciRewards[i],
+      progress: cat => {
+        const { current, total } = calcCompletionProgress(cat)
+        const target = Math.round(total * pct / 100)
+        return { current: Math.min(current, target), total: target }
+      },
+    })
+  }
+
+  // ── 23. Matrix completion: all petal counts × center types per shape × bucket ─
+  for (const shape of PETAL_SHAPES) {
+    const shapeLabel = t.shapeLabels[shape] ?? shape
+    for (let bi = 0; bi < MATRIX_BUCKETS.length; bi++) {
+      const bucket = MATRIX_BUCKETS[bi]
+      const colorLabel = t.colorBucketLabels[bucket] ?? bucket
+      list.push({
+        id: `matrix_${shape}_${bucket}`,
+        groupKey: `matrix_${shape}_${bucket}`,
+        stackIndex: 0,
+        hidden: true,
+        title: t.achMatrixTitle(shapeLabel, colorLabel),
+        desc: t.achMatrixDesc(shapeLabel, colorLabel),
+        reward: 60,
+        progress: cat => {
+          const seen = new Set<string>()
+          for (const e of cat) {
+            if (expressedShape(e.plant.petalShape) !== shape) continue
+            if (colorBucket(expressedColor(e.plant.petalHue, e.plant.petalLightness)) !== bucket) continue
+            seen.add(`${expressedPetalCount(e.plant.petalCount)}_${expressedCenter(e.plant.centerType)}`)
+          }
+          return { current: Math.min(seen.size, MATRIX_CELLS_TOTAL), total: MATRIX_CELLS_TOTAL }
+        },
+      })
+    }
   }
 
   return list

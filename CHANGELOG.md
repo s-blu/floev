@@ -1,3 +1,41 @@
+# v1.9.0
+
+Improvements:
+
+- Allow up to 12 showcase pots
+- Add achievements based on completion index
+- Shorten the "new bloom" message a bit
+
+Bugs:
+- Middle-difficult lanzett flowers were scored too high on rarity
+
+
+# v1.8.0
+
+Improvements:
+
+- New feature: Permanent Buffs (did I merge that?)
+- New purchasable: More seed slots
+- Be able to obtain seeds from a single homozygous plant
+- Add some useful infos to the "a new bloom" message
+- Migrate Gray-violet to a tad more violet-ish tone
+- Expand orders book if there are new orders available
+- Show the plant that fulfilled a order on the order
+- Enhance seed rendering, add a occassional visible color hint to them
+- Always show at least one open achievement
+
+Bugs:
+- Don't show equal-petal-count requirement as "min. X"
+- Fix label menu on dark color scheme
+- Discovery index summary now counts all combinations
+
+# v1.7.1
+
+Bugs:
+
+- Catalog entry had wrong names
+- Swap pot button on showcase was misplaced
+
 # v1.7.0
 
 Improvements:
@@ -22,6 +60,7 @@ Petal Counts were a bit of a special case in the whole inhertiance logic, one th
 Improvements:
 
 - New purchasable: Pot finished (+2 pot designs)
+- New feature: Garden settings (eases pot handling)
 - Improve petal effects for white
 - Improve cooldown display
 - Allow collapsing catalog sections

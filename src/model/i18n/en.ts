@@ -111,7 +111,18 @@ export const en = {
 
   // Self-pollination
   selfPollinateTitle: 'Self-pollinate — consumes the plant, produces more homozygous seeds',
-  selfPollinateHomozygousTitle: 'Already homozygous — self-pollination would have no effect',
+  selfPollinateHomozygousTitle: 'Already homozygous — use the seed button to store a seed',
+
+  // Seed from homozygous plant
+  seedHomozygousTitle: 'Obtain seed — uses one seed slot & triggers rest period',
+  seedHomozygousNoDrawer: 'Unlock the seed drawer to receive homozygous seed',
+  seedHomozygousCapped: 'Seed cap reached — this plant can produce no more seeds',
+  seedHomozygousStorageFull: 'Seed drawer is full',
+  seedHomozygousConfirmTitle: 'Obtain Seed',
+  seedHomozygousConfirmText: 'The plant produces an identical seed that is stored in the seed drawer.',
+  seedHomozygousWarning: 'The plant enters the rest period and cannot be used for breeding in that time.',
+  seedHomozygousConfirm: 'Obtain Seed',
+  seedHomozygousCancel: 'Cancel',
   selfPollinateConfirmTitle: 'Self-pollination',
   selfPollinateConfirmText: 'The bloom pollinates itself. The resulting seed is more homozygous than the parent plant.',
   selfPollinateWarning: 'The parent plant will be used up and removed.',
@@ -281,6 +292,13 @@ export const en = {
   shopShowcaseSlotsDesc: (current: number, max: number) => `Currently ${current} of ${max} display slots.`,
   shopShowcaseSlotsMax: 'Maximum display slots reached',
 
+  // Shop — Seed drawer expansion
+  shopSectionSeedSlots: 'Expand seed drawer',
+  shopSeedSlotsTitle: 'Buy new compartment row',
+  shopSeedSlotsDesc: (slots: number, capacity: number, remaining: number) =>
+    `Currently ${slots} compartments (${capacity} seed spaces). ${remaining} row${remaining !== 1 ? 's' : ''} remaining.`,
+  shopSeedSlotsMax: 'Maximum compartments reached',
+
   // Shop — pot cosmetic labels
   potColorLabels: {
     terracotta: 'Terracotta',
@@ -332,6 +350,7 @@ export const en = {
   orderReqShape:      (name: string) => `Shape: ${name}`,
   orderReqColor:      (name: string) => `Bucket: ${name}`,
   orderReqLightness:  (name: string) => `Lightness: ${name}`,
+  orderReqCountEq:   (n: number)    => `${n} petals`,
   orderReqCountGte:   (n: number)    => `Min. ${n} petals`,
   orderReqCountLte:   (n: number)    => `Max. ${n} petals`,
   orderReqCenter:     (name: string) => `Center: ${name}`,
@@ -346,7 +365,12 @@ export const en = {
 
   // Messages
   msgPotCleared: 'Pot cleared.',
-  msgNewBloom: (gen: number) => `A new bloom has opened! (Gen. ${gen})`,
+  msgNewBloom: (potIndex: number, catalogNr: number, isNew: boolean, rarity: number) => {
+    const labels = ['▪', '●', '♦', '★', '👑']
+    const rarityLabel = labels[rarity] ?? ''
+    const tag = isNew ? '(New! ' : '('
+    return `A bloom ${rarityLabel} in pot ${potIndex} has opened! ${tag}📖 #${catalogNr})`
+  },
 
   // ─── Help modal ─────────────────────────────────────────────────────────────
 
@@ -558,6 +582,14 @@ export const en = {
   achRichHarvestTitle: (coins: number) => `Worth ${coins} coins`,
   achRichHarvestDesc: (coins: number) => `Own a single bloom worth at least ${coins} coins.`,
 
+  // Completion Index milestones
+  achCiPctTitle: (pct: number) => pct === 100 ? 'Complete!' : `${pct}% complete`,
+  achCiPctDesc: (pct: number) => `Discover ${pct}% of all combinations in the Completion Index.`,
+
+  // Matrix completion (shape × color × all petal counts × all center types)
+  achMatrixTitle: (shapeLabel: string, colorLabel: string) => `${shapeLabel} × ${colorLabel}: Matrix`,
+  achMatrixDesc: (shapeLabel: string, colorLabel: string) => `Discover all combinations of petal count (3, 5, 8) and center type for a ${shapeLabel} bloom in ${colorLabel}.`,
+
   // Shared label maps
   shapeLabels: {
     round: 'Round', lanzett: 'Lanceolate', tropfen: 'Teardrop', wavy: 'Wavy', zickzack: 'Zigzag',
@@ -649,7 +681,7 @@ export const en = {
       90: "Distant blue",
     },
   },
-  250: {
+  255: {
     hueName: `Gray-violet (group)`,
     90: {
       30: "Indigo",
@@ -703,7 +735,7 @@ discoveryIndexTitle: 'Discovery Index',
   discoveryIndexSectionColors: 'Colours',
   discoveryIndexSectionShapeColors: 'Colour × Shape',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
-    `${shapes}/${totalShapes} forms · ${colors}/${totalColors} colours`,
+    `${shapes}/${totalShapes} combinations · ${colors}/${totalColors} colours`,
 
 migrationNoticeTitle: 'Save updated',
 migrationNoticeText: 'The petal mechanics have been revised and simplified into three levels (3, 5, 8). As a result, some catalog entries have been removed and existing flowers have been recalculated.',

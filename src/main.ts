@@ -1,6 +1,6 @@
 import { loadState, saveState } from './engine/game'
 import { initUI, showMigrationNotice } from './ui/ui'
-import { initHelp, showHelp } from './ui/help_ui'
+import { initHelp, showHelpEventListener } from './ui/help_ui'
 import { showGardenSettings } from './ui/garden_settings_ui'
 import { initShop, closeShop } from './ui/shop_ui'
 import { initBuffsPanel } from './ui/buffs_ui'
@@ -180,7 +180,7 @@ initBuffsPanel()
 
 // Help modal — show on first visit, bind ? button
 initHelp()
-document.getElementById('help-btn')?.addEventListener('click', showHelp)
+document.getElementById('help-btn')?.addEventListener('click', showHelpEventListener)
 
 // Shop sidebar
 initShop()

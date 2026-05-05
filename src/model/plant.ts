@@ -96,6 +96,7 @@ export interface GameState {
   seeds:           Plant[]        // stored seeds in Saatenschublade
   seedLayout:      string[]       // fixed-length position map: seedId or '' per slot position
   seedSlotLabels:  string[][]     // per-slot label keys, each up to 2 entries
+  extraSeedRows?:  number         // number of purchased extra slot rows (0–3)
   lastSave:   number
   orderBook?: OrderBookState
   migrationVersion?: number

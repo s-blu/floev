@@ -1,7 +1,7 @@
 // ─── Order book model ─────────────────────────────────────────────────────────
 
 import type { ColorBucket } from './genetic_model'
-import type { PetalShape, CenterType, PetalEffect, ChromaticL } from './plant'
+import type { Plant, PetalShape, CenterType, PetalEffect, ChromaticL } from './plant'
 
 export type OrderTrait =
   | 'petalShape'
@@ -24,11 +24,12 @@ export interface OrderRequirement {
 }
 
 export interface Order {
-  id:             string
-  requirements:   OrderRequirement[]
-  reward:         number
-  pinned:         boolean
-  completedToday: boolean
+  id:               string
+  requirements:     OrderRequirement[]
+  reward:           number
+  pinned:           boolean
+  completedToday:   boolean
+  completedByPlant?: Plant
 }
 
 export interface OrderBookState {

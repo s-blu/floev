@@ -3,6 +3,7 @@ import { randomPlant } from './genetic/genetic'
 import { addToCatalog } from './catalog'
 import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLANTS, DEBUG_SEEDS, USE_FIXED_SEEDS } from '../dev.config'
 import { MAX_SEED_STORAGE, SAATENSCHUBLADE_SLOTS } from '../model/genetic_model'
+import { getSeedSlotCount, getSeedCapacity } from './seed_storage_engine'
 import { runMigrations, LATEST_MIGRATION_VERSION } from './migrations'
 import { getEffectivePhaseDurations } from './game_params'
 
@@ -49,7 +50,7 @@ function createInitialState(): GameState {
   }
 
 
-  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], unlockedPotEffects: [], seeds: [], seedLayout: Array(MAX_SEED_STORAGE).fill(''), seedSlotLabels: Array.from({ length: SAATENSCHUBLADE_SLOTS }, () => []), lastSave: Date.now(), migrationVersion: LATEST_MIGRATION_VERSION }
+  const gameState: GameState = { pots, showcase: [], catalog: [], coins: import.meta.env.DEV ? DEV_STARTING_COINS : 0, achievements: { unlocked: [], rewarded: [] }, upgrades: [], unlockedPotColors: [], unlockedPotShapes: [], unlockedPotEffects: [], seeds: [], seedLayout: Array(MAX_SEED_STORAGE).fill(''), seedSlotLabels: Array.from({ length: SAATENSCHUBLADE_SLOTS }, () => []), extraSeedRows: 0, lastSave: Date.now(), migrationVersion: LATEST_MIGRATION_VERSION }
   if (useDebugSeeds) {
     gameState.seeds = DEBUG_SEEDS
     DEBUG_SEEDS.forEach((s, i) => { gameState.seedLayout[i] = s.id })
@@ -78,12 +79,16 @@ export function loadState(): GameState {
       if (!parsed.unlockedPotEffects) parsed.unlockedPotEffects = []
       if (!parsed.showcase) parsed.showcase = []
       if (!parsed.seeds) parsed.seeds = []
-      if (!parsed.seedLayout || parsed.seedLayout.length !== MAX_SEED_STORAGE) {
-        parsed.seedLayout = Array(MAX_SEED_STORAGE).fill('')
-        parsed.seeds.forEach((s, i) => { if (i < MAX_SEED_STORAGE) parsed.seedLayout[i] = s.id })
+      if (parsed.extraSeedRows === undefined) parsed.extraSeedRows = 0
+      const expectedCapacity = getSeedCapacity(parsed)
+      const expectedSlotCount = getSeedSlotCount(parsed)
+      if (!parsed.seedLayout || parsed.seedLayout.length !== expectedCapacity) {
+        parsed.seedLayout = Array(expectedCapacity).fill('')
+        parsed.seeds.forEach((s, i) => { if (i < expectedCapacity) parsed.seedLayout[i] = s.id })
       }
-      if (!parsed.seedSlotLabels || parsed.seedSlotLabels.length !== SAATENSCHUBLADE_SLOTS) {
-        parsed.seedSlotLabels = Array.from({ length: SAATENSCHUBLADE_SLOTS }, () => [])
+      if (!parsed.seedSlotLabels || parsed.seedSlotLabels.length !== expectedSlotCount) {
+        const existing = parsed.seedSlotLabels ?? []
+        parsed.seedSlotLabels = Array.from({ length: expectedSlotCount }, (_, i) => existing[i] ?? [])
       }
 
       if (runMigrations(parsed)) saveState(parsed)
@@ -130,7 +135,7 @@ export function getPhaseProgress(pot: Pot, phaseDurations: Record<number, number
 
 export function advancePhases(
   state: GameState,
-  onBloom?: (plant: Plant) => void,
+  onBloom?: (plant: Plant, potIndex: number, isNew: boolean) => void,
 ): boolean {
   const durations = getEffectivePhaseDurations(state)
   let changed = false
@@ -142,8 +147,9 @@ export function advancePhases(
       pot.plant.phase = (pot.plant.phase + 1) as Plant['phase']
       pot.phaseStart  = phaseEnd
       if (pot.plant.phase === 4) {
-        addToCatalog(state, pot.plant)
-        onBloom?.(pot.plant)
+        const isNew = addToCatalog(state, pot.plant)
+        const potIndex = state.pots.indexOf(pot) + 1
+        onBloom?.(pot.plant, potIndex, isNew)
       }
       changed = true
     }

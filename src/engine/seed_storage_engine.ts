@@ -1,10 +1,20 @@
-import { MAX_SEED_STORAGE, SEED_SELL_VALUE, SEEDS_PER_SLOT } from '../model/genetic_model';
+import { SEED_SELL_VALUE, SEEDS_PER_SLOT, SAATENSCHUBLADE_SLOTS, SEED_SLOTS_PER_ROW } from '../model/genetic_model';
 import type { GameState, Plant } from '../model/plant';
+
+// ─── Slot/capacity helpers ────────────────────────────────────────────────────
+
+export function getSeedSlotCount(state: GameState): number {
+  return SAATENSCHUBLADE_SLOTS + (state.extraSeedRows ?? 0) * SEED_SLOTS_PER_ROW
+}
+
+export function getSeedCapacity(state: GameState): number {
+  return getSeedSlotCount(state) * SEEDS_PER_SLOT
+}
 
 // ─── Seed storage actions ─────────────────────────────────────────────────────
 
 export function addSeedToStorage(state: GameState, plant: Plant): boolean {
-  if (state.seeds.length >= MAX_SEED_STORAGE) return false;
+  if (state.seeds.length >= getSeedCapacity(state)) return false;
   state.seeds.push(plant);
   const emptyPos = state.seedLayout.findIndex(id => id === '');
   if (emptyPos !== -1) state.seedLayout[emptyPos] = plant.id;

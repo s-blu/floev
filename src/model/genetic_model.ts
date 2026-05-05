@@ -87,7 +87,7 @@ export const MIN_STEM_HEIGHT = 0.35
 export const PALETTE_S = 90;
 // ─── Palette hues ─────────────────────────────────────────────────────────────
 //---------------------------red   / yellgr  / blue / purple   / pink        / red
-export const PALETTE_HUES = [5, 25, 60, 160, 180, 200, 230, 250, 270, 290, 310, 330, 350] as const
+export const PALETTE_HUES = [5, 25, 60, 160, 180, 200, 230, 255, 270, 290, 310, 330, 350] as const
 export const PALETTE_HUES_BUCKETS = {
   yellowgreen: PALETTE_HUES.filter(PALETTE_HUE_RANGES.yellowgreen),
   red:         PALETTE_HUES.filter(PALETTE_HUE_RANGES.red),
@@ -134,6 +134,9 @@ export const RARE_EFFECTS: PetalEffect[] = ['shimmer', 'iridescent'];
 export const SAATENSCHUBLADE_SLOTS = 20
 export const SEEDS_PER_SLOT = 5
 export const MAX_SEED_STORAGE = SAATENSCHUBLADE_SLOTS * SEEDS_PER_SLOT
+export const SEED_SLOTS_PER_ROW = 4
+export const MAX_EXTRA_SEED_ROWS = 3
+export const EXTRA_SEED_ROW_PRICE = 250
 export const SURPLUS_SEED_CHANCE = 0.15
 export const SELF_POLLINATE_SURPLUS_SEED_CHANCE = 0.2
 export const MAX_SURPLUS_SEEDS_PER_PLANT = 3

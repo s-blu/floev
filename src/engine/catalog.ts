@@ -42,7 +42,7 @@ export function addToCatalog(state: GameState, plant: Plant): boolean {
   return true
 }
 
-function getPlantName(plant: Plant) {
+export function getPlantName(plant: Plant) {
   const count = expressedPetalCount(plant.petalCount);
   const shape = expressedShape(plant.petalShape);
 

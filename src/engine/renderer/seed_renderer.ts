@@ -1,5 +1,5 @@
 import type { Plant, PetalShape } from '../../model/plant'
-import { expressedShape } from '../genetic/genetic_utils'
+import { expressedShape, expressedColor } from '../genetic/genetic_utils'
 import { calcRarityScore } from '../rarity'
 
 let _seedId = 0
@@ -43,7 +43,7 @@ export function renderSeedSvg(plant: Plant, size = 40): string {
       ${score >= 90 ? buildGoldenOutline(shape, cx, cy, size) : ''}
       ${buildBody(shape, cx, cy, size, id)}
       ${buildShine(cx, cy, size, shape)}
-      ${buildMarkings(score, cx, cy, size, shape)}
+      ${buildMarkings(plant, score, cx, cy, size, shape)}
     </g>
   </svg>`
 }
@@ -124,13 +124,34 @@ function buildShine(cx: number, cy: number, size: number, shape: PetalShape): st
 // Common   (< 30): no markings
 // Uncommon (30+):  single central ridge
 // Rare     (50+):  three ridges (center + two flanking)
-// Epic     (75+):  ridges + prominent purple dots
+// Epic     (75+):  thicker purple-shimmering side ridges (no dots)
 // Legendary(90+):  golden outline (above) + golden ridge + golden dots
 
-function buildMarkings(score: number, cx: number, cy: number, size: number, shape: PetalShape): string {
-  if (score < 30) return ''
+function buildColorHint(plant: Plant, cx: number, cy: number, h: number, size: number): string {
+  let hash = 0
+  for (let i = 0; i < plant.id.length; i++) hash = (hash * 31 + plant.id.charCodeAt(i)) & 0xffff
+  if ((hash & 0xff) > 102) return ''
 
+  const { h: hue, s } = expressedColor(plant.petalHue, plant.petalLightness)
+  if (s === 0) return ''
+
+  const opacity = 0.3// 0.352 + ((hash >> 8) & 0x3f) / 63 * 0.20
+  const dir = (hash >> 6) & 1 ? 1 : -1
+  const ex = cx + dir * size * 0.07
+  const ey = cy - h * 0.79
+  const erx = size * 0.038
+  const ery = h * 0.22
+  const angle = dir * -18
+  return `
+    <ellipse cx="${ex}" cy="${ey}" rx="${erx * 2.4}" ry="${ery * 1.1}" fill="hsla(${hue},72%,65%,${(opacity * 0.38).toFixed(2)})" transform="rotate(${angle},${ex},${ey})"/>
+    <ellipse cx="${ex}" cy="${ey}" rx="${erx}" ry="${ery}" fill="hsla(${hue},72%,65%,${opacity.toFixed(2)})" transform="rotate(${angle},${ex},${ey})"/>`
+}
+
+function buildMarkings(plant: Plant, score: number, cx: number, cy: number, size: number, shape: PetalShape): string {
   const h = shape === 'lanzett' ? size * 0.40 : size * 0.32
+  const colorHint = buildColorHint(plant, cx, cy, h, size)
+  if (score < 30) return colorHint
+
   const isLegendary = score >= 90
   const isEpic = score >= 75
 
@@ -141,29 +162,44 @@ function buildMarkings(score: number, cx: number, cy: number, size: number, shap
 
   const centerRidge = `<path d="M ${cx} ${cy-h} Q ${cx+size*0.032} ${cy} ${cx} ${cy+h}"
     stroke="${ridgeStroke}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`
+  
 
-  if (score < 50) return centerRidge
+  if (score < 50) return centerRidge + colorHint
 
   const off = size * 0.092
-  const sideStroke = isLegendary ? 'rgba(218,162,40,0.52)' : 'rgba(48,20,6,0.36)'
-  const sideSw = Math.max(0.9, size * 0.032)
-  const sideRidges = `
-    <path d="M ${cx+off} ${cy-h*0.70} Q ${cx+off*1.28} ${cy} ${cx+off} ${cy+h*0.70}"
-      stroke="${sideStroke}" stroke-width="${sideSw}" fill="none" stroke-linecap="round"/>
-    <path d="M ${cx-off} ${cy-h*0.70} Q ${cx-off*1.28} ${cy} ${cx-off} ${cy+h*0.70}"
-      stroke="${sideStroke}" stroke-width="${sideSw}" fill="none" stroke-linecap="round"/>`
 
-  if (!isEpic) return centerRidge + sideRidges
+  let sideRidges: string
+  if (isEpic && !isLegendary) {
+    const epicSw = Math.max(1.5, size * 0.052)
+    const epicGlowSw = epicSw * 2.6
+    sideRidges = `
+      <path d="M ${cx+off} ${cy-h*0.70} Q ${cx+off*1.28} ${cy} ${cx+off} ${cy+h*0.70}"
+        stroke="rgba(148,72,215,0.3)" stroke-width="${epicGlowSw}" fill="none" stroke-linecap="round"/>
+      <path d="M ${cx-off} ${cy-h*0.70} Q ${cx-off*1.28} ${cy} ${cx-off} ${cy+h*0.70}"
+        stroke="rgba(148,72,215,0.3)" stroke-width="${epicGlowSw}" fill="none" stroke-linecap="round"/>
+      <path d="M ${cx+off} ${cy-h*0.70} Q ${cx+off*1.28} ${cy} ${cx+off} ${cy+h*0.70}"
+        stroke="rgba(181, 100, 252, 0.7)" stroke-width="${epicSw}" fill="none" stroke-linecap="round"/>
+      <path d="M ${cx-off} ${cy-h*0.70} Q ${cx-off*1.28} ${cy} ${cx-off} ${cy+h*0.70}"
+        stroke="rgba(181, 100, 252, 0.7)" stroke-width="${epicSw}" fill="none" stroke-linecap="round"/>`
+  } else {
+    const sideStroke = isLegendary ? 'rgba(218,162,40,0.52)' : 'rgba(48,20,6,0.36)'
+    const sideSw = Math.max(0.9, size * 0.032)
+    sideRidges = `
+      <path d="M ${cx+off} ${cy-h*0.70} Q ${cx+off*1.28} ${cy} ${cx+off} ${cy+h*0.70}"
+        stroke="${sideStroke}" stroke-width="${sideSw}" fill="none" stroke-linecap="round"/>
+      <path d="M ${cx-off} ${cy-h*0.70} Q ${cx-off*1.28} ${cy} ${cx-off} ${cy+h*0.70}"
+        stroke="${sideStroke}" stroke-width="${sideSw}" fill="none" stroke-linecap="round"/>`
+  }
+
+  if (!isLegendary) return centerRidge + colorHint + sideRidges
 
   const r = Math.max(2.4, size * 0.060)
-  const dotFill = isLegendary ? 'rgba(218,162,40,0.92)' : 'rgba(148,72,215,0.82)'
-  const dotGlow = isLegendary ? 'rgba(218,162,40,0.30)' : 'rgba(148,72,215,0.25)'
   const glowR = r * 1.8
   const dots = `
-    <circle cx="${cx}" cy="${cy - h*0.42}" r="${glowR}" fill="${dotGlow}"/>
-    <circle cx="${cx}" cy="${cy - h*0.42}" r="${r}" fill="${dotFill}"/>
-    <circle cx="${cx}" cy="${cy + h*0.42}" r="${glowR * 0.65}" fill="${dotGlow}"/>
-    <circle cx="${cx}" cy="${cy + h*0.42}" r="${r * 0.62}" fill="${dotFill}"/>`
+    <circle cx="${cx}" cy="${cy - h*0.42}" r="${glowR}" fill="rgba(218,162,40,0.30)"/>
+    <circle cx="${cx}" cy="${cy - h*0.42}" r="${r}" fill="rgba(218,162,40,0.92)"/>
+    <circle cx="${cx}" cy="${cy + h*0.42}" r="${glowR * 0.65}" fill="rgba(218,162,40,0.30)"/>
+    <circle cx="${cx}" cy="${cy + h*0.42}" r="${r * 0.62}" fill="rgba(218,162,40,0.92)"/>`
 
-  return centerRidge + sideRidges + dots
+  return centerRidge + colorHint + sideRidges + dots
 }

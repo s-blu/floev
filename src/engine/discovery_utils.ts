@@ -8,6 +8,30 @@ export const PETAL_COUNTS = [3, 5, 8] as const;
 export const DISPLAY_EFFECTS = PETAL_EFFECTS.filter(e => e !== 'none') as PetalEffect[];
 export const RARE_BUCKETS = new Set<ColorBucket>(['purple', 'blue', 'gray']);
 
+// ─── Completion Index total cell count ───────────────────────────────────────
+
+const CI_BUCKET_ORDER: ColorBucket[] = ['red', 'yellowgreen', 'pink', 'purple', 'blue', 'gray', 'white']
+
+function ciHuesForBucket(bucket: ColorBucket): number[] {
+  if (bucket === 'white') return [1]
+  if (bucket === 'gray')  return [2]
+  return [...((PALETTE_HUES_BUCKETS as Record<string, readonly number[]>)[bucket] ?? [])]
+}
+
+const CI_CELLS_PER_MATRIX = PETAL_COUNTS.length * CENTER_TYPES.length
+
+export const TOTAL_COMPLETION_CELLS =
+  PETAL_SHAPES.length * CI_BUCKET_ORDER.reduce((sum, b) =>
+    sum + ciHuesForBucket(b).reduce((s, h) => {
+      const lightnessCount = h === 1 ? 1 : (PALETTE_L as readonly number[]).length
+      return s + (lightnessCount + DISPLAY_EFFECTS.length) * CI_CELLS_PER_MATRIX
+    }, 0), 0)
+
+export function calcCompletionProgress(catalog: CatalogEntry[]): { current: number; total: number } {
+  const current = buildFoundBaseColorCells(catalog).size + buildFoundEffectCells(catalog).size
+  return { current, total: TOTAL_COMPLETION_CELLS }
+}
+
 // ─── Discovery set builders ───────────────────────────────────────────────────
 
 export function buildDiscoveredShapeCounts(catalog: CatalogEntry[]): Set<string> {

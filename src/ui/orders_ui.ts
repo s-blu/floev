@@ -11,6 +11,7 @@ import {
   refreshOrders,
   toggleOrderPin,
   matchingOrderIndices,
+  getEffectiveDate,
 } from '../engine/orders_engine'
 import { saveState } from '../engine/game'
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer'
@@ -67,7 +68,7 @@ const BUCKET_HUE: Record<string, number> = {
   yellowgreen: 60,
   red:         0,
   blue:        200,
-  purple:      250,
+  purple:      270,
   pink:        310,
   gray:        ACHROMATIC_HUE_GRAY,
 }
@@ -125,7 +126,7 @@ function requirementLabel(req: OrderRequirement): string {
     case 'petalCount':
       if (req.op === 'gte') return t.orderReqCountGte(req.value as number)
       if (req.op === 'lte') return t.orderReqCountLte(req.value as number)
-      return t.orderReqCountGte(req.value as number)
+      return t.orderReqCountEq(req.value as number)
     case 'centerType':
       return t.orderReqCenter(t.centerTypeLabels[req.value as string] ?? String(req.value))
     case 'petalEffect':
@@ -145,7 +146,8 @@ function buildOrderCard(order: Order, index: number): HTMLElement {
   const card = document.createElement('div')
   card.className = `order-card${order.completedToday ? ' order-card--done' : ''}`
 
-  const previewSvg = renderBloomSVG(previewPlantForOrder(order), PREVIEW_RENDER_SIZE, PREVIEW_RENDER_SIZE, 'ord')
+  const previewPlant = order.completedByPlant ?? previewPlantForOrder(order)
+  const previewSvg = renderBloomSVG(previewPlant, PREVIEW_RENDER_SIZE, PREVIEW_RENDER_SIZE, 'ord')
 
   const reqTags = order.requirements
     .map(r => `<span class="order-req-tag ${difficultyClass(r)}">${requirementLabel(r)}</span>`)
@@ -190,6 +192,12 @@ export function renderOrderBook(): void {
   const hasBook = hasUpgrade(state, 'unlock_order_book')
   panel.style.display = hasBook ? '' : 'none'
   if (!hasBook) return
+
+  const isDailyReset = !!state.orderBook && state.orderBook.lastEffectiveDate !== getEffectiveDate()
+  if (isDailyReset) {
+    panelOpen = true
+    savePanelOpen(true)
+  }
 
   initOrderBook(state)
 

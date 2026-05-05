@@ -1,7 +1,9 @@
 import { getPhaseProgress } from '../engine/game';
 import { getEffectivePhaseDurations, getEffectiveCoinMultiplier } from '../engine/game_params';
 import { COIN_ICON } from './icons';
-import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleMoveToShowcase, handleSwapGardenPot, handlePushPotToEnd, openAlleleIds, hasUpgrade, openPotDesignIds, swapGardenPotId, isOnCooldown } from './ui';
+import { state, handlePlantSeed, handleRemove, handleSell, handleBreedSelect, handleSelfPollinate, handleSeedHomozygous, handleMoveToShowcase, handleSwapGardenPot, handlePushPotToEnd, openAlleleIds, hasUpgrade, openPotDesignIds, swapGardenPotId, isOnCooldown } from './ui';
+import { renderSeedIcon } from '../engine/renderer/seed_renderer';
+import { MAX_SURPLUS_SEEDS_PER_PLANT, MAX_SEED_STORAGE } from '../model/genetic_model';
 import { openSeedDrawer } from './seeds_ui';
 import { t } from '../model/i18n';
 import type { Pot } from '../model/plant';
@@ -40,19 +42,28 @@ function cancelSellPending(potId: number): void {
   sellPendingPots.delete(potId);
 }
 
-function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boolean, showcaseAvail: boolean, selfPollinateOnCooldown = false, selfPollinateIsHomozygous = false): void {
+function showOverflowMenu(potId: number, card: HTMLElement, selfPollinate: boolean, showcaseAvail: boolean, selfPollinateOnCooldown = false, seedHomozygous = false, seedHomozygousDisabled = false, seedHomozygousTitle = ''): void {
   const wrap = card.querySelector('.overflow-wrap') as HTMLElement | null;
   if (!wrap) return;
   const menu = document.createElement('div');
   menu.className = 'overflow-menu';
-  if (selfPollinate) {
+  if (seedHomozygous) {
+    const b = document.createElement('button');
+    b.className = 'btn-sm btn-icon';
+    b.dataset.action = 'seed-homozygous';
+    b.dataset.pot = String(potId);
+    b.title = seedHomozygousTitle;
+    b.innerHTML = renderSeedIcon(14);
+    if (seedHomozygousDisabled) b.disabled = true;
+    menu.appendChild(b);
+  } else if (selfPollinate) {
     const b = document.createElement('button');
     b.className = 'btn-sm btn-icon';
     b.dataset.action = 'selfpollinate';
     b.dataset.pot = String(potId);
-    b.title = selfPollinateIsHomozygous ? t.selfPollinateHomozygousTitle : selfPollinateOnCooldown ? t.craftRestingLabel : t.selfPollinateTitle;
+    b.title = selfPollinateOnCooldown ? t.craftRestingLabel : t.selfPollinateTitle;
     b.textContent = '↺';
-    if (selfPollinateOnCooldown || selfPollinateIsHomozygous) b.disabled = true;
+    if (selfPollinateOnCooldown) b.disabled = true;
     menu.appendChild(b);
   }
   if (showcaseAvail) {
@@ -164,18 +175,26 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
     const selfPurchased = hasUpgrade(state, 'unlock_selfpollinate');
     const showcasePurchased = hasUpgrade(state, 'unlock_showcase');
     const showcaseHasSpace = showcasePurchased && state.showcase.some(p => !p.plant);
-    const hasBothSecondary = selfPurchased && showcaseHasSpace;
     const onCooldown = selfPurchased && isOnCooldown(pot.plant!);
     const selfIsHomozygous = selfPurchased && isHomozygous(pot.plant!);
-    const selfDisabled = onCooldown || selfIsHomozygous;
-    const selfTitle = selfIsHomozygous ? t.selfPollinateHomozygousTitle : onCooldown ? t.craftRestingLabel : t.selfPollinateTitle;
+    const hasSeedDrawer = hasUpgrade(state, 'unlock_seed_drawer');
+    const seedHomoCapped = (pot.plant!.surplusSeedsProduced ?? 0) >= MAX_SURPLUS_SEEDS_PER_PLANT;
+    const seedHomoStorageFull = state.seeds.length >= MAX_SEED_STORAGE;
+    const seedHomoDisabled = onCooldown || seedHomoCapped || !hasSeedDrawer || seedHomoStorageFull;
+    const seedHomoTitle = !hasSeedDrawer ? t.seedHomozygousNoDrawer : onCooldown ? t.craftRestingLabel : seedHomoCapped ? t.seedHomozygousCapped : seedHomoStorageFull ? t.seedHomozygousStorageFull : t.seedHomozygousTitle;
+    const showSeedHomo = selfPurchased && selfIsHomozygous;
+    const showSelfPollinate = selfPurchased && !selfIsHomozygous;
+    const selfTitle = onCooldown ? t.craftRestingLabel : t.selfPollinateTitle;
+    const hasBothSecondary = (showSeedHomo || showSelfPollinate) && showcaseHasSpace;
     const secondaryHtml = hasBothSecondary
-      ? `<div class="overflow-wrap"><button class="btn-sm btn-icon" data-action="overflow-toggle" data-pot="${pot.id}" data-selfpollinate="1" data-showcase="1" title="${t.btnOverflowTitle}">···</button></div>`
-      : selfPurchased
-        ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${selfTitle}"${selfDisabled ? ' disabled' : ''}>↺</button>`
-        : showcaseHasSpace
-          ? `<button class="btn-sm btn-icon" data-action="showcase" data-pot="${pot.id}" title="${t.btnMoveToShowcaseTitle}">${t.btnMoveToShowcase}</button>`
-          : '';
+      ? `<div class="overflow-wrap"><button class="btn-sm btn-icon" data-action="overflow-toggle" data-pot="${pot.id}" ${showSeedHomo ? `data-seedhomo="1" data-seedhomo-disabled="${seedHomoDisabled}" data-seedhomo-title="${seedHomoTitle}"` : 'data-selfpollinate="1"'} data-showcase="1" title="${t.btnOverflowTitle}">···</button></div>`
+      : showSeedHomo
+        ? `<button class="btn-sm btn-icon" data-action="seed-homozygous" data-pot="${pot.id}" title="${seedHomoTitle}"${seedHomoDisabled ? ' disabled' : ''}>${renderSeedIcon(14)}</button>`
+        : showSelfPollinate
+          ? `<button class="btn-sm btn-icon" data-action="selfpollinate" data-pot="${pot.id}" title="${selfTitle}"${onCooldown ? ' disabled' : ''}>↺</button>`
+          : showcaseHasSpace
+            ? `<button class="btn-sm btn-icon" data-action="showcase" data-pot="${pot.id}" title="${t.btnMoveToShowcaseTitle}">${t.btnMoveToShowcase}</button>`
+            : '';
     buttonsHtml = `
       <div class="btn-row">
         <button class="btn-sm btn-breed${isBreedSelected ? ' selected' : ''}" data-action="breed-select" data-pot="${pot.id}">
@@ -212,18 +231,21 @@ function buildPotCard(pot: Pot, selA: number | null, selB: number | null): HTMLE
         armSellButton(potId, btn);
       }
     }
-    else if (action === 'breed-select')   handleBreedSelect(potId);
-    else if (action === 'selfpollinate')  handleSelfPollinate(potId);
-    else if (action === 'showcase')       handleMoveToShowcase(potId);
+    else if (action === 'breed-select')     handleBreedSelect(potId);
+    else if (action === 'selfpollinate')    handleSelfPollinate(potId);
+    else if (action === 'seed-homozygous') handleSeedHomozygous(potId);
+    else if (action === 'showcase')         handleMoveToShowcase(potId);
     else if (action === 'overflow-toggle') {
       if (overflowOpenPots.has(potId)) {
         closeAllOverflowMenus();
       } else {
         closeAllOverflowMenus();
         const plant = state.pots.find(p => p.id === potId)?.plant;
-        const selfOnCooldown = !!btn.dataset.selfpollinate && !!plant && isOnCooldown(plant);
-        const selfHomo = !!btn.dataset.selfpollinate && !!plant && isHomozygous(plant);
-        showOverflowMenu(potId, card, !!btn.dataset.selfpollinate, !!btn.dataset.showcase, selfOnCooldown, selfHomo);
+        const selfOnCooldown = !!plant && isOnCooldown(plant);
+        const isSeedHomo = !!btn.dataset.seedhomo;
+        const seedHomoDisabled = btn.dataset.seedhomoDisabled === 'true';
+        const seedHomoTitle = btn.dataset.seedhomoTitle ?? '';
+        showOverflowMenu(potId, card, !!btn.dataset.selfpollinate, !!btn.dataset.showcase, selfOnCooldown, isSeedHomo, seedHomoDisabled, seedHomoTitle);
       }
     }
     else if (action === 'swap')           handleSwapGardenPot(potId);

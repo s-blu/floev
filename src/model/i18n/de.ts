@@ -111,7 +111,18 @@ export const de = {
 
   // Self-pollination
   selfPollinateTitle: 'Selbstbestäuben — verbraucht die Pflanze, erzeugt reinerbigeren Samen',
-  selfPollinateHomozygousTitle: 'Bereits reinerbig — Selbstbestäubung hätte keinen Effekt',
+  selfPollinateHomozygousTitle: 'Bereits reinerbig — nutze den Samen-Button, um einen Samen zu lagern',
+
+  // Samen aus reinerbiger Pflanze
+  seedHomozygousTitle: 'Samen erhalten — verbraucht einen Samen-Slot & versetzt in Ruhezeit',
+  seedHomozygousNoDrawer: 'Saatenschublade freischalten, um reinerbige Samen zu erhalten',
+  seedHomozygousCapped: 'Samen-Limit erreicht — diese Pflanze kann keine weiteren Samen produzieren',
+  seedHomozygousStorageFull: 'Saatenschublade ist voll',
+  seedHomozygousConfirmTitle: 'Samen erhalten',
+  seedHomozygousConfirmText: 'Die Pflanze produziert einen identischen Samen, der in der Saatenschublade landet.',
+  seedHomozygousWarning: 'Die Pflanze geht in die Ruhezeit und kann währenddessen nicht für Züchtungen verwendet werden.',
+  seedHomozygousConfirm: 'Samen erhalten',
+  seedHomozygousCancel: 'Abbrechen',
   selfPollinateConfirmTitle: 'Selbstbestäubung',
   selfPollinateConfirmText: 'Die Blüte bestäubt sich selbst. Der entstandene Samen ist reinerbiger als die Elternpflanze.',
   selfPollinateWarning: 'Die Pflanze wird dabei entfernt.',
@@ -281,6 +292,13 @@ export const de = {
   shopShowcaseSlotsDesc: (current: number, max: number) => `Aktuell ${current} von ${max} Stellplätzen.`,
   shopShowcaseSlotsMax: 'Maximale Stellplätze erreicht',
 
+  // Shop — Saatenschublade erweitern
+  shopSectionSeedSlots: 'Saatenschublade erweitern',
+  shopSeedSlotsTitle: 'Neue Fach-Reihe kaufen',
+  shopSeedSlotsDesc: (slots: number, capacity: number, remaining: number) =>
+    `Aktuell ${slots} Fächer (${capacity} Samenplätze). Noch ${remaining} Reihe${remaining !== 1 ? 'n' : ''} kaufbar.`,
+  shopSeedSlotsMax: 'Maximale Fachanzahl erreicht',
+
   // Shop — Topf-Kosmetik-Bezeichnungen
   potColorLabels: {
     terracotta: 'Terrakotta',
@@ -332,6 +350,7 @@ export const de = {
   orderReqShape:      (name: string) => `Form: ${name}`,
   orderReqColor:      (name: string) => `Farbbereich: ${name}`,
   orderReqLightness:  (name: string) => `Helligkeit: ${name}`,
+  orderReqCountEq:   (n: number)    => `${n} Blütenbl.`,
   orderReqCountGte:   (n: number)    => `Min. ${n} Blütenbl.`,
   orderReqCountLte:   (n: number)    => `Max. ${n} Blütenbl.`,
   orderReqCenter:     (name: string) => `Mitte: ${name}`,
@@ -346,7 +365,12 @@ export const de = {
 
   // Messages
   msgPotCleared: 'Topf geleert.',
-  msgNewBloom: (gen: number) => `Eine neue Blüte ist aufgegangen! (Gen. ${gen})`,
+  msgNewBloom: (potIndex: number, catalogNr: number, isNew: boolean, rarity: number) => {
+    const labels = ['▪', '●', '♦', '★', '👑']
+    const rarityLabel = labels[rarity] ?? ''
+    const tag = isNew ? '(Neu! ' : '('
+    return `Eine Blüte ${rarityLabel} ist in Topf ${potIndex} erblüht! ${tag}📖 Nr. ${catalogNr})`
+  },
 
   // ─── Help modal ─────────────────────────────────────────────────────────────
 
@@ -558,6 +582,14 @@ export const de = {
   achRichHarvestTitle: (coins: number) => `${coins} Münzen wert`,
   achRichHarvestDesc: (coins: number) => `Besitze eine einzelne Blüte die mindestens ${coins} Münzen wert ist.`,
 
+  // Vollständigkeits-Index Meilensteine
+  achCiPctTitle: (pct: number) => pct === 100 ? 'Vollständig!' : `${pct}% vollständig`,
+  achCiPctDesc: (pct: number) => `Entdecke ${pct}% aller Kombinationen im Vollständigkeits-Index.`,
+
+  // Matrix-Vervollständigung (Form × Farbe × alle Blattanzahlen × alle Mittentypen)
+  achMatrixTitle: (shapeLabel: string, colorLabel: string) => `${shapeLabel} × ${colorLabel}: Matrix`,
+  achMatrixDesc: (shapeLabel: string, colorLabel: string) => `Entdecke alle Kombinationen aus Blattanzahl (3, 5, 8) und Blütenmitte für eine ${shapeLabel}-Blüte in ${colorLabel}.`,
+
   // Shared label maps
   shapeLabels: {
     round: 'Rund', lanzett: 'Lanzett', tropfen: 'Tropfen', wavy: 'Wellig', zickzack: 'Zickzack',
@@ -649,7 +681,7 @@ export const de = {
       90: "Fernblau",
     },
   },
-  250: {
+  255: {
     hueName: `Grauviolett (Gruppe)`,
     90: {
       30: "Indigo",
@@ -703,7 +735,7 @@ discoveryIndexTitle: 'Entdeckungs-Index',
   discoveryIndexSectionColors: 'Farben',
   discoveryIndexSectionShapeColors: 'Farbe × Form',
   discoveryIndexSummary: (shapes: number, totalShapes: number, colors: number, totalColors: number) =>
-    `${shapes}/${totalShapes} Formen · ${colors}/${totalColors} Farben`,
+    `${shapes}/${totalShapes} Kombinationen · ${colors}/${totalColors} Farben`,
 
 migrationNoticeTitle: 'Spielstand aktualisiert',
 migrationNoticeText: 'Die Blütenblatt-Mechanik wurde überarbeitet und auf drei Stufen vereinfacht (3, 5, 8). Dadurch sind einige Katalogeinträge entfallen und bestehende Blüten wurden neu berechnet.',

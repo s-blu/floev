@@ -1,7 +1,8 @@
 import { state, handlePlantSeedFromStorage, handleMoveSeedToSlot, handleSellSeed, handleSetSlotLabel } from './ui'
 import { COIN_ICON, CENTER_TYPE_ICONS, renderEffectSwatch, renderPetalShapeSvg } from './icons'
 import { t } from '../model/i18n'
-import { SAATENSCHUBLADE_SLOTS, SEEDS_PER_SLOT, MAX_SEED_STORAGE, PETAL_SHAPES, CENTER_TYPES } from '../model/genetic_model'
+import { SEEDS_PER_SLOT, PETAL_SHAPES, CENTER_TYPES } from '../model/genetic_model'
+import { getSeedSlotCount, getSeedCapacity } from '../engine/seed_storage_engine'
 import type { ColorBucket } from '../model/genetic_model'
 import type { PetalShape, CenterType } from '../model/plant'
 import { renderSeedSvg, renderSeedIcon } from '../engine/renderer/seed_renderer'
@@ -332,7 +333,7 @@ export function renderSeedDrawerBody(): void {
   const isSelectMode = targetPotId !== null
   const isMoveMode = !isSelectMode && selectedSeedId !== null
 
-  const capacity = `<span class="seed-drawer-capacity">${t.seedDrawerCapacity(seeds.length, MAX_SEED_STORAGE)}</span>`
+  const capacity = `<span class="seed-drawer-capacity">${t.seedDrawerCapacity(seeds.length, getSeedCapacity(state))}</span>`
 
   const labelBtn = !isSelectMode
     ? `<button class="seed-label-edit-btn${labelEditMode ? ' seed-label-edit-btn--active' : ''}" data-label-toggle="1">${t.seedLabelEditBtn}</button>`
@@ -350,7 +351,7 @@ export function renderSeedDrawerBody(): void {
   ].filter(Boolean).join(' ')
   const hint = `<p class="${hintCls}">${hintText || '&nbsp;'}</p>`
 
-  const slots = Array.from({ length: SAATENSCHUBLADE_SLOTS }, (_, slotIdx) => {
+  const slots = Array.from({ length: getSeedSlotCount(state) }, (_, slotIdx) => {
     const slotStart = slotIdx * SEEDS_PER_SLOT
     const slotIds = layout.slice(slotStart, slotStart + SEEDS_PER_SLOT).filter(id => id !== '')
     const slotSeeds = slotIds.map(id => seedById.get(id)).filter(Boolean) as typeof seeds
@@ -396,13 +397,12 @@ export function renderSeedDrawerBody(): void {
 
   body.innerHTML = `
     ${hint}
-    <div class="seed-drawer-header-row">${capacity}${labelBtn}</div>
+    <div class="seed-drawer-header-row">${capacity}${sellZone}${labelBtn}</div>
     ${seeds.length === 0
       ? `<p class="seed-drawer-empty">${t.seedDrawerEmpty}</p>`
       : `<div class="seed-slots-grid">${slots}</div>`
     }
-    ${picker}
-    ${sellZone}`
+    ${picker}`
 }
 
 export function updateSeedDrawerButton(): void {
