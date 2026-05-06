@@ -1,5 +1,5 @@
 import type { GameState } from '../model/plant'
-import { BUFFS, type BuffId } from '../model/shop'
+import { BUFFS, type BuffId } from "../model/buffs"
 import { PHASE_DURATION_MS } from './game'
 import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, SEED_CRAFT_COOLDOWN_MS } from '../model/genetic_model'
 

@@ -183,9 +183,9 @@ export const de = {
   // Shop — Buffs
   shopSectionBuffs: 'Verbesserungen',
   buffTitle: {
-    faster_growth:      'Schnelles Wachstum',
+    faster_growth:      'Grüner Daumen',
     seed_luck:          'Saatenglück',
-    cooldown_reduction: 'Auszeit verkürzen',
+    cooldown_reduction: 'Schnellere Erholung',
     trade_skill:        'Verhandlungsgeschick',
   } as Record<string, string>,
   buffDesc: {

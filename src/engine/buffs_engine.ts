@@ -1,5 +1,5 @@
 import type { GameState } from '../model/plant';
-import { type BuffId, BUFFS } from '../model/shop';
+import { type BuffId, BUFFS } from "../model/buffs";
 import { getBuffLevel } from './game_params';
 
 // ─── Buff system ──────────────────────────────────────────────────────────────

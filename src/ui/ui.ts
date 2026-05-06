@@ -39,10 +39,10 @@ import { renderOrderBook } from './orders_ui'
 import { renderBuffsPanel } from './buffs_ui'
 import { renderResearchPanel } from './research_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
-import { MAX_SURPLUS_SEEDS_PER_PLANT, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX, SEED_CRAFT_COOLDOWN_MS } from '../model/genetic_model'
+import { MAX_SURPLUS_SEEDS_PER_PLANT, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
 import { getEffectiveSurplusSeedChance, getEffectiveSelfPollinateSeedChance, getEffectiveCooldownMs } from '../engine/game_params'
 import { buyBuff, canBuyBuff } from '../engine/buffs_engine'
-import type { BuffId } from '../model/shop'
+import type { BuffId } from "../model/buffs"
 import { initResearchBook } from '../engine/research_engine'
 import { renderSeedDrawer } from './seeds_ui'
 import { getCatalogEntryForPlant } from '../engine/catalog'
@@ -484,7 +484,7 @@ function executeSeedHomozygous(potId: number): void {
   addSeedToStorage(state, seed)
 
   pot.plant.surplusSeedsProduced = (pot.plant.surplusSeedsProduced ?? 0) + 1
-  pot.plant.breedCooldownUntil = Date.now() + SEED_CRAFT_COOLDOWN_MS
+  pot.plant.breedCooldownUntil = Date.now() + getEffectiveCooldownMs(state)
 
   showMsg(t.craftSeedObtained(1))
   checkAchAndSave(state)

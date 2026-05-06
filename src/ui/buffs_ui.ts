@@ -1,7 +1,7 @@
 import { getBuffLevel } from '../engine/game_params';
 import { isBuffMaxed, getBuffDef, getNextBuffLevel, canBuyBuff } from '../engine/buffs_engine';
 import { t } from '../model/i18n';
-import { BUFFS, type BuffId } from '../model/shop';
+import { BUFFS, type BuffId } from "../model/buffs";
 import { hasUpgrade, state, handleBuyBuff } from './ui';
 
 // ─── Panel open state (persisted in localStorage) ─────────────────────────────
