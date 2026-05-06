@@ -16,6 +16,7 @@ import {
 import { saveState } from '../engine/game'
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer'
 import { ACHROMATIC_HUE_WHITE, ACHROMATIC_HUE_GRAY } from '../model/genetic_model'
+import { getDiscoveredTraits, type DiscoveredTraits } from '../engine/research_engine'
 
 // ─── Panel open state (persisted in localStorage) ────────────────────────────
 
@@ -113,9 +114,26 @@ function previewPlantForOrder(order: Order): Plant {
   }
 }
 
+// ─── Spoiler check ────────────────────────────────────────────────────────────
+
+function reqIsUnknown(req: OrderRequirement, discovered: DiscoveredTraits): boolean {
+  switch (req.trait) {
+    case 'petalShape':   return !discovered.shapes.has(req.value as import('../model/plant').PetalShape)
+    case 'colorBucket':  return !discovered.colorBuckets.has(req.value as import('../model/genetic_model').ColorBucket)
+    case 'centerType':   return !discovered.centerTypes.has(req.value as import('../model/plant').CenterType)
+    case 'petalEffect':  return req.value !== 'none' && !discovered.effects.has(req.value as import('../model/plant').PetalEffect)
+    default:             return false
+  }
+}
+
+function orderHasUnknownTrait(order: Order, discovered: DiscoveredTraits): boolean {
+  return !order.completedToday && order.requirements.some(r => reqIsUnknown(r, discovered))
+}
+
 // ─── Requirement label ────────────────────────────────────────────────────────
 
-function requirementLabel(req: OrderRequirement): string {
+function requirementLabel(req: OrderRequirement, discovered: DiscoveredTraits): string {
+  if (reqIsUnknown(req, discovered)) return t.researchUnknownTrait
   switch (req.trait) {
     case 'petalShape':
       return t.orderReqShape(t.shapeLabels[req.value as string] ?? String(req.value))
@@ -136,25 +154,38 @@ function requirementLabel(req: OrderRequirement): string {
   }
 }
 
-function difficultyClass(req: OrderRequirement): string {
-  return `order-req--${req.difficulty}`
+function difficultyClass(req: OrderRequirement, unknown: boolean): string {
+  return unknown ? 'order-req--unknown' : `order-req--${req.difficulty}`
 }
 
 // ─── Order card builder ───────────────────────────────────────────────────────
 
 function buildOrderCard(order: Order, index: number): HTMLElement {
   const card = document.createElement('div')
-  card.className = `order-card${order.completedToday ? ' order-card--done' : ''}`
+  const discovered = getDiscoveredTraits(state)
+  const hasUnknown = orderHasUnknownTrait(order, discovered)
 
-  const previewPlant = order.completedByPlant ?? previewPlantForOrder(order)
-  const previewSvg = renderBloomSVG(previewPlant, PREVIEW_RENDER_SIZE, PREVIEW_RENDER_SIZE, 'ord')
+  card.className = [
+    'order-card',
+    order.completedToday ? 'order-card--done'   : '',
+    hasUnknown           ? 'order-card--grayed' : '',
+  ].filter(Boolean).join(' ')
+
+  const previewHtml = order.completedToday
+    ? renderBloomSVG(order.completedByPlant!, PREVIEW_RENDER_SIZE, PREVIEW_RENDER_SIZE, 'ord')
+    : hasUnknown
+      ? `<div class="research-preview-unknown">📖</div>`
+      : renderBloomSVG(previewPlantForOrder(order), PREVIEW_RENDER_SIZE, PREVIEW_RENDER_SIZE, 'ord')
 
   const reqTags = order.requirements
-    .map(r => `<span class="order-req-tag ${difficultyClass(r)}">${requirementLabel(r)}</span>`)
+    .map(r => {
+      const unknown = reqIsUnknown(r, discovered)
+      return `<span class="order-req-tag ${difficultyClass(r, unknown)}">${requirementLabel(r, discovered)}</span>`
+    })
     .join('')
 
   card.innerHTML = `
-    <div class="order-card-preview">${previewSvg}</div>
+    <div class="order-card-preview">${previewHtml}</div>
     <div class="order-card-body">
       <div class="order-card-header">
         <span class="order-card-label">${t.orderBookOrderLabel(index + 1)}</span>
