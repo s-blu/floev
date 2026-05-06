@@ -37,7 +37,6 @@ const EASY_POOL: OrderRequirement[] = [
   { trait: 'petalShape',  op: 'eq',  value: 'tropfen',     difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'red',         difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'pink',        difficulty: 'easy' },
-  { trait: 'colorBucket', op: 'eq',  value: 'blue',        difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'yellowgreen', difficulty: 'easy' },
   { trait: 'colorBucket', op: 'eq',  value: 'purple',      difficulty: 'easy' },
   { trait: 'petalCount',  op: 'gte', value: 5,             difficulty: 'easy' },
@@ -53,6 +52,8 @@ const MEDIUM_POOL: OrderRequirement[] = [
   { trait: 'petalLightness', op: 'eq', value: 90,         difficulty: 'medium' },
   { trait: 'petalEffect',   op: 'eq',  value: 'bicolor',  difficulty: 'medium' },
   { trait: 'petalEffect',   op: 'eq',  value: 'gradient', difficulty: 'medium' },
+  { trait: 'colorBucket',   op: 'eq',  value: 'blue',     difficulty: 'medium' },
+  { trait: 'colorBucket',   op: 'eq',  value: 'gray',     difficulty: 'medium' },
 ]
 
 const HARD_POOL: OrderRequirement[] = [

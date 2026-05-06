@@ -180,6 +180,51 @@ export const de = {
   shopTab: 'Shop',
   shopComingSoon: 'Bald verfügbar',
 
+  // Shop — Buffs
+  shopSectionBuffs: 'Verbesserungen',
+  buffTitle: {
+    faster_growth:      'Grüner Daumen',
+    seed_luck:          'Saatenglück',
+    cooldown_reduction: 'Schnellere Erholung',
+    trade_skill:        'Verhandlungsgeschick',
+  } as Record<string, string>,
+  buffDesc: {
+    faster_growth:      (pct: number) => `Wachstumsphasen dauern ${pct}% kürzer`,
+    seed_luck:          (pct: number) => `+${pct}% Chance auf Bonussamen beim Züchten`,
+    cooldown_reduction: (pct: number) => `Ruhezeit nach Züchtung ${pct}% kürzer`,
+    trade_skill:        (pct: number) => `+${pct}% Münzen beim Verkaufen`,
+  } as Record<string, (pct: number) => string>,
+  buffBadge: {
+    faster_growth:      (pct: number) => `-${pct}% Wachstum`,
+    seed_luck:          (pct: number) => `+${pct}% Samen`,
+    cooldown_reduction: (pct: number) => `-${pct}% Ruhezeit`,
+    trade_skill:        (pct: number) => `+${pct}% Münzen`,
+  } as Record<string, (pct: number) => string>,
+  buffActiveLabel:     'Aktiv',
+  buffMaxed:           'Maximal',
+  buffUnlockRequires:  (name: string) => `Benötigt: ${name}`,
+  buffRedeemBtn:       'Einlösen',
+  buffRedeemTitle:     (name: string, level: number) => `${name} — Stufe ${level} freischalten`,
+  buffRedeemPickHint:  (n: number) => `Wähle ${n} passende Pflanze(n) aus`,
+  buffRedeemSeedHint:  (n: number) => `Wähle ${n} passende(n) Samen aus`,
+  buffRedeemConfirm:   'Einlösen',
+  buffRedeemCancel:    'Abbrechen',
+  buffRedeemProgress:  (selected: number, needed: number) => `${selected} / ${needed}`,
+  buffUnlocked:        (name: string, level: number) => `${name} Stufe ${level} freigeschaltet!`,
+  buffReqAny:          'beliebige Pflanze',
+  buffReqRarityMin:    (r: number) => ['', '', '', 'epische', 'legendäre'][r] ?? `Rarität ${r}+`,
+  buffReqEffect:       (e: string) => e,
+  buffReqEffectOr:     (effects: string[]) => effects.join(' oder '),
+  buffReqPetalCount:   (n: number) => `${n} Blütenblätter`,
+  buffReqShape:        (s: string) => s,
+  buffReqShapeOr:      (shapes: string[]) => shapes.join(' oder '),
+  buffReqColorBucket:  (b: string) => colorBucketLabels[b] ?? b,
+  buffReqColorOr:      (buckets: string[]) => buckets.map(b => colorBucketLabels[b] ?? b).join('/'),
+  buffReqCoinMin:      (n: number) => `≥ ${n} Münzen wert`,
+  buffReqCombined:     (parts: string[]) => parts.join(' + '),
+  buffReqSourcePot:    'Pflanze (blühend)',
+  buffReqSourceSeed:   'Samen aus Schublade',
+
   // Shop sidebar
   shopSectionUpgrades: 'Upgrades',
   shopItemOwned: 'Gekauft',
@@ -203,6 +248,7 @@ export const de = {
     unlock_showcase:         'Schaukasten',
     unlock_order_book:       'Auftragsbuch',
     unlock_seed_drawer:      'Saatenschublade',
+    unlock_research_book:    'Forschungsbuch',
     unlock_completion_index: 'Vollständigkeits-Index',
   } as Record<string, string>,
   upgradeDesc: {
@@ -213,6 +259,7 @@ export const de = {
     unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
     unlock_order_book:       'Täglich 3 Aufträge: Züchte und verkaufe Blüten mit bestimmten Merkmalen für Bonus-Münzen.',
     unlock_seed_drawer:      'Eine Schublade mit 20 Fächern für bis zu 100 Saaten. Beim Kreuzen besteht eine Chance auf einen Überschuss-Samen.',
+    unlock_research_book:    'Täglich 3 Forschungsaufgaben: Entdecke neue Blüten für Forschungspunkte. Nutze Punkte für dauerhafte Verbesserungen.',
     unlock_completion_index: 'Ein detaillierter Vollständigkeits-Tracker für die richtig ambitionierten Komplettisten. Sieh genau, welche Kombinationen du im Katalog hast und welche du noch entdecken kannst.',
   } as Record<string, string>,
 
@@ -287,6 +334,29 @@ export const de = {
     dots:     'Punkte',
   } as Record<string, string>,
 
+  // Research book panel
+  researchBookTitle:       'Forschungsbuch',
+  researchTaskLabel:       (n: number) => `Forschung ${n}`,
+  researchTaskDone:        'Erforscht',
+  researchPointsBadge:     (n: number) => `🔬 ${n}`,
+  researchUnknownTrait:    'Merkmal unbekannt',
+  researchTaskGrayedHint:  'Unbekannte Merkmale — forsche weiter, um diese Aufgabe zu sehen',
+  msgResearchTaskDone:     (n: number) => `Forschungsaufgabe ${n} erfüllt! +1 Forschungspunkt 🔬`,
+
+  // Research — trait badge labels
+  researchBadgeShape:      (name: string) => name,
+  researchBadgeCount:      (n: number) => `${n} Blütenbl.`,
+  researchBadgeColor:      (name: string) => name,
+  researchBadgeLightness:  (name: string) => name,
+  researchBadgeCenter:     (name: string) => name,
+  researchBadgeEffect:     (name: string) => name,
+
+  // Buff panel (research-point based)
+  buffBuyBtn:              'Kaufen',
+  buffCost:                (n: number) => `${n} 🔬`,
+  buffLevelLabel:          (n: number) => `Stufe ${n}`,
+  buffNoResearchBook:      'Forschungsbuch kaufen, um Forschungspunkte zu sammeln',
+
   // Order book panel
   orderBookTitle:       'Auftragsbuch',
   orderBookEmpty:       'Keine Aufträge verfügbar.',
@@ -321,10 +391,10 @@ export const de = {
   // Messages
   msgPotCleared: 'Topf geleert.',
   msgNewBloom: (potIndex: number, catalogNr: number, isNew: boolean, rarity: number) => {
-    const labels = ['gewöhnliche', 'ungewöhnliche', 'seltene', 'epische', 'legendäre']
+    const labels = ['▪', '●', '♦', '★', '👑']
     const rarityLabel = labels[rarity] ?? ''
     const tag = isNew ? '(Neu! ' : '('
-    return `Eine ${rarityLabel} Blüte ist in Topf ${potIndex} erblüht! ${tag}Katalog Nr. ${catalogNr})`
+    return `Eine Blüte ${rarityLabel} ist in Topf ${potIndex} erblüht! ${tag}📖 Nr. ${catalogNr})`
   },
 
   // ─── Help modal ─────────────────────────────────────────────────────────────
@@ -536,6 +606,14 @@ export const de = {
   // Reiche Ernte
   achRichHarvestTitle: (coins: number) => `${coins} Münzen wert`,
   achRichHarvestDesc: (coins: number) => `Besitze eine einzelne Blüte die mindestens ${coins} Münzen wert ist.`,
+
+  // Vollständigkeits-Index Meilensteine
+  achCiPctTitle: (pct: number) => pct === 100 ? 'Vollständig!' : `${pct}% vollständig`,
+  achCiPctDesc: (pct: number) => `Entdecke ${pct}% aller Kombinationen im Vollständigkeits-Index.`,
+
+  // Matrix-Vervollständigung (Form × Farbe × alle Blattanzahlen × alle Mittentypen)
+  achMatrixTitle: (shapeLabel: string, colorLabel: string) => `${shapeLabel} × ${colorLabel}: Matrix`,
+  achMatrixDesc: (shapeLabel: string, colorLabel: string) => `Entdecke alle Kombinationen aus Blattanzahl (3, 5, 8) und Blütenmitte für eine ${shapeLabel}-Blüte in ${colorLabel}.`,
 
   // Shared label maps
   shapeLabels: {

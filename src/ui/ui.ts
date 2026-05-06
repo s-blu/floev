@@ -36,8 +36,14 @@ import { checkAchievements } from '../engine/achievements'
 import { renderAchievements, queueAchievementToast, initAchievementsPanel } from './achievements_ui'
 import { addNotification } from './notification_log'
 import { renderOrderBook } from './orders_ui'
+import { renderBuffsPanel } from './buffs_ui'
+import { renderResearchPanel } from './research_ui'
 import { applyOrdersOnSell, initOrderBook } from '../engine/orders_engine'
-import { SURPLUS_SEED_CHANCE, SELF_POLLINATE_SURPLUS_SEED_CHANCE, MAX_SURPLUS_SEEDS_PER_PLANT, SEED_CRAFT_COOLDOWN_MS, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
+import { MAX_SURPLUS_SEEDS_PER_PLANT, MULTI_SEED_COUNT_MIN, MULTI_SEED_COUNT_MAX } from '../model/genetic_model'
+import { getEffectiveSurplusSeedChance, getEffectiveSelfPollinateSeedChance, getEffectiveCooldownMs } from '../engine/game_params'
+import { buyBuff, canBuyBuff } from '../engine/buffs_engine'
+import type { BuffId } from "../model/buffs"
+import { initResearchBook } from '../engine/research_engine'
 import { renderSeedDrawer } from './seeds_ui'
 import { getCatalogEntryForPlant } from '../engine/catalog'
 import { COIN_ICON } from './icons'
@@ -68,6 +74,7 @@ export let swapShowcasePotId: number | null = null
 export function initUI(gameState: GameState): void {
   state = gameState
   initOrderBook(state)
+  initResearchBook(state)
   bindStaticEvents()
   initAchievementsPanel()
   render()
@@ -79,12 +86,15 @@ export function initUI(gameState: GameState): void {
 }
 
 function tick(): void {
-  const changed = advancePhases(state, (plant, potIndex, isNew) => {
+  const changed = advancePhases(state, (plant, potIndex, isNew, researchTaskIndex) => {
     const entry = getCatalogEntryForPlant(state, plant)
     const catalogNr = entry
       ? [...state.catalog].sort((a, b) => a.discovered - b.discovered).indexOf(entry) + 1
       : 0
     showMsg(t.msgNewBloom(potIndex, catalogNr, isNew, entry?.rarity ?? 0))
+    if (researchTaskIndex >= 0) {
+      addNotification(t.msgResearchTaskDone(researchTaskIndex + 1))
+    }
   })
   if (changed) checkAchAndSave(state)
   render()
@@ -100,6 +110,8 @@ export function render(): void {
   renderCoins()
   renderShopSidebar()
   renderOrderBook()
+  renderResearchPanel()
+  renderBuffsPanel()
   renderSeedDrawer()
 }
 
@@ -401,7 +413,7 @@ function executeSelfPollinate(potId: number, sourceBtn?: HTMLElement | null): vo
 
   if (
     hasUpgrade(state, 'unlock_seed_drawer') &&
-    Math.random() < SELF_POLLINATE_SURPLUS_SEED_CHANCE &&
+    Math.random() < getEffectiveSelfPollinateSeedChance(state) &&
     state.seeds.length < getSeedCapacity(state)
   ) {
     const surplusSeed = selfPollinateePlant(pot.plant)
@@ -472,7 +484,7 @@ function executeSeedHomozygous(potId: number): void {
   addSeedToStorage(state, seed)
 
   pot.plant.surplusSeedsProduced = (pot.plant.surplusSeedsProduced ?? 0) + 1
-  pot.plant.breedCooldownUntil = Date.now() + SEED_CRAFT_COOLDOWN_MS
+  pot.plant.breedCooldownUntil = Date.now() + getEffectiveCooldownMs(state)
 
   showMsg(t.craftSeedObtained(1))
   checkAchAndSave(state)
@@ -524,7 +536,7 @@ function executeCraftSingleSeed(): void {
 
   potA.plant.surplusSeedsProduced = (potA.plant.surplusSeedsProduced ?? 0) + 1
   potB.plant.surplusSeedsProduced = (potB.plant.surplusSeedsProduced ?? 0) + 1
-  const cooldownUntil = Date.now() + SEED_CRAFT_COOLDOWN_MS
+  const cooldownUntil = Date.now() + getEffectiveCooldownMs(state)
   potA.plant.breedCooldownUntil = cooldownUntil
   potB.plant.breedCooldownUntil = cooldownUntil
 
@@ -611,7 +623,7 @@ function handleBreed(): void {
 
   if (
     hasUpgrade(state, 'unlock_seed_drawer') &&
-    Math.random() < SURPLUS_SEED_CHANCE &&
+    Math.random() < getEffectiveSurplusSeedChance(state) &&
     state.seeds.length < getSeedCapacity(state) &&
     (potA.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT &&
     (potB.plant.surplusSeedsProduced ?? 0) < MAX_SURPLUS_SEEDS_PER_PLANT
@@ -689,5 +701,12 @@ export function showMigrationNotice(notice: { lostCatalogEntries: number; compen
 export function formatDate(ts: number): string {
   const d = new Date(ts);
   return d.toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+export function handleBuyBuff(id: BuffId): void {
+  if (!canBuyBuff(state, id)) return
+  buyBuff(state, id)
+  checkAchAndSave(state)
+  render()
 }
 

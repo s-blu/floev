@@ -9,6 +9,7 @@ export type UpgradeId =
   | 'unlock_order_book'
   | 'unlock_seed_drawer'
   | 'unlock_completion_index'
+  | 'unlock_research_book'
 
 export interface Upgrade {
   id: UpgradeId
@@ -17,24 +18,22 @@ export interface Upgrade {
 }
 
 export const UPGRADES: Upgrade[] = [
-  { id: 'unlock_lupe',             price:  20, icon: '🔍' },
-  { id: 'unlock_order_book',       price:  40, icon: '📖' },
-  { id: 'unlock_selfpollinate',    price:  50, icon: '↺'  },
-  { id: 'unlock_rare_radar',       price:  50, icon: '✦'  },
-  { id: 'unlock_discovery_index',  price:  80, icon: '📊' },
-  { id: 'unlock_showcase',         price: 100, icon: '🪟' },
-  { id: 'unlock_seed_drawer',      price: 300, icon: '🌱' },
+  { id: 'unlock_lupe',             price:   20, icon: '🔍' },
+  { id: 'unlock_order_book',       price:   40, icon: '📖' },
+  { id: 'unlock_selfpollinate',    price:   50, icon: '↺'  },
+  { id: 'unlock_rare_radar',       price:   50, icon: '✦'  },
+  { id: 'unlock_discovery_index',  price:   80, icon: '📊' },
+  { id: 'unlock_showcase',         price:  100, icon: '🪟' },
+  { id: 'unlock_research_book',    price:  100, icon: '🔬' },
+  { id: 'unlock_seed_drawer',      price:  300, icon: '🌱' },
   { id: 'unlock_completion_index', price: 1500, icon: '💯' },
 ]
 
 // ─── Showcase ─────────────────────────────────────────────────────────────────
 
 export const SHOWCASE_INITIAL_SLOTS        = 3
-export const SHOWCASE_MAX_SLOTS            = 9
+export const SHOWCASE_MAX_SLOTS            = 12
 export const SHOWCASE_POT_BASE_ID          = 10000
-export const SHOWCASE_EXTRA_SLOT_PRICE     = 50
-export const SHOWCASE_PREMIUM_SLOT_THRESHOLD = 6
-export const SHOWCASE_PREMIUM_SLOT_PRICE   = 200
 
 // ─── Extra pot purchasing ─────────────────────────────────────────────────────
 

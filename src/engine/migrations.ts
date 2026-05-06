@@ -65,7 +65,6 @@ const migrations: Migration[] = [
   {
     version: 4,
     run(state) {
-      
       const potPlants     = state.pots.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[]
       const showcasePlants = state.showcase.map(p => p.plant).filter(Boolean) as import('../model/plant').Plant[]
       const catalogPlants = state.catalog.map(e => e.plant)
@@ -160,6 +159,16 @@ console.log('migration 4', allPlants)
       for (const entry of state.catalog) {
         entry.key = catalogKey(entry.plant)
       }
+    },
+  },
+  {
+    version: 9,
+    run(state) {
+      for (const entry of state.catalog) {
+        entry.rarityScore = calcRarityScore(entry.plant)
+        entry.rarity = calcRarity(entry.plant)
+      }
+      state.catalog.sort((a, b) => b.rarityScore - a.rarityScore)
     },
   },
 

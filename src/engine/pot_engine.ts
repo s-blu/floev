@@ -1,5 +1,6 @@
 import type { GameState, Plant } from '../model/plant';
 import { coinValueForScore } from './game';
+import { getEffectiveCoinMultiplier } from './game_params';
 import { randomPlant } from './genetic/genetic';
 import { calcCoinScore } from './rarity';
 
@@ -24,7 +25,7 @@ export function removePlant(state: GameState, potId: number): boolean {
 export function sellPlant(state: GameState, potId: number): number {
   const pot = state.pots.find(p => p.id === potId);
   if (!pot?.plant || pot.plant.phase < 4) return -1;
-  const reward = coinValueForScore(calcCoinScore(pot.plant));
+  const reward = coinValueForScore(calcCoinScore(pot.plant), getEffectiveCoinMultiplier(state));
   state.coins += reward;
   pot.plant = null;
   pot.phaseStart = null;

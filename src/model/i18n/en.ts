@@ -180,6 +180,51 @@ export const en = {
   shopTab: 'Shop',
   shopComingSoon: 'Coming soon',
 
+  // Shop — Buffs
+  shopSectionBuffs: 'Upgrades',
+  buffTitle: {
+    faster_growth:      'Fast Growth',
+    seed_luck:          'Seed Luck',
+    cooldown_reduction: 'Quick Recovery',
+    trade_skill:        'Bargaining Skill',
+  } as Record<string, string>,
+  buffDesc: {
+    faster_growth:      (pct: number) => `Growth phases take ${pct}% less time`,
+    seed_luck:          (pct: number) => `+${pct}% chance for a bonus seed when breeding`,
+    cooldown_reduction: (pct: number) => `Cooldown after breeding is ${pct}% shorter`,
+    trade_skill:        (pct: number) => `+${pct}% coins when selling`,
+  } as Record<string, (pct: number) => string>,
+  buffBadge: {
+    faster_growth:      (pct: number) => `-${pct}% Growth`,
+    seed_luck:          (pct: number) => `+${pct}% Seeds`,
+    cooldown_reduction: (pct: number) => `-${pct}% Cooldown`,
+    trade_skill:        (pct: number) => `+${pct}% Coins`,
+  } as Record<string, (pct: number) => string>,
+  buffActiveLabel:     'Active',
+  buffMaxed:           'Maxed',
+  buffUnlockRequires:  (name: string) => `Requires: ${name}`,
+  buffRedeemBtn:       'Redeem',
+  buffRedeemTitle:     (name: string, level: number) => `${name} — Unlock Level ${level}`,
+  buffRedeemPickHint:  (n: number) => `Select ${n} matching plant(s)`,
+  buffRedeemSeedHint:  (n: number) => `Select ${n} matching seed(s)`,
+  buffRedeemConfirm:   'Redeem',
+  buffRedeemCancel:    'Cancel',
+  buffRedeemProgress:  (selected: number, needed: number) => `${selected} / ${needed}`,
+  buffUnlocked:        (name: string, level: number) => `${name} level ${level} unlocked!`,
+  buffReqAny:          'any plant',
+  buffReqRarityMin:    (r: number) => ['', '', '', 'epic', 'legendary'][r] ?? `rarity ${r}+`,
+  buffReqEffect:       (e: string) => e,
+  buffReqEffectOr:     (effects: string[]) => effects.join(' or '),
+  buffReqPetalCount:   (n: number) => `${n} petals`,
+  buffReqShape:        (s: string) => s,
+  buffReqShapeOr:      (shapes: string[]) => shapes.join(' or '),
+  buffReqColorBucket:  (b: string) => colorBucketLabels[b] ?? b,
+  buffReqColorOr:      (buckets: string[]) => buckets.map(b => colorBucketLabels[b] ?? b).join('/'),
+  buffReqCoinMin:      (n: number) => `worth ≥ ${n} coins`,
+  buffReqCombined:     (parts: string[]) => parts.join(' + '),
+  buffReqSourcePot:    'blooming plant',
+  buffReqSourceSeed:   'seed from drawer',
+
   // Shop sidebar
   shopSectionUpgrades: 'Upgrades',
   shopItemOwned: 'Purchased',
@@ -203,6 +248,7 @@ export const en = {
     unlock_showcase:         'Showcase',
     unlock_order_book:       'Order Book',
     unlock_seed_drawer:      'Seed Drawer',
+    unlock_research_book:    'Research Book',
     unlock_completion_index: 'Completion Index',
   } as Record<string, string>,
   upgradeDesc: {
@@ -213,6 +259,7 @@ export const en = {
     unlock_showcase:         'A showcase with 3 display slots for your most beautiful blooms. Displayed plants cannot be sold or used for breeding.',
     unlock_order_book:       'Three daily orders: breed and sell blooms with specific traits for bonus coins.',
     unlock_seed_drawer:      'A drawer with 20 compartments for up to 100 seeds. Crossing plants gives a chance to receive a surplus seed.',
+    unlock_research_book:    'Three daily research tasks: catalog new blooms to earn research points. Spend points on permanent upgrades.',
     unlock_completion_index: 'A detailed collection tracker for the truly ambitious completists. See exactly which combinations you have in your collection and which ones you can still discover.',
   } as Record<string, string>,
 
@@ -287,6 +334,29 @@ export const en = {
     dots:     'Dots',
   } as Record<string, string>,
 
+  // Research book panel
+  researchBookTitle:       'Research Book',
+  researchTaskLabel:       (n: number) => `Research ${n}`,
+  researchTaskDone:        'Researched',
+  researchPointsBadge:     (n: number) => `🔬 ${n}`,
+  researchUnknownTrait:    'Unknown trait',
+  researchTaskGrayedHint:  'Unknown traits — keep researching to unlock this task',
+  msgResearchTaskDone:     (n: number) => `Research task ${n} done! +1 research point 🔬`,
+
+  // Research — trait badge labels
+  researchBadgeShape:      (name: string) => name,
+  researchBadgeCount:      (n: number) => `${n} petals`,
+  researchBadgeColor:      (name: string) => name,
+  researchBadgeLightness:  (name: string) => name,
+  researchBadgeCenter:     (name: string) => name,
+  researchBadgeEffect:     (name: string) => name,
+
+  // Buff panel (research-point based)
+  buffBuyBtn:              'Buy',
+  buffCost:                (n: number) => `${n} 🔬`,
+  buffLevelLabel:          (n: number) => `Level ${n}`,
+  buffNoResearchBook:      'Buy the Research Book to collect research points',
+
   // Order book panel
   orderBookTitle:       'Order Book',
   orderBookEmpty:       'No orders available.',
@@ -321,10 +391,10 @@ export const en = {
   // Messages
   msgPotCleared: 'Pot cleared.',
   msgNewBloom: (potIndex: number, catalogNr: number, isNew: boolean, rarity: number) => {
-    const labels = ['common', 'uncommon', 'rare', 'epic', 'legendary']
+    const labels = ['▪', '●', '♦', '★', '👑']
     const rarityLabel = labels[rarity] ?? ''
     const tag = isNew ? '(New! ' : '('
-    return `A ${rarityLabel} bloom in pot ${potIndex} has opened! ${tag}Catalog #${catalogNr})`
+    return `A bloom ${rarityLabel} in pot ${potIndex} has opened! ${tag}📖 #${catalogNr})`
   },
 
   // ─── Help modal ─────────────────────────────────────────────────────────────
@@ -536,6 +606,14 @@ export const en = {
   // Rich harvest
   achRichHarvestTitle: (coins: number) => `Worth ${coins} coins`,
   achRichHarvestDesc: (coins: number) => `Own a single bloom worth at least ${coins} coins.`,
+
+  // Completion Index milestones
+  achCiPctTitle: (pct: number) => pct === 100 ? 'Complete!' : `${pct}% complete`,
+  achCiPctDesc: (pct: number) => `Discover ${pct}% of all combinations in the Completion Index.`,
+
+  // Matrix completion (shape × color × all petal counts × all center types)
+  achMatrixTitle: (shapeLabel: string, colorLabel: string) => `${shapeLabel} × ${colorLabel}: Matrix`,
+  achMatrixDesc: (shapeLabel: string, colorLabel: string) => `Discover all combinations of petal count (3, 5, 8) and center type for a ${shapeLabel} bloom in ${colorLabel}.`,
 
   // Shared label maps
   shapeLabels: {

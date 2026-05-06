@@ -1,3 +1,17 @@
+# v1.9.0
+
+Improvements:
+
+- New purchasable feature: Research book
+- New purchasable: Allow up to 12 showcase pots
+- Add achievements based on completion index
+- Shorten the "new bloom" message a bit
+
+Bugs:
+- Middle-difficult lanzett flowers were scored too high on rarity
+- Always show at least one achievement wasn't working
+
+
 # v1.8.0
 
 Improvements:

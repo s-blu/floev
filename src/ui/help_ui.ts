@@ -20,6 +20,10 @@ export function initHelp(): void {
   }
 }
 
+export function showHelpEventListener(): void {
+  showHelp();
+}
+
 export function showHelp(expandChangelog = false): void {
   document.getElementById('help-modal')?.remove();
 

@@ -265,3 +265,5 @@ function renderDecoSection(): string {
       <div class="pot-shape-row">${effectCards}</div>
     </div>`
 }
+
+
