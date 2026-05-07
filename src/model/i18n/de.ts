@@ -763,7 +763,7 @@ discoveryIndexTitle: 'Entdeckungs-Index',
     `${shapes}/${totalShapes} Kombinationen · ${colors}/${totalColors} Farben`,
 
 migrationNoticeTitle: 'Spielstand aktualisiert',
-migrationNoticeText: 'Die Blütenblatt-Mechanik wurde überarbeitet und auf drei Stufen vereinfacht (3, 5, 8). Dadurch sind einige Katalogeinträge entfallen und bestehende Blüten wurden neu berechnet.',
+migrationNoticeText: 'Der Spielstand wurde aktualisiert. Einige Katalogeinträge wurden zusammengeführt oder entfernt.',
 migrationNoticeDetails: (lost: number, coins: number) => `${lost} ${lost === 1 ? 'Katalogeintrag' : 'Katalogeinträge'} entfallen. +${coins} Münzen als Entschädigung gutgeschrieben`,
 migrationNoticeOk: 'Verstanden',
 
