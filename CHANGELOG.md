@@ -1,3 +1,9 @@
+# v1.9.1
+
+Bugs:
+- Research tasks required a combination of lightness and effect
+- Catalog recorded flowers with effect as duplicates (you get a compensation for falsy entries)
+
 # v1.9.0
 
 Improvements:
