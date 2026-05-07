@@ -1,5 +1,6 @@
 import type { GameState } from '../model/plant'
 import type { UpgradeId, PotDesign } from '../model/shop'
+import { initCollectionsState } from './collections_engine'
 import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID} from '../model/shop'
 import { INITIAL_POT_COUNT } from './game'
 import { gardenSettings } from '../model/garden_settings'
@@ -25,6 +26,10 @@ export function buyUpgrade(state: GameState, id: UpgradeId): boolean {
     for (let i = 0; i < SHOWCASE_INITIAL_SLOTS; i++) {
       state.showcase.push({ id: SHOWCASE_POT_BASE_ID + i, plant: null, phaseStart: null })
     }
+  }
+
+  if (id === 'unlock_collections') {
+    initCollectionsState(state)
   }
 
   return true

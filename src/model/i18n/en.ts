@@ -241,6 +241,7 @@ export const en = {
 
   // Shop — upgrade labels
   upgradeTitle: {
+    unlock_collections:      'Collection',
     unlock_lupe:             'Genetics Loupe',
     unlock_selfpollinate:    'Self-pollination',
     unlock_rare_radar:       'Rarity Radar',
@@ -261,6 +262,7 @@ export const en = {
     unlock_seed_drawer:      'A drawer with 20 compartments for up to 100 seeds. Crossing plants gives a chance to receive a surplus seed.',
     unlock_research_book:    'Three daily research tasks: catalog new blooms to earn research points. Spend points on permanent upgrades.',
     unlock_completion_index: 'A detailed collection tracker for the truly ambitious completists. See exactly which combinations you have in your collection and which ones you can still discover.',
+    unlock_collections:      'Curated herbariums: fill themed sets with real blooms from your garden and put them on display.',
   } as Record<string, string>,
 
   // Seed drawer
@@ -767,7 +769,36 @@ migrationNoticeText: 'The petal mechanics have been revised and simplified into 
 migrationNoticeDetails: (lost: number, coins: number) => `${lost} catalogue entr${lost === 1 ? 'y' : 'ies'} removed. +${coins} gold credited`,
 migrationNoticeOk: 'Got it',
 
-petalNames: {
+// ─── Collections ──────────────────────────────────────────────────────────────
+
+  collectionsPanelTitle:   'Collection',
+  collSlotFill:            'Place bloom',
+  collSlotEmpty:           'Empty',
+  collCompleted:           'Complete!',
+  collLockedUntil:         (n: number) => `Unlocks at ${n} discoveries`,
+  collLockedAfter:         (name: string) => `Unlocks after: ${name}`,
+  collDisplayTitle:        'Display',
+  collLagerTitle:          'Storage',
+  collMoveToDisplay:       'Display',
+  collMoveFromDisplay:     'Remove',
+  collFillDialogTitle:     'Select a bloom',
+  collFillDialogEmpty:     'No matching blooming plants in the garden.',
+  collFillWarning:         'The plant will be taken from its pot. This is permanent.',
+  collFillConfirm:         'Place',
+  collFillCancel:          'Cancel',
+  collCompletedToast:      (title: string) => `Collection complete: ${title}!`,
+
+  collCriteriaAny:         'Any',
+
+  collectionDefs: {
+    erstes_herbarium:  { title: 'First Herbarium',   desc: 'Three blooms in classic primary colors — a simple introduction.' },
+    mondlichtnacht:    { title: 'Moonlit Night',     desc: 'Four dark blooms in cool tones — like a garden in moonlight.' },
+    die_fuenf_formen:  { title: 'The Five Shapes',   desc: 'One bloom of each petal shape — from common to legendarily rare.' },
+    weisser_garten:    { title: 'White Garden',      desc: 'Three white blooms in different shapes.' },
+    staubblatt_trio:   { title: 'Stamen Trio',       desc: 'Three blooms with rare stamen centers in different colors.' },
+  } as Record<string, { title: string; desc: string }>,
+
+  petalNames: {
   round: {
     3: 'Sparse Orbella',
     5: 'Summer Orbella',

@@ -5,6 +5,7 @@ import { USE_FIXED_PLANTS, DEV_PHASE_DURATION_MS, DEV_STARTING_COINS, DEBUG_PLAN
 import { MAX_SEED_STORAGE, SAATENSCHUBLADE_SLOTS } from '../model/genetic_model'
 import { getSeedSlotCount, getSeedCapacity } from './seed_storage_engine'
 import { runMigrations, LATEST_MIGRATION_VERSION } from './migrations'
+import { initCollectionsState } from './collections_engine'
 import { getEffectivePhaseDurations } from './game_params'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -91,6 +92,7 @@ export function loadState(): GameState {
         parsed.seedSlotLabels = Array.from({ length: expectedSlotCount }, (_, i) => existing[i] ?? [])
       }
 
+      if (!parsed.collections) initCollectionsState(parsed)
       if (runMigrations(parsed)) saveState(parsed)
       return parsed
     }

@@ -1,0 +1,368 @@
+/* ── Collections panel ──────────────────────────────────────────────────────── */
+
+.collections-body {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.625rem 0.75rem 0.75rem;
+}
+
+.coll-panel--open .collections-body {
+  display: flex;
+}
+
+.coll-empty-hint {
+  color: var(--text3);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ── Collection grid ─────────────────────────────────────────────────────────── */
+
+.coll-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* ── Collection card ─────────────────────────────────────────────────────────── */
+
+.coll-card {
+  background: var(--bg3);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.coll-card--complete {
+  border-color: var(--accent, #7a9e7e);
+}
+
+.coll-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.coll-card-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text1);
+}
+
+.coll-card-badge {
+  font-size: 10px;
+  background: var(--accent, #7a9e7e);
+  color: #fff;
+  border-radius: 99px;
+  padding: 1px 6px;
+}
+
+.coll-card-desc {
+  font-size: 12px;
+  color: var(--text3);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── Herbarium frame ─────────────────────────────────────────────────────────── */
+
+.coll-herbarium-frame {
+  position: relative;
+  height: 200px;
+  background: #fdf8f0;
+  border: 7px solid #8b6343;
+  outline: 1.5px solid #6b4828;
+  border-radius: 2px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.3),
+    0 1px 3px rgba(0,0,0,0.10);
+  overflow: hidden;
+}
+
+/* ── Slots ───────────────────────────────────────────────────────────────────── */
+
+.coll-slot {
+  position: absolute;
+  /* size set via inline style */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* anchor transform at center */
+  transform-origin: center center;
+}
+
+.coll-slot--filled {
+  background: transparent;
+  pointer-events: none;
+}
+
+.coll-slot--filled svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.15));
+}
+
+.coll-slot--empty {
+  border: 2px dashed rgba(139, 99, 67, 0.35);
+  border-radius: 50%;
+  background: rgba(139, 99, 67, 0.04);
+  cursor: pointer;
+  gap: 3px;
+  padding: 6px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.coll-slot--empty:hover {
+  border-color: rgba(139, 99, 67, 0.7);
+  background: rgba(139, 99, 67, 0.08);
+}
+
+.coll-slot-label {
+  font-size: 11px;
+  color: var(--text2);
+  text-align: center;
+  line-height: 1.3;
+  word-break: break-word;
+  padding: 0 2px;
+}
+
+.coll-slot-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  background: var(--bg3);
+  border-radius: 99px;
+  padding: 1px 6px;
+  line-height: 1.4;
+  min-width: 18px;
+  text-align: center;
+}
+
+.coll-slot-badge--zero {
+  color: var(--text3);
+  background: transparent;
+}
+
+.coll-slot--empty:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.coll-slot--empty:disabled:hover {
+  border-color: var(--border);
+  background: var(--bg2);
+}
+
+/* ── Slot fill dialog ────────────────────────────────────────────────────────── */
+
+.coll-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.coll-dialog {
+  background: var(--bg1, #faf9f6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  max-width: 340px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coll-dialog-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text1);
+}
+
+.coll-dialog-blooms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.coll-dialog-bloom-btn {
+  width: 68px;
+  height: 68px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg2);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.coll-dialog-bloom-btn:hover {
+  border-color: var(--text2);
+  background: var(--bg3);
+}
+
+.coll-dialog-empty {
+  font-size: 13px;
+  color: var(--text3);
+  margin: 0;
+}
+
+.coll-dialog-warning {
+  font-size: 11px;
+  color: var(--text3);
+  margin: 0;
+  font-style: italic;
+}
+
+.coll-dialog-cancel {
+  align-self: flex-end;
+  font-size: 12px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 4px);
+  padding: 4px 12px;
+  cursor: pointer;
+  color: var(--text2);
+}
+
+.coll-dialog-cancel:hover {
+  background: var(--bg2);
+}
+
+/* ── Display area ────────────────────────────────────────────────────────────── */
+
+.coll-display-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 0.5px solid var(--border);
+  padding-top: 10px;
+}
+
+.coll-display-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.coll-display-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.coll-display-slot {
+  width: 100px;
+  min-height: 90px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg1, #faf9f6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 4px 4px 6px;
+  position: relative;
+  gap: 4px;
+}
+
+.coll-display-slot--empty {
+  border-style: dashed;
+  background: var(--bg2);
+}
+
+.coll-display-flowers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  align-items: center;
+}
+
+.coll-display-flower {
+  display: flex;
+}
+
+.coll-display-label {
+  font-size: 10px;
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.coll-display-remove-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text3);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coll-display-remove-btn:hover {
+  background: var(--bg3);
+  color: var(--text1);
+}
+
+/* ── Lager ───────────────────────────────────────────────────────────────────── */
+
+.coll-lager {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.coll-lager-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.coll-lager-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.coll-lager-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text2);
+}

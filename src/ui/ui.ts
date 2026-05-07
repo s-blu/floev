@@ -45,6 +45,7 @@ import { buyBuff, canBuyBuff } from '../engine/buffs_engine'
 import type { BuffId } from "../model/buffs"
 import { initResearchBook } from '../engine/research_engine'
 import { renderSeedDrawer } from './seeds_ui'
+import { renderCollections } from './collections_ui'
 import { getCatalogEntryForPlant } from '../engine/catalog'
 import { COIN_ICON } from './icons'
 import { renderSeedIcon } from '../engine/renderer/seed_renderer'
@@ -113,6 +114,7 @@ export function render(): void {
   renderResearchPanel()
   renderBuffsPanel()
   renderSeedDrawer()
+  renderCollections()
 }
 
 // ─── Shop action handlers ─────────────────────────────────────────────────────
