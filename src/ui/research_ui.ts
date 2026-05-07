@@ -64,26 +64,40 @@ function traitBadge(label: string, unknown: boolean, extraClass = ''): string {
   return `<span class="${cls}">${unknown ? t.researchUnknownTrait : label}</span>`
 }
 
+function groupNameForBucket(colorBucket: string): string {
+  const hue = BUCKET_HUE[colorBucket]
+  // Achromatic sentinels are negative; colorLabel uses 1=white, 2=gray
+  const labelKey = hue === ACHROMATIC_HUE_WHITE ? 1 : hue === ACHROMATIC_HUE_GRAY ? 2 : hue
+  return (t.colorLabel as Record<number, { hueName: string }>)[labelKey]?.hueName
+    ?? t.colorBucketLabels[colorBucket]
+    ?? colorBucket
+}
+
 function buildTraitBadges(spec: ResearchTaskSpec, discovered: DiscoveredTraits): string {
   const shapeUnknown  = !discovered.shapes.has(spec.shape)
   const colorUnknown  = !discovered.colorBuckets.has(spec.colorBucket)
   const centerUnknown = !discovered.centerTypes.has(spec.centerType)
-  const effectUnknown = !discovered.effects.has(spec.effect)
 
   const shapeName  = t.shapeLabels[spec.shape]  ?? spec.shape
-  const colorName  = t.colorBucketLabels[spec.colorBucket] ?? spec.colorBucket
-  const lightnessName = spec.colorBucket !== 'white' ? (t.lightnessLabels[spec.lightness] ?? String(spec.lightness)) : ''
-  const colorLabel = lightnessName ? `${lightnessName} (${colorName})` : colorName
+  const groupName  = groupNameForBucket(spec.colorBucket)
   const centerName = t.centerTypeLabels[spec.centerType] ?? spec.centerType
-  const effectName = t.effectLabels[spec.effect] ?? spec.effect
+
+  // Effect and lightness share one slot: effect wins if non-'none'
+  const showEffect = spec.effect !== 'none'
+  const effectOrLightnessName = showEffect
+    ? (t.effectLabels[spec.effect] ?? spec.effect)
+    : spec.colorBucket !== 'white' ? (t.lightnessLabels[spec.lightness] ?? String(spec.lightness)) : ''
+  const effectOrLightnessUnknown = showEffect && !discovered.effects.has(spec.effect)
 
   const parts = [
     traitBadge(t.researchBadgeShape(shapeName), shapeUnknown),
     traitBadge(t.researchBadgeCount(spec.petalCount), false),
-    traitBadge(t.researchBadgeColor(colorLabel), colorUnknown),
+    traitBadge(t.researchBadgeColor(groupName), colorUnknown),
     traitBadge(t.researchBadgeCenter(centerName), centerUnknown),
-    traitBadge(t.researchBadgeEffect(effectName), effectUnknown),
   ]
+  if (effectOrLightnessName) {
+    parts.push(traitBadge(t.researchBadgeEffect(effectOrLightnessName), effectOrLightnessUnknown))
+  }
   return parts.join('')
 }
 
