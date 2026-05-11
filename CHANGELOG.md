@@ -1,3 +1,8 @@
+# v1.9.2
+
+Contains the changes of 1.9.1
+Check if your hotfix branch has merged properly before putting up a release. :|
+
 # v1.9.1
 
 Bugs:
