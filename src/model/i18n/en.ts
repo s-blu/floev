@@ -763,7 +763,7 @@ discoveryIndexTitle: 'Discovery Index',
     `${shapes}/${totalShapes} combinations · ${colors}/${totalColors} colours`,
 
 migrationNoticeTitle: 'Save updated',
-migrationNoticeText: 'The petal mechanics have been revised and simplified into three levels (3, 5, 8). As a result, some catalog entries have been removed and existing flowers have been recalculated.',
+migrationNoticeText: 'Your save has been updated. Some catalogue entries have been merged or removed.',
 migrationNoticeDetails: (lost: number, coins: number) => `${lost} catalogue entr${lost === 1 ? 'y' : 'ies'} removed. +${coins} gold credited`,
 migrationNoticeOk: 'Got it',
 

@@ -171,6 +171,31 @@ console.log('migration 4', allPlants)
       state.catalog.sort((a, b) => b.rarityScore - a.rarityScore)
     },
   },
+  {
+    version: 10,
+    run(state) {
+      const COMPENSATION_PER_LOST_ENTRY = 10
+
+      const seen = new Set<string>()
+      const deduped: CatalogEntry[] = []
+      let lostEntries = 0
+      for (const entry of state.catalog) {
+        entry.key = catalogKey(entry.plant)
+        if (!seen.has(entry.key)) { seen.add(entry.key); deduped.push(entry) }
+        else lostEntries++
+      }
+      state.catalog = deduped
+      state.catalog.sort((a, b) => b.rarityScore - a.rarityScore)
+      state.coins += lostEntries * COMPENSATION_PER_LOST_ENTRY
+
+      if (lostEntries > 0) {
+        state.pendingMigrationNotice = {
+          lostCatalogEntries: lostEntries,
+          compensation: lostEntries * COMPENSATION_PER_LOST_ENTRY,
+        }
+      }
+    },
+  },
 
 ]
 

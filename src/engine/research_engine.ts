@@ -77,6 +77,7 @@ function specMatchesPlant(spec: ResearchTaskSpec, plant: Plant): boolean {
   const hue = expressedHue(plant.petalHue)
   if (hueBucket(hue)                        !== spec.colorBucket) return false
   if (spec.colorBucket === 'white') return true   // white has no lightness variation
+  if (spec.effect !== 'none') return true          // effect overrides lightness visually
   return expressedLightness(plant.petalLightness) === spec.lightness
 }
 
