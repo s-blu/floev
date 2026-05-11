@@ -103,7 +103,7 @@ function buildTraitBadges(spec: ResearchTaskSpec, discovered: DiscoveredTraits):
 
 // ─── Task card builder ────────────────────────────────────────────────────────
 
-function buildTaskCard(task: ResearchTask, index: number): HTMLElement {
+function buildTaskCard(task: ResearchTask, index: number, context: string): HTMLElement {
   const card = document.createElement('div')
   const discovered = getDiscoveredTraits(state)
   const hasUnknown = !task.completedToday && specHasUnknownTrait(task.spec, discovered)
@@ -115,10 +115,10 @@ function buildTaskCard(task: ResearchTask, index: number): HTMLElement {
   ].filter(Boolean).join(' ')
 
   const previewHtml = task.completedToday
-    ? renderBloomSVG(task.completedByPlant!, PREVIEW_SIZE, PREVIEW_SIZE, 'res')
+    ? renderBloomSVG(task.completedByPlant!, PREVIEW_SIZE, PREVIEW_SIZE, context)
     : hasUnknown
       ? `<div class="research-preview-unknown">🔬</div>`
-      : renderBloomSVG(previewPlantForResearch(task.spec), PREVIEW_SIZE, PREVIEW_SIZE, 'res')
+      : renderBloomSVG(previewPlantForResearch(task.spec), PREVIEW_SIZE, PREVIEW_SIZE, context)
 
   const badgesHtml = buildTraitBadges(task.spec, discovered)
 
@@ -185,7 +185,7 @@ export function renderResearchPanel(): void {
   body.appendChild(pointsBadge)
 
   for (let i = 0; i < tasks.length; i++) {
-    body.appendChild(buildTaskCard(tasks[i], i))
+    body.appendChild(buildTaskCard(tasks[i], i, `res${i}`))
   }
 }
 
