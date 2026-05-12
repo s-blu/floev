@@ -130,21 +130,23 @@ function buildShine(cx: number, cy: number, size: number, shape: PetalShape): st
 function buildColorHint(plant: Plant, cx: number, cy: number, h: number, size: number): string {
   let hash = 0
   for (let i = 0; i < plant.id.length; i++) hash = (hash * 31 + plant.id.charCodeAt(i)) & 0xffff
-  if ((hash & 0xff) > 102) return ''
+  if ((hash & 0xff) < 76) return ''
 
   const { h: hue, s } = expressedColor(plant.petalHue, plant.petalLightness)
   if (s === 0) return ''
 
-  const opacity = 0.3// 0.352 + ((hash >> 8) & 0x3f) / 63 * 0.20
+  const ery = h * 0.52
+  const w = size * 0.072
   const dir = (hash >> 6) & 1 ? 1 : -1
-  const ex = cx + dir * size * 0.07
-  const ey = cy - h * 0.79
-  const erx = size * 0.038
-  const ery = h * 0.22
-  const angle = dir * -18
+  // tips of the lens sit at cx; the body extends to the side so the ridge covers the inner edge
+  const ex = cx + dir * w
+  const sw = Math.max(0.6, size * 0.028)
+
   return `
-    <ellipse cx="${ex}" cy="${ey}" rx="${erx * 2.4}" ry="${ery * 1.1}" fill="hsla(${hue},72%,65%,${(opacity * 0.38).toFixed(2)})" transform="rotate(${angle},${ex},${ey})"/>
-    <ellipse cx="${ex}" cy="${ey}" rx="${erx}" ry="${ery}" fill="hsla(${hue},72%,65%,${opacity.toFixed(2)})" transform="rotate(${angle},${ex},${ey})"/>`
+    <path d="M ${cx} ${cy - ery} C ${ex + dir*w} ${cy - ery * 0.3} ${ex + dir*w} ${cy + ery * 0.3} ${cx} ${cy + ery} C ${ex - dir*w} ${cy + ery * 0.3} ${ex - dir*w} ${cy - ery * 0.3} ${cx} ${cy - ery} Z"
+      fill="hsla(${hue},72%,65%,0.35)" stroke="rgba(48,20,6,0.40)" stroke-width="${sw}"/>
+    <path d="M ${cx} ${cy - ery * 0.62} C ${ex + dir*w*0.6} ${cy - ery * 0.18} ${ex + dir*w*0.6} ${cy + ery * 0.18} ${cx} ${cy + ery * 0.62} C ${ex - dir*w*0.6} ${cy + ery * 0.18} ${ex - dir*w*0.6} ${cy - ery * 0.18} ${cx} ${cy - ery * 0.62} Z"
+      fill="hsla(${hue},72%,75%,0.55)"/>`
 }
 
 function buildMarkings(plant: Plant, score: number, cx: number, cy: number, size: number, shape: PetalShape): string {
@@ -164,7 +166,7 @@ function buildMarkings(plant: Plant, score: number, cx: number, cy: number, size
     stroke="${ridgeStroke}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`
   
 
-  if (score < 50) return centerRidge + colorHint
+  if (score < 50) return colorHint + centerRidge
 
   const off = size * 0.092
 
@@ -191,7 +193,7 @@ function buildMarkings(plant: Plant, score: number, cx: number, cy: number, size
         stroke="${sideStroke}" stroke-width="${sideSw}" fill="none" stroke-linecap="round"/>`
   }
 
-  if (!isLegendary) return centerRidge + colorHint + sideRidges
+  if (!isLegendary) return colorHint + centerRidge + sideRidges
 
   const r = Math.max(2.4, size * 0.060)
   const glowR = r * 1.8
@@ -201,5 +203,5 @@ function buildMarkings(plant: Plant, score: number, cx: number, cy: number, size
     <circle cx="${cx}" cy="${cy + h*0.42}" r="${glowR * 0.65}" fill="rgba(218,162,40,0.30)"/>
     <circle cx="${cx}" cy="${cy + h*0.42}" r="${r * 0.62}" fill="rgba(218,162,40,0.92)"/>`
 
-  return centerRidge + colorHint + sideRidges + dots
+  return colorHint + centerRidge + sideRidges + dots
 }
