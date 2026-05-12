@@ -1,3 +1,11 @@
+# v1.9.3
+
+Bugs:
+- Research task do not fulfill on already discovered bred plants
+- Color hints on seeds are hard to see
+- Buff panel was visible despite not available research book
+- preview on research tasks were wrong in some cases
+
 # v1.9.2
 
 Contains the changes of 1.9.1
