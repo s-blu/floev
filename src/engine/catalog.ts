@@ -29,7 +29,10 @@ export function getCatalogEntryForPlant(state: GameState, plant: Plant): Catalog
 
 export function addToCatalog(state: GameState, plant: Plant): { isNew: boolean; researchTaskIndex: number } {
   const key = catalogKey(plant)
-  if (state.catalog.find(e => e.key === key)) return { isNew: false, researchTaskIndex: -1 }
+  if (state.catalog.find(e => e.key === key)) {
+    const researchTaskIndex = checkResearchOnCatalog(state, plant)
+    return { isNew: false, researchTaskIndex }
+  }
   const rarityScore = calcRarityScore(plant)
   const entry: CatalogEntry = {
     key,
