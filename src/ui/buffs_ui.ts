@@ -34,7 +34,8 @@ export function renderBuffsPanel(): void {
   const panel = document.getElementById('buffs-panel')
   if (!panel) return
 
-  const hasAnyBuff = BUFFS.some(def => !def.unlock_required || hasUpgrade(state, def.unlock_required))
+  const hasResearchBook = hasUpgrade(state, 'unlock_research_book')
+  const hasAnyBuff = hasResearchBook && BUFFS.some(def => !def.unlock_required || hasUpgrade(state, def.unlock_required))
   panel.style.display = hasAnyBuff ? '' : 'none'
   if (!hasAnyBuff) return
 
