@@ -92,12 +92,13 @@ function buildTraitBadges(spec: ResearchTaskSpec, discovered: DiscoveredTraits):
   const parts = [
     traitBadge(t.researchBadgeShape(shapeName), shapeUnknown),
     traitBadge(t.researchBadgeCount(spec.petalCount), false),
-    traitBadge(t.researchBadgeColor(groupName), colorUnknown),
     traitBadge(t.researchBadgeCenter(centerName), centerUnknown),
+    traitBadge(t.researchBadgeColor(groupName), colorUnknown)
   ]
   if (effectOrLightnessName) {
     parts.push(traitBadge(t.researchBadgeEffect(effectOrLightnessName), effectOrLightnessUnknown))
   }
+
   return parts.join('')
 }
 
