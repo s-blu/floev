@@ -7,6 +7,7 @@ import { initBuffsPanel } from './ui/buffs_ui'
 import { initOrderBookPanel } from './ui/orders_ui'
 import { initResearchPanel } from './ui/research_ui'
 import { initSeedDrawer } from './ui/seeds_ui'
+import { initCollectionsPanel } from './ui/collections_ui'
 import { initNotificationFooter } from './ui/notification_log'
 import { t } from './model/i18n'
 import { COIN_ICON } from './ui/icons'
@@ -31,6 +32,16 @@ app.innerHTML = `
   <section id="showcase-section" style="display:none">
     <p class="section-title">${t.sectionShowcase}</p>
     <div class="pots-row" id="showcase-row"></div>
+  </section>
+
+  <section class="ach-section-wrapper" id="collections-panel" style="display:none">
+    <div class="ach-section-header">
+      <p class="section-title" style="margin-bottom:0">${t.collectionsPanelTitle}</p>
+      <button class="ach-toggle-btn coll-toggle-btn" title="${t.collectionsPanelTitle}">
+        <span class="ach-chevron coll-chevron">▾</span>
+      </button>
+    </div>
+    <div class="collections-body"></div>
   </section>
 
   <section>
@@ -192,6 +203,7 @@ if (migrationNotice && migrationNotice.lostCatalogEntries) {
 initOrderBookPanel()
 initResearchPanel()
 initBuffsPanel()
+initCollectionsPanel()
 
 // Help modal — show on first visit, bind ? button
 initHelp()

@@ -241,6 +241,7 @@ export const de = {
 
   // Shop — Upgrade-Beschriftungen
   upgradeTitle: {
+    unlock_collections:      'Sammlung',
     unlock_lupe:             'Genetik-Lupe',
     unlock_selfpollinate:    'Selbstbestäubung',
     unlock_rare_radar:       'Seltenheits-Radar',
@@ -261,6 +262,7 @@ export const de = {
     unlock_seed_drawer:      'Eine Schublade mit 20 Fächern für bis zu 100 Saaten. Beim Kreuzen besteht eine Chance auf einen Überschuss-Samen.',
     unlock_research_book:    'Täglich 3 Forschungsaufgaben: Entdecke neue Blüten für Forschungspunkte. Nutze Punkte für dauerhafte Verbesserungen.',
     unlock_completion_index: 'Ein detaillierter Vollständigkeits-Tracker für die richtig ambitionierten Komplettisten. Sieh genau, welche Kombinationen du im Katalog hast und welche du noch entdecken kannst.',
+    unlock_collections:      'Kuratierte Herbarien: Befülle thematische Sets mit echten Blüten aus deinem Garten und stelle sie aus.',
   } as Record<string, string>,
 
   // Saatenschublade
@@ -767,7 +769,36 @@ migrationNoticeText: 'Der Spielstand wurde aktualisiert. Einige Katalogeinträge
 migrationNoticeDetails: (lost: number, coins: number) => `${lost} ${lost === 1 ? 'Katalogeintrag' : 'Katalogeinträge'} entfallen. +${coins} Münzen als Entschädigung gutgeschrieben`,
 migrationNoticeOk: 'Verstanden',
 
-petalNames: {
+// ─── Collections ──────────────────────────────────────────────────────────────
+
+  collectionsPanelTitle:   'Sammlung',
+  collSlotFill:            'Blüte einlegen',
+  collSlotEmpty:           'Leer',
+  collCompleted:           'Fertig!',
+  collLockedUntil:         (n: number) => `Freischaltung ab ${n} Entdeckungen`,
+  collLockedAfter:         (name: string) => `Freischaltung nach: ${name}`,
+  collDisplayTitle:        'Ausstellung',
+  collLagerTitle:          'Lager',
+  collMoveToDisplay:       'Ausstellen',
+  collMoveFromDisplay:     'Abhängen',
+  collFillDialogTitle:     'Blüte auswählen',
+  collFillDialogEmpty:     'Keine passenden blühenden Pflanzen im Garten.',
+  collFillWarning:         'Die Pflanze wird aus dem Topf entnommen. Dies ist endgültig.',
+  collFillConfirm:         'Einlegen',
+  collFillCancel:          'Abbrechen',
+  collCompletedToast:      (title: string) => `Sammlung abgeschlossen: ${title}!`,
+
+  collCriteriaAny:         'Beliebig',
+
+  collectionDefs: {
+    erstes_herbarium:  { title: 'Erstes Herbarium',    desc: 'Drei Blüten in den klassischen Grundfarben — ein einfacher Einstieg.' },
+    mondlichtnacht:    { title: 'Mondlichtnacht',      desc: 'Vier dunkle Blüten in kühlen Tönen — wie ein Garten im Mondschein.' },
+    die_fuenf_formen:  { title: 'Die fünf Formen',     desc: 'Je eine Blüte jeder Blütenform — von gewöhnlich bis legendär selten.' },
+    weisser_garten:    { title: 'Weißer Garten',       desc: 'Drei weiße Blüten in verschiedenen Formen.' },
+    staubblatt_trio:   { title: 'Staubblatt-Trio',     desc: 'Drei Blüten mit seltener Staubblatt-Mitte in verschiedenen Farben.' },
+  } as Record<string, { title: string; desc: string }>,
+
+  petalNames: {
   round: {
     3: 'Karge Orbella',
     5: 'Sommerorbella',

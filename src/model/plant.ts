@@ -4,6 +4,7 @@ import { Rarity } from "./rarity_model"
 import type { OrderBookState } from "./orders"
 import type { ResearchBookState } from "./research"
 import type { PotShape } from "./shop"
+import type { CollectionsState } from "./collections"
 
 export interface HSLColor {
   h: number
@@ -102,6 +103,7 @@ export interface GameState {
   orderBook?: OrderBookState
   researchBook?: ResearchBookState
   researchPoints?: number
+  collections?: CollectionsState
   migrationVersion?: number
   pendingMigrationNotice?: { lostCatalogEntries: number; compensation: number }
   buffs?: Record<string, number>
