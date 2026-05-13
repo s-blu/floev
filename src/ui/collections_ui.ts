@@ -116,22 +116,22 @@ const HERBARIUM_POSITIONS: Record<number, { x: number; y: number; rot: number; s
     { x: 48, y: 38, rot:  10, size: 72 },
   ],
   3: [
-    { x:  4, y:  5, rot: -16, size: 64 },
-    { x: 48, y:  4, rot:  12, size: 62 },
-    { x: 24, y: 52, rot:  -5, size: 68 },
+    { x:  5, y:  5, rot: -16, size: 76 },
+    { x: 48, y:  4, rot:  12, size: 74 },
+    { x: 24, y: 52, rot:  -5, size: 78 },
   ],
   4: [
-    { x:  3, y:  4, rot: -13, size: 58 },
-    { x: 46, y:  3, rot:  11, size: 58 },
-    { x:  2, y: 50, rot:   9, size: 58 },
-    { x: 45, y: 49, rot:  -9, size: 58 },
+    { x:  12, y:  10, rot: -15, size: 62 },
+    { x: 50, y:  12, rot:  13, size: 56 },
+    { x:  8, y: 50, rot:  10, size: 58 },
+    { x: 55, y: 55, rot: -11, size: 64 },
   ],
   5: [
-    { x:  2, y:  3, rot: -13, size: 54 },
-    { x: 46, y:  2, rot:  11, size: 54 },
-    { x: 23, y: 36, rot:  -4, size: 56 },
-    { x:  1, y: 53, rot:   8, size: 54 },
-    { x: 45, y: 51, rot: -10, size: 54 },
+    { x:  6, y:  6, rot: -13, size: 58 },
+    { x: 55, y:  4, rot:  11, size: 58 },
+    { x: 30, y: 30, rot:  -4, size: 60 },
+    { x:  6, y: 62, rot:   8, size: 62 },
+    { x: 60, y: 61, rot: -10, size: 56 },
   ],
 }
 
@@ -176,7 +176,7 @@ function buildCollectionCard(def: CollectionDef, instance: CollectionInstanceSta
       ${isComplete ? `<span class="coll-card-badge">${t.collCompleted}</span>` : ''}
     </div>
     <p class="coll-card-desc">${info.desc}</p>
-    <div class="coll-herbarium-frame">
+    <div class="coll-herbarium-frame coll-herbarium-frame--slots-${def.slots.length}">
       ${slotsHtml}
     </div>`
 

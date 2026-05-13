@@ -86,6 +86,10 @@
   overflow: hidden;
 }
 
+.coll-herbarium-frame--slots-2 { height: 160px; }
+.coll-herbarium-frame--slots-3 { height: 180px; }
+.coll-herbarium-frame--slots-5 { height: 240px; }
+
 /* ── Slots ───────────────────────────────────────────────────────────────────── */
 
 .coll-slot {
