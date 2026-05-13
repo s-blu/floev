@@ -8,9 +8,6 @@ import {
   getEligiblePots,
   fillSlot,
   checkAllCollectionCompletions,
-  moveToDisplay,
-  moveFromDisplay,
-  COLLECTIONS_DISPLAY_SLOTS,
 } from '../engine/collections_engine'
 import { getCollectionDef } from '../engine/collection_defs'
 import type { CollectionDef, CollectionInstanceState, SlotCriteria } from '../model/collections'
@@ -88,13 +85,8 @@ function openSlotFillDialog(collectionId: string, slotIndex: number, criteria: S
     if (fillSlot(state, collectionId, slotIndex, potId)) {
       const completed = checkAllCollectionCompletions(state)
       for (const id of completed) {
-        const def = getCollectionDef(id)
         const title = (t.collectionDefs as Record<string, { title: string; desc: string }>)[id]?.title ?? id
         addNotification(t.collCompletedToast(title))
-        if (def && state.collections) {
-          const freeSlot = state.collections.displaySlots.findIndex(s => s === null)
-          if (freeSlot >= 0) moveToDisplay(state, id, freeSlot)
-        }
       }
       saveState(state)
       closeDialog()
@@ -171,13 +163,12 @@ function buildCollectionCard(def: CollectionDef, instance: CollectionInstanceSta
   }).join('')
 
   card.innerHTML = `
-    <div class="coll-card-header">
-      <span class="coll-card-title">${info.title}</span>
-      ${isComplete ? `<span class="coll-card-badge">${t.collCompleted}</span>` : ''}
-    </div>
-    <p class="coll-card-desc">${info.desc}</p>
     <div class="coll-herbarium-frame coll-herbarium-frame--slots-${def.slots.length}">
       ${slotsHtml}
+    </div>
+    <div class="coll-herbarium-plaque">
+      <span class="coll-herbarium-plaque-title">${info.title}</span>
+      ${info.desc ? `<span class="coll-herbarium-plaque-desc">${info.desc}</span>` : ''}
     </div>`
 
   card.addEventListener('click', (e) => {
@@ -191,91 +182,6 @@ function buildCollectionCard(def: CollectionDef, instance: CollectionInstanceSta
   })
 
   return card
-}
-
-// ─── Display area ─────────────────────────────────────────────────────────────
-
-function buildDisplayArea(): HTMLElement {
-  const area = document.createElement('div')
-  area.className = 'coll-display-area'
-
-  const displaySlots = state.collections?.displaySlots ?? []
-  const defs = t.collectionDefs as Record<string, { title: string; desc: string }>
-
-  const slotsHtml = Array.from({ length: COLLECTIONS_DISPLAY_SLOTS }, (_, i) => {
-    const collId = displaySlots[i] ?? null
-    if (!collId) {
-      return `<div class="coll-display-slot coll-display-slot--empty"></div>`
-    }
-    const instance = state.collections?.instances.find(inst => inst.collectionId === collId)
-    const def = getCollectionDef(collId)
-    if (!instance || !def) return ''
-    const title = defs[collId]?.title ?? collId
-    const flowersHtml = instance.slots.map((s, si) => {
-      if (!s.plant) return ''
-      const rotation = [-8, 5, -4, 7, -6][si % 5]
-      return `<div class="coll-display-flower" style="transform:rotate(${rotation}deg)">
-        ${renderBloomSVG(s.plant, 48, 48, 'coll-disp')}
-      </div>`
-    }).join('')
-    return `<div class="coll-display-slot">
-      <div class="coll-display-flowers">${flowersHtml}</div>
-      <span class="coll-display-label">${title}</span>
-      <button class="coll-display-remove-btn" data-action="remove-display" data-slotidx="${i}" title="${t.collMoveFromDisplay}">×</button>
-    </div>`
-  }).join('')
-
-  // Completed but not displayed (Lager)
-  const displayedIds = new Set(displaySlots.filter(Boolean) as string[])
-  const storedCollections = (state.collections?.instances ?? [])
-    .filter(i => i.completedAt !== undefined && !displayedIds.has(i.collectionId))
-
-  const lagerHtml = storedCollections.length > 0
-    ? `<div class="coll-lager">
-        <p class="coll-lager-title">${t.collLagerTitle}</p>
-        <div class="coll-lager-items">
-          ${storedCollections.map(inst => {
-            const title = defs[inst.collectionId]?.title ?? inst.collectionId
-            const hasFreeSlot = displaySlots.some(s => s === null)
-            return `<div class="coll-lager-item">
-              <span>${title}</span>
-              ${hasFreeSlot
-                ? `<button class="btn-sm" data-action="move-to-display" data-collid="${inst.collectionId}">${t.collMoveToDisplay}</button>`
-                : ''}
-            </div>`
-          }).join('')}
-        </div>
-      </div>`
-    : ''
-
-  area.innerHTML = `
-    <p class="coll-display-title">${t.collDisplayTitle}</p>
-    <div class="coll-display-slots">${slotsHtml}</div>
-    ${lagerHtml}`
-
-  area.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement
-    const removeBtn = target.closest<HTMLElement>('[data-action="remove-display"]')
-    if (removeBtn) {
-      const slotIdx = Number(removeBtn.dataset.slotidx)
-      moveFromDisplay(state, slotIdx)
-      saveState(state)
-      render()
-      return
-    }
-    const moveBtn = target.closest<HTMLElement>('[data-action="move-to-display"]')
-    if (moveBtn) {
-      const collId = moveBtn.dataset.collid!
-      const freeSlot = (state.collections?.displaySlots ?? []).findIndex(s => s === null)
-      if (freeSlot >= 0) {
-        moveToDisplay(state, collId, freeSlot)
-        saveState(state)
-        render()
-      }
-    }
-  })
-
-  return area
 }
 
 // ─── Main render ──────────────────────────────────────────────────────────────
@@ -307,11 +213,6 @@ export function renderCollections(): void {
   }
   body.appendChild(grid)
 
-  // Only show display area if any collection is completed
-  const hasCompleted = (state.collections?.instances ?? []).some(i => i.completedAt !== undefined)
-  if (hasCompleted) {
-    body.appendChild(buildDisplayArea())
-  }
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
