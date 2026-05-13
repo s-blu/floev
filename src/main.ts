@@ -34,6 +34,16 @@ app.innerHTML = `
     <div class="pots-row" id="showcase-row"></div>
   </section>
 
+  <section class="ach-section-wrapper" id="collections-panel" style="display:none">
+    <div class="ach-section-header">
+      <p class="section-title" style="margin-bottom:0">${t.collectionsPanelTitle}</p>
+      <button class="ach-toggle-btn coll-toggle-btn" title="${t.collectionsPanelTitle}">
+        <span class="ach-chevron coll-chevron">▾</span>
+      </button>
+    </div>
+    <div class="collections-body"></div>
+  </section>
+
   <section>
     <div class="section-header-row">
       <p class="section-title">${t.sectionGarden}</p>
@@ -90,16 +100,6 @@ app.innerHTML = `
       </button>
     </div>
     <div class="research-body"></div>
-  </section>
-
-  <section class="ach-section-wrapper" id="collections-panel" style="display:none">
-    <div class="ach-section-header">
-      <p class="section-title" style="margin-bottom:0">${t.collectionsPanelTitle}</p>
-      <button class="ach-toggle-btn coll-toggle-btn" title="${t.collectionsPanelTitle}">
-        <span class="ach-chevron coll-chevron">▾</span>
-      </button>
-    </div>
-    <div class="collections-body"></div>
   </section>
 
   <section class="ach-section-wrapper" id="buffs-panel" style="display:none">

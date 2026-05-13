@@ -4,10 +4,6 @@
   display: none;
   flex-direction: column;
   gap: 12px;
-  background: var(--bg2);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 0.625rem 0.75rem 0.75rem;
 }
 
 .coll-panel--open .collections-body {
@@ -154,7 +150,34 @@
 
 .coll-slot--filled {
   background: transparent;
-  pointer-events: none;
+}
+
+.coll-slot-remove {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(100,50,0,0.3);
+  background: rgba(255,245,235,0.85);
+  color: var(--text2);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.coll-slot--filled:hover .coll-slot-remove {
+  display: flex;
+}
+
+.coll-slot-remove:hover {
+  background: #fff;
+  color: var(--text1);
 }
 
 .coll-slot--filled svg {

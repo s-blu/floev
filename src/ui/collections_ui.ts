@@ -7,6 +7,7 @@ import {
   getOrCreateInstance,
   getEligiblePots,
   fillSlot,
+  clearSlot,
   checkAllCollectionCompletions,
 } from '../engine/collections_engine'
 import { getCollectionDef } from '../engine/collection_defs'
@@ -150,6 +151,7 @@ function buildCollectionCard(def: CollectionDef, instance: CollectionInstanceSta
     if (slotState.plant) {
       return `<div class="coll-slot coll-slot--filled" style="${baseStyle};transform:rotate(${pos.rot}deg)">
         ${renderBloomSVG(slotState.plant, pos.size, pos.size, 'coll')}
+        <button class="coll-slot-remove" data-action="clear-slot" data-collid="${def.id}" data-slotidx="${i}" style="transform:rotate(${-pos.rot}deg)">×</button>
       </div>`
     }
     const candidateCount = getEligiblePots(criteria, state).length
@@ -172,7 +174,16 @@ function buildCollectionCard(def: CollectionDef, instance: CollectionInstanceSta
     </div>`
 
   card.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-action="fill-slot"]')
+    const target = e.target as HTMLElement
+    const clearBtn = target.closest<HTMLElement>('[data-action="clear-slot"]')
+    if (clearBtn) {
+      if (clearSlot(state, clearBtn.dataset.collid!, Number(clearBtn.dataset.slotidx))) {
+        saveState(state)
+        render()
+      }
+      return
+    }
+    const btn = target.closest<HTMLElement>('[data-action="fill-slot"]')
     if (!btn) return
     const collId = btn.dataset.collid!
     const slotIdx = Number(btn.dataset.slotidx)

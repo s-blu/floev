@@ -99,6 +99,16 @@ export function fillSlot(
   return true
 }
 
+// ─── Clear slot ───────────────────────────────────────────────────────────────
+
+export function clearSlot(state: GameState, collectionId: string, slotIndex: number): boolean {
+  const instance = state.collections?.instances.find(i => i.collectionId === collectionId)
+  if (!instance || instance.slots[slotIndex]?.plant === null) return false
+  instance.slots[slotIndex].plant = null
+  instance.completedAt = undefined
+  return true
+}
+
 // ─── Completion ───────────────────────────────────────────────────────────────
 
 function checkCollectionCompletion(state: GameState, collectionId: string): void {
