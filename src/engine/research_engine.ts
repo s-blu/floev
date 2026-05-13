@@ -77,6 +77,7 @@ function specMatchesPlant(spec: ResearchTaskSpec, plant: Plant): boolean {
   const hue = expressedHue(plant.petalHue)
   if (hueBucket(hue)                        !== spec.colorBucket) return false
   if (spec.colorBucket === 'white') return true   // white has no lightness variation
+  if (spec.effect !== 'none') return true          // effect overrides lightness visually
   return expressedLightness(plant.petalLightness) === spec.lightness
 }
 
@@ -106,9 +107,14 @@ export function generateResearchTasks(state: GameState, date: string): ResearchT
       const candidate = randomSpec(difficulty, rng)
       if (!researchSpecInCatalog(state, candidate)) spec = candidate
     }
+    if (!spec) {
+      const fallback = randomSpec(difficulty, seededRng(`${date}-research-d${difficulty}-fallback`))
+      if (!researchSpecInCatalog(state, fallback)) spec = fallback
+    }
+    if (!spec) continue
     tasks.push({
       id:            uid(),
-      spec:          spec ?? randomSpec(difficulty, seededRng(`${date}-research-d${difficulty}-fallback`)),
+      spec,
       difficulty,
       completedToday: false,
     })

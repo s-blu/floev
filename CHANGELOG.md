@@ -1,3 +1,22 @@
+# v1.9.3
+
+Bugs:
+- Research task do not fulfill on already discovered bred plants
+- Color hints on seeds are hard to see
+- Buff panel was visible despite not available research book
+- preview on research tasks were wrong in some cases
+
+# v1.9.2
+
+Contains the changes of 1.9.1
+Check if your hotfix branch has merged properly before putting up a release. :|
+
+# v1.9.1
+
+Bugs:
+- Research tasks required a combination of lightness and effect
+- Catalog recorded flowers with effect as duplicates (you get a compensation for falsy entries)
+
 # v1.9.0
 
 Improvements:
@@ -16,7 +35,6 @@ Bugs:
 
 Improvements:
 
-- New feature: Permanent Buffs (did I merge that?)
 - New purchasable: More seed slots
 - Be able to obtain seeds from a single homozygous plant
 - Add some useful infos to the "a new bloom" message
