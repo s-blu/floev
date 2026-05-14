@@ -157,6 +157,14 @@ export const de = {
   catalogEntryNum: (n: number) => `Nr. ${n}`,
   catalogEntryName: (n: number) => `Blüte ${n}`,
   catalogHomozygousBadge: '◈ reinerbig',
+  catalogSortLabel: 'Sortierung:',
+  catalogSortRarity: 'Seltenheit',
+  catalogSortShape: 'Form',
+  catalogSortPetalCount: 'Blattanzahl',
+  catalogSortCenter: 'Mitte',
+  catalogSortColor: 'Farbe',
+  catalogSortEffect: 'Effekt',
+  catalogSortNum: 'Katalog-Nr.',
 
   // Showcase
   btnMoveToShowcase: '🪟',

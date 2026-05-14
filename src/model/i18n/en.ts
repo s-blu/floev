@@ -157,6 +157,14 @@ export const en = {
   catalogEntryNum: (n: number) => `No. ${n}`,
   catalogEntryName: (n: number) => `Bloom ${n}`,
   catalogHomozygousBadge: '◈ homozygous',
+  catalogSortLabel: 'Sort:',
+  catalogSortRarity: 'Rarity',
+  catalogSortShape: 'Shape',
+  catalogSortPetalCount: 'Petal Count',
+  catalogSortCenter: 'Center',
+  catalogSortColor: 'Color',
+  catalogSortEffect: 'Effect',
+  catalogSortNum: 'Catalog No.',
 
   // Showcase
   btnMoveToShowcase: '🪟',
