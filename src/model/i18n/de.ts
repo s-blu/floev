@@ -800,11 +800,11 @@ migrationNoticeOk: 'Verstanden',
   collCriteriaAny:         'Beliebig',
 
   collectionDefs: {
-    erstes_herbarium:  { title: 'Erstes Herbarium',    desc: 'Drei Blüten in den klassischen Grundfarben — ein einfacher Einstieg.' },
-    mondlichtnacht:    { title: 'Mondlichtnacht',      desc: 'Vier dunkle Blüten in kühlen Tönen — wie ein Garten im Mondschein.' },
-    die_fuenf_formen:  { title: 'Die fünf Formen',     desc: 'Je eine Blüte jeder Blütenform — von gewöhnlich bis legendär selten.' },
     weisser_garten:    { title: 'Weißer Garten',       desc: 'Drei weiße Blüten in verschiedenen Formen.' },
-    staubblatt_trio:   { title: 'Staubblatt-Trio',     desc: 'Drei Blüten mit seltener Staubblatt-Mitte in verschiedenen Farben.' },
+    grundfarben:       { title: 'Grundfarben',          desc: 'Drei Blüten in den klassischen Grundfarben.' },
+    die_fuenf_formen:  { title: 'Die fünf Formen',     desc: 'Je eine Blüte jeder Blütenform — von gewöhnlich bis legendär selten.' },
+    mondlichtnacht:    { title: 'Mondlichtnacht',      desc: 'Vier dunkle Blüten in kühlen Tönen — wie ein Garten im Mondschein.' },
+    staubblatt_trio:   { title: 'Staubblatt-Trio',     desc: 'Drei Blüten mit seltener Staubblatt-Mitte.' },
   } as Record<string, { title: string; desc: string }>,
 
   petalNames: {

@@ -2,9 +2,18 @@ import type { CollectionDef } from '../model/collections'
 
 export const COLLECTION_DEFS: CollectionDef[] = [
   {
-    id: 'erstes_herbarium',
+    id: 'weisser_garten',
     vessel: 'herbarium',
-    unlockCondition: { type: 'catalog_size', threshold: 3 },
+    slots: [
+      { colorBucket: 'white', shape: 'round' },
+      { colorBucket: 'white', shape: 'lanzett' },
+      { colorBucket: 'white' },
+    ],
+  },
+  {
+    id: 'grundfarben',
+    vessel: 'herbarium',
+    unlockCondition: { type: 'after_collection', collectionId: 'weisser_garten' },
     slots: [
       { colorBucket: 'red' },
       { colorBucket: 'pink' },
@@ -12,20 +21,9 @@ export const COLLECTION_DEFS: CollectionDef[] = [
     ],
   },
   {
-    id: 'mondlichtnacht',
-    vessel: 'herbarium',
-    unlockCondition: { type: 'catalog_size', threshold: 10 },
-    slots: [
-      { lightness: 30, colorBucket: 'blue' },
-      { lightness: 30, colorBucket: 'purple' },
-      { lightness: 30, colorBucket: 'red' },
-      { lightness: 30 },
-    ],
-  },
-  {
     id: 'die_fuenf_formen',
     vessel: 'herbarium',
-    unlockCondition: { type: 'after_collection', collectionId: 'erstes_herbarium' },
+    unlockCondition: { type: 'after_collection', collectionId: 'grundfarben' },
     slots: [
       { shape: 'round' },
       { shape: 'lanzett' },
@@ -35,22 +33,23 @@ export const COLLECTION_DEFS: CollectionDef[] = [
     ],
   },
   {
-    id: 'weisser_garten',
+    id: 'mondlichtnacht',
     vessel: 'herbarium',
-    unlockCondition: { type: 'catalog_size', threshold: 20 },
+    unlockCondition: { type: 'catalog_has', criteria: { lightness: 30 } },
     slots: [
-      { colorBucket: 'white', shape: 'round' },
-      { colorBucket: 'white', shape: 'lanzett' },
-      { colorBucket: 'white' },
+      { lightness: 30, colorBucket: 'blue' },
+      { lightness: 30, colorBucket: 'purple' },
+      { lightness: 30, colorBucket: 'red' },
+      { lightness: 30 },
     ],
   },
   {
     id: 'staubblatt_trio',
     vessel: 'herbarium',
-    unlockCondition: { type: 'catalog_size', threshold: 25 },
+    unlockCondition: { type: 'catalog_has', criteria: { centerType: 'stamen' } },
     slots: [
-      { centerType: 'stamen', colorBucket: 'red' },
-      { centerType: 'stamen', colorBucket: 'blue' },
+      { centerType: 'stamen' },
+      { centerType: 'stamen' },
       { centerType: 'stamen' },
     ],
   },

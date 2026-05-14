@@ -800,11 +800,11 @@ migrationNoticeOk: 'Got it',
   collCriteriaAny:         'Any',
 
   collectionDefs: {
-    erstes_herbarium:  { title: 'First Herbarium',   desc: 'Three blooms in classic primary colors — a simple introduction.' },
-    mondlichtnacht:    { title: 'Moonlit Night',     desc: 'Four dark blooms in cool tones — like a garden in moonlight.' },
-    die_fuenf_formen:  { title: 'The Five Shapes',   desc: 'One bloom of each petal shape — from common to legendarily rare.' },
     weisser_garten:    { title: 'White Garden',      desc: 'Three white blooms in different shapes.' },
-    staubblatt_trio:   { title: 'Stamen Trio',       desc: 'Three blooms with rare stamen centers in different colors.' },
+    grundfarben:       { title: 'Primary Colors',    desc: 'Three blooms in classic primary colors.' },
+    die_fuenf_formen:  { title: 'The Five Shapes',   desc: 'One bloom of each petal shape — from common to legendarily rare.' },
+    mondlichtnacht:    { title: 'Moonlit Night',     desc: 'Four dark blooms in cool tones — like a garden in moonlight.' },
+    staubblatt_trio:   { title: 'Stamen Trio',       desc: 'Three blooms with rare stamen centers.' },
   } as Record<string, { title: string; desc: string }>,
 
   petalNames: {

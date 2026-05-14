@@ -32,12 +32,16 @@ export function getEligiblePots(criteria: SlotCriteria, state: GameState): numbe
 
 export function isCollectionUnlocked(def: CollectionDef, state: GameState): boolean {
   const cond = def.unlockCondition
+  if (!cond) return true
   if (cond.type === 'catalog_size') {
     return state.catalog.length >= cond.threshold
   }
   if (cond.type === 'after_collection') {
     const instance = state.collections?.instances.find(i => i.collectionId === cond.collectionId)
     return instance?.completedAt !== undefined
+  }
+  if (cond.type === 'catalog_has') {
+    return state.catalog.some(e => slotMatchesPlant(cond.criteria, e.plant))
   }
   return false
 }

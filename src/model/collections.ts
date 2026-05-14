@@ -16,12 +16,13 @@ export interface SlotCriteria {
 export type CollectionUnlockCondition =
   | { type: 'catalog_size'; threshold: number }
   | { type: 'after_collection'; collectionId: string }
+  | { type: 'catalog_has'; criteria: SlotCriteria }
 
 export interface CollectionDef {
-  id:              string
-  vessel:          VesselType
-  slots:           SlotCriteria[]
-  unlockCondition: CollectionUnlockCondition
+  id:               string
+  vessel:           VesselType
+  slots:            SlotCriteria[]
+  unlockCondition?: CollectionUnlockCondition
 }
 
 export interface CollectionSlotState {
