@@ -614,16 +614,6 @@ details:not([open]) .catalog-section-heading--plain .catalog-group-name::after {
   color: var(--text3);
 }
 
-.ci-summary-stats {
-  font-size: 11px;
-  color: var(--text3);
-  margin-left: auto;
-}
-
-.ci-panel[open] .ci-summary-pct {
-  display: none;
-}
-
 .ci-body {
   padding: 4px 0 8px;
 }
@@ -647,41 +637,6 @@ details:not([open]) .catalog-section-heading--plain .catalog-group-name::after {
 
 .ci-row--nav {
   cursor: pointer;
-}
-
-.ci-progress-row {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 14px 2px;
-}
-
-.ci-progress-bar {
-  flex: 1;
-  height: 4px;
-  background: var(--bg3);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.ci-progress-fill {
-  height: 100%;
-  background: var(--blue);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-
-.ci-progress-fill--done {
-  background: var(--green);
-}
-
-.ci-progress-pct {
-  font-size: 9px;
-  color: var(--text3);
-  white-space: nowrap;
-  flex-shrink: 0;
-  min-width: 26px;
-  text-align: right;
 }
 
 .ci-row--nav:hover {
@@ -759,23 +714,6 @@ details:not([open]) .catalog-section-heading--plain .catalog-group-name::after {
   color: var(--text3);
   padding: 10px 14px 2px;
 }
-
-/* ─ Status dot ── */
-
-.ci-status {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.ci-status--empty    { border: 1.5px solid var(--border2); }
-.ci-status--partial  {
-  background: linear-gradient(to right, hsl(40,85%,58%) 50%, transparent 50%);
-  border: 1.5px solid hsl(40,85%,58%);
-}
-.ci-status--complete { background: var(--green); opacity: 0.8; }
 
 /* ─ Swatch detail (Ebene 3) ── */
 
@@ -878,6 +816,6 @@ details:not([open]) .catalog-section-heading--plain .catalog-group-name::after {
   flex-shrink: 0;
 }
 
-.ci-dot--found   { background: var(--green); opacity: 0.7; }
-.ci-dot--missing { border: 1.5px solid var(--border2); }
-.ci-dot--secret  { border: 1.5px solid var(--border); opacity: 0.35; }
+.ci-dot--found  { background: var(--green); opacity: 0.7; }
+.ci-dot--empty  { border: 1.5px solid var(--border2); opacity: 0.4; }
+.ci-dot--secret { border: 1.5px solid var(--border); opacity: 0.35; }

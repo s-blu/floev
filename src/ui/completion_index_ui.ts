@@ -64,9 +64,7 @@ function buildCatalogSets(catalog: CatalogEntry[]): CatalogSets {
   };
 }
 
-// ─── Cell / total helpers ─────────────────────────────────────────────────────
-
-const CELLS_PER_SWATCH = PETAL_COUNTS.length * CENTER_TYPES.length; // 18
+// ─── Cell helpers ─────────────────────────────────────────────────────────────
 
 function huesForBucket(bucket: ColorBucket): number[] {
   if (bucket === 'white') return [1];
@@ -76,10 +74,6 @@ function huesForBucket(bucket: ColorBucket): number[] {
 
 function lightnessesForHue(hue: number): readonly number[] {
   return hue === 1 ? [100] : (PALETTE_L as readonly number[]);
-}
-
-function totalCellsForHue(hue: number): number {
-  return (lightnessesForHue(hue).length + DISPLAY_EFFECTS.length) * CELLS_PER_SWATCH;
 }
 
 function foundCellsForHue(shape: PetalShape, hue: number, sets: CatalogSets): number {
@@ -93,18 +87,6 @@ function foundCellsForHue(shape: PetalShape, hue: number, sets: CatalogSets): nu
       for (const center of CENTER_TYPES)
         if (sets.effectCells.has(`${shape}_${hue}_${ef}_${cnt}_${center}`)) count++;
   return count;
-}
-
-const CELLS_PER_SHAPE = BUCKET_ORDER.reduce(
-  (sum, b) => sum + huesForBucket(b).reduce((s, h) => s + totalCellsForHue(h), 0), 0
-); // 1854
-
-// ─── Status ───────────────────────────────────────────────────────────────────
-
-function statusCls(found: number, total: number): string {
-  if (found === 0)    return 'ci-status--empty';
-  if (found >= total) return 'ci-status--complete';
-  return 'ci-status--partial';
 }
 
 // ─── Hue display helpers ──────────────────────────────────────────────────────
@@ -127,56 +109,28 @@ function swatchColorName(hue: number, l: number): string {
   return (t.colorLabel as any)[hue]?.[PALETTE_S]?.[l] ?? '';
 }
 
-// ─── Progress bar ────────────────────────────────────────────────────────────
-
-function renderProgressBar(found: number, total: number): string {
-  const pct = total > 0 ? Math.round(found / total * 100) : 0;
-  const doneCls = pct >= 100 ? ' ci-progress-fill--done' : '';
-  return `<div class="ci-progress-row">
-    <div class="ci-progress-bar"><div class="ci-progress-fill${doneCls}" style="width:${pct}%"></div></div>
-    <span class="ci-progress-pct">${pct}%</span>
-  </div>`;
-}
-
 // ─── Ebene 1: Shape list ──────────────────────────────────────────────────────
 
 function renderShapeList(sets: CatalogSets): string {
-  const totalFound = PETAL_SHAPES.reduce(
-    (sum, shape) => sum + BUCKET_ORDER.reduce(
-      (s, b) => s + huesForBucket(b).reduce((ss, h) => ss + foundCellsForHue(shape, h, sets), 0), 0
-    ), 0
-  );
-  const totalCells = CELLS_PER_SHAPE * PETAL_SHAPES.length;
-  const rows = PETAL_SHAPES.map(shape => {
+  return PETAL_SHAPES.map(shape => {
     if (!sets.knownShapes.has(shape)) {
-      return `<div class="ci-row ci-row--secret"><span class="ci-status ci-status--empty"></span><span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span></div>`;
+      return `<div class="ci-row ci-row--secret"><span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span></div>`;
     }
-    const found = BUCKET_ORDER.reduce(
-      (sum, b) => sum + huesForBucket(b).reduce((s, h) => s + foundCellsForHue(shape, h, sets), 0), 0
-    );
-    const cls  = statusCls(found, CELLS_PER_SHAPE);
     const name = t.shapeLabels[shape] ?? shape;
     return `
       <button class="ci-row ci-row--nav" data-ci-action="select-shape" data-ci-shape="${shape}">
-        <span class="ci-status ${cls}"></span>
         <span class="ci-row-label">${name}</span>
-        <span class="ci-row-counter">${found}/${CELLS_PER_SHAPE}</span>
         <span class="ci-row-arrow">›</span>
       </button>`;
   }).join('');
-  return renderProgressBar(totalFound, totalCells) + rows;
 }
 
 // ─── Ebene 2: Hue list ────────────────────────────────────────────────────────
 
 function renderHueList(shape: PetalShape, sets: CatalogSets): string {
   const shapeLabel = t.shapeLabels[shape] ?? shape;
-  const shapeFound = BUCKET_ORDER.reduce(
-    (sum, b) => sum + huesForBucket(b).reduce((s, h) => s + foundCellsForHue(shape, h, sets), 0), 0
-  );
   const parts: string[] = [
     `<button class="ci-back-btn" data-ci-action="back-to-shapes">← ${shapeLabel}</button>`,
-    renderProgressBar(shapeFound, CELLS_PER_SHAPE),
   ];
 
   for (const bucket of BUCKET_ORDER) {
@@ -187,7 +141,7 @@ function renderHueList(shape: PetalShape, sets: CatalogSets): string {
     parts.push(`<div class="ci-bucket-header">${bucketLabel}</div>`);
 
     if (!bucketKnown) {
-      parts.push(`<div class="ci-row ci-row--secret"><span class="ci-status ci-status--empty"></span><span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span></div>`);
+      parts.push(`<div class="ci-row ci-row--secret"><span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span></div>`);
       continue;
     }
 
@@ -195,20 +149,16 @@ function renderHueList(shape: PetalShape, sets: CatalogSets): string {
       if (!sets.knownHues.has(hue)) {
         parts.push(`<div class="ci-row ci-row--secret">
           <div class="di-mini-swatches"><span class="di-mini-swatch di-mini-swatch--effect"></span></div>
-          <span class="ci-status ci-status--empty"></span>
           <span class="ci-row-label ci-row-label--undiscovered">${t.completionIndexUndiscovered}</span>
         </div>`);
         continue;
       }
       const found = foundCellsForHue(shape, hue, sets);
-      const total = totalCellsForHue(hue);
-      const cls   = statusCls(found, total);
       parts.push(`
         <button class="ci-row ci-row--nav" data-ci-action="select-hue" data-ci-hue="${hue}">
           ${renderHueSwatchStrip(hue)}
-          <span class="ci-status ${cls}"></span>
           <span class="ci-row-label">${hueGroupName(hue)}</span>
-          <span class="ci-row-counter">${found}/${total}</span>
+          ${found > 0 ? `<span class="ci-row-counter">${found}</span>` : ''}
           <span class="ci-row-arrow">›</span>
         </button>`);
     }
@@ -232,7 +182,9 @@ function renderMatrix(
     const title = known ? (t.centerTypeLabels[center] ?? '') : '';
     const dots  = PETAL_COUNTS.map(cnt => {
       if (!known) return `<span class="ci-dot ci-dot--secret"></span>`;
-      return `<span class="ci-dot ${isCellFound(cnt, center) ? 'ci-dot--found' : 'ci-dot--missing'}"></span>`;
+      return isCellFound(cnt, center)
+        ? `<span class="ci-dot ci-dot--found"></span>`
+        : `<span class="ci-dot ci-dot--empty"></span>`;
     }).join('');
     return `<div class="ci-matrix-row">
       <span class="ci-matrix-row-hdr" title="${title}">${hdr}</span>${dots}
@@ -252,14 +204,12 @@ function renderSwatchBlock(
   isCellFound: (cnt: number, center: CenterType) => boolean,
   sets: CatalogSets,
 ): string {
-  const cls = statusCls(found, CELLS_PER_SWATCH);
   return `
     <div class="ci-swatch-row">
       <div class="ci-swatch-header">
         ${iconHtml}
         <span class="ci-swatch-label">${label}</span>
-        <span class="ci-status ${cls}"></span>
-        <span class="ci-swatch-counter">${found}/${CELLS_PER_SWATCH}</span>
+        ${found > 0 ? `<span class="ci-swatch-counter">${found}</span>` : ''}
       </div>
       ${renderMatrix(isCellFound, sets)}
     </div>`;
@@ -268,11 +218,8 @@ function renderSwatchBlock(
 function renderHueDetail(shape: PetalShape, hue: number, sets: CatalogSets): string {
   const shapeLabel = t.shapeLabels[shape] ?? shape;
   const hueName    = hueGroupName(hue);
-  const hueFound   = foundCellsForHue(shape, hue, sets);
-  const hueTotal   = totalCellsForHue(hue);
   const parts: string[] = [
     `<button class="ci-back-btn" data-ci-action="back-to-hues">← ${shapeLabel} › ${hueName}</button>`,
-    renderProgressBar(hueFound, hueTotal),
   ];
 
   for (const l of lightnessesForHue(hue)) {
@@ -351,19 +298,9 @@ export function renderCompletionIndex(catalog: CatalogEntry[], open = false): HT
   if (open || loadPanelOpen()) el.setAttribute('open', '');
   el.addEventListener('toggle', () => savePanelOpen(el.open));
 
-  const sets       = buildCatalogSets(catalog);
-  const totalCells = CELLS_PER_SHAPE * PETAL_SHAPES.length;
-  const totalFound = PETAL_SHAPES.reduce(
-    (sum, shape) => sum + BUCKET_ORDER.reduce(
-      (s, b) => s + huesForBucket(b).reduce((ss, h) => ss + foundCellsForHue(shape, h, sets), 0), 0
-    ), 0
-  );
-  const totalPct = totalCells > 0 ? Math.round(totalFound / totalCells * 100) : 0;
-
   el.innerHTML = `
     <summary class="ci-summary">
       <span class="ci-summary-title">${t.completionIndexTitle}</span>
-      <span class="ci-summary-stats"><span class="ci-summary-pct">${totalPct}% · </span>${t.completionIndexSummary(totalFound, totalCells)}</span>
     </summary>
     <div class="ci-body">${renderCurrentView(catalog)}</div>`;
 
