@@ -805,6 +805,9 @@ migrationNoticeOk: 'Got it',
     die_fuenf_formen:  { title: 'The Five Shapes',   desc: 'One bloom of each petal shape — from common to legendarily rare.' },
     mondlichtnacht:    { title: 'Moonlit Night',     desc: 'Four dark blooms in cool tones — like a garden in moonlight.' },
     staubblatt_trio:   { title: 'Stamen Trio',       desc: 'Three blooms with rare stamen centers.' },
+    sommerwiese:       { title: 'Summer Meadow',     desc: 'Yellow, orange-red and red — three warm tones like a summer meadow.' },
+    effektgarten:      { title: 'Effect Garden',     desc: 'Three blooms each with a different effect: bicolor, gradient and shimmer.' },
+    regenbogen:        { title: 'Rainbow',           desc: 'Five blooms in five different colors — a spectrum in a frame.' },
   } as Record<string, { title: string; desc: string }>,
 
   petalNames: {

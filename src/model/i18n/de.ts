@@ -805,6 +805,9 @@ migrationNoticeOk: 'Verstanden',
     die_fuenf_formen:  { title: 'Die fünf Formen',     desc: 'Je eine Blüte jeder Blütenform — von gewöhnlich bis legendär selten.' },
     mondlichtnacht:    { title: 'Mondlichtnacht',      desc: 'Vier dunkle Blüten in kühlen Tönen — wie ein Garten im Mondschein.' },
     staubblatt_trio:   { title: 'Staubblatt-Trio',     desc: 'Drei Blüten mit seltener Staubblatt-Mitte.' },
+    sommerwiese:       { title: 'Sommerwiese',          desc: 'Gelb, Orangerot und Rot — drei warme Töne wie auf einer Sommerwiese.' },
+    effektgarten:      { title: 'Effektgarten',         desc: 'Drei Blüten mit je einem anderen Effekt: Zweifarbig, Verlauf und Schimmer.' },
+    regenbogen:        { title: 'Regenbogen',           desc: 'Fünf Blüten in fünf verschiedenen Farben — ein Spektrum im Rahmen.' },
   } as Record<string, { title: string; desc: string }>,
 
   petalNames: {

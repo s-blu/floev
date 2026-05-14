@@ -14,9 +14,10 @@ export function slotMatchesPlant(criteria: SlotCriteria, plant: Plant): boolean 
   if (criteria.effect !== undefined && expressedEffect(plant.petalEffect) !== criteria.effect) return false
   if (criteria.petalCount !== undefined && expressedPetalCount(plant.petalCount) !== criteria.petalCount) return false
   if (criteria.lightness !== undefined && expressedLightness(plant.petalLightness) !== criteria.lightness) return false
-  if (criteria.colorBucket !== undefined) {
+  if (criteria.hue !== undefined || criteria.colorBucket !== undefined) {
     const color = expressedColor(plant.petalHue, plant.petalLightness)
-    if (colorBucket(color) !== criteria.colorBucket) return false
+    if (criteria.hue !== undefined && color.h !== criteria.hue) return false
+    if (criteria.colorBucket !== undefined && colorBucket(color) !== criteria.colorBucket) return false
   }
   if (criteria.minRarity !== undefined && calcRarity(plant) < criteria.minRarity) return false
   return true
@@ -42,6 +43,9 @@ export function isCollectionUnlocked(def: CollectionDef, state: GameState): bool
   }
   if (cond.type === 'catalog_has') {
     return state.catalog.some(e => slotMatchesPlant(cond.criteria, e.plant))
+  }
+  if (cond.type === 'catalog_has_any') {
+    return cond.criteriaList.some(criteria => state.catalog.some(e => slotMatchesPlant(criteria, e.plant)))
   }
   return false
 }

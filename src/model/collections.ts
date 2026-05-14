@@ -1,11 +1,12 @@
 import type { PetalShape, CenterType, PetalCount, PetalEffect, ChromaticL, Plant } from './plant'
-import type { ColorBucket } from './genetic_model'
+import type { ColorBucket, PaletteHue } from './genetic_model'
 
 export type VesselType = 'herbarium' | 'vase' | 'blumenkasten' | 'strauss'
 
 export interface SlotCriteria {
   shape?:       PetalShape
   colorBucket?: ColorBucket
+  hue?:         PaletteHue
   lightness?:   ChromaticL
   petalCount?:  PetalCount
   centerType?:  CenterType
@@ -17,6 +18,7 @@ export type CollectionUnlockCondition =
   | { type: 'catalog_size'; threshold: number }
   | { type: 'after_collection'; collectionId: string }
   | { type: 'catalog_has'; criteria: SlotCriteria }
+  | { type: 'catalog_has_any'; criteriaList: SlotCriteria[] }
 
 export interface CollectionDef {
   id:               string

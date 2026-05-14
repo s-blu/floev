@@ -53,6 +53,38 @@ export const COLLECTION_DEFS: CollectionDef[] = [
       { centerType: 'stamen' },
     ],
   },
+  {
+    id: 'sommerwiese',
+    vessel: 'herbarium',
+    unlockCondition: { type: 'catalog_has', criteria: { hue: 60 } },
+    slots: [
+      { hue: 60 },
+      { hue: 25 },
+      { hue: 5 },
+    ],
+  },
+  {
+    id: 'effektgarten',
+    vessel: 'herbarium',
+    unlockCondition: { type: 'catalog_has', criteria: { effect: 'bicolor' } },
+    slots: [
+      { effect: 'bicolor' },
+      { effect: 'gradient' },
+      { effect: 'shimmer' },
+    ],
+  },
+  {
+    id: 'regenbogen',
+    vessel: 'herbarium',
+    unlockCondition: { type: 'catalog_has_any', criteriaList: [{ colorBucket: 'blue' }, { colorBucket: 'purple' }] },
+    slots: [
+      { colorBucket: 'red' },
+      { colorBucket: 'pink' },
+      { colorBucket: 'yellowgreen' },
+      { colorBucket: 'blue' },
+      { colorBucket: 'purple' },
+    ],
+  },
 ]
 
 export function getCollectionDef(id: string): CollectionDef | undefined {

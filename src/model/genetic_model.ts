@@ -88,6 +88,7 @@ export const PALETTE_S = 90;
 // ─── Palette hues ─────────────────────────────────────────────────────────────
 //---------------------------red   / yellgr  / blue / purple   / pink        / red
 export const PALETTE_HUES = [5, 25, 60, 160, 180, 200, 230, 255, 270, 290, 310, 330, 350] as const
+export type PaletteHue = typeof PALETTE_HUES[number]
 export const PALETTE_HUES_BUCKETS = {
   yellowgreen: PALETTE_HUES.filter(PALETTE_HUE_RANGES.yellowgreen),
   red:         PALETTE_HUES.filter(PALETTE_HUE_RANGES.red),
