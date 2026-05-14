@@ -92,7 +92,15 @@ export function loadState(): GameState {
         parsed.seedSlotLabels = Array.from({ length: expectedSlotCount }, (_, i) => existing[i] ?? [])
       }
 
-      if (!parsed.collections) initCollectionsState(parsed)
+      if (!parsed.collections) {
+        initCollectionsState(parsed)
+      } else if (!parsed.collections.favorites) {
+        // migrate old displaySlots to favorites
+        const oldSlots = (parsed.collections as unknown as Record<string, unknown>).displaySlots
+        parsed.collections.favorites = Array.isArray(oldSlots)
+          ? (oldSlots as (string | null)[]).filter((s): s is string => s !== null).slice(0, 4)
+          : []
+      }
       if (runMigrations(parsed)) saveState(parsed)
       return parsed
     }

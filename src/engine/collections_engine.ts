@@ -4,7 +4,7 @@ import { COLLECTION_DEFS, getCollectionDef } from './collection_defs'
 import { expressedShape, expressedCenter, expressedEffect, expressedColor, expressedPetalCount, expressedLightness, colorBucket } from './genetic/genetic_utils'
 import { calcRarity } from './rarity'
 
-export const COLLECTIONS_DISPLAY_SLOTS = 4
+export const MAX_FAVORITES = 4
 
 // ─── Matching ─────────────────────────────────────────────────────────────────
 
@@ -66,9 +66,28 @@ export function initCollectionsState(state: GameState): void {
   if (!state.collections) {
     state.collections = {
       instances: [],
-      displaySlots: Array(COLLECTIONS_DISPLAY_SLOTS).fill(null),
+      favorites: [],
     }
   }
+}
+
+// ─── Favorites ────────────────────────────────────────────────────────────────
+
+export function addFavorite(state: GameState, collectionId: string): boolean {
+  if (!state.collections) return false
+  const favs = state.collections.favorites
+  if (favs.includes(collectionId)) return false
+  if (favs.length >= MAX_FAVORITES) return false
+  favs.push(collectionId)
+  return true
+}
+
+export function removeFavorite(state: GameState, collectionId: string): boolean {
+  if (!state.collections) return false
+  const idx = state.collections.favorites.indexOf(collectionId)
+  if (idx === -1) return false
+  state.collections.favorites.splice(idx, 1)
+  return true
 }
 
 // ─── Fill slot ────────────────────────────────────────────────────────────────
@@ -132,20 +151,3 @@ export function checkAllCollectionCompletions(state: GameState): string[] {
   return newlyCompleted
 }
 
-// ─── Display slots ────────────────────────────────────────────────────────────
-
-export function moveToDisplay(state: GameState, collectionId: string, slotIndex: number): boolean {
-  if (!state.collections) return false
-  const instance = state.collections.instances.find(i => i.collectionId === collectionId)
-  if (!instance?.completedAt) return false
-  if (state.collections.displaySlots[slotIndex] !== null) return false
-  state.collections.displaySlots[slotIndex] = collectionId
-  return true
-}
-
-export function moveFromDisplay(state: GameState, slotIndex: number): boolean {
-  if (!state.collections) return false
-  if (state.collections.displaySlots[slotIndex] === null) return false
-  state.collections.displaySlots[slotIndex] = null
-  return true
-}

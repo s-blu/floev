@@ -35,6 +35,6 @@ export interface CollectionInstanceState {
 }
 
 export interface CollectionsState {
-  instances:    CollectionInstanceState[]
-  displaySlots: (string | null)[]
+  instances: CollectionInstanceState[]
+  favorites: string[]
 }

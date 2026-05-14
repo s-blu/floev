@@ -9,22 +9,37 @@ import {
   fillSlot,
   clearSlot,
   checkAllCollectionCompletions,
+  addFavorite,
+  removeFavorite,
+  MAX_FAVORITES,
 } from '../engine/collections_engine'
 import { getCollectionDef } from '../engine/collection_defs'
 import type { CollectionDef, CollectionInstanceState, SlotCriteria } from '../model/collections'
 import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer'
 import { addNotification } from './notification_log'
 
-// ─── Panel open state ─────────────────────────────────────────────────────────
+// ─── Sub-section open state ───────────────────────────────────────────────────
 
-const PANEL_OPEN_KEY = 'collectionsPanelOpen'
+const IN_PROGRESS_OPEN_KEY = 'collInProgressOpen'
+const DONE_OPEN_KEY        = 'collDoneOpen'
 
-function loadPanelOpen(): boolean {
-  const stored = localStorage.getItem(PANEL_OPEN_KEY)
-  return stored === null ? true : stored === 'true'
+function loadBool(key: string, defaultVal: boolean): boolean {
+  const stored = localStorage.getItem(key)
+  return stored === null ? defaultVal : stored === 'true'
 }
 
-let panelOpen = loadPanelOpen()
+let inProgressOpen = loadBool(IN_PROGRESS_OPEN_KEY, true)
+let doneOpen       = loadBool(DONE_OPEN_KEY, true)
+
+function expandSection(key: 'inProgress' | 'done'): void {
+  if (key === 'inProgress') {
+    inProgressOpen = true
+    localStorage.setItem(IN_PROGRESS_OPEN_KEY, 'true')
+  } else {
+    doneOpen = true
+    localStorage.setItem(DONE_OPEN_KEY, 'true')
+  }
+}
 
 // ─── Criteria label ───────────────────────────────────────────────────────────
 
@@ -89,6 +104,7 @@ function openSlotFillDialog(collectionId: string, slotIndex: number, criteria: S
         const title = (t.collectionDefs as Record<string, { title: string; desc: string }>)[id]?.title ?? id
         addNotification(t.collCompletedToast(title))
       }
+      if (completed.length > 0) expandSection('done')
       saveState(state)
       closeDialog()
       render()
@@ -101,8 +117,6 @@ function openSlotFillDialog(collectionId: string, slotIndex: number, criteria: S
 
 // ─── Herbarium slot positions (x%, y%, rotation°, size px) per slot count ─────
 
-// Positions are % of frame width/height. Size in px.
-// Frame is ~180px tall; card column is ~140px wide inside border.
 const HERBARIUM_POSITIONS: Record<number, { x: number; y: number; rot: number; size: number }[]> = {
   2: [
     { x:  6, y:  8, rot: -14, size: 68 },
@@ -134,7 +148,11 @@ function getSlotPositions(count: number) {
 
 // ─── Collection card ──────────────────────────────────────────────────────────
 
-function buildCollectionCard(def: CollectionDef, instance: CollectionInstanceState): HTMLElement {
+function buildCollectionCard(
+  def: CollectionDef,
+  instance: CollectionInstanceState,
+  isFavorite: boolean,
+): HTMLElement {
   const card = document.createElement('div')
   const isComplete = instance.completedAt !== undefined
   card.className = `coll-card${isComplete ? ' coll-card--complete' : ''}`
@@ -164,6 +182,13 @@ function buildCollectionCard(def: CollectionDef, instance: CollectionInstanceSta
     </button>`
   }).join('')
 
+  const favCount = state.collections?.favorites.length ?? 0
+  const canAdd = !isFavorite && favCount < MAX_FAVORITES
+  const favTitle = isFavorite
+    ? t.collRemoveFavorite
+    : canAdd ? t.collAddFavorite : t.collFavoritesFull
+  const favDisabled = !isFavorite && !canAdd ? 'disabled' : ''
+
   card.innerHTML = `
     <div class="coll-herbarium-frame coll-herbarium-frame--slots-${def.slots.length}">
       ${slotsHtml}
@@ -171,28 +196,96 @@ function buildCollectionCard(def: CollectionDef, instance: CollectionInstanceSta
     <div class="coll-herbarium-plaque">
       <span class="coll-herbarium-plaque-title">${info.title}</span>
       ${info.desc ? `<span class="coll-herbarium-plaque-desc">${info.desc}</span>` : ''}
-    </div>`
+    </div>
+    <button class="coll-fav-btn${isFavorite ? ' coll-fav-btn--active' : ''}"
+      data-action="toggle-fav" data-collid="${def.id}"
+      title="${favTitle}" ${favDisabled}>${isFavorite ? '★' : '☆'}</button>`
 
   card.addEventListener('click', (e) => {
     const target = e.target as HTMLElement
+
     const clearBtn = target.closest<HTMLElement>('[data-action="clear-slot"]')
     if (clearBtn) {
       if (clearSlot(state, clearBtn.dataset.collid!, Number(clearBtn.dataset.slotidx))) {
+        expandSection('inProgress')
         saveState(state)
         render()
       }
       return
     }
-    const btn = target.closest<HTMLElement>('[data-action="fill-slot"]')
-    if (!btn) return
-    const collId = btn.dataset.collid!
-    const slotIdx = Number(btn.dataset.slotidx)
-    const collDef = getCollectionDef(collId)
-    if (!collDef) return
-    openSlotFillDialog(collId, slotIdx, collDef.slots[slotIdx])
+
+    const fillBtn = target.closest<HTMLElement>('[data-action="fill-slot"]')
+    if (fillBtn) {
+      const collId = fillBtn.dataset.collid!
+      const slotIdx = Number(fillBtn.dataset.slotidx)
+      const collDef = getCollectionDef(collId)
+      if (!collDef) return
+      openSlotFillDialog(collId, slotIdx, collDef.slots[slotIdx])
+      return
+    }
+
+    const favBtn = target.closest<HTMLElement>('[data-action="toggle-fav"]')
+    if (favBtn) {
+      const collId = favBtn.dataset.collid!
+      const changed = isFavorite ? removeFavorite(state, collId) : addFavorite(state, collId)
+      if (changed) {
+        saveState(state)
+        render()
+      }
+    }
   })
 
   return card
+}
+
+// ─── Sub-section ──────────────────────────────────────────────────────────────
+
+function buildSubSection(
+  key: 'inProgress' | 'done',
+  title: string,
+  defs: CollectionDef[],
+): HTMLElement {
+  const isOpen = key === 'inProgress' ? inProgressOpen : doneOpen
+  const section = document.createElement('div')
+  section.className = 'coll-subsection'
+
+  const grid = document.createElement('div')
+  grid.className = 'coll-grid'
+  const favoriteIds = state.collections?.favorites ?? []
+  for (const def of defs) {
+    const instance = getOrCreateInstance(state, def.id)
+    grid.appendChild(buildCollectionCard(def, instance, favoriteIds.includes(def.id)))
+  }
+
+  section.innerHTML = `
+    <button class="coll-subsection-toggle" data-subsection="${key}">
+      <span>${title}</span>
+      <span class="coll-subsection-arrow${isOpen ? '' : ' coll-subsection-arrow--closed'}">▾</span>
+    </button>`
+
+  const body = document.createElement('div')
+  body.className = `coll-subsection-body${isOpen ? ' coll-subsection-body--open' : ''}`
+  body.appendChild(grid)
+  section.appendChild(body)
+
+  section.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-subsection]')
+    if (!btn) return
+    const which = btn.dataset.subsection as 'inProgress' | 'done'
+    if (which === 'inProgress') {
+      inProgressOpen = !inProgressOpen
+      localStorage.setItem(IN_PROGRESS_OPEN_KEY, String(inProgressOpen))
+    } else {
+      doneOpen = !doneOpen
+      localStorage.setItem(DONE_OPEN_KEY, String(doneOpen))
+    }
+    const arrow = btn.querySelector('.coll-subsection-arrow')
+    const open = which === 'inProgress' ? inProgressOpen : doneOpen
+    arrow?.classList.toggle('coll-subsection-arrow--closed', !open)
+    body.classList.toggle('coll-subsection-body--open', open)
+  })
+
+  return section
 }
 
 // ─── Main render ──────────────────────────────────────────────────────────────
@@ -205,43 +298,59 @@ export function renderCollections(): void {
   panel.style.display = hasFeature ? '' : 'none'
   if (!hasFeature) return
 
+  const favSection = panel.querySelector<HTMLElement>('.coll-favorites')
   const body = panel.querySelector<HTMLElement>('.collections-body')
-  if (!body) return
-  body.innerHTML = ''
+  if (!favSection || !body) return
 
   const visible = getVisibleCollections(state)
+  const favoriteIds = state.collections?.favorites ?? []
+
+  // ── Favorites (always visible) ──
+  favSection.innerHTML = ''
+  const favDefs = favoriteIds
+    .map(id => getCollectionDef(id))
+    .filter((d): d is CollectionDef => d !== undefined)
+
+  if (favDefs.length > 0) {
+    const header = document.createElement('p')
+    header.className = 'coll-section-label'
+    header.textContent = t.collFavoritesTitle
+    favSection.appendChild(header)
+
+    const grid = document.createElement('div')
+    grid.className = 'coll-grid'
+    for (const def of favDefs) {
+      const instance = getOrCreateInstance(state, def.id)
+      grid.appendChild(buildCollectionCard(def, instance, true))
+    }
+    favSection.appendChild(grid)
+  }
+
+  // ── Collapsable body: In Arbeit + Abgeschlossen ──
+  body.innerHTML = ''
 
   if (visible.length === 0) {
     body.innerHTML = `<p class="coll-empty-hint">${t.collLockedUntil(3)}</p>`
     return
   }
 
-  const grid = document.createElement('div')
-  grid.className = 'coll-grid'
-  for (const def of visible) {
-    const instance = getOrCreateInstance(state, def.id)
-    grid.appendChild(buildCollectionCard(def, instance))
-  }
-  body.appendChild(grid)
+  const nonFav = visible.filter(def => !favoriteIds.includes(def.id))
+  const inProgress = nonFav.filter(def => getOrCreateInstance(state, def.id).completedAt === undefined)
+  const done       = nonFav.filter(def => getOrCreateInstance(state, def.id).completedAt !== undefined)
 
+  if (inProgress.length > 0) body.appendChild(buildSubSection('inProgress', t.collInProgressTitle, inProgress))
+  if (done.length > 0)       body.appendChild(buildSubSection('done', t.collDoneTitle, done))
+  if (nonFav.length === 0) {
+    const hint = document.createElement('p')
+    hint.className = 'coll-empty-hint'
+    hint.textContent = t.collFavoritesTitle
+    body.appendChild(hint)
+  }
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 export function initCollectionsPanel(): void {
-  const panel = document.getElementById('collections-panel')
-  if (!panel) return
-
-  if (panelOpen) panel.classList.add('coll-panel--open')
-
-  panel.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest('.coll-toggle-btn')
-    if (!btn) return
-    panelOpen = !panelOpen
-    localStorage.setItem(PANEL_OPEN_KEY, String(panelOpen))
-    panel.classList.toggle('coll-panel--open', panelOpen)
-  })
-
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && activeDialog) closeDialog()
   })

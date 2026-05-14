@@ -1,13 +1,9 @@
 /* ── Collections panel ──────────────────────────────────────────────────────── */
 
 .collections-body {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.coll-panel--open .collections-body {
-  display: flex;
 }
 
 .coll-empty-hint {
@@ -90,7 +86,7 @@
     0 8px 22px rgba(35, 15, 0, 0.30),
     0 4px 8px rgba(35, 15, 0, 0.18),
     0 1px 3px rgba(35, 15, 0, 0.12);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .coll-herbarium-frame--slots-2 { height: 160px; }
@@ -236,6 +232,126 @@
 .coll-slot--empty:disabled:hover {
   border-color: var(--border);
   background: var(--bg2);
+}
+
+/* ── Section label ───────────────────────────────────────────────────────────── */
+
+.coll-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 6px;
+}
+
+/* ── Favorites area ──────────────────────────────────────────────────────────── */
+
+.coll-favorites {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 4px;
+}
+
+/* ── Sub-sections ────────────────────────────────────────────────────────────── */
+
+.coll-subsection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.coll-subsection-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  padding: 4px 2px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  gap: 6px;
+}
+
+.coll-subsection-toggle:hover {
+  color: var(--text1);
+}
+
+.coll-subsection-arrow {
+  font-size: 12px;
+  transition: transform 0.15s;
+  display: inline-block;
+}
+
+.coll-subsection-arrow--closed {
+  transform: rotate(-90deg);
+}
+
+.coll-subsection-body {
+  display: none;
+}
+
+.coll-subsection-body--open {
+  display: block;
+}
+
+/* ── Favorite button ─────────────────────────────────────────────────────────── */
+
+.coll-card {
+  position: relative;
+}
+
+.coll-fav-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(100, 50, 0, 0.2);
+  background: rgba(255, 245, 235, 0.75);
+  color: var(--text3);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+}
+
+.coll-card:hover .coll-fav-btn {
+  opacity: 1;
+}
+
+.coll-fav-btn--active {
+  opacity: 1;
+  color: #c47a00;
+  background: rgba(255, 245, 220, 0.92);
+  border-color: rgba(180, 110, 0, 0.3);
+}
+
+.coll-fav-btn:hover:not(:disabled) {
+  color: #c47a00;
+  background: rgba(255, 245, 220, 0.95);
+}
+
+.coll-fav-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+.coll-card:hover .coll-fav-btn:disabled {
+  opacity: 0.3;
 }
 
 /* ── Slot fill dialog ────────────────────────────────────────────────────────── */
