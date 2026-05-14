@@ -207,7 +207,7 @@ function buildCollectionCard(
     const clearBtn = target.closest<HTMLElement>('[data-action="clear-slot"]')
     if (clearBtn) {
       if (clearSlot(state, clearBtn.dataset.collid!, Number(clearBtn.dataset.slotidx))) {
-        expandSection('inProgress')
+        if (!isFavorite) expandSection('inProgress')
         saveState(state)
         render()
       }
@@ -257,31 +257,31 @@ function buildSubSection(
     grid.appendChild(buildCollectionCard(def, instance, favoriteIds.includes(def.id)))
   }
 
-  section.innerHTML = `
-    <button class="coll-subsection-toggle" data-subsection="${key}">
-      <span>${title}</span>
-      <span class="coll-subsection-arrow${isOpen ? '' : ' coll-subsection-arrow--closed'}">▾</span>
+  const header = document.createElement('div')
+  header.className = 'ach-section-header coll-subsection-header'
+  const chevronClass = `ach-chevron${isOpen ? '' : ' coll-subsection-arrow--closed'}`
+  header.innerHTML = `
+    <p class="section-title" style="margin-bottom:0">${title}</p>
+    <button class="ach-toggle-btn coll-subsection-toggle">
+      <span class="${chevronClass}">▾</span>
     </button>`
+  section.appendChild(header)
 
   const body = document.createElement('div')
   body.className = `coll-subsection-body${isOpen ? ' coll-subsection-body--open' : ''}`
   body.appendChild(grid)
   section.appendChild(body)
 
-  section.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-subsection]')
-    if (!btn) return
-    const which = btn.dataset.subsection as 'inProgress' | 'done'
-    if (which === 'inProgress') {
+  header.addEventListener('click', () => {
+    if (key === 'inProgress') {
       inProgressOpen = !inProgressOpen
       localStorage.setItem(IN_PROGRESS_OPEN_KEY, String(inProgressOpen))
     } else {
       doneOpen = !doneOpen
       localStorage.setItem(DONE_OPEN_KEY, String(doneOpen))
     }
-    const arrow = btn.querySelector('.coll-subsection-arrow')
-    const open = which === 'inProgress' ? inProgressOpen : doneOpen
-    arrow?.classList.toggle('coll-subsection-arrow--closed', !open)
+    const open = key === 'inProgress' ? inProgressOpen : doneOpen
+    header.querySelector('.ach-chevron')?.classList.toggle('coll-subsection-arrow--closed', !open)
     body.classList.toggle('coll-subsection-body--open', open)
   })
 
@@ -312,11 +312,6 @@ export function renderCollections(): void {
     .filter((d): d is CollectionDef => d !== undefined)
 
   if (favDefs.length > 0) {
-    const header = document.createElement('p')
-    header.className = 'coll-section-label'
-    header.textContent = t.collFavoritesTitle
-    favSection.appendChild(header)
-
     const grid = document.createElement('div')
     grid.className = 'coll-grid'
     for (const def of favDefs) {
