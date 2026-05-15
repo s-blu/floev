@@ -1,3 +1,16 @@
+/* ── Collapsible section ─────────────────────────────────────────────────────── */
+.breed-body {
+  display: none;
+}
+
+.breed-section--open .breed-body {
+  display: block;
+}
+
+.breed-section--open .breed-chevron {
+  transform: rotate(180deg);
+}
+
 /* ── Breeding panel ──────────────────────────────────────────────────────────── */
 .breed-panel {
   background: var(--bg2);

@@ -9,6 +9,39 @@ import { hasUpgrade } from '../engine/shop_engine';
 import { renderSeedIcon } from '../engine/renderer/seed_renderer';
 import type { Plant } from '../model/plant';
 
+// ─── Collapsible state ────────────────────────────────────────────────────────
+
+const PANEL_OPEN_KEY = 'breedPanelOpen'
+function loadPanelOpen(): boolean { return localStorage.getItem(PANEL_OPEN_KEY) === 'true' }
+function savePanelOpen(v: boolean): void { localStorage.setItem(PANEL_OPEN_KEY, String(v)) }
+
+let panelOpen = localStorage.getItem(PANEL_OPEN_KEY) === null ? true : loadPanelOpen()
+
+function applyPanelState(section: HTMLElement): void {
+  section.classList.toggle('breed-section--open', panelOpen)
+  const chevron = section.querySelector('.breed-chevron') as HTMLElement | null
+  if (chevron) chevron.textContent = panelOpen ? '▴' : '▾'
+}
+
+export function openBreedPanel(): void {
+  if (panelOpen) return
+  panelOpen = true
+  savePanelOpen(true)
+  const section = document.getElementById('breed-section')
+  if (section) applyPanelState(section)
+}
+
+export function initBreedPanel(): void {
+  const section = document.getElementById('breed-section')
+  if (!section) return
+  applyPanelState(section)
+  section.querySelector('.breed-toggle-btn')?.addEventListener('click', () => {
+    panelOpen = !panelOpen
+    savePanelOpen(panelOpen)
+    applyPanelState(section)
+  })
+}
+
 // ─── Breeding panel ───────────────────────────────────────────────────────────
 
 function renderSurplusCap(plant: Plant): string {

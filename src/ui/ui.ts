@@ -28,7 +28,7 @@ import { isHomozygous } from '../engine/genetic/genetic_utils'
 import { buyUpgrade, buyPotColor, buyPotShape, buyPotEffect, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot, buyExtraSeedRow } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
 import { renderShowcase } from './showcase_ui'
-import { renderBreedPanel } from './breedpanel_ui'
+import { renderBreedPanel, openBreedPanel } from './breedpanel_ui'
 import { renderCatalog } from './catalog_ui'
 import { renderShopSidebar } from '../ui/shop_ui'
 import { t } from '../model/i18n/index'
@@ -355,8 +355,8 @@ export function handleBreedSelect(potId: number): void {
 
   if (breedState.breedSelA === potId) { breedState.breedSelA = null; breedState.breedEstimate = null }
   else if (breedState.breedSelB === potId) { breedState.breedSelB = null; breedState.breedEstimate = null }
-  else if (breedState.breedSelA === null) { breedState.breedSelA = potId }
-  else if (breedState.breedSelB === null) { breedState.breedSelB = potId }
+  else if (breedState.breedSelA === null) { breedState.breedSelA = potId; openBreedPanel() }
+  else if (breedState.breedSelB === null) { breedState.breedSelB = potId; openBreedPanel() }
 
   render()
 }

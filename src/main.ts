@@ -6,6 +6,7 @@ import { initShop, closeShop } from './ui/shop_ui'
 import { initBuffsPanel } from './ui/buffs_ui'
 import { initOrderBookPanel } from './ui/orders_ui'
 import { initResearchPanel } from './ui/research_ui'
+import { initBreedPanel } from './ui/breedpanel_ui'
 import { initSeedDrawer } from './ui/seeds_ui'
 import { initCollectionsPanel } from './ui/collections_ui'
 import { initNotificationFooter } from './ui/notification_log'
@@ -50,27 +51,34 @@ app.innerHTML = `
     <div class="pots-row" id="pots-row"></div>
   </section>
 
-  <section>
-    <p class="section-title">${t.sectionBreeding}</p>
-    <div class="breed-panel">
-      <div class="breed-row">
-        <div class="breed-slot-col">
-          <div class="breed-slot" id="breed-a"><span>${t.breedParent1}</span></div>
-          <div id="breed-a-cap"></div>
+  <section id="breed-section">
+    <div class="ach-section-header">
+      <p class="section-title" style="margin-bottom:0">${t.sectionBreeding}</p>
+      <button class="ach-toggle-btn breed-toggle-btn" title="${t.sectionBreeding}">
+        <span class="ach-chevron breed-chevron">▾</span>
+      </button>
+    </div>
+    <div class="breed-body">
+      <div class="breed-panel">
+        <div class="breed-row">
+          <div class="breed-slot-col">
+            <div class="breed-slot" id="breed-a"><span>${t.breedParent1}</span></div>
+            <div id="breed-a-cap"></div>
+          </div>
+          <span class="breed-op">+</span>
+          <div class="breed-slot-col">
+            <div class="breed-slot" id="breed-b"><span>${t.breedParent2}</span></div>
+            <div id="breed-b-cap"></div>
+          </div>
+          <span class="breed-op">=</span>
+          <div class="breed-result" id="breed-preview">${t.breedPrompt}</div>
         </div>
-        <span class="breed-op">+</span>
-        <div class="breed-slot-col">
-          <div class="breed-slot" id="breed-b"><span>${t.breedParent2}</span></div>
-          <div id="breed-b-cap"></div>
+        <div class="breed-footer">
+          <button class="btn" id="breed-btn" disabled>${t.breedBtn}</button>
+          <span class="breed-hint">${t.breedHint}</span>
         </div>
-        <span class="breed-op">=</span>
-        <div class="breed-result" id="breed-preview">${t.breedPrompt}</div>
+        <div id="breed-craft-actions"></div>
       </div>
-      <div class="breed-footer">
-        <button class="btn" id="breed-btn" disabled>${t.breedBtn}</button>
-        <span class="breed-hint">${t.breedHint}</span>
-      </div>
-      <div id="breed-craft-actions"></div>
     </div>
   </section>
 
@@ -201,6 +209,7 @@ if (migrationNotice && migrationNotice.lostCatalogEntries) {
 initOrderBookPanel()
 initResearchPanel()
 initBuffsPanel()
+initBreedPanel()
 initCollectionsPanel()
 
 // Help modal — show on first visit, bind ? button
