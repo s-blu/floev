@@ -47,6 +47,10 @@ function criteriaLabel(criteria: SlotCriteria): string {
   const parts: string[] = []
   if (criteria.shape)       parts.push(t.shapeLabels[criteria.shape] ?? criteria.shape)
   if (criteria.colorBucket) parts.push(t.colorBucketLabels[criteria.colorBucket] ?? criteria.colorBucket)
+  if (criteria.hue !== undefined) {
+    const hueName = (t.colorLabel as Record<number, { hueName: string }>)[criteria.hue]?.hueName
+    parts.push(hueName ?? String(criteria.hue))
+  }
   if (criteria.lightness)   parts.push((t.lightnessLabels as Record<number, string>)[criteria.lightness] ?? String(criteria.lightness))
   if (criteria.centerType)  parts.push(t.centerTypeLabels[criteria.centerType] ?? criteria.centerType)
   if (criteria.effect && criteria.effect !== 'none') parts.push(t.effectLabels[criteria.effect] ?? criteria.effect)
