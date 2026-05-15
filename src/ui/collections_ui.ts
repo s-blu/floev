@@ -389,10 +389,16 @@ function buildCollectionCard(
       ${slotsHtml}
       ${isBlumenkasten ? `<div class="coll-bk-planter" data-collid="${def.id}">${renderBlumenkastenSVG(instance.planterDesign)}</div>` : ''}
     </div>
-    <div class="coll-herbarium-plaque">
-      <span class="coll-herbarium-plaque-title">${info.title}</span>
-      ${info.desc ? `<span class="coll-herbarium-plaque-desc">${info.desc}</span>` : ''}
-    </div>
+    ${isBlumenkasten
+      ? `<div class="coll-bk-hanging-sign">
+          <span class="coll-bk-hanging-sign-title">${info.title}</span>
+          ${info.desc ? `<span class="coll-bk-hanging-sign-desc">${info.desc}</span>` : ''}
+        </div>`
+      : `<div class="coll-herbarium-plaque">
+          <span class="coll-herbarium-plaque-title">${info.title}</span>
+          ${info.desc ? `<span class="coll-herbarium-plaque-desc">${info.desc}</span>` : ''}
+        </div>`
+    }
     <button class="coll-fav-btn${isFavorite ? ' coll-fav-btn--active' : ''}"
       data-action="toggle-fav" data-collid="${def.id}"
       title="${favTitle}" ${favDisabled}>${isFavorite ? '★' : '☆'}</button>

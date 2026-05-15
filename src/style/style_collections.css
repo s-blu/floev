@@ -131,6 +131,61 @@
   line-height: 1.3;
 }
 
+/* ── Blumenkasten hanging sign ───────────────────────────────────────────────── */
+
+.coll-bk-hanging-sign {
+  position: relative;
+  margin: 20px auto 0;
+  width: fit-content;
+  min-width: 50%;
+  max-width: 85%;
+  padding: 5px 14px 6px;
+  text-align: center;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: linear-gradient(175deg, #f2e0a8 0%, #e0c068 40%, #ecc878 68%, #cca040 100%);
+  border: 1px solid #7a5818;
+  box-shadow:
+    0 2px 5px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255, 235, 160, 0.55),
+    inset 0 -1px 0 rgba(0,0,0,0.12);
+  transform: rotate(-1deg);
+}
+
+/* Two side strings with small knot dots at the bottom */
+.coll-bk-hanging-sign::before,
+.coll-bk-hanging-sign::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  width: 1.5px;
+  height: 24px;
+  background: linear-gradient(to bottom, rgba(120, 80, 25, 0) 0%, #7a5020 55%);
+  border-radius: 1px;
+}
+
+.coll-bk-hanging-sign::before { left: 22%; }
+.coll-bk-hanging-sign::after  { right: 22%; }
+
+.coll-bk-hanging-sign-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 11px;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: #2c1c06;
+  text-shadow: 0 1px 0 rgba(255, 220, 130, 0.6);
+}
+
+.coll-bk-hanging-sign-desc {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 10px;
+  color: #3a2808;
+  text-shadow: 0 1px 0 rgba(255, 220, 130, 0.5);
+  line-height: 1.3;
+}
+
 /* ── Blumenkasten frame ──────────────────────────────────────────────────────── */
 
 .coll-blumenkasten-frame {
