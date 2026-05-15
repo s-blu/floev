@@ -108,10 +108,8 @@ export function generateResearchTasks(state: GameState, date: string): ResearchT
       if (!researchSpecInCatalog(state, candidate)) spec = candidate
     }
     if (!spec) {
-      const fallback = randomSpec(difficulty, seededRng(`${date}-research-d${difficulty}-fallback`))
-      if (!researchSpecInCatalog(state, fallback)) spec = fallback
+      spec = randomSpec(difficulty, seededRng(`${date}-research-d${difficulty}-fallback`))
     }
-    if (!spec) continue
     tasks.push({
       id:            uid(),
       spec,
