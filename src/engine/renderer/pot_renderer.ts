@@ -280,3 +280,27 @@ export function renderPot(w: number, groundY: number, potRimH: number, potH: num
 
   return { body, defs: effectDefs }
 }
+
+// ─── Blumenkasten SVG ─────────────────────────────────────────────────────────
+// Renders a wide stretched version of the standard pot shape.
+// Always uses standard pot geometry; applies the player's color + effect.
+
+export function renderBlumenkastenSVG(): string {
+  const { colorId, effectId } = gardenSettings.defaultDesign
+  const c = POT_COLORS.find(pc => pc.id === colorId) ?? POT_COLORS[0]
+
+  const vW = 300, vH = 40
+  const rimH = 7
+
+  const { defs: effectDefs, fill: bodyFill } = getEffectFill(effectId, c, `bk_${colorId}`)
+
+  const defsBlock = effectDefs ? `<defs>${effectDefs}</defs>` : ''
+  return `<svg width="100%" height="100%" viewBox="0 0 ${vW} ${vH}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    ${defsBlock}
+    <rect x="3"  y="${rimH}" width="294" height="${vH - rimH}" rx="0" fill="${bodyFill}"/>
+    <rect x="-2" y="0"       width="304" height="${rimH}"      rx="3" fill="${c.rim}"/>
+    <rect x="0"  y="1"       width="300" height="1.5"          rx="1" fill="white"       opacity="0.16"/>
+    <rect x="8"  y="${rimH + 2}" width="284" height="3"        rx="1" fill="${c.shadow}" opacity="0.35"/>
+    <rect x="3"  y="${vH - 2}"  width="294" height="2"        rx="0" fill="${c.shadow}" opacity="0.30"/>
+  </svg>`
+}

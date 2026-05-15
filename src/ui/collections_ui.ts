@@ -16,6 +16,7 @@ import {
 import { getCollectionDef } from '../engine/collection_defs'
 import type { CollectionDef, CollectionInstanceState, SlotCriteria } from '../model/collections'
 import { renderBloomSVG, renderPlantNoPotSVG } from '../engine/renderer/encyclopedia_renderer'
+import { renderBlumenkastenSVG } from '../engine/renderer/pot_renderer'
 import { addNotification } from './notification_log'
 
 // ─── Sub-section open state ───────────────────────────────────────────────────
@@ -158,42 +159,45 @@ const BK_H = 130
 const BK_EMPTY_W = 56  // compact placeholder for unfilled BK slots
 const BK_EMPTY_H = 68
 
-type BkSlotPos = { cx: number; z: number }
+const BK_BOX_TOP = 32  // px — distance from frame bottom to top of wooden planter box (::after height 40 - bottom -8)
+const BK_RAISE   = 38  // px — how much odd-index slots are raised above the baseline
+
+type BkSlotPos = { cx: number; z: number; y?: number }
 
 const BLUMENKASTEN_POSITIONS: Record<number, BkSlotPos[]> = {
   5: [
-    { cx: 13, z: 3 },
-    { cx: 29, z: 1 },
-    { cx: 48, z: 2 },
-    { cx: 66, z: 2 },
-    { cx: 82, z: 3 },
+    { cx: 13, z: 3,        },
+    { cx: 29, z: 1, y: BK_RAISE },
+    { cx: 48, z: 2,        },
+    { cx: 66, z: 2, y: BK_RAISE },
+    { cx: 82, z: 3,        },
   ],
   6: [
-    { cx: 10, z: 3 },
-    { cx: 25, z: 1 },
-    { cx: 40, z: 2 },
-    { cx: 56, z: 1 },
-    { cx: 70, z: 2 },
-    { cx: 85, z: 3 },
+    { cx: 10, z: 3,        },
+    { cx: 25, z: 1, y: BK_RAISE },
+    { cx: 40, z: 2,        },
+    { cx: 56, z: 1, y: BK_RAISE },
+    { cx: 70, z: 2,        },
+    { cx: 85, z: 3, y: BK_RAISE },
   ],
   7: [
-    { cx:  9, z: 3 },
-    { cx: 22, z: 1 },
-    { cx: 35, z: 2 },
-    { cx: 50, z: 3 },
-    { cx: 63, z: 1 },
-    { cx: 76, z: 2 },
-    { cx: 88, z: 3 },
+    { cx:  9, z: 3,        },
+    { cx: 22, z: 1, y: BK_RAISE },
+    { cx: 35, z: 2,        },
+    { cx: 50, z: 3, y: BK_RAISE },
+    { cx: 63, z: 1,        },
+    { cx: 76, z: 2, y: BK_RAISE },
+    { cx: 88, z: 3,        },
   ],
   8: [
-    { cx:  8, z: 3 },
-    { cx: 19, z: 1 },
-    { cx: 31, z: 2 },
-    { cx: 43, z: 1 },
-    { cx: 54, z: 3 },
-    { cx: 65, z: 2 },
-    { cx: 76, z: 2 },
-    { cx: 87, z: 3 },
+    { cx:  8, z: 3,        },
+    { cx: 19, z: 1, y: BK_RAISE },
+    { cx: 31, z: 2,        },
+    { cx: 43, z: 1, y: BK_RAISE },
+    { cx: 54, z: 3,        },
+    { cx: 65, z: 2, y: BK_RAISE },
+    { cx: 76, z: 2,        },
+    { cx: 87, z: 3, y: BK_RAISE },
   ],
 }
 
@@ -206,10 +210,11 @@ function buildBkSlotHtml(
   const pos = positions[i] ?? { cx: 10 + i * 15, z: 1 }
   const criteria = def.slots[i]
   const slotState = instance.slots[i]
+  const yOffset = pos.y ?? 0
   const left = `calc(${pos.cx}% - ${BK_W / 2}px)`
 
   if (slotState.plant) {
-    return `<div class="coll-bk-plant" style="left:${left};z-index:${pos.z}">
+    return `<div class="coll-bk-plant" style="left:${left};z-index:${pos.z};bottom:${yOffset}px">
       <div class="coll-slot coll-slot--filled" style="width:${BK_W}px;height:${BK_H}px">
         ${renderPlantNoPotSVG(slotState.plant, BK_W, BK_H)}
         <button class="coll-slot-remove" data-action="clear-slot" data-collid="${def.id}" data-slotidx="${i}">×</button>
@@ -221,7 +226,7 @@ function buildBkSlotHtml(
   const disabled = candidateCount === 0 ? 'disabled' : ''
   const badgeClass = candidateCount === 0 ? 'coll-slot-badge coll-slot-badge--zero' : 'coll-slot-badge'
   const emptyLeft = `calc(${pos.cx}% - ${BK_EMPTY_W / 2}px)`
-  return `<div class="coll-bk-plant" style="left:${emptyLeft};z-index:${pos.z}">
+  return `<div class="coll-bk-plant" style="left:${emptyLeft};z-index:${pos.z};bottom:${BK_BOX_TOP + yOffset}px">
     <button class="coll-slot coll-slot--empty coll-slot--bk-empty" data-action="fill-slot"
         data-collid="${def.id}" data-slotidx="${i}" title="${t.collSlotFill}" ${disabled}
         style="width:${BK_EMPTY_W}px;height:${BK_EMPTY_H}px">
@@ -285,6 +290,7 @@ function buildCollectionCard(
   card.innerHTML = `
     <div class="${frameClass}">
       ${slotsHtml}
+      ${isBlumenkasten ? `<div class="coll-bk-planter">${renderBlumenkastenSVG()}</div>` : ''}
     </div>
     <div class="coll-herbarium-plaque">
       <span class="coll-herbarium-plaque-title">${info.title}</span>

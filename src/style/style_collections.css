@@ -135,16 +135,14 @@
 
 .coll-blumenkasten-frame {
   position: relative;
-  height: 160px;
+  height: 200px;
   border-radius: 4px;
   background: transparent;
   border: none;
   overflow: visible;
 }
 
-/* Wooden planter box — sits above plant stems (z:5) to give a planted-in look */
-.coll-blumenkasten-frame::after {
-  content: '';
+.coll-bk-planter {
   position: absolute;
   bottom: -8px;
   left: -4px;
@@ -152,20 +150,7 @@
   height: 40px;
   z-index: 5;
   pointer-events: none;
-  border-radius: 2px 2px 5px 5px;
-  /* dark soil strip at top, warm wood body below */
-  background: linear-gradient(180deg,
-    #5c3a18 0%,
-    #5c3a18 18%,
-    #c07840 18%,
-    #964e20 60%,
-    #7a3c14 100%
-  );
-  border: 2px solid #3e2008;
-  box-shadow:
-    0 5px 14px rgba(0, 0, 0, 0.40),
-    inset 0 1px 0 rgba(210, 140, 70, 0.45),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.22);
+  filter: drop-shadow(0 5px 14px rgba(0, 0, 0, 0.40));
 }
 
 /* ── Blumenkasten plant container ────────────────────────────────────────────── */
@@ -185,6 +170,8 @@
   border-radius: 4px;
   justify-content: flex-end;
   padding-bottom: 8px;
+  border: 1px dashed rgba(139, 99, 67, 0.22);
+  background: rgba(139, 99, 67, 0.03);
 }
 
 /* BK remove button: fade in on card hover — same pattern as .coll-fav-btn.
@@ -271,6 +258,11 @@
 .coll-slot--empty:hover {
   border-color: rgba(139, 99, 67, 0.7);
   background: rgba(139, 99, 67, 0.08);
+}
+
+.coll-slot--empty.coll-slot--bk-empty:hover {
+  border-color: rgba(139, 99, 67, 0.5);
+  background: rgba(139, 99, 67, 0.06);
 }
 
 .coll-slot-label {
