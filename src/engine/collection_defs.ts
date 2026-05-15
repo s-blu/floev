@@ -10,7 +10,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
       { lightness: 90 },
       { colorBucket: 'white' },
       { lightness: 90 },
-      { colorBucket: 'white' },
+      { lightness: 90 },
     ],
   },
   {
@@ -28,7 +28,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
   {
     id: 'mondlichtnacht',
     vessel: 'blumenkasten',
-    unlockCondition: { type: 'catalog_has_any', criteriaList: [{ colorBucket: 'gray' }, { lightness: 30 }] },
+    unlockCondition: { type: 'after_collection', collectionId: 'feuer_und_glut' },
     slots: [
       { lightness: 30, colorBucket: 'blue' },
       { colorBucket: 'gray' },
@@ -41,7 +41,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
   {
     id: 'sommerwiese',
     vessel: 'blumenkasten',
-    unlockCondition: { type: 'catalog_has', criteria: { hue: 60 } },
+    unlockCondition: { type: 'after_collection', collectionId: 'fruehlingskiste' },
     slots: [
       { hue: 60 },
       { hue: 60 },
@@ -51,9 +51,71 @@ export const COLLECTION_DEFS: CollectionDef[] = [
     ],
   },
   {
+    id: 'herbstkiste',
+    vessel: 'blumenkasten',
+    unlockCondition: { type: 'after_collection', collectionId: 'sommerwiese' },
+    slots: [
+      { hue: 5,  lightness: 30 },
+      { hue: 25, lightness: 30 },
+      { hue: 60, lightness: 30 },
+      { hue: 25, lightness: 60 },
+      { hue: 5,  lightness: 60 },
+    ],
+  },
+  {
+    id: 'winterfenster',
+    vessel: 'blumenkasten',
+    unlockCondition: { type: 'after_collection', collectionId: 'herbstkiste' },
+    slots: [
+      { colorBucket: 'white' },
+      { colorBucket: 'blue', lightness: 90 },
+      { colorBucket: 'white' },
+      { colorBucket: 'gray', lightness: 90 },
+      { colorBucket: 'blue', lightness: 90 },
+    ],
+  },
+  {
+    id: 'blaue_stunde',
+    vessel: 'blumenkasten',
+    unlockCondition: { type: 'after_collection', collectionId: 'pastell_kasten' },
+    slots: [
+      { colorBucket: 'blue',   lightness: 60 },
+      { colorBucket: 'purple', lightness: 60 },
+      { colorBucket: 'blue',   lightness: 30 },
+      { colorBucket: 'blue',   lightness: 60 },
+      { colorBucket: 'purple', lightness: 30 },
+      { colorBucket: 'blue',   lightness: 30 },
+    ],
+  },
+  {
+    id: 'pastell_kasten',
+    vessel: 'blumenkasten',
+    unlockCondition: { type: 'after_collection', collectionId: 'heller_garten' },
+    slots: [
+      { colorBucket: 'pink',        lightness: 90 },
+      { colorBucket: 'yellowgreen', lightness: 90 },
+      { colorBucket: 'white' },
+      { colorBucket: 'blue',        lightness: 90 },
+      { colorBucket: 'red',         lightness: 90 },
+      { colorBucket: 'purple',      lightness: 90 },
+    ],
+  },
+  {
+    id: 'feuer_und_glut',
+    vessel: 'blumenkasten',
+    unlockCondition: { type: 'after_collection', collectionId: 'blaue_stunde' },
+    slots: [
+      { colorBucket: 'red',  lightness: 30 },
+      { hue: 25,             lightness: 30 },
+      { hue: 5,              lightness: 30 },
+      { colorBucket: 'pink', lightness: 30 },
+      { hue: 350,            lightness: 30 },
+    ],
+  },
+  {
     id: 'farbenrausch',
     vessel: 'blumenkasten',
-    unlockCondition: { type: 'after_collection', collectionId: 'regenbogen' },
+    unlockCondition: { type: 'after_collection', collectionId: 'mondlichtnacht' },
     slots: [
       { colorBucket: 'white' },
       { colorBucket: 'yellowgreen' },
@@ -79,7 +141,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
   {
     id: 'gemeine_formen',
     vessel: 'herbarium',
-    unlockCondition: { type: 'after_collection', collectionId: 'heller_garten' },
+    unlockCondition: { type: 'after_collection', collectionId: 'helligkeitsstufen' },
     slots: [
       { shape: 'round' },
       { shape: 'lanzett' },
@@ -89,7 +151,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
   {
     id: 'die_fuenf_formen',
     vessel: 'herbarium',
-    unlockCondition: { type: 'after_collection', collectionId: 'gemeine_formen' },
+    unlockCondition: { type: 'after_collection', collectionId: 'die_drei_mitten' },
     slots: [
       { shape: 'round' },
       { shape: 'lanzett' },
@@ -103,7 +165,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
   {
     id: 'runde_bluetenfuelle',
     vessel: 'herbarium',
-    unlockCondition: { type: 'after_collection', collectionId: 'heller_garten' },
+    unlockCondition: { type: 'after_collection', collectionId: 'gemeine_formen' },
     slots: [
       { shape: 'round', petalCount: 3 },
       { shape: 'round', petalCount: 5 },
@@ -155,7 +217,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
   {
     id: 'die_drei_mitten',
     vessel: 'herbarium',
-    unlockCondition: { type: 'catalog_has', criteria: { centerType: 'stamen' } },
+    unlockCondition: { type: 'after_collection', collectionId: 'gemeine_formen' },
     slots: [
       { centerType: 'dot' },
       { centerType: 'disc' },
@@ -165,7 +227,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
   {
     id: 'farbeffekte',
     vessel: 'herbarium',
-    unlockCondition: { type: 'catalog_has', criteria: { effect: 'bicolor' } },
+    unlockCondition: { type: 'after_collection', collectionId: 'die_fuenf_formen' },
     slots: [
       { effect: 'bicolor' },
       { effect: 'gradient' },
@@ -178,7 +240,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
   {
     id: 'regenbogen',
     vessel: 'herbarium',
-    unlockCondition: { type: 'catalog_has_any', criteriaList: [{ colorBucket: 'blue' }, { colorBucket: 'purple' }] },
+    unlockCondition: { type: 'after_collection', collectionId: 'katalog_der_kostbarkeiten' },
     slots: [
       { colorBucket: 'red' },
       { colorBucket: 'pink' },
