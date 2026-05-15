@@ -31,10 +31,16 @@ export interface CollectionSlotState {
   plant: Plant | null
 }
 
+export interface PlanterDesign {
+  colorId:  string
+  effectId: string
+}
+
 export interface CollectionInstanceState {
-  collectionId: string
-  slots:        CollectionSlotState[]
-  completedAt?: number
+  collectionId:  string
+  slots:         CollectionSlotState[]
+  completedAt?:  number
+  planterDesign?: PlanterDesign
 }
 
 export interface CollectionsState {

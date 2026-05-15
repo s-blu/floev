@@ -285,8 +285,10 @@ export function renderPot(w: number, groundY: number, potRimH: number, potH: num
 // Renders a wide stretched version of the standard pot shape.
 // Always uses standard pot geometry; applies the player's color + effect.
 
-export function renderBlumenkastenSVG(): string {
-  const { colorId, effectId } = gardenSettings.defaultDesign
+export function renderBlumenkastenSVG(design?: { colorId: string; effectId?: string }): string {
+  const fallback = gardenSettings.defaultDesign
+  const colorId  = design?.colorId  ?? fallback.colorId
+  const effectId = design?.effectId ?? fallback.effectId
   const c = POT_COLORS.find(pc => pc.id === colorId) ?? POT_COLORS[0]
 
   const vW = 300, vH = 40

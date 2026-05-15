@@ -798,6 +798,7 @@ migrationNoticeOk: 'Got it',
   collCompletedToast:      (title: string) => `Collection complete: ${title}!`,
 
   collCriteriaAny:         'Any',
+  collPlanterDesign:       'Customize planter',
 
   collectionDefs: {
     heller_garten:             { title: 'Light Garden',             desc: 'Five white or brightest blooms — a luminously bright window box.' },

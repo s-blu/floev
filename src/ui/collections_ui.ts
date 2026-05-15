@@ -1,6 +1,6 @@
 import { state, render } from './ui'
 import { t } from '../model/i18n'
-import { hasUpgrade } from '../engine/shop_engine'
+import { hasUpgrade, hasPotColor, hasPotEffect } from '../engine/shop_engine'
 import { saveState } from '../engine/game'
 import {
   getVisibleCollections,
@@ -14,15 +14,111 @@ import {
   MAX_FAVORITES,
 } from '../engine/collections_engine'
 import { getCollectionDef } from '../engine/collection_defs'
-import type { CollectionDef, CollectionInstanceState, SlotCriteria } from '../model/collections'
+import type { CollectionDef, CollectionInstanceState, SlotCriteria, PlanterDesign } from '../model/collections'
 import { renderBloomSVG, renderPlantNoPotSVG } from '../engine/renderer/encyclopedia_renderer'
 import { renderBlumenkastenSVG } from '../engine/renderer/pot_renderer'
+import { POT_COLORS, POT_EFFECTS } from '../model/shop'
+import { gardenSettings } from '../model/garden_settings'
+import { EFFECT_ICONS } from './pots_overlay_ui'
 import { addNotification } from './notification_log'
 
 // ─── Sub-section open state ───────────────────────────────────────────────────
 
 const IN_PROGRESS_OPEN_KEY = 'collInProgressOpen'
 const DONE_OPEN_KEY        = 'collDoneOpen'
+
+let planterDesignOverlayOpenForId: string | null = null
+
+function updatePlanterSVG(collId: string): void {
+  const instance = getOrCreateInstance(state, collId)
+  document.querySelectorAll<HTMLElement>(`.coll-bk-planter[data-collid="${collId}"]`).forEach(el => {
+    el.innerHTML = renderBlumenkastenSVG(instance.planterDesign)
+  })
+}
+
+function openPlanterDesignOverlay(card: HTMLElement, collId: string): void {
+  card.querySelector('.coll-bk-design-overlay')?.remove()
+
+  const unlockedColors  = POT_COLORS.filter(c => hasPotColor(state, c.id))
+  const unlockedEffects = POT_EFFECTS.filter(e => hasPotEffect(state, e.id))
+  if (unlockedColors.length <= 1 && unlockedEffects.length <= 1) return
+
+  planterDesignOverlayOpenForId = collId
+
+  const instance   = getOrCreateInstance(state, collId)
+  const activeColorId  = instance.planterDesign?.colorId  ?? gardenSettings.defaultDesign.colorId
+  const activeEffectId = instance.planterDesign?.effectId ?? gardenSettings.defaultDesign.effectId ?? 'none'
+  const activeBodyColor = POT_COLORS.find(c => c.id === activeColorId)?.body ?? '#b8724a'
+
+  const colorSwatches = unlockedColors.map(c => `<button
+    class="pdo-color-swatch${c.id === activeColorId ? ' pdo-color-swatch--active' : ''}"
+    data-pdo-color="${c.id}" title="${t.potColorLabels[c.id]}"
+    style="--swatch-bg:${c.body};--swatch-rim:${c.rim}"></button>`).join('')
+
+  const effectButtons = unlockedEffects.map(e => `<button
+    class="pdo-effect-btn${e.id === activeEffectId ? ' pdo-effect-btn--active' : ''}"
+    data-pdo-effect="${e.id}" title="${t.potEffectLabels[e.id]}"
+    style="color:${activeBodyColor}"
+    >${EFFECT_ICONS[e.id] ?? e.id}</button>`).join('')
+
+  const overlay = document.createElement('div')
+  overlay.className = 'coll-bk-design-overlay'
+  overlay.innerHTML = `
+    <button class="pdo-close" data-bk-close title="${t.helpClose}">×</button>
+    ${unlockedColors.length > 1  ? `<div class="coll-bk-design-swatches">${colorSwatches}</div>` : ''}
+    ${unlockedEffects.length > 1 ? `<div class="coll-bk-design-effects">${effectButtons}</div>`  : ''}
+  `
+
+  overlay.addEventListener('click', e => {
+    e.stopPropagation()
+    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-bk-close],[data-pdo-color],[data-pdo-effect]')
+    if (!el) return
+
+    if ('bkClose' in el.dataset) {
+      overlay.remove()
+      planterDesignOverlayOpenForId = null
+      return
+    }
+
+    const inst = getOrCreateInstance(state, collId)
+    const cur: PlanterDesign = {
+      colorId:  inst.planterDesign?.colorId  ?? gardenSettings.defaultDesign.colorId,
+      effectId: inst.planterDesign?.effectId ?? gardenSettings.defaultDesign.effectId ?? 'none',
+    }
+
+    if (el.dataset.pdoColor) {
+      cur.colorId = el.dataset.pdoColor
+      inst.planterDesign = cur
+      saveState(state)
+      overlay.querySelectorAll('[data-pdo-color]').forEach(b => b.classList.remove('pdo-color-swatch--active'))
+      el.classList.add('pdo-color-swatch--active')
+      const newBody = POT_COLORS.find(c => c.id === cur.colorId)?.body ?? '#b8724a'
+      overlay.querySelectorAll<HTMLElement>('[data-pdo-effect]').forEach(b => { b.style.color = newBody })
+      updatePlanterSVG(collId)
+    }
+
+    if (el.dataset.pdoEffect) {
+      cur.effectId = el.dataset.pdoEffect
+      inst.planterDesign = cur
+      saveState(state)
+      overlay.querySelectorAll('[data-pdo-effect]').forEach(b => b.classList.remove('pdo-effect-btn--active'))
+      el.classList.add('pdo-effect-btn--active')
+      updatePlanterSVG(collId)
+    }
+  })
+
+  card.appendChild(overlay)
+  setTimeout(() => {
+    const closeOnOutside = (ev: MouseEvent) => {
+      if (!card.contains(ev.target as Node)) {
+        overlay.remove()
+        planterDesignOverlayOpenForId = null
+        document.removeEventListener('click', closeOnOutside)
+      }
+    }
+    document.addEventListener('click', closeOnOutside)
+  }, 0)
+}
 
 function loadBool(key: string, defaultVal: boolean): boolean {
   const stored = localStorage.getItem(key)
@@ -290,7 +386,7 @@ function buildCollectionCard(
   card.innerHTML = `
     <div class="${frameClass}">
       ${slotsHtml}
-      ${isBlumenkasten ? `<div class="coll-bk-planter">${renderBlumenkastenSVG()}</div>` : ''}
+      ${isBlumenkasten ? `<div class="coll-bk-planter" data-collid="${def.id}">${renderBlumenkastenSVG(instance.planterDesign)}</div>` : ''}
     </div>
     <div class="coll-herbarium-plaque">
       <span class="coll-herbarium-plaque-title">${info.title}</span>
@@ -298,7 +394,8 @@ function buildCollectionCard(
     </div>
     <button class="coll-fav-btn${isFavorite ? ' coll-fav-btn--active' : ''}"
       data-action="toggle-fav" data-collid="${def.id}"
-      title="${favTitle}" ${favDisabled}>${isFavorite ? '★' : '☆'}</button>`
+      title="${favTitle}" ${favDisabled}>${isFavorite ? '★' : '☆'}</button>
+    ${isBlumenkasten ? `<button class="coll-bk-design-btn" data-action="open-planter-design" title="${t.collPlanterDesign}">✎</button>` : ''}`
 
   card.addEventListener('click', (e) => {
     const target = e.target as HTMLElement
@@ -331,8 +428,17 @@ function buildCollectionCard(
         saveState(state)
         render()
       }
+      return
+    }
+
+    if (target.closest('[data-action="open-planter-design"]')) {
+      openPlanterDesignOverlay(card, def.id)
     }
   })
+
+  if (isBlumenkasten && planterDesignOverlayOpenForId === def.id) {
+    requestAnimationFrame(() => openPlanterDesignOverlay(card, def.id))
+  }
 
   return card
 }

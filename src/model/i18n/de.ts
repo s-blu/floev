@@ -798,6 +798,7 @@ migrationNoticeOk: 'Verstanden',
   collCompletedToast:      (title: string) => `Sammlung abgeschlossen: ${title}!`,
 
   collCriteriaAny:         'Beliebig',
+  collPlanterDesign:       'Blumenkasten gestalten',
 
   collectionDefs: {
     heller_garten:             { title: 'Heller Garten',            desc: 'Fünf weiße oder hellste Blüten — ein leuchtend heller Blumenkasten.' },

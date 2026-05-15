@@ -19,7 +19,7 @@ import { formatDate } from './ui';
 import { SHOWCASE_POT_BASE_ID } from '../model/shop';
 
 
-const EFFECT_ICONS: Record<string, string> = {
+export const EFFECT_ICONS: Record<string, string> = {
   none:     `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="14" height="14" rx="2.5" fill="currentColor"/></svg>`,
   glossy:   `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="14" height="14" rx="2.5" fill="currentColor"/><path d="M4.5 5.5 Q9 3.5 13.5 8.5" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
   stripes:  `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="14" height="14" rx="2.5" fill="currentColor" opacity="0.25"/><rect x="2" y="2" width="14" height="4" rx="1.5" fill="currentColor"/><rect x="2" y="8" width="14" height="4" fill="currentColor"/><rect x="2" y="14" width="14" height="2" rx="1" fill="currentColor"/></svg>`,
