@@ -252,7 +252,8 @@ const HERBARIUM_POSITIONS: Record<number, SlotPos[]> = {
 
 const BK_W = 100  // same as pot view — viewBox renders plants at identical size
 const BK_H = 130
-const BK_EMPTY_W = 56  // compact placeholder for unfilled BK slots
+
+const BK_EMPTY_W = 56
 const BK_EMPTY_H = 68
 
 const BK_BOX_TOP = 32  // px — distance from frame bottom to top of wooden planter box (::after height 40 - bottom -8)
@@ -310,7 +311,7 @@ function buildBkSlotHtml(
   const left = `calc(${pos.cx}% - ${BK_W / 2}px)`
 
   if (slotState.plant) {
-    return `<div class="coll-bk-plant" style="left:${left};z-index:${pos.z};bottom:${yOffset}px">
+    return `<div class="coll-bk-plant" style="left:${left};z-index:${pos.z};bottom:0px">
       <div class="coll-slot coll-slot--filled" style="width:${BK_W}px;height:${BK_H}px">
         ${renderPlantNoPotSVG(slotState.plant, BK_W, BK_H)}
         <button class="coll-slot-remove" data-action="clear-slot" data-collid="${def.id}" data-slotidx="${i}">×</button>
@@ -322,7 +323,7 @@ function buildBkSlotHtml(
   const disabled = candidateCount === 0 ? 'disabled' : ''
   const badgeClass = candidateCount === 0 ? 'coll-slot-badge coll-slot-badge--zero' : 'coll-slot-badge'
   const emptyLeft = `calc(${pos.cx}% - ${BK_EMPTY_W / 2}px)`
-  return `<div class="coll-bk-plant" style="left:${emptyLeft};z-index:${pos.z};bottom:${BK_BOX_TOP + yOffset}px">
+  return `<div class="coll-bk-plant coll-bk-plant--empty" style="left:${emptyLeft};z-index:10;bottom:${BK_BOX_TOP + yOffset}px">
     <button class="coll-slot coll-slot--empty coll-slot--bk-empty" data-action="fill-slot"
         data-collid="${def.id}" data-slotidx="${i}" title="${t.collSlotFill}" ${disabled}
         style="width:${BK_EMPTY_W}px;height:${BK_EMPTY_H}px">
