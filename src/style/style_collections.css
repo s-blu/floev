@@ -213,6 +213,7 @@
 .coll-bk-plant {
   position: absolute;
   bottom: 0;
+  pointer-events: none;
 }
 
 /* override absolute positioning from generic .coll-slot */
@@ -229,6 +230,7 @@
   background: transparent;
   margin-top: -24px;
   padding-top: 24px;
+  pointer-events: auto;
 }
 
 .coll-bk-plant--empty .coll-slot-badge {
@@ -248,6 +250,7 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
+  pointer-events: auto;
 }
 
 .coll-card:hover .coll-bk-plant .coll-slot-remove {
