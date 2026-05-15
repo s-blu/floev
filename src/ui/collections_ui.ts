@@ -15,7 +15,7 @@ import {
 } from '../engine/collections_engine'
 import { getCollectionDef } from '../engine/collection_defs'
 import type { CollectionDef, CollectionInstanceState, SlotCriteria } from '../model/collections'
-import { renderBloomSVG } from '../engine/renderer/encyclopedia_renderer'
+import { renderBloomSVG, renderPlantNoPotSVG } from '../engine/renderer/encyclopedia_renderer'
 import { addNotification } from './notification_log'
 
 // ─── Sub-section open state ───────────────────────────────────────────────────
@@ -115,9 +115,11 @@ function openSlotFillDialog(collectionId: string, slotIndex: number, criteria: S
   activeDialog = dialog
 }
 
-// ─── Herbarium slot positions (x%, y%, rotation°, size px) per slot count ─────
+// ─── Herbarium slot positions (x%, y%, rotation°, size px) per slot count ──────
 
-const HERBARIUM_POSITIONS: Record<number, { x: number; y: number; rot: number; size: number }[]> = {
+type SlotPos = { x: number; y: number; rot: number; size: number; z?: number }
+
+const HERBARIUM_POSITIONS: Record<number, SlotPos[]> = {
   2: [
     { x:  6, y:  8, rot: -14, size: 68 },
     { x: 48, y: 38, rot:  10, size: 72 },
@@ -142,8 +144,87 @@ const HERBARIUM_POSITIONS: Record<number, { x: number; y: number; rot: number; s
   ],
 }
 
-function getSlotPositions(count: number) {
-  return HERBARIUM_POSITIONS[count] ?? HERBARIUM_POSITIONS[5]
+// ─── Blumenkasten slot positions (cx%, z-index) ──────────────────────────────
+// All plants render at the same fixed size (BK_W × BK_H) so the plant's own
+// stemHeight gene determines how tall it looks — exactly as in its pot.
+// Height variation across slots comes from plant genetics, not slot data.
+
+const BK_W = 100  // same as pot view — viewBox renders plants at identical size
+const BK_H = 130
+const BK_EMPTY_W = 56  // compact placeholder for unfilled BK slots
+const BK_EMPTY_H = 68
+
+type BkSlotPos = { cx: number; z: number }
+
+const BLUMENKASTEN_POSITIONS: Record<number, BkSlotPos[]> = {
+  5: [
+    { cx: 13, z: 3 },
+    { cx: 29, z: 1 },
+    { cx: 48, z: 2 },
+    { cx: 66, z: 2 },
+    { cx: 82, z: 3 },
+  ],
+  6: [
+    { cx: 10, z: 3 },
+    { cx: 25, z: 1 },
+    { cx: 40, z: 2 },
+    { cx: 56, z: 1 },
+    { cx: 70, z: 2 },
+    { cx: 85, z: 3 },
+  ],
+  7: [
+    { cx:  9, z: 3 },
+    { cx: 22, z: 1 },
+    { cx: 35, z: 2 },
+    { cx: 50, z: 3 },
+    { cx: 63, z: 1 },
+    { cx: 76, z: 2 },
+    { cx: 88, z: 3 },
+  ],
+  8: [
+    { cx:  8, z: 3 },
+    { cx: 19, z: 1 },
+    { cx: 31, z: 2 },
+    { cx: 43, z: 1 },
+    { cx: 54, z: 3 },
+    { cx: 65, z: 2 },
+    { cx: 76, z: 2 },
+    { cx: 87, z: 3 },
+  ],
+}
+
+function buildBkSlotHtml(
+  def: CollectionDef,
+  instance: CollectionInstanceState,
+  i: number,
+): string {
+  const positions = BLUMENKASTEN_POSITIONS[def.slots.length] ?? BLUMENKASTEN_POSITIONS[7]
+  const pos = positions[i] ?? { cx: 10 + i * 15, z: 1 }
+  const criteria = def.slots[i]
+  const slotState = instance.slots[i]
+  const left = `calc(${pos.cx}% - ${BK_W / 2}px)`
+
+  if (slotState.plant) {
+    return `<div class="coll-bk-plant" style="left:${left};z-index:${pos.z}">
+      <div class="coll-slot coll-slot--filled" style="width:${BK_W}px;height:${BK_H}px">
+        ${renderPlantNoPotSVG(slotState.plant, BK_W, BK_H)}
+        <button class="coll-slot-remove" data-action="clear-slot" data-collid="${def.id}" data-slotidx="${i}">×</button>
+      </div>
+    </div>`
+  }
+
+  const candidateCount = getEligiblePots(criteria, state).length
+  const disabled = candidateCount === 0 ? 'disabled' : ''
+  const badgeClass = candidateCount === 0 ? 'coll-slot-badge coll-slot-badge--zero' : 'coll-slot-badge'
+  const emptyLeft = `calc(${pos.cx}% - ${BK_EMPTY_W / 2}px)`
+  return `<div class="coll-bk-plant" style="left:${emptyLeft};z-index:${pos.z}">
+    <button class="coll-slot coll-slot--empty coll-slot--bk-empty" data-action="fill-slot"
+        data-collid="${def.id}" data-slotidx="${i}" title="${t.collSlotFill}" ${disabled}
+        style="width:${BK_EMPTY_W}px;height:${BK_EMPTY_H}px">
+      <span class="coll-slot-label">${criteriaLabel(criteria)}</span>
+      <span class="${badgeClass}">${candidateCount}</span>
+    </button>
+  </div>`
 }
 
 // ─── Collection card ──────────────────────────────────────────────────────────
@@ -159,12 +240,16 @@ function buildCollectionCard(
 
   const defs = t.collectionDefs as Record<string, { title: string; desc: string }>
   const info = defs[def.id] ?? { title: def.id, desc: '' }
-  const positions = getSlotPositions(def.slots.length)
+  const isBlumenkasten = def.vessel === 'blumenkasten'
 
   const slotsHtml = def.slots.map((criteria, i) => {
+    if (isBlumenkasten) return buildBkSlotHtml(def, instance, i)
+
+    const positions = HERBARIUM_POSITIONS[def.slots.length] ?? HERBARIUM_POSITIONS[5]
     const slotState = instance.slots[i]
     const pos = positions[i] ?? { x: 10 + i * 20, y: 30, rot: 0, size: 72 }
-    const baseStyle = `left:${pos.x}%;top:${pos.y}%;width:${pos.size}px;height:${pos.size}px`
+    const zStyle = pos.z !== undefined ? `;z-index:${pos.z}` : ''
+    const baseStyle = `left:${pos.x}%;top:${pos.y}%;width:${pos.size}px;height:${pos.size}px${zStyle}`
 
     if (slotState.plant) {
       return `<div class="coll-slot coll-slot--filled" style="${baseStyle};transform:rotate(${pos.rot}deg)">
@@ -189,8 +274,12 @@ function buildCollectionCard(
     : canAdd ? t.collAddFavorite : t.collFavoritesFull
   const favDisabled = !isFavorite && !canAdd ? 'disabled' : ''
 
+  const frameClass = isBlumenkasten
+    ? `coll-blumenkasten-frame coll-blumenkasten-frame--slots-${def.slots.length}`
+    : `coll-herbarium-frame coll-herbarium-frame--slots-${def.slots.length}`
+
   card.innerHTML = `
-    <div class="coll-herbarium-frame coll-herbarium-frame--slots-${def.slots.length}">
+    <div class="${frameClass}">
       ${slotsHtml}
     </div>
     <div class="coll-herbarium-plaque">
@@ -338,7 +427,7 @@ export function renderCollections(): void {
   if (nonFav.length === 0) {
     const hint = document.createElement('p')
     hint.className = 'coll-empty-hint'
-    hint.textContent = t.collFavoritesTitle
+    hint.textContent = t.collFavoritesFull
     body.appendChild(hint)
   }
 }

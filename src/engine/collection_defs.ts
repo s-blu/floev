@@ -85,6 +85,32 @@ export const COLLECTION_DEFS: CollectionDef[] = [
       { colorBucket: 'purple' },
     ],
   },
+  {
+    id: 'fruehlingskiste',
+    vessel: 'blumenkasten',
+    unlockCondition: { type: 'after_collection', collectionId: 'weisser_garten' },
+    slots: [
+      { colorBucket: 'pink' },
+      { colorBucket: 'white' },
+      { colorBucket: 'yellowgreen' },
+      { colorBucket: 'pink' },
+      { colorBucket: 'red' },
+    ],
+  },
+  {
+    id: 'farbenrausch',
+    vessel: 'blumenkasten',
+    unlockCondition: { type: 'after_collection', collectionId: 'regenbogen' },
+    slots: [
+      { colorBucket: 'white' },
+      { colorBucket: 'yellowgreen' },
+      { colorBucket: 'red' },
+      { colorBucket: 'pink' },
+      { colorBucket: 'purple' },
+      { colorBucket: 'blue' },
+      { colorBucket: 'gray' },
+    ],
+  },
 ]
 
 export function getCollectionDef(id: string): CollectionDef | undefined {

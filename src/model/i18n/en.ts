@@ -808,6 +808,8 @@ migrationNoticeOk: 'Got it',
     sommerwiese:       { title: 'Summer Meadow',     desc: 'Yellow, orange-red and red — three warm tones like a summer meadow.' },
     effektgarten:      { title: 'Effect Garden',     desc: 'Three blooms each with a different effect: bicolor, gradient and shimmer.' },
     regenbogen:        { title: 'Rainbow',           desc: 'Five blooms in five different colors — a spectrum in a frame.' },
+    fruehlingskiste:   { title: 'Spring Box',        desc: 'Pink, white, lime and red — five blooms like a spring garden.' },
+    farbenrausch:      { title: 'Color Frenzy',      desc: 'Seven blooms in all seven colors — a box bursting with life.' },
   } as Record<string, { title: string; desc: string }>,
 
   petalNames: {

@@ -808,6 +808,8 @@ migrationNoticeOk: 'Verstanden',
     sommerwiese:       { title: 'Sommerwiese',          desc: 'Gelb, Orangerot und Rot — drei warme Töne wie auf einer Sommerwiese.' },
     effektgarten:      { title: 'Effektgarten',         desc: 'Drei Blüten mit je einem anderen Effekt: Zweifarbig, Verlauf und Schimmer.' },
     regenbogen:        { title: 'Regenbogen',           desc: 'Fünf Blüten in fünf verschiedenen Farben — ein Spektrum im Rahmen.' },
+    fruehlingskiste:   { title: 'Frühlingskiste',       desc: 'Rosa, Weiß, Grüngelb und Rot — fünf Blüten wie ein Frühlingsgarten.' },
+    farbenrausch:      { title: 'Farbenrausch',         desc: 'Sieben Blüten in allen sieben Farben — ein wilder Kasten voller Leben.' },
   } as Record<string, { title: string; desc: string }>,
 
   petalNames: {
