@@ -1,3 +1,18 @@
+# v1.10.0
+
+Improvements:
+
+- New purchasable feature: Collections
+- New purchasable feature: Seed Magnifier
+- Sort the catalog after different criteria
+- Remove rather frustrating finish markers from completion index
+- Allow collapsing of the breeding panel
+
+Bugs:
+- Sometimes, not all three research tasks were generated
+- Preview in order book was off for certain colors
+- Buffs didn't display the next level gain
+
 # v1.9.3
 
 Bugs:
