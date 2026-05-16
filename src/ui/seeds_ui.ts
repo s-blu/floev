@@ -1,11 +1,13 @@
 import { state, handlePlantSeedFromStorage, handleMoveSeedToSlot, handleSellSeed, handleSetSlotLabel } from './ui'
-import { COIN_ICON, CENTER_TYPE_ICONS, renderEffectSwatch, renderPetalShapeSvg } from './icons'
+import { COIN_ICON, MAGNIFIER_ICON, CENTER_TYPE_ICONS, renderEffectSwatch, renderPetalShapeSvg } from './icons'
 import { t } from '../model/i18n'
 import { SEEDS_PER_SLOT, PETAL_SHAPES, CENTER_TYPES } from '../model/genetic_model'
 import { getSeedSlotCount, getSeedCapacity } from '../engine/seed_storage_engine'
 import type { ColorBucket } from '../model/genetic_model'
 import type { PetalShape, CenterType } from '../model/plant'
 import { renderSeedSvg, renderSeedIcon } from '../engine/renderer/seed_renderer'
+import { renderPlantSVG } from '../engine/renderer/renderer'
+import type { PlantPhase } from '../model/plant'
 import { SEED_SELL_VALUE } from '../model/genetic_model'
 import {
   buildDiscoveredShapeCounts, buildDiscoveredShapeCenters, buildDiscoveredShapeEffects,
@@ -26,6 +28,7 @@ let targetPotId: number | null = null
 let selectedSeedId: string | null = null
 let labelEditMode = false
 let editingSlotIdx: number | null = null
+let lupeMode = false
 
 // ─── Seed position helpers ────────────────────────────────────────────────────
 
@@ -184,6 +187,45 @@ function toggleSlotLabel(slotIdx: number, key: string): void {
   renderSeedDrawerBody()
 }
 
+// ─── Lupe tooltip ─────────────────────────────────────────────────────────────
+
+function showSeedLupeTooltip(seedId: string, seedEl: HTMLElement): void {
+  const seed = state.seeds.find(s => s.id === seedId)
+  if (!seed) return
+
+  const previewPlant = { ...seed, phase: 4 as PlantPhase }
+  const previewSvg = renderPlantSVG(previewPlant, 110, 130)
+
+  let tooltip = document.getElementById('seed-lupe-tooltip') as HTMLElement | null
+  if (!tooltip) {
+    tooltip = document.createElement('div')
+    tooltip.id = 'seed-lupe-tooltip'
+    tooltip.className = 'seed-lupe-tooltip'
+    document.body.appendChild(tooltip)
+  }
+
+  tooltip.innerHTML = previewSvg
+
+  const rect = seedEl.getBoundingClientRect()
+  const tooltipW = 120
+  const tooltipH = 150
+
+  let left = rect.left - tooltipW - 8
+  if (left < 8) left = rect.right + 8
+
+  let top = rect.top + rect.height / 2 - tooltipH / 2
+  top = Math.max(8, Math.min(top, window.innerHeight - tooltipH - 8))
+
+  tooltip.style.left = `${left}px`
+  tooltip.style.top = `${top}px`
+  tooltip.style.display = 'block'
+}
+
+function hideSeedLupeTooltip(): void {
+  const tooltip = document.getElementById('seed-lupe-tooltip')
+  if (tooltip) tooltip.style.display = 'none'
+}
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 export function initSeedDrawer(): void {
@@ -191,8 +233,39 @@ export function initSeedDrawer(): void {
   document.getElementById('seed-overlay')?.addEventListener('click', closeSeedDrawer)
   document.getElementById('seed-drawer-btn')?.addEventListener('click', () => openSeedDrawer(null))
 
+  const body = document.getElementById('seed-drawer-body')
+
+  body?.addEventListener('mouseover', (e) => {
+    if (!lupeMode) return
+    const seedEl = (e.target as HTMLElement).closest('[data-seed-id]') as HTMLElement | null
+    if (seedEl) showSeedLupeTooltip(seedEl.dataset.seedId!, seedEl)
+  })
+
+  body?.addEventListener('mouseout', (e) => {
+    if (!lupeMode) return
+    const seedEl = (e.target as HTMLElement).closest('[data-seed-id]') as HTMLElement | null
+    if (seedEl) {
+      const related = e.relatedTarget as HTMLElement | null
+      if (!related || !seedEl.contains(related)) hideSeedLupeTooltip()
+    }
+  })
+
   document.getElementById('seed-drawer-body')?.addEventListener('click', (e) => {
     const target = e.target as HTMLElement
+
+    // Lupe mode toggle
+    if (target.closest('[data-lupe-toggle]')) {
+      lupeMode = !lupeMode
+      if (lupeMode) {
+        labelEditMode = false
+        editingSlotIdx = null
+        selectedSeedId = null
+      } else {
+        hideSeedLupeTooltip()
+      }
+      renderSeedDrawerBody()
+      return
+    }
 
     // Label-edit mode toggle (always check first)
     if (target.closest('[data-label-toggle]')) {
@@ -201,6 +274,8 @@ export function initSeedDrawer(): void {
         editingSlotIdx = null
       } else {
         labelEditMode = true
+        lupeMode = false
+        hideSeedLupeTooltip()
         selectedSeedId = null
         editingSlotIdx = null
       }
@@ -250,6 +325,23 @@ export function initSeedDrawer(): void {
 
       editingSlotIdx = null
       renderSeedDrawerBody()
+      return
+    }
+
+    // Lupe mode: tap a seed to pin/unpin its preview, tap elsewhere to hide
+    if (lupeMode) {
+      const seedEl = target.closest('[data-seed-id]') as HTMLElement | null
+      if (seedEl) {
+        const tooltip = document.getElementById('seed-lupe-tooltip')
+        const currentlyShown = tooltip?.style.display === 'block'
+        if (currentlyShown) {
+          hideSeedLupeTooltip()
+        } else {
+          showSeedLupeTooltip(seedEl.dataset.seedId!, seedEl)
+        }
+      } else {
+        hideSeedLupeTooltip()
+      }
       return
     }
 
@@ -304,6 +396,7 @@ export function openSeedDrawer(potId: number | null): void {
   selectedSeedId = null
   labelEditMode = false
   editingSlotIdx = null
+  lupeMode = false
   drawerOpen = true
   document.getElementById('seed-drawer')?.classList.add('seed-drawer--open')
   document.getElementById('seed-overlay')?.classList.add('seed-overlay--visible')
@@ -315,6 +408,8 @@ export function closeSeedDrawer(): void {
   selectedSeedId = null
   labelEditMode = false
   editingSlotIdx = null
+  lupeMode = false
+  hideSeedLupeTooltip()
   drawerOpen = false
   document.getElementById('seed-drawer')?.classList.remove('seed-drawer--open')
   document.getElementById('seed-overlay')?.classList.remove('seed-overlay--visible')
@@ -335,19 +430,25 @@ export function renderSeedDrawerBody(): void {
 
   const capacity = `<span class="seed-drawer-capacity">${t.seedDrawerCapacity(seeds.length, getSeedCapacity(state))}</span>`
 
+  const hasLupe = state.upgrades.includes('unlock_seed_lupe')
   const labelBtn = !isSelectMode
     ? `<button class="seed-label-edit-btn${labelEditMode ? ' seed-label-edit-btn--active' : ''}" data-label-toggle="1">${t.seedLabelEditBtn}</button>`
     : ''
+  const lupeBtn = !isSelectMode && hasLupe
+    ? `<button class="seed-lupe-btn${lupeMode ? ' seed-lupe-btn--active' : ''}" data-lupe-toggle="1" title="${t.seedLupeBtn}">${MAGNIFIER_ICON}</button>`
+    : ''
 
   let hintText = ''
-  if (isSelectMode)   hintText = t.selectSeedToPlant
+  if (isSelectMode)       hintText = t.selectSeedToPlant
+  else if (lupeMode)      hintText = t.seedLupeHint
   else if (labelEditMode) hintText = t.seedLabelEditHint
   else if (isMoveMode)    hintText = t.seedMoveHint
   const hintCls = [
     'seed-drawer-mode-hint',
-    isMoveMode   ? 'seed-drawer-mode-hint--move'  : '',
+    isMoveMode    ? 'seed-drawer-mode-hint--move'  : '',
     labelEditMode ? 'seed-drawer-mode-hint--label' : '',
-    !hintText    ? 'seed-drawer-mode-hint--hidden' : '',
+    lupeMode      ? 'seed-drawer-mode-hint--lupe'  : '',
+    !hintText     ? 'seed-drawer-mode-hint--hidden' : '',
   ].filter(Boolean).join(' ')
   const hint = `<p class="${hintCls}">${hintText || '&nbsp;'}</p>`
 
@@ -397,7 +498,7 @@ export function renderSeedDrawerBody(): void {
 
   body.innerHTML = `
     ${hint}
-    <div class="seed-drawer-header-row">${capacity}${sellZone}${labelBtn}</div>
+    <div class="seed-drawer-header-row">${capacity}${sellZone}${lupeBtn}${labelBtn}</div>
     ${seeds.length === 0
       ? `<p class="seed-drawer-empty">${t.seedDrawerEmpty}</p>`
       : `<div class="seed-slots-grid">${slots}</div>`

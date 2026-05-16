@@ -257,6 +257,7 @@ export const de = {
     unlock_showcase:         'Schaukasten',
     unlock_order_book:       'Auftragsbuch',
     unlock_seed_drawer:      'Saatenschublade',
+    unlock_seed_lupe:        'Saatenlupe',
     unlock_research_book:    'Forschungsbuch',
     unlock_completion_index: 'Vollständigkeits-Index',
   } as Record<string, string>,
@@ -268,6 +269,7 @@ export const de = {
     unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
     unlock_order_book:       'Täglich 3 Aufträge: Züchte und verkaufe Blüten mit bestimmten Merkmalen für Bonus-Münzen.',
     unlock_seed_drawer:      'Eine Schublade mit 20 Fächern für bis zu 100 Saaten. Beim Kreuzen besteht eine Chance auf einen Überschuss-Samen.',
+    unlock_seed_lupe:        'Zeigt eine Blütenvorschau für jeden Samen in der Schublade — nur die dominanten Merkmale, rezessives bleibt verborgen.',
     unlock_research_book:    'Täglich 3 Forschungsaufgaben: Entdecke neue Blüten für Forschungspunkte. Nutze Punkte für dauerhafte Verbesserungen.',
     unlock_completion_index: 'Ein detaillierter Vollständigkeits-Tracker für die richtig ambitionierten Komplettisten. Sieh genau, welche Kombinationen du im Katalog hast und welche du noch entdecken kannst.',
     unlock_collections:      'Kuratierte Herbarien: Befülle thematische Sets mit echten Blüten aus deinem Garten und stelle sie aus.',
@@ -298,6 +300,8 @@ export const de = {
   seedLabelCategoryEffect: 'Effekt',
   seedLabelCategoryMark: 'Symbole',
   seedLabelMaxHint: '(max. 2)',
+  seedLupeBtn: 'Lupe',
+  seedLupeHint: 'Auf einen Samen klicken für Vorschau',
 
   // Shop — Showcase
   shopSectionShowcase: 'Schaukasten erweitern',

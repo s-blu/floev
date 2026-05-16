@@ -201,6 +201,14 @@
   line-height: 1.4;
 }
 
+.shop-item-requires {
+  font-size: 10px;
+  color: var(--text3);
+  font-style: italic;
+  margin-top: 2px;
+  display: block;
+}
+
 .shop-item-action {
   flex-shrink: 0;
 }

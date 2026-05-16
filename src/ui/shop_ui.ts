@@ -67,19 +67,21 @@ export function renderShopSidebar(): void {
 function renderUpgradesSection(): string {
   const items = UPGRADES.map(u => {
     const owned = hasUpgrade(state, u.id)
+    const reqMet = !u.requires || hasUpgrade(state, u.requires)
     const canAfford = state.coins >= u.price
-    const disabled = owned || !canAfford
+    const disabled = owned || !canAfford || !reqMet
     return `
       <div class="shop-item ${owned ? 'shop-item--owned' : ''} ${!owned && !canAfford ? 'shop-item--locked' : ''}">
         <span class="shop-item-icon">${owned ? '✓' : u.icon}</span>
         <div class="shop-item-info">
           <span class="shop-item-title">${t.upgradeTitle[u.id]}</span>
           <span class="shop-item-desc">${t.upgradeDesc[u.id]}</span>
+          ${!reqMet && u.requires ? `<span class="shop-item-requires">${t.buffUnlockRequires(t.upgradeTitle[u.requires])}</span>` : ''}
         </div>
         <div class="shop-item-action">
           ${owned
             ? `<span class="shop-item-owned-badge">${t.shopItemOwned}</span>`
-            : `<button class="shop-buy-btn ${!canAfford ? 'shop-buy-btn--locked' : ''}"
+            : `<button class="shop-buy-btn ${!canAfford || !reqMet ? 'shop-buy-btn--locked' : ''}"
                  data-action="buy-upgrade" data-id="${u.id}" ${disabled ? 'disabled' : ''}>
                  ${COIN_ICON} ${u.price}
                </button>`
