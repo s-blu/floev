@@ -494,7 +494,7 @@ export const de = {
 
   helpBtnTitle: 'Hilfe & Spielregeln',
   helpDisclaimerTitle: 'KI-Nutzungshinweis',
-  helpDisclaimerText: 'Dieses Spiel ist ein KI-Experiment, um herauszufinden, wie leistungsstark KI in der Webentwicklung ist und wo die Grenzen liegen. Der Großteil des Spiels ist durch Claude Sonnet 4.6 geschrieben und von einem menschlichen Entwickler überprüft.',
+  helpDisclaimerText: 'Dieses Spiel ist ein KI-Experiment, um herauszufinden, wie leistungsstark KI in der Webentwicklung ist und wo die Grenzen liegen. Der Großteil des Spiels ist durch Claude Sonnet 4.6 in April/Mai 2026 geschrieben und von einem menschlichen Entwickler überprüft.',
 
   shopOpenBtnLabel: '🛒 Shop',
 

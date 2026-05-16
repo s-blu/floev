@@ -494,7 +494,7 @@ export const en = {
   // Help button tooltip
   helpBtnTitle: 'Help & rules',
   helpDisclaimerTitle: 'AI Usage Notice',
-  helpDisclaimerText: 'This game is an AI experiment to find out how capable AI is in web development and where the limits lie. The majority of the game is written by Claude Sonnet 4.6 and reviewed by a human developer.',
+  helpDisclaimerText: 'This game is an AI experiment to find out how capable AI is in web development and where the limits lie. The majority of the game is written by Claude Sonnet 4.6 (in Q2 2026) and reviewed by a human developer.',
 
   shopOpenBtnLabel: '🛒 Shop',
 
