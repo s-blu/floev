@@ -332,13 +332,7 @@ export function initSeedDrawer(): void {
     if (lupeMode) {
       const seedEl = target.closest('[data-seed-id]') as HTMLElement | null
       if (seedEl) {
-        const tooltip = document.getElementById('seed-lupe-tooltip')
-        const currentlyShown = tooltip?.style.display === 'block'
-        if (currentlyShown) {
-          hideSeedLupeTooltip()
-        } else {
-          showSeedLupeTooltip(seedEl.dataset.seedId!, seedEl)
-        }
+        showSeedLupeTooltip(seedEl.dataset.seedId!, seedEl)
       } else {
         hideSeedLupeTooltip()
       }
