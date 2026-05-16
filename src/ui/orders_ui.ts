@@ -97,7 +97,7 @@ function previewPlantForOrder(order: Order): Plant {
   }
 
   if (hue >= 0 && !lightnessExplicit) lightness = 60
-  if (lightnessExplicit && hue < 0) hue = 350
+  if (lightnessExplicit && hue === ACHROMATIC_HUE_WHITE) hue = 350
 
   return {
     id: 'order-preview',
