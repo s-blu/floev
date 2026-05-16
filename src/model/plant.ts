@@ -104,6 +104,8 @@ export interface GameState {
   researchBook?: ResearchBookState
   researchPoints?: number
   collections?: CollectionsState
+  freeHerbariumCount?: number
+  freeBkCount?: number
   migrationVersion?: number
   pendingMigrationNotice?: { lostCatalogEntries: number; compensation: number }
   buffs?: Record<string, number>

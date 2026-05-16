@@ -1,7 +1,12 @@
 import type { GameState } from '../model/plant'
 import type { UpgradeId, PotDesign } from '../model/shop'
 import { initCollectionsState } from './collections_engine'
-import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP, SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID} from '../model/shop'
+import {
+  UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS,
+  MAX_POT_COUNT, EXTRA_POT_BASE_PRICE, EXTRA_POT_PRICE_STEP,
+  SHOWCASE_INITIAL_SLOTS, SHOWCASE_MAX_SLOTS, SHOWCASE_POT_BASE_ID,
+  FREE_HERBARIUM_PRICE, FREE_BK_PRICE, MAX_FREE_HERBARIUMS, MAX_FREE_BKS,
+} from '../model/shop'
 import { INITIAL_POT_COUNT } from './game'
 import { gardenSettings } from '../model/garden_settings'
 import { MAX_EXTRA_SEED_ROWS, EXTRA_SEED_ROW_PRICE, SEEDS_PER_SLOT } from '../model/genetic_model'
@@ -155,6 +160,34 @@ export function buyExtraShowcaseSlot(state: GameState): boolean {
   return true
 }
 
+
+// ─── Free collections purchasing ─────────────────────────────────────────────
+
+export function getFreeHerbariumCount(state: GameState): number {
+  return state.freeHerbariumCount ?? 0
+}
+
+export function getFreeBkCount(state: GameState): number {
+  return state.freeBkCount ?? 0
+}
+
+export function buyFreeHerbarium(state: GameState): boolean {
+  if (!hasUpgrade(state, 'unlock_collections')) return false
+  if (getFreeHerbariumCount(state) >= MAX_FREE_HERBARIUMS) return false
+  if (state.coins < FREE_HERBARIUM_PRICE) return false
+  state.coins -= FREE_HERBARIUM_PRICE
+  state.freeHerbariumCount = getFreeHerbariumCount(state) + 1
+  return true
+}
+
+export function buyFreeBk(state: GameState): boolean {
+  if (!hasUpgrade(state, 'unlock_collections')) return false
+  if (getFreeBkCount(state) >= MAX_FREE_BKS) return false
+  if (state.coins < FREE_BK_PRICE) return false
+  state.coins -= FREE_BK_PRICE
+  state.freeBkCount = getFreeBkCount(state) + 1
+  return true
+}
 
 // ─── Extra seed row purchasing ────────────────────────────────────────────────
 

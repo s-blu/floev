@@ -1,6 +1,6 @@
-import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, SHOWCASE_MAX_SLOTS } from '../model/shop'
-import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleBuyPotEffect, handleBuyExtraPot, handleBuyExtraShowcaseSlot, handleBuyExtraSeedRow } from './ui'
-import { hasUpgrade, hasPotColor, hasPotShape, hasPotEffect, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot, getShowcaseSlotPrice, canBuyExtraSeedRow } from '../engine/shop_engine'
+import { UPGRADES, POT_COLORS, POT_SHAPES, POT_EFFECTS, MAX_POT_COUNT, SHOWCASE_MAX_SLOTS, FREE_HERBARIUM_PRICE, FREE_BK_PRICE, MAX_FREE_HERBARIUMS, MAX_FREE_BKS } from '../model/shop'
+import { state, handleBuyUpgrade, handleBuyPotColor, handleBuyPotShape, handleBuyPotEffect, handleBuyExtraPot, handleBuyExtraShowcaseSlot, handleBuyExtraSeedRow, handleBuyFreeHerbarium, handleBuyFreeBk } from './ui'
+import { hasUpgrade, hasPotColor, hasPotShape, hasPotEffect, getExtraPotPrice, canBuyExtraPot, canBuyExtraShowcaseSlot, getShowcaseSlotPrice, canBuyExtraSeedRow, getFreeHerbariumCount, getFreeBkCount } from '../engine/shop_engine'
 import { getSeedSlotCount } from '../engine/seed_storage_engine'
 import { MAX_EXTRA_SEED_ROWS, SEEDS_PER_SLOT, EXTRA_SEED_ROW_PRICE } from '../model/genetic_model'
 import { renderPotShopPreview } from '../engine/renderer/pot_renderer'
@@ -32,6 +32,8 @@ export function initShop(): void {
       else if (action === 'buy-extra-pot')          handleBuyExtraPot()
       else if (action === 'buy-extra-showcase-slot') handleBuyExtraShowcaseSlot()
       else if (action === 'buy-extra-seed-row')      handleBuyExtraSeedRow()
+      else if (action === 'buy-free-herbarium')      handleBuyFreeHerbarium()
+      else if (action === 'buy-free-bk')             handleBuyFreeBk()
     })
     _eventsInitialized = true
   }
@@ -59,7 +61,7 @@ export function renderShopSidebar(): void {
   if (!sidebarOpen) return
   const body = document.getElementById('shop-sidebar-body')
   if (!body) return
-  body.innerHTML =  renderExtraPotsSection() + renderShowcaseSection() + renderSeedSlotsSection() + renderUpgradesSection() +  renderDecoSection()
+  body.innerHTML = renderExtraPotsSection() + renderShowcaseSection() + renderSeedSlotsSection() + renderFreeCollectionsSection() + renderUpgradesSection() + renderDecoSection()
 }
 
 // ─── Upgrades section ─────────────────────────────────────────────────────────
@@ -191,6 +193,54 @@ function renderSeedSlotsSection(): string {
           <span class="shop-item-desc">${t.shopSeedSlotsDesc(currentSlots, currentCapacity, MAX_EXTRA_SEED_ROWS - currentRows)}</span>
         </div>
         <div class="shop-item-action">${actionArea}</div>
+      </div>
+    </div>`
+}
+
+// ─── Free collections section ─────────────────────────────────────────────────
+
+function renderFreeCollectionsSection(): string {
+  if (!hasUpgrade(state, 'unlock_collections')) return ''
+
+  const herbCount = getFreeHerbariumCount(state)
+  const bkCount   = getFreeBkCount(state)
+
+  const herbAction = herbCount >= MAX_FREE_HERBARIUMS
+    ? `<span class="shop-item-owned-badge">${t.shopFreeCollMax}</span>`
+    : `<button class="shop-buy-btn ${state.coins < FREE_HERBARIUM_PRICE ? 'shop-buy-btn--locked' : ''}"
+         data-action="buy-free-herbarium"
+         ${state.coins < FREE_HERBARIUM_PRICE ? 'disabled' : ''}>
+         ${COIN_ICON} ${FREE_HERBARIUM_PRICE}
+       </button>`
+
+  const bkAction = bkCount >= MAX_FREE_BKS
+    ? `<span class="shop-item-owned-badge">${t.shopFreeCollMax}</span>`
+    : `<button class="shop-buy-btn ${state.coins < FREE_BK_PRICE ? 'shop-buy-btn--locked' : ''}"
+         data-action="buy-free-bk"
+         ${state.coins < FREE_BK_PRICE ? 'disabled' : ''}>
+         ${COIN_ICON} ${FREE_BK_PRICE}
+       </button>`
+
+  return `
+    <div class="shop-section">
+      <p class="shop-section-label">${t.shopSectionFreeCollections}</p>
+      <div class="shop-items-list">
+        <div class="shop-item">
+          <span class="shop-item-icon">📋</span>
+          <div class="shop-item-info">
+            <span class="shop-item-title">${t.shopFreeHerbariumTitle}</span>
+            <span class="shop-item-desc">${t.shopFreeHerbariumDesc(herbCount, MAX_FREE_HERBARIUMS)}</span>
+          </div>
+          <div class="shop-item-action">${herbAction}</div>
+        </div>
+        <div class="shop-item">
+          <span class="shop-item-icon">🌸</span>
+          <div class="shop-item-info">
+            <span class="shop-item-title">${t.shopFreeBkTitle}</span>
+            <span class="shop-item-desc">${t.shopFreeBkDesc(bkCount, MAX_FREE_BKS)}</span>
+          </div>
+          <div class="shop-item-action">${bkAction}</div>
+        </div>
       </div>
     </div>`
 }

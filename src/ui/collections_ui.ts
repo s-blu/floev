@@ -12,8 +12,15 @@ import {
   addFavorite,
   removeFavorite,
   MAX_FAVORITES,
+  setFreeCollectionSize,
 } from '../engine/collections_engine'
-import { getCollectionDef } from '../engine/collection_defs'
+import {
+  getCollectionDef,
+  FREE_HERBARIUM_MIN_SIZE,
+  FREE_HERBARIUM_SIZES,
+  FREE_BK_MIN_SIZE,
+  FREE_BK_SIZES,
+} from '../engine/collection_defs'
 import type { CollectionDef, CollectionInstanceState, SlotCriteria, PlanterDesign } from '../model/collections'
 import { renderBloomSVG, renderPlantNoPotSVG } from '../engine/renderer/encyclopedia_renderer'
 import { renderBlumenkastenSVG } from '../engine/renderer/pot_renderer'
@@ -45,10 +52,12 @@ function openPlanterDesignOverlay(card: HTMLElement, collId: string): void {
 
   planterDesignOverlayOpenForId = collId
 
+  const def        = getCollectionDef(collId)
   const instance   = getOrCreateInstance(state, collId)
   const activeColorId  = instance.planterDesign?.colorId  ?? gardenSettings.defaultDesign.colorId
   const activeEffectId = instance.planterDesign?.effectId ?? gardenSettings.defaultDesign.effectId ?? 'none'
   const activeBodyColor = POT_COLORS.find(c => c.id === activeColorId)?.body ?? '#b8724a'
+  const activeSizeBk = instance.activeSize ?? FREE_BK_MIN_SIZE
 
   const colorSwatches = unlockedColors.map(c => `<button
     class="pdo-color-swatch${c.id === activeColorId ? ' pdo-color-swatch--active' : ''}"
@@ -61,17 +70,28 @@ function openPlanterDesignOverlay(card: HTMLElement, collId: string): void {
     style="color:${activeBodyColor}"
     >${EFFECT_ICONS[e.id] ?? e.id}</button>`).join('')
 
+  const sizeButtons = def?.freeForm
+    ? FREE_BK_SIZES.map(s => {
+        const hasFilledBeyond = instance.slots.slice(s).some(sl => sl.plant !== null)
+        return `<button class="coll-size-btn${activeSizeBk === s ? ' coll-size-btn--active' : ''}"
+          data-pdo-size="${s}" ${hasFilledBeyond ? 'disabled' : ''}>${s}</button>`
+      }).join('')
+    : ''
+
   const overlay = document.createElement('div')
   overlay.className = 'coll-bk-design-overlay'
   overlay.innerHTML = `
-    <button class="pdo-close" data-bk-close title="${t.helpClose}">×</button>
-    ${unlockedColors.length > 1  ? `<div class="coll-bk-design-swatches">${colorSwatches}</div>` : ''}
-    ${unlockedEffects.length > 1 ? `<div class="coll-bk-design-effects">${effectButtons}</div>`  : ''}
+    <div class="coll-bk-design-top-row">
+      <button class="pdo-close" data-bk-close title="${t.helpClose}">×</button>
+      ${unlockedColors.length > 1  ? `<div class="coll-bk-design-swatches">${colorSwatches}</div>` : ''}
+      ${unlockedEffects.length > 1 ? `<div class="coll-bk-design-effects">${effectButtons}</div>`  : ''}
+    </div>
+    ${def?.freeForm ? `<div class="coll-bk-design-sizes"><span class="coll-free-size-label">${t.collFreeSize}:</span>${sizeButtons}</div>` : ''}
   `
 
   overlay.addEventListener('click', e => {
     e.stopPropagation()
-    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-bk-close],[data-pdo-color],[data-pdo-effect]')
+    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-bk-close],[data-pdo-color],[data-pdo-effect],[data-pdo-size]')
     if (!el) return
 
     if ('bkClose' in el.dataset) {
@@ -104,6 +124,14 @@ function openPlanterDesignOverlay(card: HTMLElement, collId: string): void {
       overlay.querySelectorAll('[data-pdo-effect]').forEach(b => b.classList.remove('pdo-effect-btn--active'))
       el.classList.add('pdo-effect-btn--active')
       updatePlanterSVG(collId)
+    }
+
+    if (el.dataset.pdoSize) {
+      if (setFreeCollectionSize(state, collId, Number(el.dataset.pdoSize))) {
+        saveState(state)
+        overlay.remove()
+        render()
+      }
     }
   })
 
@@ -302,8 +330,9 @@ function buildBkSlotHtml(
   def: CollectionDef,
   instance: CollectionInstanceState,
   i: number,
+  totalSlots: number,
 ): string {
-  const positions = BLUMENKASTEN_POSITIONS[def.slots.length] ?? BLUMENKASTEN_POSITIONS[7]
+  const positions = BLUMENKASTEN_POSITIONS[totalSlots] ?? BLUMENKASTEN_POSITIONS[7]
   const pos = positions[i] ?? { cx: 10 + i * 15, z: 1 }
   const criteria = def.slots[i]
   const slotState = instance.slots[i]
@@ -348,10 +377,14 @@ function buildCollectionCard(
   const info = defs[def.id] ?? { title: def.id, desc: '' }
   const isBlumenkasten = def.vessel === 'blumenkasten'
 
-  const slotsHtml = def.slots.map((criteria, i) => {
-    if (isBlumenkasten) return buildBkSlotHtml(def, instance, i)
+  const activeSize = def.freeForm
+    ? (instance.activeSize ?? (isBlumenkasten ? FREE_BK_MIN_SIZE : FREE_HERBARIUM_MIN_SIZE))
+    : def.slots.length
 
-    const positions = HERBARIUM_POSITIONS[def.slots.length] ?? HERBARIUM_POSITIONS[5]
+  const slotsHtml = def.slots.slice(0, activeSize).map((criteria, i) => {
+    if (isBlumenkasten) return buildBkSlotHtml(def, instance, i, activeSize)
+
+    const positions = HERBARIUM_POSITIONS[activeSize] ?? HERBARIUM_POSITIONS[5]
     const slotState = instance.slots[i]
     const pos = positions[i] ?? { x: 10 + i * 20, y: 30, rot: 0, size: 72 }
     const zStyle = pos.z !== undefined ? `;z-index:${pos.z}` : ''
@@ -373,6 +406,15 @@ function buildCollectionCard(
     </button>`
   }).join('')
 
+  const herbSizePicker = (def.freeForm && !isBlumenkasten)
+    ? FREE_HERBARIUM_SIZES.map(s => {
+        const hasFilledBeyond = instance.slots.slice(s).some(sl => sl.plant !== null)
+        return `<button class="coll-size-btn${activeSize === s ? ' coll-size-btn--active' : ''}"
+          data-action="set-size" data-collid="${def.id}" data-size="${s}"
+          ${hasFilledBeyond ? 'disabled' : ''}>${s}</button>`
+      }).join('')
+    : ''
+
   const favCount = state.collections?.favorites.length ?? 0
   const canAdd = !isFavorite && favCount < MAX_FAVORITES
   const favTitle = isFavorite
@@ -381,8 +423,8 @@ function buildCollectionCard(
   const favDisabled = !isFavorite && !canAdd ? 'disabled' : ''
 
   const frameClass = isBlumenkasten
-    ? `coll-blumenkasten-frame coll-blumenkasten-frame--slots-${def.slots.length}`
-    : `coll-herbarium-frame coll-herbarium-frame--slots-${def.slots.length}`
+    ? `coll-blumenkasten-frame coll-blumenkasten-frame--slots-${activeSize}`
+    : `coll-herbarium-frame coll-herbarium-frame--slots-${activeSize}`
 
   card.innerHTML = `
     <div class="${frameClass}">
@@ -397,6 +439,7 @@ function buildCollectionCard(
       : `<div class="coll-herbarium-plaque">
           <span class="coll-herbarium-plaque-title">${info.title}</span>
           ${info.desc ? `<span class="coll-herbarium-plaque-desc">${info.desc}</span>` : ''}
+          ${herbSizePicker ? `<div class="coll-plaque-size-picker">${herbSizePicker}</div>` : ''}
         </div>`
     }
     <button class="coll-fav-btn${isFavorite ? ' coll-fav-btn--active' : ''}"
@@ -440,6 +483,15 @@ function buildCollectionCard(
 
     if (target.closest('[data-action="open-planter-design"]')) {
       openPlanterDesignOverlay(card, def.id)
+      return
+    }
+
+    const sizeBtn = target.closest<HTMLElement>('[data-action="set-size"]')
+    if (sizeBtn) {
+      if (setFreeCollectionSize(state, sizeBtn.dataset.collid!, Number(sizeBtn.dataset.size))) {
+        saveState(state)
+        render()
+      }
     }
   })
 

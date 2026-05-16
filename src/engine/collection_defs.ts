@@ -1,5 +1,25 @@
 import type { CollectionDef } from '../model/collections'
 
+// ─── Free collection constants ────────────────────────────────────────────────
+
+export const FREE_HERBARIUM_MIN_SIZE = 2
+export const FREE_HERBARIUM_MAX_SIZE = 5
+export const FREE_HERBARIUM_SIZES    = [2, 3, 4, 5] as const
+
+export const FREE_BK_MIN_SIZE = 5
+export const FREE_BK_MAX_SIZE = 8
+export const FREE_BK_SIZES    = [5, 6, 7, 8] as const
+
+export function buildFreeCollectionDef(vessel: 'herbarium' | 'blumenkasten', index: number): CollectionDef {
+  const maxSlots = vessel === 'herbarium' ? FREE_HERBARIUM_MAX_SIZE : FREE_BK_MAX_SIZE
+  return {
+    id: `free_${vessel}_${index}`,
+    vessel,
+    slots: Array.from({ length: maxSlots }, () => ({})),
+    freeForm: true,
+  }
+}
+
 export const COLLECTION_DEFS: CollectionDef[] = [
   // ─── Blumenkästen ─────────────────────────────────────────────────────────
   {
@@ -325,5 +345,7 @@ export const COLLECTION_DEFS: CollectionDef[] = [
 ]
 
 export function getCollectionDef(id: string): CollectionDef | undefined {
+  const m = id.match(/^free_(herbarium|blumenkasten)_(\d+)$/)
+  if (m) return buildFreeCollectionDef(m[1] as 'herbarium' | 'blumenkasten', Number(m[2]))
   return COLLECTION_DEFS.find(d => d.id === id)
 }

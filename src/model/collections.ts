@@ -25,6 +25,7 @@ export interface CollectionDef {
   vessel:           VesselType
   slots:            SlotCriteria[]
   unlockCondition?: CollectionUnlockCondition
+  freeForm?:        boolean
 }
 
 export interface CollectionSlotState {
@@ -41,6 +42,7 @@ export interface CollectionInstanceState {
   slots:         CollectionSlotState[]
   completedAt?:  number
   planterDesign?: PlanterDesign
+  activeSize?:   number
 }
 
 export interface CollectionsState {

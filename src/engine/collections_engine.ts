@@ -1,6 +1,14 @@
 import type { GameState, Plant } from '../model/plant'
 import type { SlotCriteria, CollectionDef, CollectionInstanceState } from '../model/collections'
-import { COLLECTION_DEFS, getCollectionDef } from './collection_defs'
+import {
+  COLLECTION_DEFS,
+  getCollectionDef,
+  buildFreeCollectionDef,
+  FREE_HERBARIUM_MIN_SIZE,
+  FREE_HERBARIUM_MAX_SIZE,
+  FREE_BK_MIN_SIZE,
+  FREE_BK_MAX_SIZE,
+} from './collection_defs'
 import { expressedShape, expressedCenter, expressedEffect, expressedColor, expressedPetalCount, expressedLightness, colorBucket } from './genetic/genetic_utils'
 import { calcRarity } from './rarity'
 
@@ -51,7 +59,16 @@ export function isCollectionUnlocked(def: CollectionDef, state: GameState): bool
 }
 
 export function getVisibleCollections(state: GameState): CollectionDef[] {
-  return COLLECTION_DEFS.filter(def => isCollectionUnlocked(def, state))
+  const defined = COLLECTION_DEFS.filter(def => isCollectionUnlocked(def, state))
+  const freeHerbs = Array.from(
+    { length: state.freeHerbariumCount ?? 0 },
+    (_, i) => buildFreeCollectionDef('herbarium', i),
+  )
+  const freeBks = Array.from(
+    { length: state.freeBkCount ?? 0 },
+    (_, i) => buildFreeCollectionDef('blumenkasten', i),
+  )
+  return [...defined, ...freeHerbs, ...freeBks]
 }
 
 // ─── Instance management ──────────────────────────────────────────────────────
@@ -65,6 +82,9 @@ export function getOrCreateInstance(state: GameState, collectionId: string): Col
   const instance: CollectionInstanceState = {
     collectionId,
     slots: def.slots.map(() => ({ plant: null })),
+    activeSize: def.freeForm
+      ? (def.vessel === 'herbarium' ? FREE_HERBARIUM_MIN_SIZE : FREE_BK_MIN_SIZE)
+      : undefined,
   }
   state.collections!.instances.push(instance)
   return instance
@@ -113,9 +133,16 @@ export function fillSlot(
 
   const pot = state.pots.find(p => p.id === potId)
   if (!pot?.plant || pot.plant.phase !== 4) return false
-  if (!slotMatchesPlant(slot, pot.plant)) return false
 
   const instance = getOrCreateInstance(state, collectionId)
+
+  if (def.freeForm) {
+    const minSize = def.vessel === 'herbarium' ? FREE_HERBARIUM_MIN_SIZE : FREE_BK_MIN_SIZE
+    if (slotIndex >= (instance.activeSize ?? minSize)) return false
+  } else {
+    if (!slotMatchesPlant(slot, pot.plant)) return false
+  }
+
   if (instance.slots[slotIndex].plant !== null) return false
 
   instance.slots[slotIndex].plant = pot.plant
@@ -139,6 +166,8 @@ export function clearSlot(state: GameState, collectionId: string, slotIndex: num
 // ─── Completion ───────────────────────────────────────────────────────────────
 
 function checkCollectionCompletion(state: GameState, collectionId: string): void {
+  const def = getCollectionDef(collectionId)
+  if (def?.freeForm) return
   const instance = state.collections?.instances.find(i => i.collectionId === collectionId)
   if (!instance || instance.completedAt !== undefined) return
   if (instance.slots.every(s => s.plant !== null)) {
@@ -151,11 +180,27 @@ export function checkAllCollectionCompletions(state: GameState): string[] {
   const newlyCompleted: string[] = []
   for (const instance of state.collections.instances) {
     if (instance.completedAt !== undefined) continue
+    const def = getCollectionDef(instance.collectionId)
+    if (def?.freeForm) continue
     if (instance.slots.every(s => s.plant !== null)) {
       instance.completedAt = Date.now()
       newlyCompleted.push(instance.collectionId)
     }
   }
   return newlyCompleted
+}
+
+// ─── Free collection size ─────────────────────────────────────────────────────
+
+export function setFreeCollectionSize(state: GameState, collectionId: string, newSize: number): boolean {
+  const def = getCollectionDef(collectionId)
+  if (!def?.freeForm) return false
+  const minSize = def.vessel === 'herbarium' ? FREE_HERBARIUM_MIN_SIZE : FREE_BK_MIN_SIZE
+  const maxSize = def.vessel === 'herbarium' ? FREE_HERBARIUM_MAX_SIZE : FREE_BK_MAX_SIZE
+  if (newSize < minSize || newSize > maxSize) return false
+  const instance = getOrCreateInstance(state, collectionId)
+  if (instance.slots.slice(newSize).some(s => s.plant !== null)) return false
+  instance.activeSize = newSize
+  return true
 }
 

@@ -34,6 +34,13 @@ export const UPGRADES: Upgrade[] = [
   { id: 'unlock_completion_index', price: 1500, icon: '💯' },
 ]
 
+// ─── Free collections ─────────────────────────────────────────────────────────
+
+export const FREE_HERBARIUM_PRICE = 150
+export const FREE_BK_PRICE        = 200
+export const MAX_FREE_HERBARIUMS  = 5
+export const MAX_FREE_BKS         = 5
+
 // ─── Showcase ─────────────────────────────────────────────────────────────────
 
 export const SHOWCASE_INITIAL_SLOTS        = 3

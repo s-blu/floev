@@ -25,7 +25,7 @@ import {
 } from '../engine/pot_engine'
 import { breedPlants, selfPollinateePlant } from '../engine/breed'
 import { isHomozygous } from '../engine/genetic/genetic_utils'
-import { buyUpgrade, buyPotColor, buyPotShape, buyPotEffect, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot, buyExtraSeedRow } from '../engine/shop_engine'
+import { buyUpgrade, buyPotColor, buyPotShape, buyPotEffect, setPotDesign, setShowcasePotDesign, hasUpgrade, buyExtraPot, buyExtraShowcaseSlot, buyExtraSeedRow, buyFreeHerbarium, buyFreeBk } from '../engine/shop_engine'
 import { renderPots } from './pots_ui'
 import { renderShowcase } from './showcase_ui'
 import { renderBreedPanel, openBreedPanel } from './breedpanel_ui'
@@ -175,6 +175,20 @@ export function handleBuyExtraShowcaseSlot(): void {
 
 export function handleBuyExtraSeedRow(): void {
   if (buyExtraSeedRow(state)) {
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleBuyFreeHerbarium(): void {
+  if (buyFreeHerbarium(state)) {
+    checkAchAndSave(state)
+    render()
+  }
+}
+
+export function handleBuyFreeBk(): void {
+  if (buyFreeBk(state)) {
     checkAchAndSave(state)
     render()
   }
