@@ -1,3 +1,9 @@
+# v1.10.2
+
+Bugs:
+- Collections allowed effects on lightness requirements
+- Rarity Collection used wrong rarities
+
 # v1.10.1
 
 Bugs:
