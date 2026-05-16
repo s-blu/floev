@@ -22,6 +22,7 @@ export function slotMatchesPlant(criteria: SlotCriteria, plant: Plant): boolean 
   if (criteria.effect !== undefined && expressedEffect(plant.petalEffect) !== criteria.effect) return false
   if (criteria.petalCount !== undefined && expressedPetalCount(plant.petalCount) !== criteria.petalCount) return false
   if (criteria.lightness !== undefined && expressedLightness(plant.petalLightness) !== criteria.lightness) return false
+  if (criteria.lightness !== undefined && expressedEffect(plant.petalEffect) !== 'none') return false
   if (criteria.hue !== undefined || criteria.colorBucket !== undefined) {
     const color = expressedColor(plant.petalHue, plant.petalLightness)
     if (criteria.hue !== undefined && color.h !== criteria.hue) return false
