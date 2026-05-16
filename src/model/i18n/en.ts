@@ -209,6 +209,7 @@ export const en = {
     trade_skill:        (pct: number) => `+${pct}% Coins`,
   } as Record<string, (pct: number) => string>,
   buffActiveLabel:     'Active',
+  buffNextLevel:       (desc: string) => `Next level: ${desc}`,
   buffMaxed:           'Maxed',
   buffUnlockRequires:  (name: string) => `Requires: ${name}`,
   buffRedeemBtn:       'Redeem',

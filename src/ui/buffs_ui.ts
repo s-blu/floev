@@ -91,9 +91,12 @@ function renderBuffsItems(): string {
 
     const effectBadge = buildEffectBadge(def.id, currentLevel);
 
-    const currentEffect = currentLevel > 0
-      ? `<span class="shop-item-desc">${t.buffDesc[def.id]?.(Math.round((def.levels[currentLevel - 1]?.value ?? 0) * 100))}</span>`
-      : `<span class="shop-item-desc">${t.buffDesc[def.id]?.(Math.round((def.levels[0]?.value ?? 0) * 100))}</span>`;
+    const descText = nextLevelDef
+      ? t.buffNextLevel(t.buffDesc[def.id]?.(Math.round(nextLevelDef.value * 100)) ?? '')
+      : maxed
+        ? t.buffDesc[def.id]?.(Math.round((def.levels[currentLevel - 1]?.value ?? 0) * 100)) ?? ''
+        : t.buffDesc[def.id]?.(Math.round((def.levels[0]?.value ?? 0) * 100)) ?? '';
+    const currentEffect = `<span class="shop-item-desc">${descText}</span>`;
 
     let actionArea: string;
     if (maxed) {

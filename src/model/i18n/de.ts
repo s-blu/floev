@@ -209,6 +209,7 @@ export const de = {
     trade_skill:        (pct: number) => `+${pct}% Münzen`,
   } as Record<string, (pct: number) => string>,
   buffActiveLabel:     'Aktiv',
+  buffNextLevel:       (desc: string) => `Nächste Stufe: ${desc}`,
   buffMaxed:           'Maximal',
   buffUnlockRequires:  (name: string) => `Benötigt: ${name}`,
   buffRedeemBtn:       'Einlösen',
