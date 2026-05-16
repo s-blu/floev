@@ -1,3 +1,10 @@
+# v1.10.1
+
+Bugs:
+- Collection UI did not scale proplery on mobile
+- Seed loupe required long press
+- Homozygous symbol was missing on seed labeling
+
 # v1.10.0
 
 Improvements:
