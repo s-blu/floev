@@ -203,7 +203,7 @@ export const en = {
     trade_skill:        (pct: number) => `+${pct}% coins when selling`,
   } as Record<string, (pct: number) => string>,
   buffBadge: {
-    faster_growth:      (pct: number) => `-${pct}% Growth`,
+    faster_growth:      (pct: number) => `-${pct}% Growth time`,
     seed_luck:          (pct: number) => `+${pct}% Seeds`,
     cooldown_reduction: (pct: number) => `-${pct}% Cooldown`,
     trade_skill:        (pct: number) => `+${pct}% Coins`,
