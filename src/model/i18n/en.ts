@@ -278,10 +278,10 @@ export const en = {
     unlock_showcase:         'A showcase with 3 display slots for your most beautiful blooms. Displayed plants cannot be sold or used for breeding.',
     unlock_order_book:       'Three daily orders: breed and sell blooms with specific traits for bonus coins.',
     unlock_seed_drawer:      'A drawer with 20 compartments for up to 100 seeds. Crossing plants gives a chance to receive a surplus seed.',
-    unlock_seed_lupe:        'Shows a bloom preview for any seed in the drawer — dominant traits only, recessive stays hidden.',
+    unlock_seed_lupe:        'Shows a bloom preview for any seed in the drawer.',
     unlock_research_book:    'Three daily research tasks: catalog new blooms to earn research points. Spend points on permanent upgrades.',
     unlock_completion_index: 'A detailed collection tracker for the truly ambitious completists. See exactly which combinations you have in your collection and which ones you can still discover.',
-    unlock_collections:      'Curated herbariums: fill themed sets with real blooms from your garden and put them on display.',
+    unlock_collections:      'Curated collections: fill themed sets with blooms from your garden and put them on display.',
   } as Record<string, string>,
 
   // Seed drawer

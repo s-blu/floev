@@ -278,10 +278,10 @@ export const de = {
     unlock_showcase:         'Ein Schaukasten mit 3 Stellplätzen für deine schönsten Blüten. Ausgestellte Pflanzen können weder verkauft noch zum Züchten genutzt werden.',
     unlock_order_book:       'Täglich 3 Aufträge: Züchte und verkaufe Blüten mit bestimmten Merkmalen für Bonus-Münzen.',
     unlock_seed_drawer:      'Eine Schublade mit 20 Fächern für bis zu 100 Saaten. Beim Kreuzen besteht eine Chance auf einen Überschuss-Samen.',
-    unlock_seed_lupe:        'Zeigt eine Blütenvorschau für jeden Samen in der Schublade — nur die dominanten Merkmale, rezessives bleibt verborgen.',
+    unlock_seed_lupe:        'Zeigt eine Blütenvorschau für jeden Samen in der Schublade.',
     unlock_research_book:    'Täglich 3 Forschungsaufgaben: Entdecke neue Blüten für Forschungspunkte. Nutze Punkte für dauerhafte Verbesserungen.',
     unlock_completion_index: 'Ein detaillierter Vollständigkeits-Tracker für die richtig ambitionierten Komplettisten. Sieh genau, welche Kombinationen du im Katalog hast und welche du noch entdecken kannst.',
-    unlock_collections:      'Kuratierte Herbarien: Befülle thematische Sets mit echten Blüten aus deinem Garten und stelle sie aus.',
+    unlock_collections:      'Kuratierte Sammlungen: Befülle thematische Sets mit Blüten aus deinem Garten und stelle sie aus.',
   } as Record<string, string>,
 
   // Saatenschublade
