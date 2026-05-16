@@ -335,11 +335,11 @@ export const COLLECTION_DEFS: CollectionDef[] = [
   {
     id: 'katalog_der_kostbarkeiten',
     vessel: 'herbarium',
-    unlockCondition: { type: 'catalog_has', criteria: { minRarity: 2 } },
+    unlockCondition: { type: 'catalog_has', criteria: { minRarity: 3 } },
     slots: [
-      { minRarity: 1 },
       { minRarity: 2 },
       { minRarity: 3 },
+      { minRarity: 4 },
     ],
   },
 ]
