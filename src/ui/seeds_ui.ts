@@ -17,7 +17,7 @@ import { expressedColor, colorBucket } from '../engine/genetic/genetic_utils'
 
 // ─── Mark symbols ─────────────────────────────────────────────────────────────
 
-const MARK_EMOJIS = ['❤️', '⭐', '🔥', '💎', '✨', '🌿', '🏆', '❓']
+const MARK_EMOJIS = ['❤️', '⭐', '🔥', '💎', '✨', '🌿', '🏆', '◈', '❓']
 const MARK_ALPHANUM = ['1','2','3','4','5','6','7','8','9','A','B','C','D','E','F']
 const MARK_SYMBOLS = [...MARK_EMOJIS, ...MARK_ALPHANUM]
 
